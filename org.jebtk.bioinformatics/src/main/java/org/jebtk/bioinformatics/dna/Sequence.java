@@ -61,7 +61,7 @@ import org.slf4j.LoggerFactory;
  * @author Antony Holmes Holmes
  *
  */
-public class Sequence implements NameProperty, Iterable<Character> {
+public class Sequence implements Comparable<Sequence>, NameProperty, Iterable<Character> {
 	
 	/**
 	 * The header pattern.
@@ -594,6 +594,11 @@ public class Sequence implements NameProperty, Iterable<Character> {
 		}
 		
 		return new Sequence(name, dna); //.toUpperCase());
+	}
+
+	@Override
+	public int compareTo(Sequence s) {
+		return mSequence.compareTo(s.mSequence);
 	}
 
 }
