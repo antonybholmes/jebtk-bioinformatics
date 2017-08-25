@@ -32,6 +32,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.jebtk.bioinformatics.DataSource;
+import org.jebtk.bioinformatics.dna.InvalidDnaException;
 
 
 
@@ -201,11 +202,12 @@ public abstract class GenomeAssembly {
 	 * @param repeatMaskType the repeat mask type
 	 * @return the sequence
 	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws InvalidDnaException 
 	 */
 	public abstract SequenceRegion getSequence(String genome,
 			GenomicRegion region,
 			boolean displayUpper,
-			RepeatMaskType repeatMaskType) throws IOException;
+			RepeatMaskType repeatMaskType) throws IOException, InvalidDnaException;
 
 	/**
 	 * Should return a list of the available genomes.

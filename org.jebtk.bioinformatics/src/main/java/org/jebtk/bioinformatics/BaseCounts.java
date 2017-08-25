@@ -27,6 +27,8 @@
  */
 package org.jebtk.bioinformatics;
 
+import org.jebtk.core.Mathematics;
+
 // TODO: Auto-generated Javadoc
 /**
  * Stores the counts of each base (a,c,g,t).
@@ -40,12 +42,8 @@ public class BaseCounts {
 	 * The member counts.
 	 */
 	private double[] mCounts = new double[4];
-	
-	/**
-	 * The member max.
-	 */
 	private double mMax;
-	
+
 	/**
 	 * Instantiates a new base counts.
 	 *
@@ -55,12 +53,27 @@ public class BaseCounts {
 	 * @param t the t
 	 */
 	public BaseCounts(double a, double c, double g, double t) {
+		this(a, c, g, t, true);
+	}
+	
+	public BaseCounts(double a, double c, double g, double t, boolean norm) {
+		
 		mCounts[0] = a;
 		mCounts[1] = c;
 		mCounts[2] = g;
 		mCounts[3] = t;
 		
-		mMax = Math.max(a, Math.max(c, Math.max(g, t)));
+		if (norm) {
+			double total = a + c + g + t;
+			
+			mCounts[0] /= total;
+			mCounts[1] /= total;
+			mCounts[2] /= total;
+			mCounts[3] /= total;
+		}
+	
+		mMax = Mathematics.max(mCounts[0], mCounts[1], mCounts[2], mCounts[3]);
+		
 	}
 	
 	/**
@@ -82,6 +95,8 @@ public class BaseCounts {
 			return getCount(2);
 		case 'T':
 		case 't':
+		case 'U':
+		case 'u':
 			return getCount(3);
 		default:
 			// N etc
@@ -134,12 +149,11 @@ public class BaseCounts {
 	public double getT() {
 		return getCount(3);
 	}
+	
+	public double getU() {
+		return getCount(3);
+	}
 
-	/**
-	 * Returns the max score at this base.
-	 *
-	 * @return the max score
-	 */
 	public double getMaxScore() {
 		return mMax;
 	}

@@ -85,40 +85,22 @@ public class MotifXmlHandler extends DefaultHandler {
 		} else if (qName.equals("motif")) {
 			mName = attributes.getValue("name");
 			mId = attributes.getValue("id");
-		} else if (qName.equals("position")) {
-			double a = -1;
+		} else if (qName.equals("pos") || qName.equals("position")) {
+			double a = Double.parseDouble(attributes.getValue("score-a"));
+			double c = Double.parseDouble(attributes.getValue("score-c"));
+			double g = Double.parseDouble(attributes.getValue("score-g"));
 			
-			try {
-				a = Parser.toDouble(attributes.getValue("score-a"));
-			} catch (ParseException e) {
-				e.printStackTrace();
+			double t;
+			
+			if (attributes.getValue("score-t") != null) {
+				t = Double.parseDouble(attributes.getValue("score-t"));
+			} else if (attributes.getValue("score-u") != null) {
+				t = Double.parseDouble(attributes.getValue("score-u"));
+			} else {
+				t = -1;
 			}
 			
-			double c = -1;
-			
-			try {
-				c = Parser.toDouble(attributes.getValue("score-c"));
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
-			
-			double g = -1;
-			
-			try {
-				g = Parser.toDouble(attributes.getValue("score-g"));
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
-			
-			double t = -1;
-			
-			try {
-				t = Parser.toDouble(attributes.getValue("score-t"));
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
-			
-			mCounts.add(new BaseCounts(a, c, g, t));
+			mCounts.add(new BaseCounts(a, c, g, t, true));
 		} else {
 			
 		}

@@ -396,14 +396,7 @@ public class Motif implements Comparable<Motif>, Iterable<BaseCounts>, Formatted
 						double gf = Double.parseDouble(g.get(i));
 						double tf = Double.parseDouble(t.get(i));
 
-						double total = af + cf + gf + tf;
-
-						af /= total;
-						cf /= total;
-						gf /= total;
-						tf /= total;
-
-						counts.add(new BaseCounts(af, cf, gf, tf));
+						counts.add(new BaseCounts(af, cf, gf, tf, true));
 					}
 
 					motif = new Motif(id, name, counts);
@@ -519,14 +512,14 @@ public class Motif implements Comparable<Motif>, Iterable<BaseCounts>, Formatted
 					double gf = Double.parseDouble(g.get(i));
 					double tf = Double.parseDouble(t.get(i));
 
-					double total = af + cf + gf + tf;
+					//double total = af + cf + gf + tf;
 
-					af /= total;
-					cf /= total;
-					gf /= total;
-					tf /= total;
+					//af /= total;
+					//cf /= total;
+					//gf /= total;
+					//tf /= total;
 
-					counts.add(new BaseCounts(af, cf, gf, tf));
+					counts.add(new BaseCounts(af, cf, gf, tf, true));
 				}
 
 				motif = new Motif(id, name, gene, database, counts);
@@ -582,14 +575,14 @@ public class Motif implements Comparable<Motif>, Iterable<BaseCounts>, Formatted
 					double gf = Double.parseDouble(g.get(i));
 					double tf = Double.parseDouble(t.get(i));
 
-					double total = af + cf + gf + tf;
+					//double total = af + cf + gf + tf;
 
-					af /= total;
-					cf /= total;
-					gf /= total;
-					tf /= total;
+					//af /= total;
+					//cf /= total;
+					//gf /= total;
+					//tf /= total;
 
-					counts.add(new BaseCounts(af, cf, gf, tf));
+					counts.add(new BaseCounts(af, cf, gf, tf, true));
 				}
 
 				motif = new Motif(id, counts);

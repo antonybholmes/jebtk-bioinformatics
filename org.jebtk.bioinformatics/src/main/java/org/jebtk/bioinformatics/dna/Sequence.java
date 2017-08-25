@@ -68,7 +68,7 @@ public class Sequence implements Comparable<Sequence>, NameProperty, Iterable<Ch
 	 */
 	public static Pattern HEADER_PATTERN = Pattern.compile(">(.+)");
 
-	private static String DEFAULT_NAME = "DNA";
+	private static String DEFAULT_NAME = "Seq";
 	
 	/**
 	 * The member sequence.
@@ -80,8 +80,10 @@ public class Sequence implements Comparable<Sequence>, NameProperty, Iterable<Ch
 	private char[] mArray;
 
 	private String mName;
+
+	private SequenceType mType;
 	
-	public static final Pattern DNA_REGEX = Pattern.compile("[ACGTacgtNn]+");
+	public static final Pattern DNA_REGEX = Pattern.compile("[ACGTUacgtuNn]+");
 	
 	/**
 	 * The constant LOG.
@@ -99,14 +101,23 @@ public class Sequence implements Comparable<Sequence>, NameProperty, Iterable<Ch
 		this(DEFAULT_NAME, sequence);
 	}
 	
-	private Sequence(String name, String sequence) {
+	public Sequence(String name, String sequence) {
+		if (!DNA_REGEX.matcher(sequence).matches()) {
+			throw new InvalidDnaException("Sequence contains invalid bases.");
+		}
+		
 		mName = name;
 		mSequence = sequence;
+		mType = sequence.contains("U") || sequence.contains("u") ? SequenceType.RNA : SequenceType.DNA;
 	}
 	
 	@Override
 	public String getName() {
 		return mName;
+	}
+	
+	public SequenceType getType() {
+		return mType;
 	}
 	
 	/**
@@ -116,7 +127,7 @@ public class Sequence implements Comparable<Sequence>, NameProperty, Iterable<Ch
 	 */
 	public char[] toArray() {
 		if (mArray == null) {
-			mArray = mSequence.toLowerCase().toCharArray();
+			mArray = mSequence.toUpperCase().toCharArray();
 		}
 		
 		return mArray;
@@ -169,7 +180,8 @@ public class Sequence implements Comparable<Sequence>, NameProperty, Iterable<Ch
 	 * @return the sequence
 	 */
 	public static Sequence reverseComplement(Sequence sequence) {
-		return new Sequence(reverseComplement(sequence.mSequence));
+		return new Sequence(sequence.mName + " rev comp", 
+				reverseComplement(sequence.mSequence, sequence.mType));
 	}
 	
 	/**
@@ -179,7 +191,12 @@ public class Sequence implements Comparable<Sequence>, NameProperty, Iterable<Ch
 	 * @return the string
 	 */
 	public static String reverseComplement(String sequence) {
-		return complement(TextUtils.reverse(sequence));
+		return reverseComplement(sequence, SequenceType.DNA);
+	}
+	
+	public static String reverseComplement(String sequence, 
+			SequenceType type) {
+		return complement(TextUtils.reverse(sequence), type);
 	}
 	
 	/**
@@ -188,8 +205,13 @@ public class Sequence implements Comparable<Sequence>, NameProperty, Iterable<Ch
 	 * @param sequence the sequence
 	 * @return the string
 	 */
-	public static String complement(Sequence sequence) {
-		return complement(sequence.mSequence);
+	public static Sequence complement(Sequence sequence) {
+		return new Sequence(sequence.mName + " comp", 
+				complement(sequence.mSequence, sequence.mType));
+	}
+	
+	public static String complement(String sequence) {
+		return complement(sequence, SequenceType.DNA);
 	}
 	
 	/**
@@ -198,17 +220,25 @@ public class Sequence implements Comparable<Sequence>, NameProperty, Iterable<Ch
 	 * @param sequence the sequence
 	 * @return the string
 	 */
-	public static String complement(String sequence) {
-		
+	public static String complement(String sequence, SequenceType type) {
 		StringBuilder buffer = new StringBuilder();
 		
 		for (char c : sequence.toCharArray()) {
 			switch(c) {
 			case 'A':
-				buffer.append('T');
+				if (type == SequenceType.RNA) {
+					buffer.append('U');
+				} else {
+					buffer.append('T');
+				}
+				
 				break;
 			case 'a':
-				buffer.append('t');
+				if (type == SequenceType.RNA) {
+					buffer.append('u');
+				} else {
+					buffer.append('t');
+				}
 				break;
 			case 'C':
 				buffer.append('G');
@@ -223,9 +253,11 @@ public class Sequence implements Comparable<Sequence>, NameProperty, Iterable<Ch
 				buffer.append('c');
 				break;
 			case 'T':
+			case 'U':
 				buffer.append('A');
 				break;
 			case 't':
+			case 'u':
 				buffer.append('a');
 				break;
 			default:
@@ -331,6 +363,8 @@ public class Sequence implements Comparable<Sequence>, NameProperty, Iterable<Ch
 			return 2;
 		case 'T':
 		case 't':
+		case 'U':
+		case 'u':
 			return 3;
 		default:
 			return 0;
@@ -396,6 +430,34 @@ public class Sequence implements Comparable<Sequence>, NameProperty, Iterable<Ch
 				writer.newLine();
 				writer.write(s.mSequence);
 				writer.newLine();
+			}
+		} finally {
+			writer.close();
+		}
+	}
+	
+	public static <X extends Sequence> void writeFormattedFasta(List<X> sequences,
+			Path file) throws IOException {
+		
+		LOG.debug("Writing {}...", file);
+		
+		BufferedWriter writer = FileUtils.newBufferedWriter(file);
+		
+		try {
+			for (Sequence s : sequences) {
+				writer.write(">");
+				writer.write(s.mName);
+				writer.newLine();
+				
+				int i = 0;
+				int n = s.mSequence.length();
+
+				while (i < n) {
+					writer.write(s.mSequence.substring(i, Math.min(i + 80, n)));
+					writer.newLine();
+					
+					i += 80;
+				}
 			}
 		} finally {
 			writer.close();
