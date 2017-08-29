@@ -34,8 +34,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jebtk.bioinformatics.genomic.Chromosome;
-import org.jebtk.bioinformatics.genomic.GenomeAssembly;
-import org.jebtk.bioinformatics.genomic.RepeatMaskType;
 import org.jebtk.core.io.FileUtils;
 import org.jebtk.core.io.Io;
 
@@ -46,7 +44,7 @@ import org.jebtk.core.io.Io;
  *
  * @author Antony Holmes Holmes
  */
-public abstract class GenomeAssemblyDir extends GenomeAssembly {
+public abstract class GenomeAssemblyDir extends GenomeAssemblyDNA {
 	
 	/** The Constant EMPTY_BYTES. */
 	protected static final byte[] EMPTY_BYTES = new byte[0];
@@ -129,118 +127,5 @@ public abstract class GenomeAssemblyDir extends GenomeAssembly {
 		}
 		
 		return buf; //Io.unsignedToSigned(buf);
-	}
-	
-	/**
-	 * To char.
-	 *
-	 * @param v the v
-	 * @param repeatMaskType the repeat mask type
-	 * @return the char
-	 */
-	public static char toChar(int v, RepeatMaskType repeatMaskType) {
-		char c = toChar(v);
-		
-		switch(repeatMaskType) {
-		case UPPERCASE:
-			
-			switch(c) {
-			case 'a':
-				return 'A';
-			case 'c':
-				return 'C';
-			case 'g':
-				return 'G';
-			case 't':
-				return 'T';
-			default:
-				return c;
-			}
-		case N:
-			switch(c) {
-			case 'a':
-			case 'c':
-			case 'g':
-			case 't':
-				return 'N';
-			default:
-				return c;
-			}
-		default:
-			// default to the lower case in which case return the sequence
-			// as is since this will include the mask
-			return c;
-		}
-	}
-	
-	/**
-	 * To char.
-	 *
-	 * @param v the v
-	 * @return the char
-	 */
-	public static char toChar(int v) {
-		switch (v) {
-		case 0:
-			return 'A';
-		case 1:
-			return 'C';
-		case 2:
-			return 'G';
-		case 3:
-			return 'T';
-		case 4:
-			return 'a';
-		case 5:
-			return 'c';
-		case 6:
-			return 'g';
-		case 7:
-			return 't';
-		default:
-			return 'N';
-		}
-	}
-	
-	/**
-	 * Convert character to lower case.
-	 *
-	 * @param c the c
-	 * @return the char
-	 */
-	public static char toLower(int c) {
-		switch(c) {
-		case 'A':
-			return 'a';
-		case 'C':
-			return 'c';
-		case 'G':
-			return 'g';
-		case 'T':
-			return 't';
-		default:
-			return 'n';
-		}
-	}
-	
-	/**
-	 * To lower.
-	 *
-	 * @param c the c
-	 * @return the char
-	 */
-	public static char toLower(char c) {
-		switch(c) {
-		case 'A':
-			return 'a';
-		case 'C':
-			return 'c';
-		case 'G':
-			return 'g';
-		case 'T':
-			return 't';
-		default:
-			return 'n';
-		}
 	}
 }

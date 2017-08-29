@@ -56,8 +56,8 @@ import org.jebtk.core.io.PathUtils;
 public class GenomeAssemblyLocal extends GenomeAssembly {
 
 	/** The m map. */
-	protected Map<String, GenomeAssemblyExt2Bit> mMap = 
-			new HashMap<String, GenomeAssemblyExt2Bit>();
+	protected Map<String, GenomeAssembly> mMap = 
+			new HashMap<String, GenomeAssembly>();
 	
 	/** The m directory. */
 	private Path mDirectory;
@@ -102,7 +102,7 @@ public class GenomeAssemblyLocal extends GenomeAssembly {
 		if (!mMap.containsKey(genome)) {
 			Path dir = mDirectory.resolve(genome);
 
-			mMap.put(genome, new GenomeAssemblyExt2Bit(dir));
+			mMap.put(genome, new GenomeAssemblyExt2BitMem(dir)); //new GenomeAssemblyExt2Bit(dir));
 		}
 
 		return mMap.get(genome).getSequence(genome,

@@ -30,6 +30,7 @@ package org.jebtk.bioinformatics.genomic;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -695,14 +696,14 @@ public class GenomicRegion extends Region implements Comparable<GenomicRegion> {
 	 * @throws ParseException the parse exception
 	 */
 	public static List<SequenceRegion> getSequences(String genome,
-			List<GenomicRegion> regions,
+			Collection<GenomicRegion> regions,
 			boolean displayUpper,
 			RepeatMaskType repeatMaskType,
 			GenomeAssembly genomeAssembly) throws IOException, ParseException {
 		List<SequenceRegion> sequences = new ArrayList<SequenceRegion>();
 
 		for (GenomicRegion region : regions) {
-			//System.err.println("region " + region.getLocation());
+			System.err.println("Getting sequence for region " + region.getLocation() + "...");
 
 			sequences.add(genomeAssembly.getSequence(genome, region, displayUpper, repeatMaskType));
 		}
