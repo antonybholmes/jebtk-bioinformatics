@@ -66,6 +66,11 @@ public class GenomeAssemblyGZip extends GenomeAssemblyDir {
 		super(directory);
 	}
 	
+	@Override
+	public String getName() {
+		return "txt-gz";
+	}
+	
 	/* (non-Javadoc)
 	 * @see edu.columbia.rdf.lib.bioinformatics.genome.GenomeAssembly#getSequence(edu.columbia.rdf.lib.bioinformatics.genome.GenomicRegion, boolean, edu.columbia.rdf.lib.bioinformatics.genome.RepeatMaskType)
 	 */

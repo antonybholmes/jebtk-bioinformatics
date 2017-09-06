@@ -30,6 +30,7 @@ package org.jebtk.bioinformatics.dna;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -74,6 +75,11 @@ public class GenomeAssemblyLocal extends GenomeAssembly {
 		mDirectory = directory;
 	}
 	
+	@Override
+	public String getName() {
+		return "local";
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.jebtk.bioinformatics.genome.GenomeAssembly#getGenomes()
 	 */
@@ -99,15 +105,34 @@ public class GenomeAssemblyLocal extends GenomeAssembly {
 			GenomicRegion region,
 			boolean displayUpper,
 			RepeatMaskType repeatMaskType) throws IOException {
-		if (!mMap.containsKey(genome)) {
-			Path dir = mDirectory.resolve(genome);
-
-			mMap.put(genome, new GenomeAssemblyExt2BitMem(dir)); //new GenomeAssemblyExt2Bit(dir));
-		}
+		createGenomeEntry(genome, mDirectory, mMap);
 
 		return mMap.get(genome).getSequence(genome,
 				region,
 				displayUpper,
 				repeatMaskType);
+	}
+	
+	@Override
+	public List<SequenceRegion> getSequences(String genome,
+			Collection<GenomicRegion> regions,
+			boolean displayUpper,
+			RepeatMaskType repeatMaskType) throws IOException {
+		createGenomeEntry(genome, mDirectory, mMap);
+
+		return mMap.get(genome).getSequences(genome,
+				regions,
+				displayUpper,
+				repeatMaskType);
+	}
+	
+	private static void createGenomeEntry(String genome,
+			Path dir,
+			Map<String, GenomeAssembly> map) {
+		if (!map.containsKey(genome)) {
+			Path d = dir.resolve(genome);
+
+			map.put(genome, new GenomeAssemblyExt2BitMem(d)); //new GenomeAssemblyExt2Bit(dir));
+		}
 	}
 }

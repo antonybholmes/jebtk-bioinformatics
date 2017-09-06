@@ -70,6 +70,11 @@ public class GenomeAssemblyExt2Bit extends GenomeAssemblyDir {
 	public GenomeAssemblyExt2Bit(Path directory) {
 		super(directory);
 	}
+	
+	@Override
+	public String getName() {
+		return "2bit-ext";
+	}
 
 	/* (non-Javadoc)
 	 * @see edu.columbia.rdf.lib.bioinformatics.genome.GenomeAssembly#getSequence(edu.columbia.rdf.lib.bioinformatics.genome.GenomicRegion, boolean, edu.columbia.rdf.lib.bioinformatics.genome.RepeatMaskType)

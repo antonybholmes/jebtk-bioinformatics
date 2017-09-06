@@ -29,8 +29,6 @@ package org.jebtk.bioinformatics.rtree;
 
 
 
-import java.text.ParseException;
-
 import org.jebtk.bioinformatics.genomic.Chromosome;
 import org.jebtk.bioinformatics.genomic.Strand;
 import org.jebtk.core.text.TextUtils;
@@ -48,7 +46,7 @@ public class RTreeXmlHandler extends DefaultHandler {
 
 	/** The m chr. */
 	private Chromosome mChr;
-	
+
 	/** The m tree. */
 	private RTreeFeatureTree mTree = new RTreeFeatureTree();
 
@@ -64,23 +62,19 @@ public class RTreeXmlHandler extends DefaultHandler {
 			Attributes attributes) throws SAXException {
 
 		if (qName.equals("feature")) {
-			try {
-				RTreeFeature feature = new RTreeFeature(mParent,
-						attributes.getValue("gene"),
-						attributes.getValue("transcript"),
-						attributes.getValue("type"),
-						mChr,
-						TextUtils.parseInt(attributes.getValue("start")),
-						TextUtils.parseInt(attributes.getValue("end")),
-						Strand.parse(attributes.getValue("strand")));
-				
-				mTree.add(feature);
-				
-				if (feature.getType().equals("gene")) {
-					mParent = feature;
-				}
-			} catch (ParseException e) {
-				e.printStackTrace();
+			RTreeFeature feature = new RTreeFeature(mParent,
+					attributes.getValue("gene"),
+					attributes.getValue("transcript"),
+					attributes.getValue("type"),
+					mChr,
+					TextUtils.parseInt(attributes.getValue("start")),
+					TextUtils.parseInt(attributes.getValue("end")),
+					Strand.parse(attributes.getValue("strand")));
+
+			mTree.add(feature);
+
+			if (feature.getType().equals("gene")) {
+				mParent = feature;
 			}
 		} else {
 			// Do nothing

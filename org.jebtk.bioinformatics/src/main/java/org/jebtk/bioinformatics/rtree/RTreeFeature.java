@@ -17,6 +17,7 @@ package org.jebtk.bioinformatics.rtree;
 
 import org.jebtk.bioinformatics.genomic.Chromosome;
 import org.jebtk.bioinformatics.genomic.GenomicRegion;
+import org.jebtk.bioinformatics.genomic.Region;
 import org.jebtk.bioinformatics.genomic.Strand;
 
 // TODO: Auto-generated Javadoc
@@ -125,7 +126,7 @@ public class RTreeFeature extends GenomicRegion {
 	 * @see org.jebtk.bioinformatics.genome.GenomicRegion#compareTo(org.jebtk.bioinformatics.genome.GenomicRegion)
 	 */
 	@Override
-	public int compareTo(GenomicRegion f) {
+	public int compareTo(Region f) {
 		return mGene.compareTo(((RTreeFeature)f).mGene);
 	}
 	

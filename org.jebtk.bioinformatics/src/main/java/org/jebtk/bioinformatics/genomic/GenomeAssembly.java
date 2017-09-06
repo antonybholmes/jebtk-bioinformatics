@@ -28,11 +28,14 @@
 package org.jebtk.bioinformatics.genomic;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 import org.jebtk.bioinformatics.DataSource;
 import org.jebtk.bioinformatics.dna.InvalidDnaException;
+import org.jebtk.core.NameProperty;
 
 
 
@@ -42,7 +45,7 @@ import org.jebtk.bioinformatics.dna.InvalidDnaException;
  *
  * @author Antony Holmes Holmes
  */
-public abstract class GenomeAssembly {
+public abstract class GenomeAssembly implements NameProperty {
 	
 	/** The Constant HG18. */
 	public static final String HG18 = "hg18";
@@ -209,6 +212,19 @@ public abstract class GenomeAssembly {
 			boolean displayUpper,
 			RepeatMaskType repeatMaskType) throws IOException, InvalidDnaException;
 
+	public List<SequenceRegion> getSequences(String genome,
+			Collection<GenomicRegion> regions,
+			boolean displayUpper,
+			RepeatMaskType repeatMaskType) throws IOException {
+		List<SequenceRegion> sequences = new ArrayList<SequenceRegion>();
+
+		for (GenomicRegion region : regions) {
+			sequences.add(getSequence(genome, region, displayUpper, repeatMaskType));
+		}
+
+		return sequences;
+	}
+	
 	/**
 	 * Should return a list of the available genomes.
 	 *

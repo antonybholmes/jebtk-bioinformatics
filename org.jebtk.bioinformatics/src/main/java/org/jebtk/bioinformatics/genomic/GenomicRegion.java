@@ -35,12 +35,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.jebtk.core.io.Io;
 import org.jebtk.core.text.Formatter;
 import org.jebtk.core.text.Formatter.NumberFormatter;
-import org.jebtk.core.text.Parser;
 import org.jebtk.core.text.Splitter;
 import org.jebtk.core.text.TextUtils;
 
@@ -52,12 +52,13 @@ import org.jebtk.core.text.TextUtils;
  *
  * @author Antony Holmes Holmes
  */
-public class GenomicRegion extends Region implements Comparable<GenomicRegion> {
+public class GenomicRegion extends Region {
 
 	/** The Constant GENOMIC_REGEX. */
 	public static final Pattern GENOMIC_REGEX =
-			Pattern.compile("chr.+?:(?:\\d+(?:,\\d+)*)(?:-\\d+(?:,\\d+)*)?");
+			Pattern.compile("(chr(?:\\d+|[XYM])):(\\d+(?:,\\d+)*)(?:-(\\d+(?:,\\d+)*)?)"); //Pattern.compile("chr.+?:(?:\\d+(?:,\\d+)*)(?:-\\d+(?:,\\d+)*)?");
 
+	
 	/**
 	 * The member chr.
 	 */
@@ -136,7 +137,7 @@ public class GenomicRegion extends Region implements Comparable<GenomicRegion> {
 	public String getLocation() {
 		return toLocation(mChr, mStart, mEnd);
 	}
-	
+
 	/**
 	 * Returns the numerical range of the location in form "<start>-<end>"
 	 * @return
@@ -171,51 +172,27 @@ public class GenomicRegion extends Region implements Comparable<GenomicRegion> {
 		return getLocation();
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		return toString().hashCode();
-	}
+
 
 	/* (non-Javadoc)
 	 * @see java.lang.Comparable#compareTo(java.lang.Object)
 	 */
 	@Override
-	public int compareTo(GenomicRegion r) {
-		if (mChr.equals(r.mChr)) {
-			if (mStart > r.mStart) {
-				return 1;
-			} else if (mStart < r.mStart) {
-				return -1;
-			} else {
-				// If the starts are the same, rank by end coordinate
-				if (mEnd > r.mEnd) {
-					return 1;
-				} else if (mEnd < r.mEnd) {
-					return -1;
-				} else {
-					// both start and end equal each other
-					return 0;
-				}
+	public int compareTo(Region r) {
+		if (r instanceof GenomicRegion) {
+			GenomicRegion gr = (GenomicRegion)r;
+
+			int c = mChr.compareTo(gr.mChr);
+			
+			if (c != 0) {
+				return c;
 			}
-		} else {
-			return mChr.compareTo(r.mChr);
 		}
+		
+		return super.compareTo(r);
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object o) {
-		if (o instanceof GenomicRegion) {
-			return compareTo((GenomicRegion)o) == 0;
-		} else {
-			return false;
-		}
-	}
+
 
 	/* (non-Javadoc)
 	 * @see edu.columbia.rdf.lib.bioinformatics.genome.Region#formattedTxt(java.lang.Appendable)
@@ -265,51 +242,50 @@ public class GenomicRegion extends Region implements Comparable<GenomicRegion> {
 		if (location.contains(TextUtils.NA)) {
 			return null;
 		}
-
-		location = location.trim().replaceAll(",", "");
 		
-		if (isGenomicRegion(location)) {
-
-			List<String> tokens = TextUtils.fastSplit(location, 
-					TextUtils.COLON_DELIMITER_CHAR);
-
-			// convert first part to chromosome (replacing x,y and m) {
+		if (location.length() == 0) {
+			return null;
+		}
+		
+		
+		Matcher matcher = GENOMIC_REGEX.matcher(location);
+		
+		if (matcher.find()) {
 			Chromosome chromosome = 
-					ChromosomeService.getInstance().parse(tokens.get(0));
+					ChromosomeService.getInstance().parse(matcher.group(1));
 
 			if (chromosome == null) {
 				return null;
 			}
 
-			int start;
+			
+			
+			int start = TextUtils.parseInt(matcher.group(2));
+			
 			int end;
 
-			if (tokens.get(1).indexOf("-") != -1) {
-				tokens = Splitter.on('-').text(tokens.get(1)); //)    .(tokens.get(1), '-');
-
-				start = Integer.parseInt(tokens.get(0));
-				end = Integer.parseInt(tokens.get(1));
+			if (matcher.groupCount() > 2) {
+				end = TextUtils.parseInt(matcher.group(3));
 			} else {
-				// single position
-
-				start = Integer.parseInt(tokens.get(1));
 				end = start;
 			}
-
+			
 			return new GenomicRegion(chromosome, start, end);
 		} else if (isRegion(location)) {
+			location = region(location);
+			
 			int start;
 			int end;
 
 			if (location.indexOf("-") != -1) {
 				List<String> tokens = Splitter.on('-').text(location); //)    .(tokens.get(1), '-');
 
-				start = Integer.parseInt(tokens.get(0));
-				end = Integer.parseInt(tokens.get(1));
+				start = TextUtils.parseInt(tokens.get(0));
+				end = TextUtils.parseInt(tokens.get(1));
 			} else {
 				// single position
 
-				start = Integer.parseInt(location);
+				start = TextUtils.parseInt(location);
 				end = start;
 			}
 
@@ -330,8 +306,8 @@ public class GenomicRegion extends Region implements Comparable<GenomicRegion> {
 	 */
 	public static GenomicRegion parse(String chr, String start, String end) throws ParseException {
 		return new GenomicRegion(ChromosomeService.getInstance().parse(chr), 
-				Parser.toInt(start), 
-				Parser.toInt(end));
+				TextUtils.parseInt(start), 
+				TextUtils.parseInt(end));
 	}
 
 	/**
@@ -588,6 +564,20 @@ public class GenomicRegion extends Region implements Comparable<GenomicRegion> {
 
 		return GENOMIC_REGEX.matcher(text).find(); //value.matches("chr.+?:\\d+(-\\d+)?.*");
 	}
+	
+	public static String genomicRegion(String text) {
+		if (text == null) {
+			return TextUtils.EMPTY_STRING;
+		}
+
+		Matcher matcher = GENOMIC_REGEX.matcher(text);
+		
+		if (matcher.find()) {
+			return matcher.group(1);
+		} else {
+			return TextUtils.EMPTY_STRING;
+		}
+	}
 
 	/**
 	 * Returns true if the value appears to be a chromosome.
@@ -807,14 +797,14 @@ public class GenomicRegion extends Region implements Comparable<GenomicRegion> {
 		return shift(region, shift, 0, sizes);
 
 	}
-	
+
 	public static GenomicRegion shift(GenomicRegion region, 
 			int shift,
 			int minSep,
 			ChromosomeSizes sizes) {
 
 		int size = sizes.getSize(region.mChr);
-		
+
 		// bound the positions so they dont exceed the chromosome bounds
 		int start = Math.min(size, Math.max(1, region.mStart + shift));
 		int end = Math.min(size, Math.max(start + minSep, region.mEnd + shift));
@@ -822,13 +812,13 @@ public class GenomicRegion extends Region implements Comparable<GenomicRegion> {
 		return new GenomicRegion(region.mChr, start, end);
 
 	}
-	
+
 	public static GenomicRegion add(GenomicRegion region, 
 			int shift) {
 
 		return add(region, shift, 0);
 	}
-	
+
 	public static GenomicRegion add(GenomicRegion region, 
 			int shift,
 			int minSep) {
@@ -903,7 +893,7 @@ public class GenomicRegion extends Region implements Comparable<GenomicRegion> {
 	public static String toLocation(Chromosome chr, int start, int end) {
 		return chr + ":" + toRange(start, end);
 	}
-	
+
 	public static String toRange(int start, int end) {
 		return start + "-" + end;
 	}
@@ -921,7 +911,7 @@ public class GenomicRegion extends Region implements Comparable<GenomicRegion> {
 
 		return chr + ":" + f.format(start) + "-" + f.format(end);
 	}
-	
+
 	/**
 	 * Creates a special kind of genomic region with no chromosome. Should 
 	 * be used in situations where the chromosome is irrelevent, but the

@@ -57,6 +57,11 @@ public class GenomeAssemblyFile4Bit extends GenomeAssemblyDir {
 		super(directory);
 	}
 	
+	@Override
+	public String getName() {
+		return "4bit";
+	}
+	
 	/* (non-Javadoc)
 	 * @see edu.columbia.rdf.lib.bioinformatics.genome.GenomeAssembly#getSequence(edu.columbia.rdf.lib.bioinformatics.genome.GenomicRegion, boolean, edu.columbia.rdf.lib.bioinformatics.genome.RepeatMaskType)
 	 */

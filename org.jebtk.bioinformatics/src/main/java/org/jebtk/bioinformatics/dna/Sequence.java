@@ -239,6 +239,7 @@ public class Sequence implements Comparable<Sequence>, NameProperty, Iterable<Ch
 				} else {
 					buffer.append('t');
 				}
+				
 				break;
 			case 'C':
 				buffer.append('G');

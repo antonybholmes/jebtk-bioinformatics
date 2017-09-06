@@ -29,6 +29,7 @@ package org.jebtk.bioinformatics.genomic;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.jebtk.core.io.Io;
@@ -43,21 +44,21 @@ import org.jebtk.core.text.TextUtils;
  *
  * @author Antony Holmes Holmes
  */
-public class Region implements FormattedTxt {
-	
+public class Region implements Comparable<Region>, FormattedTxt {
+
 	/** The Constant REGION_REGEX. */
 	private static final Pattern REGION_REGEX = Pattern.compile("\\d+(-\\d+)");
-	
+
 	/**
 	 * The member start.
 	 */
 	protected int mStart;
-	
+
 	/**
 	 * The member end.
 	 */
 	protected int mEnd;
-	
+
 	/**
 	 * The member length.
 	 */
@@ -71,27 +72,34 @@ public class Region implements FormattedTxt {
 	public Region(Region region) {
 		this(region.mStart, region.mEnd);
 	}
-	
+
 	/**
 	 * Instantiates a new region.
 	 *
 	 * @param start the start
 	 * @param end the end
 	 */
-	public Region(int start, 
-			int end) {
+	public Region(int start, int end) {
 		// The start must be at least 1
 		mStart = start;
 		mEnd = end;
-		
+
 
 		// Swap if the coordinates are the wrong way around
 		if (mStart > mEnd) {
-			int t = mStart;
-			mStart = mEnd;
-			mEnd = t;
+			//int t = mStart;
+			//mStart = mEnd;
+			//mEnd = t;
+			
+			// hybrid
+			mStart = mStart ^ mEnd;
+			// remove end to leave old start
+			mEnd = mStart ^ mEnd;
+			
+			// start XOR start = end
+			mStart = mStart ^ mEnd;
 		}
-		
+
 		mLength = mEnd - mStart + 1;
 	}
 
@@ -112,7 +120,7 @@ public class Region implements FormattedTxt {
 	public int getEnd() {
 		return mEnd;
 	}
-	
+
 	/**
 	 * Gets the length.
 	 *
@@ -121,7 +129,7 @@ public class Region implements FormattedTxt {
 	public int getLength() {
 		return mLength;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
@@ -140,44 +148,44 @@ public class Region implements FormattedTxt {
 		buffer.append(Integer.toString(mEnd));
 		buffer.append(TextUtils.NEW_LINE);
 	}
-	
-	/**
-	 * Parses the region.
-	 *
-	 * @param location the location
-	 * @return the region
-	 */
-	public static Region parseRegion(String location) {
-		if (Io.isEmptyLine(location)) {
-			return null;
-		}
-		
-		if (location.contains(TextUtils.NA)) {
-			return null;
-		}
-		
-		location = location.trim().replaceAll(",", "");
-		
-		if (!isRegion(location)) {
-			return null;
-		}
 
-		List<String> tokens;
-		int start;
-		int end;
-		if (location.indexOf("-") != -1) {
-			tokens = Splitter.on('-').text(location); //)    .(tokens.get(1), '-');
-
-			start = Integer.parseInt(tokens.get(0));
-			end = Integer.parseInt(tokens.get(1));
+	@Override
+	public int compareTo(Region r) {
+		if (mStart > r.mStart) {
+			return 1;
+		} else if (mStart < r.mStart) {
+			return -1;
 		} else {
-			// single position
-
-			start = Integer.parseInt(location);
-			end = start;
+			// If the starts are the same, rank by end coordinate
+			if (mEnd > r.mEnd) {
+				return 1;
+			} else if (mEnd < r.mEnd) {
+				return -1;
+			} else {
+				// both start and end equal each other
+				return 0;
+			}
 		}
+	}
 
-		return new Region(start, end);
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof Region) {
+			return compareTo((Region)o) == 0;
+		} else {
+			return false;
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		return toString().hashCode();
 	}
 
 	/**
@@ -188,6 +196,61 @@ public class Region implements FormattedTxt {
 	 */
 	protected static boolean isRegion(String region) {
 		return REGION_REGEX.matcher(region).find();
+	}
+	
+	public static String region(String text) {
+		if (text == null) {
+			return TextUtils.EMPTY_STRING;
+		}
+
+		Matcher matcher = REGION_REGEX.matcher(text);
+		
+		if (matcher.find()) {
+			return matcher.group(1);
+		} else {
+			return TextUtils.EMPTY_STRING;
+		}
+	}
+	
+	public static Region parseRegion(String location) {
+		if (Io.isEmptyLine(location)) {
+			return null;
+		}
+
+		if (location.contains(TextUtils.NA)) {
+			return null;
+		}
+		
+		if (location.length() == 0) {
+			return null;
+		}
+		
+		if (isRegion(location)) {
+			location = region(location);
+			
+			int start;
+			int end;
+
+			if (location.indexOf("-") != -1) {
+				List<String> tokens = Splitter.on('-').text(location); //)    .(tokens.get(1), '-');
+
+				start = TextUtils.parseInt(tokens.get(0));
+				end = TextUtils.parseInt(tokens.get(1));
+			} else {
+				// single position
+
+				start = TextUtils.parseInt(location);
+				end = start;
+			}
+
+			return createRegion(start, end);
+		} else {
+			return null;
+		}
+	}
+	
+	public static Region createRegion(int start, int end) {
+		return new Region(start, end);
 	}
 
 	/**
@@ -201,7 +264,7 @@ public class Region implements FormattedTxt {
 		// bound the positions so they dont exceed the chromosome bounds
 		int start = Math.max(1, region.mStart + shift);
 		int end = Math.max(1, region.mEnd + shift);
-				
+
 		return new Region(start, end);
 	}
 }

@@ -150,4 +150,18 @@ public abstract class GenomeAssemblyDNA extends GenomeAssembly {
 			return 'n';
 		}
 	}
+	
+	public static void toLower(char[] buf) {
+		toLower(buf, buf.length);
+	}
+	
+	/**
+	 * Turn a buffer to lower case
+	 * @param buf
+	 */
+	public static void toLower(char[] buf, int l) {
+		for (int i = 0; i < l; ++i) {
+			buf[i] = toLower(buf[i]);
+		}
+	}
 }

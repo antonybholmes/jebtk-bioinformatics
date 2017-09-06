@@ -459,6 +459,8 @@ public class Chromosome implements Comparable<Chromosome>, IdProperty, NamePrope
 	 */
 	@Override
 	public int compareTo(Chromosome c) {
+		//System.err.println("compare chr " + mId + " " + c.mId + " " + mChr + " " + c.mChr);
+		
 		if (mId != -1 && c.mId != -1) {
 			if (mId > c.mId) {
 				return 1;

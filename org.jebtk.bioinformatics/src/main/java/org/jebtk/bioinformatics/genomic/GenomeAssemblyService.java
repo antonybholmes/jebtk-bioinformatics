@@ -63,6 +63,11 @@ public class GenomeAssemblyService extends GenomeAssembly {
     private List<GenomeAssembly> mAssemblies = 
     		new ArrayList<GenomeAssembly>();
     
+    @Override
+    public String getName() {
+    	return "genome-service";
+    }
+    
     /**
      * Adds the.
      *
