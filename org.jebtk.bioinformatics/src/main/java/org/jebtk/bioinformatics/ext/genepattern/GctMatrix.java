@@ -34,8 +34,8 @@ import java.util.List;
 
 import org.jebtk.core.io.FileUtils;
 import org.jebtk.core.text.TextUtils;
-import org.jebtk.math.matrix.AnnotatableMatrix;
-import org.jebtk.math.matrix.AnnotationMatrix;
+import org.jebtk.math.matrix.DataFrame;
+import org.jebtk.math.matrix.DataFrame;
 import org.jebtk.math.matrix.DoubleMatrix;
 
 // TODO: Auto-generated Javadoc
@@ -45,7 +45,7 @@ import org.jebtk.math.matrix.DoubleMatrix;
  * @author Antony Holmes Holmes
  *
  */
-public class GctMatrix extends AnnotatableMatrix {
+public class GctMatrix extends DataFrame {
 	
 	/**
 	 * The constant serialVersionUID.
@@ -112,7 +112,7 @@ public class GctMatrix extends AnnotatableMatrix {
 	 * @return the annotation matrix
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public static AnnotationMatrix parseMatrix(Path file) throws IOException {
+	public static DataFrame parseMatrix(Path file) throws IOException {
 		return new GctMatrixParser().parse(file);
 	}
 	
@@ -125,7 +125,7 @@ public class GctMatrix extends AnnotatableMatrix {
 	 * @param file the file
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public static <T> void writeGctMatrix(AnnotationMatrix matrix, Path file) throws IOException {
+	public static <T> void writeGctMatrix(DataFrame matrix, Path file) throws IOException {
 		BufferedWriter writer = FileUtils.newBufferedWriter(file);
 		
 		try {
@@ -175,7 +175,7 @@ public class GctMatrix extends AnnotatableMatrix {
 	 * @param cols the cols
 	 * @return the annotation matrix
 	 */
-	public static AnnotationMatrix createGctMatrix(int rows, int cols) {
+	public static DataFrame createGctMatrix(int rows, int cols) {
 		return new GctMatrix(rows, cols);
 	}
 }

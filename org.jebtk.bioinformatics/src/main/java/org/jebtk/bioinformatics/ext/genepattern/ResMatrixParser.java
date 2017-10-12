@@ -36,7 +36,7 @@ import org.jebtk.core.io.FileUtils;
 import org.jebtk.core.io.Io;
 import org.jebtk.core.stream.Stream;
 import org.jebtk.core.text.TextUtils;
-import org.jebtk.math.matrix.AnnotationMatrix;
+import org.jebtk.math.matrix.DataFrame;
 import org.jebtk.math.matrix.DoubleMatrix;
 import org.jebtk.math.matrix.Matrix;
 import org.jebtk.math.matrix.MatrixParser;
@@ -92,8 +92,8 @@ public class ResMatrixParser implements MatrixParser {
 	 * @see org.abh.lib.math.matrix.MatrixParser#parse(java.io.Path)
 	 */
 	@Override
-	public AnnotationMatrix parse(Path file) throws IOException {
-		AnnotationMatrix matrix = null;
+	public DataFrame parse(Path file) throws IOException {
+		DataFrame matrix = null;
 
 		BufferedReader reader = FileUtils.newBufferedReader(file);
 

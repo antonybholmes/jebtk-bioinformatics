@@ -45,8 +45,8 @@ import org.jebtk.core.io.FileUtils;
 import org.jebtk.core.io.Io;
 import org.jebtk.core.io.PathUtils;
 import org.jebtk.core.text.TextUtils;
-import org.jebtk.math.matrix.AnnotatableMatrix;
-import org.jebtk.math.matrix.AnnotationMatrix;
+import org.jebtk.math.matrix.DataFrame;
+import org.jebtk.math.matrix.DataFrame;
 import org.jebtk.math.matrix.MixedMatrix;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -475,7 +475,7 @@ public class Bed extends UCSCTrack {
 	 * @return the annotation matrix
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public static AnnotationMatrix toMatrix(Path file) throws IOException {
+	public static DataFrame toMatrix(Path file) throws IOException {
 		String line;
 		
 		BufferedReader reader = FileUtils.newBufferedReader(file);
@@ -498,8 +498,8 @@ public class Bed extends UCSCTrack {
 			reader.close();
 		}
 		
-		AnnotationMatrix ret = 
-				new AnnotatableMatrix(new MixedMatrix(r, 4));
+		DataFrame ret = 
+				new DataFrame(new MixedMatrix(r, 4));
 		
 		ret.setColumnName(0, "Chr");
 		ret.setColumnName(1, "Start");

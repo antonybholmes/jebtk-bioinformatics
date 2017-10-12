@@ -35,8 +35,8 @@ import java.util.List;
 import org.jebtk.core.collections.CollectionUtils;
 import org.jebtk.core.io.FileUtils;
 import org.jebtk.core.text.TextUtils;
-import org.jebtk.math.matrix.AnnotatableMatrix;
-import org.jebtk.math.matrix.AnnotationMatrix;
+import org.jebtk.math.matrix.DataFrame;
+import org.jebtk.math.matrix.DataFrame;
 import org.jebtk.math.matrix.DoubleMatrix;
 import org.jebtk.math.matrix.Matrix;
 import org.jebtk.math.matrix.MixedMatrix;
@@ -45,7 +45,7 @@ import org.jebtk.math.matrix.MixedMatrix;
 /**
  * The class ResMatrix.
  */
-public class ResMatrix extends AnnotatableMatrix {
+public class ResMatrix extends DataFrame {
 	
 	/**
 	 * The constant serialVersionUID.
@@ -178,7 +178,7 @@ public class ResMatrix extends AnnotatableMatrix {
 	 * @return the annotation matrix
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public static AnnotationMatrix parseMatrix(Path file) throws IOException {
+	public static DataFrame parseMatrix(Path file) throws IOException {
 		return parseMatrix(file, false);
 	}
 	
@@ -190,7 +190,7 @@ public class ResMatrix extends AnnotatableMatrix {
 	 * @return the annotation matrix
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public static AnnotationMatrix parseMatrix(Path file, boolean keepCallCols) throws IOException {
+	public static DataFrame parseMatrix(Path file, boolean keepCallCols) throws IOException {
 		return new ResMatrixParser(keepCallCols).parse(file);
 	}
 	
@@ -202,7 +202,7 @@ public class ResMatrix extends AnnotatableMatrix {
 	 * @param file the file
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public static <T> void writeResMatrix(AnnotationMatrix matrix, Path file) throws IOException {
+	public static <T> void writeResMatrix(DataFrame matrix, Path file) throws IOException {
 		BufferedWriter writer = FileUtils.newBufferedWriter(file);
 		
 		try {

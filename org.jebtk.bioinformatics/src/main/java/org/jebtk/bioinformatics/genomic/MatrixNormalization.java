@@ -4,8 +4,7 @@ import java.util.List;
 
 import org.jebtk.core.collections.CollectionUtils;
 import org.jebtk.math.MathUtils;
-import org.jebtk.math.matrix.AnnotatableMatrix;
-import org.jebtk.math.matrix.AnnotationMatrix;
+import org.jebtk.math.matrix.DataFrame;
 import org.jebtk.math.matrix.MatrixDimFunction;
 import org.jebtk.math.matrix.utils.MatrixOperations.ColScale;
 
@@ -21,16 +20,14 @@ public class MatrixNormalization {
 		}
 
 		@Override
-		public double apply(int index, double[] data, double[] ret) {
+		public void apply(int index, double[] data, double[] ret) {
 			MathUtils.multiply(data, mWidthsKb, ret);
-			
-			return -1;
 		}
 	}
 	
 	private static class TPMFactors implements MatrixDimFunction {
 		@Override
-		public double apply(int index, double[] data, double[] ret) {
+		public void apply(int index, double[] data, double[] ret) {
 			double factor = 0.0;
 			
 			for (int i = 0; i < data.length; ++i) {
@@ -38,15 +35,13 @@ public class MatrixNormalization {
 			}
 			
 			ret[index] = factor / 1000000;
-			
-			return -1;
 		}
 	}
 	
-	public static AnnotationMatrix tpm(final AnnotationMatrix m,
+	public static DataFrame tpm(final DataFrame m,
 			final List<GenomicRegion> locations) {
 		
-		AnnotationMatrix ret = new AnnotatableMatrix(m);
+		DataFrame ret = new DataFrame(m);
 
 		
 		double[] widthsKb = getWidthsKb(locations);
@@ -75,20 +70,20 @@ public class MatrixNormalization {
 		return ret;
 	}
 	
-	public static AnnotationMatrix rpm(final AnnotationMatrix m) {
+	public static DataFrame rpm(final DataFrame m) {
 		double[] counts = m.getColumnAnnotations("total-reads").rowAsDouble(0);
 		
 		return rpm(m, counts);
 	}
 
-	public static AnnotationMatrix rpm(final AnnotationMatrix m,
+	public static DataFrame rpm(final DataFrame m,
 			final List<Integer> counts) {
 		return rpm(m, CollectionUtils.toDoublePrimitive(counts));
 	}
 	
-	public static AnnotationMatrix rpm(final AnnotationMatrix m,
+	public static DataFrame rpm(final DataFrame m,
 			final double[] counts) {
-		AnnotationMatrix ret = new AnnotatableMatrix(m);
+		DataFrame ret = new DataFrame(m);
 		
 		double[] factors = new double[counts.length];
 		
@@ -106,9 +101,9 @@ public class MatrixNormalization {
 	 * @param locations
 	 * @return
 	 */
-	public static AnnotationMatrix rpkm(final AnnotationMatrix m,
+	public static DataFrame rpkm(final DataFrame m,
 			final List<GenomicRegion> locations) {
-		AnnotationMatrix ret = rpm(m);
+		DataFrame ret = rpm(m);
 		
 		double[] factors = getWidthsKb(locations);
 			
@@ -117,10 +112,10 @@ public class MatrixNormalization {
 		return ret;
 	}
 	
-	public static AnnotationMatrix rpkm(final AnnotationMatrix m,
+	public static DataFrame rpkm(final DataFrame m,
 			final List<Integer> counts,
 			final List<GenomicRegion> locations) {
-		AnnotationMatrix ret = rpm(m, counts);
+		DataFrame ret = rpm(m, counts);
 		
 		double[] factors = getWidthsKb(locations);
 	

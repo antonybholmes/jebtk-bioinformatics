@@ -41,8 +41,8 @@ import java.util.regex.Pattern;
 import org.jebtk.core.io.FileUtils;
 import org.jebtk.core.io.Io;
 import org.jebtk.core.text.TextUtils;
-import org.jebtk.math.matrix.AnnotatableMatrix;
-import org.jebtk.math.matrix.AnnotationMatrix;
+import org.jebtk.math.matrix.DataFrame;
+import org.jebtk.math.matrix.DataFrame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -204,7 +204,7 @@ public class BedGraph extends UCSCTrack {
 	 * @return the annotation matrix
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public static AnnotationMatrix toMatrix(Path file) throws IOException {
+	public static DataFrame toMatrix(Path file) throws IOException {
 		String line;
 		
 		BufferedReader reader = FileUtils.newBufferedReader(file);
@@ -230,7 +230,7 @@ public class BedGraph extends UCSCTrack {
 			reader.close();
 		}
 		
-		AnnotationMatrix ret = AnnotatableMatrix.createAnnotatableMatrix(r, 4);
+		DataFrame ret = DataFrame.createDataFrame(r, 4);
 		
 		ret.setColumnName(0, "Chr");
 		ret.setColumnName(1, "Start");
