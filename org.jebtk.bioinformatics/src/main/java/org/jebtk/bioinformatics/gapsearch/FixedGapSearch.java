@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.jebtk.bioinformatics.genomic.Chromosome;
+import org.jebtk.bioinformatics.genomic.GenomicRegion;
 import org.jebtk.core.collections.DefaultTreeMap;
 import org.jebtk.core.collections.TreeMapCreator;
 import org.jebtk.core.collections.UniqueArrayList;
@@ -47,7 +48,7 @@ import org.jebtk.core.collections.UniqueArrayList;
  * @param <T> the generic type
  */
 public class FixedGapSearch<T> extends GapSearch<T> {
-	
+
 	/**
 	 * The constant DEFAULT_BIN_SIZE.
 	 */
@@ -65,7 +66,7 @@ public class FixedGapSearch<T> extends GapSearch<T> {
 	 * The member size.
 	 */
 	protected int mSize = 0;
-	
+
 	/**
 	 * The member bin size.
 	 */
@@ -77,7 +78,7 @@ public class FixedGapSearch<T> extends GapSearch<T> {
 	public FixedGapSearch() {
 		this(DEFAULT_BIN_SIZE);
 	}
-	
+
 	/**
 	 * Instantiates a new fixed gap search.
 	 *
@@ -91,21 +92,23 @@ public class FixedGapSearch<T> extends GapSearch<T> {
 	 * @see edu.columbia.rdf.lib.bioinformatics.gapsearch.GapSearch#addFeature(edu.columbia.rdf.lib.bioinformatics.genome.Chromosome, int, int, java.lang.Object)
 	 */
 	@Override
-	public void addFeature(Chromosome chr, int start, int end, T feature) {
-		int startBin = start / mBinSize;
-		int endBin = end / mBinSize;
+	public void add(GenomicRegion region, T feature) {
+		int startBin = region.getStart() / mBinSize;
+		int endBin = region.getEnd() / mBinSize;
+
+		Chromosome chr = region.getChr();
 
 		for (int bin = startBin; bin <= endBin; ++bin) {
 			if (!mFeatures.get(chr).containsKey(bin)) {
 				mFeatures.get(chr).put(bin, new GappedSearchFeatures<T>(bin));
 			}
-			
-			mFeatures.get(chr).get(bin).add(feature);
+
+			mFeatures.get(chr).get(bin).add(region, feature);
 		}
 
 		++mSize;
 	}
-	
+
 	/**
 	 * Adds the feature.
 	 *
@@ -113,15 +116,15 @@ public class FixedGapSearch<T> extends GapSearch<T> {
 	 * @param bin the bin
 	 * @param feature the feature
 	 */
-	public void addFeature(Chromosome chr, int bin, T feature) {
-		if (!mFeatures.get(chr).containsKey(bin)) {
-			mFeatures.get(chr).put(bin, new GappedSearchFeatures<T>(bin));
-		}
-		
-		mFeatures.get(chr).get(bin).add(feature);
-
-		++mSize;
-	}
+	//	public void addFeature(Chromosome chr, int bin, T feature) {
+	//		if (!mFeatures.get(chr).containsKey(bin)) {
+	//			mFeatures.get(chr).put(bin, new GappedSearchFeatures<T>(bin));
+	//		}
+	//		
+	//		mFeatures.get(chr).get(bin).add(feature);
+	//
+	//		++mSize;
+	//	}
 
 	/* (non-Javadoc)
 	 * @see edu.columbia.rdf.lib.bioinformatics.gapsearch.GapSearch#size()
@@ -140,8 +143,10 @@ public class FixedGapSearch<T> extends GapSearch<T> {
 
 		for (Chromosome chr : mFeatures.keySet()) {
 			for (int start : mFeatures.get(chr).keySet()) {
-				for (T item : mFeatures.get(chr).get(start)) {
-					ret.add(item);
+				for (GenomicRegion region : mFeatures.get(chr).get(start)) {
+					for (T item : mFeatures.get(chr).get(start).getValues(region)) {
+						ret.add(item);
+					}
 				}
 			}
 		}
@@ -157,8 +162,10 @@ public class FixedGapSearch<T> extends GapSearch<T> {
 		List<T> ret = new UniqueArrayList<T>();
 
 		for (int start : mFeatures.get(chr).keySet()) {
-			for (T item : mFeatures.get(chr).get(start)) {
-				ret.add(item);
+			for (GenomicRegion region : mFeatures.get(chr).get(start)) {
+				for (T item : mFeatures.get(chr).get(start).getValues(region)) {
+					ret.add(item);
+				}
 			}
 		}
 
@@ -174,10 +181,10 @@ public class FixedGapSearch<T> extends GapSearch<T> {
 			int end) {
 		int is = start / mBinSize;
 		int ie = end / mBinSize;
-		
+
 		return getFeaturesByBin(chr, is, ie);
 	}
-	
+
 	/**
 	 * Gets the features by bin.
 	 *
@@ -194,7 +201,7 @@ public class FixedGapSearch<T> extends GapSearch<T> {
 		if (features.size() == 0) {
 			return Collections.emptyList();
 		}
-		
+
 		List<GappedSearchFeatures<T>> range = 
 				new ArrayList<GappedSearchFeatures<T>>();
 
@@ -225,8 +232,10 @@ public class FixedGapSearch<T> extends GapSearch<T> {
 	public void add(FixedGapSearch<T> gappedSearch) {
 		for (Chromosome chr : gappedSearch.mFeatures.keySet()) {
 			for (int bin : gappedSearch.mFeatures.get(chr).keySet()) {
-				for (T item : gappedSearch.mFeatures.get(chr).get(bin)) {
-					addFeature(chr, bin, item);
+				for (GenomicRegion region : gappedSearch.mFeatures.get(chr).get(bin)) {
+					for (T item : mFeatures.get(chr).get(bin).getValues(region)) {
+						add(region, item);
+					}
 				}
 			}
 		}

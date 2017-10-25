@@ -25,6 +25,7 @@ import org.jebtk.core.io.PathUtils;
 import org.junit.Test;
 
 public class EncodeTest {
+	/*
 	@Test
 	public void encode2BitTest() throws IOException, ParseException {
 		GenomeAssembly2Bit decoder = 
@@ -40,4 +41,5 @@ public class EncodeTest {
 		
 		System.err.println("2bit ext " + decoder.getSequence("hg19", "chr1:100290-100320", RepeatMaskType.LOWERCASE).getSequence());
 	}
+	*/
 }

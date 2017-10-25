@@ -27,22 +27,13 @@
  */
 package org.jebtk.bioinformatics.gapsearch;
 
-import java.util.Iterator;
-import java.util.Set;
-import java.util.TreeSet;
-
 // TODO: Auto-generated Javadoc
 /**
  * The class GappedSearchFeatures.
  *
  * @param <T> the generic type
  */
-public class GappedSearchFeatures<T> implements Iterable<T>, Comparable<GappedSearchFeatures<T>> {
-	
-	/**
-	 * The member features.
-	 */
-	private Set<T> mFeatures = new TreeSet<T>();
+public class GappedSearchFeatures<T> extends SearchResults<T> implements Comparable<GappedSearchFeatures<T>> {
 	
 	/**
 	 * The member p.
@@ -58,23 +49,6 @@ public class GappedSearchFeatures<T> implements Iterable<T>, Comparable<GappedSe
 		mP = p;
 	}
 	
-	/**
-	 * Adds the.
-	 *
-	 * @param feature the feature
-	 */
-	public void add(T feature) {
-		mFeatures.add(feature);
-	}
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Iterable#iterator()
-	 */
-	@Override
-	public Iterator<T> iterator() {
-		return mFeatures.iterator();
-	}
-
 	/* (non-Javadoc)
 	 * @see java.lang.Comparable#compareTo(java.lang.Object)
 	 */
@@ -96,14 +70,5 @@ public class GappedSearchFeatures<T> implements Iterable<T>, Comparable<GappedSe
 	 */
 	public int getPosition() {
 		return mP;
-	}
-
-	/**
-	 * Size.
-	 *
-	 * @return the int
-	 */
-	public int size() {
-		return mFeatures.size();
 	}
 }

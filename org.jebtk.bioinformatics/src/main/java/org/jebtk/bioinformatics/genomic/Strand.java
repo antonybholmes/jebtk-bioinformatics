@@ -53,7 +53,7 @@ public enum Strand {
 	 *
 	 * @param value the value
 	 */
-	Strand(int value) {
+	private Strand(int value) {
 		mValue = value;
 	}
 	

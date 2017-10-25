@@ -83,27 +83,9 @@ public class BinaryGapSearch<T> extends FixedGapSearch<T> {
 	 * @see edu.columbia.rdf.lib.bioinformatics.gapsearch.GapSearch#addFeature(edu.columbia.rdf.lib.bioinformatics.genome.Chromosome, int, int, java.lang.Object)
 	 */
 	@Override
-	public void addFeature(Chromosome chr, int start, int end, T feature) {
-		/*
-		if (!mIndices.get(chr).containsKey(start)) {
-			mIndices.get(chr).put(start, mFeatures.get(chr).size());
+	public void add(GenomicRegion region, T feature) {
+		super.add(region, feature);
 
-			mFeatures.get(chr).add(new GappedSearchFeatures<T>(start));
-		}
-
-		if (!mIndices.get(chr).containsKey(end)) {
-			mIndices.get(chr).put(end, mFeatures.get(chr).size());
-
-			mFeatures.get(chr).add(new GappedSearchFeatures<T>(end));
-		}
-
-		((List<GappedSearchFeatures<T>>)mFeatures.get(chr)).get(mIndices.get(chr).get(start)).add(feature);
-		((List<GappedSearchFeatures<T>>)mFeatures.get(chr)).get(mIndices.get(chr).get(end)).add(feature);
-		 */
-
-		super.addFeature(chr, start, end, feature);
-
-		// Indicate that indexes will need to be rebuilt before searching
 		mAutoSorted = false;
 	}
 
@@ -205,8 +187,10 @@ public class BinaryGapSearch<T> extends FixedGapSearch<T> {
 
 		List<T> ret = new UniqueArrayList<T>();
 
-		for (T item : minF) {
-			ret.add(item);
+		for (GenomicRegion r : minF) {
+			for (T item : minF.getValues(r)) {
+				ret.add(item);
+			}
 		}
 
 		return ret;
@@ -306,17 +290,19 @@ public class BinaryGapSearch<T> extends FixedGapSearch<T> {
 			while (i1 < s) {
 				boolean add = false;
 
-				for (T item : features.get(b1)) {
-					if (!used.contains(item)) {
-						add = true;
-						break;
+				for (GenomicRegion region : features.get(b1)) {
+					for (T item : features.get(b1).getValues(region)) {
+						if (!used.contains(item)) {
+							add = true;
+							break;
+						}
 					}
 				}
-				
+
 				if (add) {
 					break;
 				}
-				
+
 				i1 = Math.min(s, i1 + 1);
 				b1 = bins.get(i1);
 			}
@@ -324,17 +310,19 @@ public class BinaryGapSearch<T> extends FixedGapSearch<T> {
 			while (i2 > 0) {
 				boolean add = false;
 
-				for (T item : features.get(b2)) {
-					if (!used.contains(item)) {
-						add = true;
-						break;
+				for (GenomicRegion region : features.get(b2)) {
+					for (T item : features.get(b2).getValues(region)) {
+						if (!used.contains(item)) {
+							add = true;
+							break;
+						}
 					}
 				}
-				
+
 				if (add) {
 					break;
 				}
-				
+
 				i2 = Math.max(0, i2 - 1);
 				b2 = bins.get(i2);
 			}
@@ -347,7 +335,7 @@ public class BinaryGapSearch<T> extends FixedGapSearch<T> {
 
 			if (d1 <= d2) {
 				nthClosestIndex = i1;
-				
+
 				// If the bin to the right of the current is closest then on
 				// the next iteration, we need to check the bin to the left
 				// with the next bin to the right. On the next iteration, the
@@ -569,7 +557,7 @@ public class BinaryGapSearch<T> extends FixedGapSearch<T> {
 	 * @param ret the ret
 	 * @return the int
 	 */
-	
+
 	/**
 	 * Add features to the list of the nth closest features.
 	 * 
@@ -592,10 +580,12 @@ public class BinaryGapSearch<T> extends FixedGapSearch<T> {
 
 		List<TT> l = new UniqueArrayList<TT>();
 
-		for (TT item : closestFeatures) {
-			if (!used.contains(item)) {
-				l.add(item);
-				used.add(item);
+		for (GenomicRegion region : closestFeatures) {
+			for (TT item : closestFeatures.getValues(region)) {
+				if (!used.contains(item)) {
+					l.add(item);
+					used.add(item);
+				}
 			}
 		}
 

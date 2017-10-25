@@ -55,19 +55,29 @@ import org.jebtk.core.text.TextUtils;
 public class GenomicRegion extends Region {
 
 	/** The Constant GENOMIC_REGEX. */
-	public static final Pattern GENOMIC_REGEX =
-			Pattern.compile("(chr(?:\\d+|[XYM])):(\\d+(?:,\\d+)*)(?:-(\\d+(?:,\\d+)*)?)"); //Pattern.compile("chr.+?:(?:\\d+(?:,\\d+)*)(?:-\\d+(?:,\\d+)*)?");
+	private static final Pattern GENOMIC_REGEX =
+			Pattern.compile("(chr(?:\\d+|[XYM])):(\\d+(?:,\\d+)*)"); //Pattern.compile("chr.+?:(?:\\d+(?:,\\d+)*)(?:-\\d+(?:,\\d+)*)?");
 
+	private static final Pattern CHR_REGEX =
+			Pattern.compile("(chr(?:\\d+|[XYM]))");
+	
+	private static final Pattern NUM_REGEX =
+			Pattern.compile("[\\-\\+\\t\\=\\: ](\\d+(?:,\\d+)*)");
+
+	public static final String DEFAULT_TYPE = "genomic";
 	
 	/**
 	 * The member chr.
 	 */
-	protected Chromosome mChr;
+	protected final Chromosome mChr;
 
 	/**
 	 * The member strand.
 	 */
-	protected Strand mStrand = Strand.NONE;
+	protected final Strand mStrand;
+
+
+	protected final String mType;
 
 	/**
 	 * The member location.
@@ -82,9 +92,19 @@ public class GenomicRegion extends Region {
 	 * @param region the region
 	 */
 	public GenomicRegion(GenomicRegion region) {
+		this(region, region.mStrand);
+	}
+	
+	public GenomicRegion(GenomicRegion region, Strand strand) {
+		this(region, strand, region.mType);
+	}
+	
+	public GenomicRegion(GenomicRegion region, Strand strand, String type) {
 		this(region.mChr, 
 				region.mStart, 
-				region.mEnd);
+				region.mEnd,
+				strand,
+				type);
 	}
 
 
@@ -113,11 +133,26 @@ public class GenomicRegion extends Region {
 			int start, 
 			int end,
 			Strand strand) {
-		super(Math.max(1, start), Math.max(1, end));
+		this(chr, start, end, strand, DEFAULT_TYPE);
+	}
+	
+	public GenomicRegion(Chromosome chr, 
+			int start, 
+			int end,
+			String type) {
+		this(chr, start, end, Strand.NONE, type);
+	}
+	
+	public GenomicRegion(Chromosome chr, 
+			int start, 
+			int end,
+			Strand strand,
+			String type) {
+		super(start, end);
 
 		mChr = chr;
-
 		mStrand = strand;
+		mType = type;
 	}
 
 	/**
@@ -163,6 +198,10 @@ public class GenomicRegion extends Region {
 	public Chromosome getChr() {
 		return mChr;
 	}
+	
+	public String getType() {
+		return mType;
+	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
@@ -187,8 +226,21 @@ public class GenomicRegion extends Region {
 			if (c != 0) {
 				return c;
 			}
+			
+			c = mStrand.compareTo(gr.mStrand);
+			
+			if (c != 0) {
+				return c;
+			}
+			
+			c = mType.compareTo(gr.mType);
+			
+			if (c != 0) {
+				return c;
+			}
 		}
 		
+		// Chr are the same so look at coordinates
 		return super.compareTo(r);
 	}
 
@@ -235,6 +287,8 @@ public class GenomicRegion extends Region {
 	 * @return the genomic region
 	 */
 	public static GenomicRegion parse(String location) {
+		//System.err.println("location: " + location);
+		
 		if (Io.isEmptyLine(location)) {
 			return null;
 		}
@@ -248,8 +302,8 @@ public class GenomicRegion extends Region {
 		}
 		
 		
-		Matcher matcher = GENOMIC_REGEX.matcher(location);
-		
+		Matcher matcher = CHR_REGEX.matcher(location);
+
 		if (matcher.find()) {
 			Chromosome chromosome = 
 					ChromosomeService.getInstance().parse(matcher.group(1));
@@ -257,16 +311,22 @@ public class GenomicRegion extends Region {
 			if (chromosome == null) {
 				return null;
 			}
-
 			
+			int start = 1;
+			int end = 1;
 			
-			int start = TextUtils.parseInt(matcher.group(2));
+			matcher = NUM_REGEX.matcher(location);
 			
-			int end;
-
-			if (matcher.groupCount() > 2) {
-				end = TextUtils.parseInt(matcher.group(3));
+			if (matcher.find()) {
+				start = TextUtils.parseInt(matcher.group(1));
 			} else {
+				return null;
+			}
+			
+			if (matcher.find()) {
+				end = TextUtils.parseInt(matcher.group(1));
+			} else {
+				// If no end is specified, make the end at least the start
 				end = start;
 			}
 			
@@ -601,7 +661,7 @@ public class GenomicRegion extends Region {
 	 * @return true, if successful
 	 */
 	public static boolean within(int start, GenomicRegion region) {
-		return start >= region.getStart() && start <= region.getEnd();
+		return start >= region.mStart && start <= region.mEnd;
 	}
 
 	/**
@@ -713,11 +773,11 @@ public class GenomicRegion extends Region {
 				new HashMap<Chromosome, Map<Integer, T>>();
 
 		for (T region : regions) {
-			if (!map.containsKey(region.getChr())) {
-				map.put(region.getChr(), new TreeMap<Integer, T>());
+			if (!map.containsKey(region.mChr)) {
+				map.put(region.mChr, new TreeMap<Integer, T>());
 			}
 
-			map.get(region.getChr()).put(region.getStart(), region);
+			map.get(region.mChr).put(region.mStart, region);
 		}
 
 		Map<Chromosome, List<T>> ret =
@@ -746,7 +806,7 @@ public class GenomicRegion extends Region {
 		Map<Integer, T> map = new TreeMap<Integer, T>();
 
 		for (T region : regions) {
-			map.put(region.getStart(), region);
+			map.put(region.mStart, region);
 		}
 
 		List<T> ret = new ArrayList<T>();
@@ -769,8 +829,8 @@ public class GenomicRegion extends Region {
 		Map<Integer, T> map = new TreeMap<Integer, T>();
 
 		for (T region : regions) {
-			map.put(region.getStart(), region);
-			map.put(region.getEnd(), region);
+			map.put(region.mStart, region);
+			map.put(region.mEnd, region);
 		}
 
 		List<T> ret = new ArrayList<T>();
@@ -844,9 +904,9 @@ public class GenomicRegion extends Region {
 			return false;
 		}
 
-		return region1.getChr().equals(region2.getChr()) &&
-				region1.getStart() >= region2.getStart() &&
-				region1.getEnd() <= region2.getEnd();
+		return region1.mChr.equals(region2.mChr) &&
+				region1.mStart >= region2.mStart &&
+				region1.mEnd <= region2.mEnd;
 	}
 
 	/**
@@ -868,7 +928,7 @@ public class GenomicRegion extends Region {
 	 * @return the int
 	 */
 	public static int minDist(GenomicRegion region1, GenomicRegion region2) {
-		return region2.getStart() - region1.getEnd();
+		return region2.mStart - region1.mEnd;
 	}
 
 	/**
@@ -879,7 +939,7 @@ public class GenomicRegion extends Region {
 	 * @return the double
 	 */
 	public static double p(GenomicRegion region1, GenomicRegion region2) {
-		return (double)region1.getLength() / (double)region2.getLength();
+		return (double)region1.mLength / (double)region2.mLength;
 	}
 
 	/**
@@ -894,9 +954,7 @@ public class GenomicRegion extends Region {
 		return chr + ":" + toRange(start, end);
 	}
 
-	public static String toRange(int start, int end) {
-		return start + "-" + end;
-	}
+	
 
 	/**
 	 * Formatted location.
@@ -991,6 +1049,10 @@ public class GenomicRegion extends Region {
 		return new GenomicRegion(region.mChr, mid, mid);
 	}
 
-
-
+	public static GenomicRegion create(Chromosome chr, 
+			int start, 
+			int end, 
+			String type) {
+		return new GenomicRegion(chr, start, end, type);
+	}
 }

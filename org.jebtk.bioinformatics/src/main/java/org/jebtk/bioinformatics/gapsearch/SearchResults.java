@@ -25,52 +25,79 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package org.jebtk.bioinformatics.genomic;
+package org.jebtk.bioinformatics.gapsearch;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.jebtk.bioinformatics.genomic.GenomicRegion;
+import org.jebtk.core.collections.DefaultTreeMap;
+import org.jebtk.core.collections.TreeSetCreator;
+import org.jebtk.core.collections.UniqueArrayList;
 
 // TODO: Auto-generated Javadoc
 /**
- * Represents an exon.
- * 
- * @author Antony Holmes Holmes
+ * The class GappedSearchFeatures.
  *
+ * @param <T> the generic type
  */
-public class Exon extends GenomicRegion {
-
-	/** The m type. */
-	private String mType;
-
-	/**
-	 * Instantiates a new exon.
-	 *
-	 * @param chromosome the chromosome
-	 * @param start the start
-	 * @param end the end
-	 */
-	public Exon(Chromosome chromosome, int start, int end) {
-		this("exon", chromosome, start, end);
+public class SearchResults<T> implements Iterable<GenomicRegion> {
+	
+	public static final SearchResults<Object> EMPTY_RESULTS = 
+			new SearchResults<Object>();
+	
+	@SuppressWarnings("unchecked")
+	public static final <T> SearchResults<T> emptyResults() {
+		return (SearchResults<T>)EMPTY_RESULTS;
 	}
 	
 	/**
-	 * Instantiates a new exon.
-	 *
-	 * @param type the type
-	 * @param chromosome the chromosome
-	 * @param start the start
-	 * @param end the end
+	 * The member features.
 	 */
-	public Exon(String type, Chromosome chromosome, int start, int end) {
-		super(chromosome, start, end);
+	private Map<GenomicRegion, Set<T>> mFeatures = 
+			DefaultTreeMap.create(new TreeSetCreator<T>());
+	
+	/**
+	 * Adds the.
+	 *
+	 * @param feature the feature
+	 */
+	public void add(GenomicRegion region, T feature) {
+		mFeatures.get(region).add(feature);
+	}
+	
+	public Set<T> getValues(GenomicRegion region) {
+		return mFeatures.get(region);
+	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Iterable#iterator()
+	 */
+	@Override
+	public Iterator<GenomicRegion> iterator() {
+		return mFeatures.keySet().iterator();
+	}
+
+	/**
+	 * Size.
+	 *
+	 * @return the int
+	 */
+	public int size() {
+		return mFeatures.size();
+	}
+	
+	public List<T> toList() {
+		List<T> ret = new UniqueArrayList<T>(mFeatures.size());
 		
-		mType = type;
+		for (GenomicRegion r : this) {
+			for (T t : this.getValues(r)) {
+				ret.add(t);
+			}
+		}
+		
+		return ret;
 	}
-	
-	/**
-	 * Gets the type.
-	 *
-	 * @return the type
-	 */
-	public String getType() {
-		return mType;
-	}
-
 }

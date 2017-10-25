@@ -31,53 +31,69 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.jebtk.core.collections.DefaultTreeMap;
 import org.jebtk.core.collections.IterMap;
-import org.jebtk.core.collections.IterTreeMap;
 import org.jebtk.core.text.TextUtils;
 
 // TODO: Auto-generated Javadoc
 /**
  * The class Gene.
  */
-public class Gene extends GenomicRegion implements Iterable<Exon> {
-	
+public class Gene implements Comparable<Gene>, Iterable<GenomicRegion> {
+
 	/** The Constant SYMBOL_TYPE. */
 	public static final String SYMBOL_TYPE = "symbol";
-	
+
 	/** The Constant REFSEQ_TYPE. */
 	public static final String REFSEQ_TYPE = "refseq";
-	
+
 	/** The Constant ENTREZ_TYPE. */
 	public static final String ENTREZ_TYPE = "entrez";
-	
+
+	public static final String TRANSCRIPT_TYPE = "transcript";
+
 	/** The m id map. */
-	private IterMap<String, String> mIdMap = new IterTreeMap<String, String>();
-	
+	private IterMap<String, String> mIdMap = 
+			DefaultTreeMap.create(TextUtils.NA); //new IterTreeMap<String, String>();
+
 	/** The m exons. */
-	private List<Exon> mExons = new ArrayList<Exon>();
-	
+	private List<GenomicRegion> mExons = new ArrayList<GenomicRegion>();
+
 	/** The m utr 5 p. */
-	private List<Exon> mUtr5p = new ArrayList<Exon>();
+	//private List<Exon> mUtr5p = new ArrayList<Exon>();
 
 	/** The m text. */
 	private String mText;
 
-	
-	/**
-	 * Instantiates a new gene.
-	 *
-	 * @param chr the chr
-	 * @param start the start
-	 * @param end the end
-	 * @param strand the strand
-	 */
-	public Gene(Chromosome chr, 
-			int start, 
-			int end,
-			Strand strand) {
-		super(chr, start, end, strand);
+	protected final GenomicRegion mRegion;
+
+
+	public Gene(GenomicRegion region) {
+		mRegion = region;
 	}
-	
+
+	public GenomicRegion getRegion() {
+		return mRegion;
+	}
+
+	@Override
+	public int compareTo(Gene g) {
+		for (String type : mIdMap.keySet()) {
+			// Find the first point where they differ and return that
+
+			if (g.mIdMap.containsKey(type)) {
+				String type2 = g.mIdMap.get(type);
+
+				if (!type.equals(type2)) {
+					return type.compareTo(type2);
+				}
+			}
+		}
+
+		// Compare exons
+		return mRegion.compareTo(g.mRegion);
+	}
+
 	/**
 	 * Assign a gene id to the gene (e.g. a symbol or RefSeq Id).
 	 *
@@ -91,25 +107,25 @@ public class Gene extends GenomicRegion implements Iterable<Exon> {
 				!type.equals(TextUtils.NA) && 
 				!name.equals(TextUtils.NA)) {
 			mIdMap.put(type, name);
-			
+
 			setText();
 		}
-		
+
 		return this;
 	}
-	
+
 	/**
 	 * Set a text description of the gene.
 	 */
 	private void setText() {
-		StringBuilder buffer = new StringBuilder(getSymbol());
-		
+		StringBuilder buffer = new StringBuilder();
+
 		for (String id : mIdMap) {
-			buffer.append(id).append("=").append(getId(id)).append(" ");
+			buffer.append(id).append("=").append(getId(id)).append(", ");
 		}
-		
+
 		buffer.append("[").append(super.toString()).append("]");
-		
+
 		mText = buffer.toString();
 	}
 
@@ -127,7 +143,7 @@ public class Gene extends GenomicRegion implements Iterable<Exon> {
 	 * @see java.lang.Iterable#iterator()
 	 */
 	@Override
-	public Iterator<Exon> iterator() {
+	public Iterator<GenomicRegion> iterator() {
 		return mExons.iterator();
 	}
 
@@ -136,10 +152,10 @@ public class Gene extends GenomicRegion implements Iterable<Exon> {
 	 *
 	 * @param exon the exon
 	 */
-	public void addExon(Exon exon) {
+	public void addExon(GenomicRegion exon) {
 		mExons.add(exon);
 	}
-	
+
 	/**
 	 * Gets the ref seq.
 	 *
@@ -148,7 +164,7 @@ public class Gene extends GenomicRegion implements Iterable<Exon> {
 	public String getRefSeq() {
 		return getId(REFSEQ_TYPE);
 	}
-	
+
 	/**
 	 * Gets the entrez.
 	 *
@@ -166,7 +182,7 @@ public class Gene extends GenomicRegion implements Iterable<Exon> {
 	public String getSymbol() {
 		return getId(SYMBOL_TYPE);
 	}
-	
+
 	/**
 	 * Sets the symbol.
 	 *
@@ -176,7 +192,7 @@ public class Gene extends GenomicRegion implements Iterable<Exon> {
 	public Gene setSymbol(String name) {
 		return setId(SYMBOL_TYPE, name);
 	}
-	
+
 	/**
 	 * Sets the refseq.
 	 *
@@ -186,7 +202,7 @@ public class Gene extends GenomicRegion implements Iterable<Exon> {
 	public Gene setRefseq(String name) {
 		return setId(REFSEQ_TYPE, name);
 	}
-	
+
 	/**
 	 * Sets the entrez.
 	 *
@@ -197,21 +213,25 @@ public class Gene extends GenomicRegion implements Iterable<Exon> {
 		return setId(ENTREZ_TYPE, name);
 	}
 	
+	public String getTranscript() {
+		return getId(TRANSCRIPT_TYPE);
+	}
+	
+	public Gene setTranscript(String name) {
+		return setId(TRANSCRIPT_TYPE, name);
+	}
+
 	/**
 	 * Gets the tss.
 	 *
 	 * @return the tss
 	 */
 	public GenomicRegion getTss() {
-		if (mStrand == Strand.SENSE) {
-			return new GenomicRegion(mChr, mStart, mStart);
-		} else {
-			return new GenomicRegion(mChr, mEnd, mEnd);
-		}
+		return tssRegion(this);
 	}
 
 	/**
-	 * Return a gene id.
+	 * Return a gene id. If the id does not exist 'n/a' is returned.
 	 *
 	 * @param type the type
 	 * @return the id
@@ -231,25 +251,16 @@ public class Gene extends GenomicRegion implements Iterable<Exon> {
 			return super.equals(o);
 		}
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.jebtk.bioinformatics.genome.GenomicRegion#toString()
 	 */
 	@Override
 	public String toString() {
 		return mText;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.jebtk.bioinformatics.genome.GenomicRegion#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		return mText.hashCode();
-	}
-	
+	}	
 
-	
+
 	/**
 	 * Tss region.
 	 *
@@ -260,11 +271,11 @@ public class Gene extends GenomicRegion implements Iterable<Exon> {
 		if (gene == null) {
 			return null;
 		}
-		
-		if (gene.mStrand == Strand.SENSE) {
-			return new GenomicRegion(gene.mChr, gene.mStart, gene.mStart);
+
+		if (gene.mRegion.mStrand == Strand.SENSE) {
+			return new GenomicRegion(gene.mRegion.mChr, gene.mRegion.mStart, gene.mRegion.mStart);
 		} else {
-			return new GenomicRegion(gene.mChr, gene.mEnd, gene.mEnd);
+			return new GenomicRegion(gene.mRegion.mChr, gene.mRegion.mEnd, gene.mRegion.mEnd);
 		}
 	}
 
@@ -277,14 +288,14 @@ public class Gene extends GenomicRegion implements Iterable<Exon> {
 	 */
 	public static int tssDist(Gene gene, GenomicRegion region) {
 		GenomicRegion tssRegion = tssRegion(gene);
-		
-		if (gene.mStrand == Strand.SENSE) {
+
+		if (gene.mRegion.mStrand == Strand.SENSE) {
 			return GenomicRegion.midDist(region, tssRegion);
 		} else {
 			return GenomicRegion.midDist(tssRegion, region);
 		}
 	}
-	
+
 	/**
 	 * Tss dist5p.
 	 *
@@ -294,22 +305,8 @@ public class Gene extends GenomicRegion implements Iterable<Exon> {
 	 */
 	public static int tssDist5p(Gene gene, GenomicRegion region) {
 		GenomicRegion tssRegion = tssRegion(gene);
-		
-		return GenomicRegion.midDist(region, tssRegion);
-	}
 
-	/**
-	 * Create a new gene.
-	 *
-	 * @param chr the chr
-	 * @param start the start
-	 * @param end the end
-	 * @return the gene
-	 */
-	public static Gene create(Chromosome chr, 
-			int start, 
-			int end) {
-		return create(chr, start, end, Strand.SENSE);
+		return GenomicRegion.midDist(region, tssRegion);
 	}
 	
 	/**
@@ -321,10 +318,9 @@ public class Gene extends GenomicRegion implements Iterable<Exon> {
 	 * @param strand	The strand.
 	 * @return			The new gene.
 	 */
-	public static Gene create(Chromosome chr, 
-			int start, 
-			int end,
-			Strand strand) {
-		return new Gene(chr, start, end, strand);
+	public static Gene create(GenomicRegion region) {
+		return new Gene(region);
 	}
+
+	
 }

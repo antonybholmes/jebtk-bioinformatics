@@ -15,9 +15,8 @@
  */
 package org.jebtk.bioinformatics;
 
-import org.jebtk.bioinformatics.genomic.Chromosome;
 import org.jebtk.bioinformatics.genomic.Gene;
-import org.jebtk.bioinformatics.genomic.Strand;
+import org.jebtk.bioinformatics.genomic.GenomicRegion;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -27,7 +26,7 @@ public class GFFGene extends Gene {
 
 	/** The m type. */
 	private String mType;
-
+	
 	/**
 	 * Instantiates a new GFF gene.
 	 *
@@ -40,11 +39,8 @@ public class GFFGene extends Gene {
 	 */
 	public GFFGene(String symbol,
 			String type,
-			Chromosome chr, 
-			int start, 
-			int end, 
-			Strand strand) {
-		super(chr, start, end, strand);
+			GenomicRegion region) {
+		super(region);
 		
 		setSymbol(symbol);
 		
@@ -66,5 +62,21 @@ public class GFFGene extends Gene {
 	@Override
 	public String toString() {
 		return super.toString() + " - " + mType;
+	}
+	
+	@Override
+	public int compareTo(Gene gene) {
+		if (gene instanceof GFFGene) {
+			GFFGene g = (GFFGene)gene;
+
+			int c = mType.compareTo(g.mType);
+			
+			if (c != 0) {
+				return c;
+			}
+		}
+		
+		// names are the same so look at coordinates
+		return super.compareTo(gene);
 	}
 }

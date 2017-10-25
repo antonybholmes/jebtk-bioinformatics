@@ -134,7 +134,7 @@ public class GenomeAssembly2Bit extends GenomeAssemblyDir {
 			for (int i = 0; i < nc; ++i) {
 				GenomicRegion region = new GenomicRegion(chr, in.readInt(), in.readInt());
 
-				mNMap.addFeature(region, region);
+				mNMap.add(region, region);
 			}
 
 			int mc = in.readInt();
@@ -142,7 +142,7 @@ public class GenomeAssembly2Bit extends GenomeAssemblyDir {
 			for (int i = 0; i < mc; ++i) {
 				GenomicRegion region = new GenomicRegion(chr, in.readInt(), in.readInt());
 
-				mMaskMap.addFeature(region, region);
+				mMaskMap.add(region, region);
 			}
 
 			//System.err.println(file + " " + check + " " + version + " " + offset);

@@ -49,11 +49,8 @@ public class RdfGene extends Gene {
 			String refseq,
 			String entrez,
 			String symbol, 
-			Chromosome chr, 
-			int start, 
-			int end,
-			Strand strand) {
-		super(chr, start, end, strand);
+			GenomicRegion region) {
+		super(region);
 		
 		setSymbol(symbol);
 		setRefseq(refseq);

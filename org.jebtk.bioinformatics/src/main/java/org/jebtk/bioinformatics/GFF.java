@@ -27,12 +27,12 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import org.jebtk.bioinformatics.gapsearch.FixedGapSearch;
 import org.jebtk.bioinformatics.genomic.Chromosome;
 import org.jebtk.bioinformatics.genomic.ChromosomeService;
+import org.jebtk.bioinformatics.genomic.GenomicRegion;
 import org.jebtk.bioinformatics.genomic.Strand;
-import org.jebtk.bioinformatics.rtree.RGeneTree;
 import org.jebtk.core.io.FileUtils;
-import org.jebtk.core.text.Parser;
 import org.jebtk.core.text.Splitter;
 import org.jebtk.core.text.TextUtils;
 import org.slf4j.Logger;
@@ -45,8 +45,7 @@ import org.slf4j.LoggerFactory;
 public class GFF {
 	
 	/** The Constant LOG. */
-	private static final Logger LOG = 
-			LoggerFactory.getLogger(GFF.class);
+	private static final Logger LOG = LoggerFactory.getLogger(GFF.class);
 
 	/**
 	 * Instantiates a new gff.
@@ -55,15 +54,8 @@ public class GFF {
 		// Do nothing
 	}
 
-	/**
-	 * Read a GFF file and convert it into a searchable RTree.
-	 *
-	 * @param file the file
-	 * @return the r gene tree
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 * @throws ParseException the parse exception
-	 */
-	public static RGeneTree<GFFGene> GFFToRTree(Path file) throws IOException, ParseException {
+	/*
+	public static RGeneTree<GFFGene> GFFToRTree(Path file) throws IOException {
 		LOG.info("Creating r-tree from GFF {}...", file);
 
 		List<GFFGene> features = parse(file);
@@ -71,15 +63,7 @@ public class GFF {
 		return GFFToRTree(features);
 	}
 
-	/**
-	 * GFF to R tree.
-	 *
-	 * @param features the features
-	 * @return the r gene tree
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 * @throws ParseException the parse exception
-	 */
-	public static RGeneTree<GFFGene> GFFToRTree(List<GFFGene> features) throws IOException, ParseException {
+	public static RGeneTree<GFFGene> GFFToRTree(List<GFFGene> features) {
 		RGeneTree<GFFGene> tree = new RGeneTree<GFFGene>();
 
 		for (GFFGene gene : features) {
@@ -88,6 +72,7 @@ public class GFF {
 
 		return tree;
 	}
+	*/
 
 	/**
 	 * To symbols.
@@ -97,7 +82,7 @@ public class GFF {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 * @throws ParseException the parse exception
 	 */
-	public static Set<String> toSymbols(List<GFFGene> features) throws IOException, ParseException {
+	public static Set<String> toSymbols(List<GFFGene> features) {
 		Set<String> ret = new TreeSet<String>();
 
 		for (GFFGene gene : features) {
@@ -115,8 +100,8 @@ public class GFF {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 * @throws ParseException the parse exception
 	 */
-	public static List<GFFGene> parse(Path file) throws IOException, ParseException {
-		List<GFFGene> features = new ArrayList<GFFGene>();
+	public static List<GFFGene> parse(Path file, String... types) throws IOException {
+		List<GFFGene> features = new ArrayList<GFFGene>(50000);
 
 		BufferedReader reader = FileUtils.newBufferedReader(file);
 
@@ -139,9 +124,14 @@ public class GFF {
 
 				chr = ChromosomeService.getInstance().parse(tokens.get(0));
 				type = tokens.get(2);
-				start = Parser.toInt(tokens.get(3));
-				end = Parser.toInt(tokens.get(4));
+				start = Integer.parseInt(tokens.get(3));
+				end = Integer.parseInt(tokens.get(4));
 				strand = Strand.parse(tokens.get(6));
+				
+				// Filter by type
+				if (!filterByTypes(type, types)) {
+					continue;
+				}
 
 				attributes = parseAttributes(tokens.get(8));
 
@@ -152,13 +142,22 @@ public class GFF {
 				}
 
 				if (name == null) {
+					if (attributes.containsKey("gene_name")) {
+						name = attributes.get("gene_name");
+					}
+				}
+				
+				if (name == null) {
 					if (attributes.containsKey("gene")) {
 						name = attributes.get("gene");
 					}
 				}
 
 				if (name != null) {
-					GFFGene gene = new GFFGene(name, type, chr, start, end, strand);
+					GenomicRegion region = 
+							GenomicRegion.create(chr, start, end, strand);
+					
+					GFFGene gene = new GFFGene(name, type, region);
 
 					features.add(gene);
 				}
@@ -168,6 +167,20 @@ public class GFF {
 		}
 
 		return features;
+	}
+	
+	private static boolean filterByTypes(String type, String... matchTypes) {
+		if (matchTypes.length == 0) {
+			return true;
+		}
+		
+		for (String t : matchTypes) {
+			if (type.equals(t)) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 
 	/**
@@ -246,5 +259,15 @@ public class GFF {
 	 */
 	public static String formatAttributeName(String attribute) {
 		return TextUtils.titleCase(attribute.replace("_", " "));
+	}
+	
+	public static FixedGapSearch<GFFGene> GFFToGapSearch(List<GFFGene> features) {
+		FixedGapSearch<GFFGene> ret = new FixedGapSearch<GFFGene>(1000);
+
+		for (GFFGene gene : features) {
+			ret.add(gene.getRegion(), gene);
+		}
+
+		return ret;
 	}
 }

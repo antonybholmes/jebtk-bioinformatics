@@ -101,16 +101,16 @@ public class GenesWeb extends GenesDb {
 						geneJson.get("refseq").getAsString(),
 						geneJson.get("entrez").getAsString(),
 						geneJson.get("symbol").getAsString(),
-						ChromosomeService.getInstance().parse(geneJson.get("chr").getAsString()), 
+						GenomicRegion.create(ChromosomeService.getInstance().parse(geneJson.get("chr").getAsString()), 
 						geneJson.get("start").getAsInt(), 
 						geneJson.get("end").getAsInt(),
-						Strand.parse(geneJson.get("strand").getAsChar()));
+						Strand.parse(geneJson.get("strand").getAsChar())));
 
 				Json exonStartsJson = geneJson.get("exon_starts");
 				Json exonEndsJson = geneJson.get("exon_ends");
 
 				for (int j = 0; j < exonStartsJson.size(); ++j) {
-					Exon exon = new Exon(gene.getChr(),
+					GenomicRegion exon = GenomicRegion.create(gene.mRegion.mChr,
 							exonStartsJson.get(j).getAsInt(),
 							exonEndsJson.get(j).getAsInt());
 
@@ -144,16 +144,16 @@ public class GenesWeb extends GenesDb {
 					geneJson.get("refseq").getAsString(),
 					geneJson.get("entrez").getAsString(),
 					geneJson.get("symbol").getAsString(), 
-					ChromosomeService.getInstance().parse(geneJson.get("chr").getAsString()), 
+					GenomicRegion.create(ChromosomeService.getInstance().parse(geneJson.get("chr").getAsString()), 
 					geneJson.get("start").getAsInt(), 
 					geneJson.get("end").getAsInt(),
-					Strand.parse(geneJson.get("strand").getAsChar()));
+					Strand.parse(geneJson.get("strand").getAsChar())));
 
 			Json exonStartsJson = geneJson.get("exon_starts");
 			Json exonEndsJson = geneJson.get("exon_ends");
 
 			for (int j = 0; j < exonStartsJson.size(); ++j) {
-				Exon exon = new Exon(gene.getChr(),
+				GenomicRegion exon = GenomicRegion.create(gene.mRegion.mChr,
 						exonStartsJson.get(j).getAsInt(),
 						exonEndsJson.get(j).getAsInt());
 

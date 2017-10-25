@@ -37,7 +37,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.jebtk.bioinformatics.rtree.RTree;
+import org.jebtk.bioinformatics.GFF;
+import org.jebtk.bioinformatics.gapsearch.BinaryGapSearch;
+import org.jebtk.bioinformatics.gapsearch.GapSearch;
 import org.jebtk.core.collections.DefaultHashMap;
 import org.jebtk.core.collections.DefaultHashMapCreator;
 import org.jebtk.core.collections.HashSetCreator;
@@ -58,7 +60,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Antony Holmes Holmes
  */
-public class Genes {
+public class Genes extends BinaryGapSearch<Gene> {
 	//private static final GeneService INSTANCE = new GeneService();
 
 	/**
@@ -88,8 +90,8 @@ public class Genes {
 	/**
 	 * The member position map.
 	 */
-	private RTree<Gene> mGeneTree = 
-			new RTree<Gene>();
+	///private RTree<Gene> mGeneTree = 
+	//		new RTree<Gene>();
 
 	/**
 	 * The member symbol main variant.
@@ -124,6 +126,15 @@ public class Genes {
 		// do nothing
 	}
 	
+	@Override
+	public void add(GenomicRegion region, Gene gene) {
+		super.add(region, gene);
+		
+		for (String id : gene.getIds()) {
+			mSymbolMap.get(id).get(gene.getId(id).toLowerCase()).add(gene);
+		}
+	}
+	
 	/**
 	 * Auto find main variants.
 	 */
@@ -147,7 +158,7 @@ public class Genes {
 					int maxWidth = 0;
 
 					for (Gene gene : map.get(name)) {
-						int width = gene.getLength();
+						int width = gene.mRegion.mLength;
 
 						if (width > maxWidth) {
 							mSymbolMainVariant.put(name, gene);
@@ -245,21 +256,7 @@ public class Genes {
 	 * @return the list
 	 */
 	public List<Gene> findGenes(GenomicRegion region) {
-		List<Gene> ret = new ArrayList<Gene>();
-
-		// Make sure the gene overlaps the region
-		
-		List<Gene> features = 
-				RTree.searchTree(mGeneTree, region);
-
-		for (Gene g : features) {
-			// Don't display gene unless it overlaps
-			if (GenomicRegion.overlaps(region, g)) {
-				ret.add(g);
-			}
-		}
-
-		return ret;
+		return getOverlappingFeatures(region, 10).toList();
 	}
 	
 	/**
@@ -269,7 +266,7 @@ public class Genes {
 	 * @return the list
 	 */
 	public List<Gene> findClosestGenes(GenomicRegion region) {
-		return RTree.searchTree(mGeneTree, region);
+		return getClosestFeatures(region);
 	}
 
 	/**
@@ -281,7 +278,7 @@ public class Genes {
 	public List<Gene> findClosestGenesByTss(GenomicRegion region) {
 		List<Gene> genes = findClosestGenes(region); //findGenes(region);
 
-		List<Gene> ret = new ArrayList<Gene>();
+		List<Gene> ret = new ArrayList<Gene>(genes.size());
 
 		int minD = Integer.MAX_VALUE;
 
@@ -351,10 +348,10 @@ public class Genes {
 	 * @return the genes
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public static Genes load(Path file) throws IOException {
+	public static GapSearch<Gene> load(Path file) throws IOException {
 		LOG.info("Parsing {}...", file);
 
-		Genes ret = null;
+		GapSearch<Gene> ret = null;
 		
 		BufferedReader reader = FileUtils.newBufferedReader(file);
 
@@ -374,7 +371,7 @@ public class Genes {
 	 * @return the genes
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public static Genes load(BufferedReader reader) throws IOException {
+	public static GapSearch<Gene> load(BufferedReader reader) throws IOException {
 		Genes ret = new Genes();
 		
 		String line;
@@ -398,14 +395,14 @@ public class Genes {
 			String refseq = tokens.get(1);
 			String entrez = tokens.get(2);
 			String symbol = tokens.get(5);
-			Chromosome chromosome = Chromosome.parse(tokens.get(8));
+			Chromosome chr = Chromosome.parse(tokens.get(8));
 			Strand strand = Strand.parse(tokens.get(9)); //.charAt(0);
 			// Because of the UCSC using zero based start and one
 			// based end, we need to increment the start by 1
 			int start = Integer.parseInt(tokens.get(10)) + 1;
 			int end = Integer.parseInt(tokens.get(11));
 
-			Gene gene = Gene.create(chromosome, start, end, strand)
+			Gene gene = Gene.create(GenomicRegion.create(chr, start, end, strand))
 					.setSymbol(symbol)
 					.setRefseq(refseq)
 					.setEntrez(entrez);
@@ -419,7 +416,8 @@ public class Genes {
 
 			for (int i = 0; i < starts.size(); ++i) {
 				// Again correct for the ucsc
-				Exon exon = new Exon(chromosome, starts.get(i) + 1, ends.get(i));
+				GenomicRegion exon = 
+						GenomicRegion.create(chr, starts.get(i) + 1, ends.get(i));
 
 				gene.addExon(exon);
 			}
@@ -427,10 +425,10 @@ public class Genes {
 			//mRefSeqMap.put(refseq.toLowerCase(), gene);
 			//mEntrezMap.get(entrez.toLowerCase()).add(gene);
 			///mSymbolMap.get(symbol.toLowerCase()).add(gene);
-			mapGene(gene, ret.mSymbolMap);
+			//mapGene(gene, ret.mSymbolMap);
 
 			// add the start and end to the positionMap
-			ret.mGeneTree.add(gene);
+			ret.add(gene.mRegion, gene);
 		}
 		
 		return ret;
@@ -504,6 +502,8 @@ public class Genes {
 				continue;
 			}
 
+			//System.err.println("gff3 " + line);
+			
 			String type = tokens.get(2);
 			int start = Integer.parseInt(tokens.get(3));
 			int end = Integer.parseInt(tokens.get(4));
@@ -515,31 +515,31 @@ public class Genes {
 			// Because of the UCSC using zero based start and one
 			// based end, we need to increment the start by 1
 
-			List<String> attributes = Splitter.on(';').text(tokens.get(8));
+			//List<String> attributes = Splitter.on(';').text(tokens.get(8));	
+			String attributes = tokens.get(8);
 
-			Map<String, String> attributeMap = Splitter.toMap(attributes, '=');
+			//Map<String, String> attributeMap = Splitter.toMap(attributes, '=');
+			
+			Map<String, String> attributeMap = GFF.parseAttributes(attributes);
 
 			if (type.equals("gene")) {
-				gene = new Gene(chr, 
-						start, 
-						end,
-						strand)
+				gene = new Gene(GenomicRegion.create(chr, start, end, strand))
 						.setSymbol(attributeMap.get("symbol"))
 						.setRefseq(attributeMap.get("refseq"));
 
 				//ret.mSymbolMap.get(Gene.REFSEQ_TYPE).get(gene.getRefSeq().toLowerCase()).add(gene);
 				//ret.mSymbolMap.get(Gene.SYMBOL_TYPE).get(gene.getSymbol().toLowerCase()).add(gene);
-				mapGene(gene, ret.mSymbolMap);
+				//mapGene(gene, ret.mSymbolMap);
 				
 				//mRefSeqMap.put(gene.getRefSeq().toLowerCase(), gene);
 				//mSymbolMap.get(gene.getSymbol().toLowerCase()).add(gene);
-				ret.mGeneTree.add(gene);
+				ret.add(gene.mRegion, gene);
 				
 				//System.err.println("gff3 " + gene.getSymbol() + " " + strand + " " + tokens.get(6));
 				
 			} else if (type.contains("exon")) {
 				if (gene != null) {
-					gene.addExon(new Exon(type, chr, start, end));
+					gene.addExon(GenomicRegion.create(chr, start, end, type));
 				}
 			} else {
 				// Do nothing
@@ -605,8 +605,6 @@ public class Genes {
 			}
 			
 			Strand strand = Strand.parse(tokens.get(1));
-
-
 			int start = Integer.parseInt(tokens.get(2));
 			int end = Integer.parseInt(tokens.get(3));
 
@@ -627,12 +625,13 @@ public class Genes {
 			IterMap<String, String> attributeMap = Splitter.toMap(attributes, '=');
 			
 			// Create the gene
-			gene = Gene.create(chr, start, end, strand);
+			gene = Gene.create(GenomicRegion.create(chr, start, end, strand));
 
 			// Add the exons
 			for (int i = 0; i < starts.size(); ++i) {
 				// Again correct for the ucsc
-				Exon exon = new Exon(chr, starts.get(i) + 1, ends.get(i));
+				GenomicRegion exon = 
+						GenomicRegion.create(chr, starts.get(i) + 1, ends.get(i), "exon");
 
 				gene.addExon(exon);
 			}
@@ -642,9 +641,9 @@ public class Genes {
 				gene.setId(type, TextUtils.unquote(attributeMap.get(type)));
 			}
 			
-			mapGene(gene, ret.mSymbolMap);
+			//mapGene(gene, ret.mSymbolMap);
 			
-			ret.mGeneTree.add(gene);
+			ret.add(gene.mRegion, gene);
 		}
 		
 		return ret;

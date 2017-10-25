@@ -58,7 +58,7 @@ public class GenomicRegions<T extends GenomicRegion> extends ListModel<T> {
 		GapSearch<X> search = new FixedGapSearch<X>();
 		
 		for (X region : regions) {
-			search.addFeature(region, region);
+			search.add(region, region);
 		}
 		
 		return search;
@@ -75,7 +75,7 @@ public class GenomicRegions<T extends GenomicRegion> extends ListModel<T> {
 		BinaryGapSearch<X> search = new BinaryGapSearch<X>();
 		
 		for (X region : regions) {
-			search.addFeature(region, region);
+			search.add(region, region);
 		}
 		
 		return search;

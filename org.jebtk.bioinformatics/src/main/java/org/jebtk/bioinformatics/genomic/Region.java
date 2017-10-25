@@ -52,17 +52,17 @@ public class Region implements Comparable<Region>, FormattedTxt {
 	/**
 	 * The member start.
 	 */
-	protected int mStart;
+	protected final int mStart;
 
 	/**
 	 * The member end.
 	 */
-	protected int mEnd;
+	protected final int mEnd;
 
 	/**
 	 * The member length.
 	 */
-	private int mLength;
+	protected final int mLength;
 
 	/**
 	 * Instantiates a new region.
@@ -81,25 +81,27 @@ public class Region implements Comparable<Region>, FormattedTxt {
 	 */
 	public Region(int start, int end) {
 		// The start must be at least 1
-		mStart = start;
-		mEnd = end;
-
+		start = Math.max(1, start);
+		end = Math.max(1, end);
 
 		// Swap if the coordinates are the wrong way around
-		if (mStart > mEnd) {
+		if (start > end) {
 			//int t = mStart;
 			//mStart = mEnd;
 			//mEnd = t;
 			
 			// hybrid
-			mStart = mStart ^ mEnd;
+			start = start ^ end;
 			// remove end to leave old start
-			mEnd = mStart ^ mEnd;
+			end = start ^ end;
 			
 			// start XOR start = end
-			mStart = mStart ^ mEnd;
+			start = start ^ end;
 		}
-
+		
+		mStart = start;
+		// The end must be greater than the start
+		mEnd = Math.max(end, start + 1);
 		mLength = mEnd - mStart + 1;
 	}
 
@@ -135,7 +137,7 @@ public class Region implements Comparable<Region>, FormattedTxt {
 	 */
 	@Override
 	public String toString() {
-		return mStart + "-" + mEnd;
+		return toRange(mStart, mEnd);
 	}
 
 	/* (non-Javadoc)
@@ -195,7 +197,7 @@ public class Region implements Comparable<Region>, FormattedTxt {
 	 * @return true, if is region
 	 */
 	protected static boolean isRegion(String region) {
-		return REGION_REGEX.matcher(region).find();
+		return REGION_REGEX.matcher(region).matches();
 	}
 	
 	public static String region(String text) {
@@ -266,5 +268,9 @@ public class Region implements Comparable<Region>, FormattedTxt {
 		int end = Math.max(1, region.mEnd + shift);
 
 		return new Region(start, end);
+	}
+	
+	public static String toRange(int start, int end) {
+		return start + "-" + end;
 	}
 }

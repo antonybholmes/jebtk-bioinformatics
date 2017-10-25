@@ -28,6 +28,7 @@
 package org.jebtk.bioinformatics.gapsearch;
 
 import org.jebtk.bioinformatics.genomic.Chromosome;
+import org.jebtk.bioinformatics.genomic.GenomicRegion;
 
 
 
@@ -52,18 +53,22 @@ public class BinarySearch<T> extends BinaryGapSearch<T> {
 	 * @see edu.columbia.rdf.lib.bioinformatics.gapsearch.GapSearch#addFeature(edu.columbia.rdf.lib.bioinformatics.genome.Chromosome, int, int, java.lang.Object)
 	 */
 	@Override
-	public void addFeature(Chromosome chr, int start, int end, T feature) {
+	public void add(GenomicRegion region, T feature) {
+		Chromosome chr = region.getChr();
+		int start = region.getStart();
+		int end = region.getEnd();
+		
 		if (!mFeatures.get(chr).containsKey(start)) {
 			mFeatures.get(chr).put(start, new GappedSearchFeatures<T>(start));
 		}
 
-		mFeatures.get(chr).get(start).add(feature);
+		mFeatures.get(chr).get(start).add(region, feature);
 
 		if (!mFeatures.get(chr).containsKey(end)) {
 			mFeatures.get(chr).put(end, new GappedSearchFeatures<T>(end));
 		}
 
-		mFeatures.get(chr).get(end).add(feature);
+		mFeatures.get(chr).get(end).add(region, feature);
 
 		++mSize;
 

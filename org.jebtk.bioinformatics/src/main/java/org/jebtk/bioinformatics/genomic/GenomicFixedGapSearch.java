@@ -15,12 +15,7 @@
  */
 package org.jebtk.bioinformatics.genomic;
 
-import java.util.Collections;
-import java.util.List;
-
 import org.jebtk.bioinformatics.gapsearch.FixedGapSearch;
-import org.jebtk.bioinformatics.gapsearch.GappedSearchFeatures;
-import org.jebtk.core.collections.UniqueArrayList;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -30,62 +25,5 @@ import org.jebtk.core.collections.UniqueArrayList;
  * @param <T> the generic type
  */
 public class GenomicFixedGapSearch<T extends GenomicRegion> extends FixedGapSearch<T> {
-
-	/**
-	 * Overlapping features.
-	 *
-	 * @param chr the chr
-	 * @param start the start
-	 * @param end the end
-	 * @return the list
-	 */
-	public List<T> overlappingFeatures(Chromosome chr, int start, int end) {
-		List<GappedSearchFeatures<T>> range = getFeatures(chr, start, end);
-
-		if (range.size() == 0) {
-			return Collections.emptyList();
-		}
-
-		GenomicRegion r = GenomicRegion.create(chr, start, end);
-
-		List<T> ret = new UniqueArrayList<T>();
-
-		for (GappedSearchFeatures<T> features : range) {
-			for (T item : features) {
-				if (GenomicRegion.overlaps(item, r)) {
-					ret.add(item);
-				}
-			}
-		}
-
-		return ret;
-	}
-
-	/**
-	 * Checks for overlapping features.
-	 *
-	 * @param chr the chr
-	 * @param start the start
-	 * @param end the end
-	 * @return true, if successful
-	 */
-	public boolean hasOverlappingFeatures(Chromosome chr, int start, int end) {
-		List<GappedSearchFeatures<T>> range = getFeatures(chr, start, end);
-
-		if (range.size() == 0) {
-			return false;
-		}
-
-		GenomicRegion r = GenomicRegion.create(chr, start, end);
-		
-		for (GappedSearchFeatures<T> features : range) {
-			for (T item : features) {
-				if (GenomicRegion.overlaps(item, r)) {
-					return true;
-				}
-			}
-		}
-
-		return false;
-	}
+	// Do nothing
 }
