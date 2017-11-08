@@ -29,9 +29,9 @@ package org.jebtk.bioinformatics.genomic;
 
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.Map;
 
 import org.jebtk.core.collections.DefaultTreeMap;
+import org.jebtk.core.collections.IterMap;
 import org.jebtk.core.collections.TreeMapCreator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,7 +74,7 @@ public class GenesService implements Iterable<String> {
 	/**
 	 * The member symbol map.
 	 */
-	private Map<String, Map<String, Genes>> mGenesMap = 
+	private IterMap<String, IterMap<String, Genes>> mGenesMap = 
 			DefaultTreeMap.create(new TreeMapCreator<String, Genes>());
 
 	/**

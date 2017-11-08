@@ -38,10 +38,10 @@ import htsjdk.samtools.SamReaderFactory;
  * The Class SamUtils.
  */
 public class SamUtils {
-	
+
 	/** The Constant SAM_REVERSE_STRAND_MASK. */
 	private static final int SAM_REVERSE_STRAND_MASK = 16;
-	
+
 	/** The Constant SAM_UNMAPPED_MASK. */
 	private static final int SAM_UNMAPPED_MASK = 4;
 
@@ -192,7 +192,7 @@ public class SamUtils {
 	 */
 	public static int getReadLengthFromBam(Path file) throws IOException {
 		int ret = -1;
-		
+
 		SAMRecordIterator iter = null;
 
 		SamReader inputSam = 
@@ -200,19 +200,21 @@ public class SamUtils {
 
 		try {
 			iter = inputSam.iterator();
-			
+
 			if (iter != null) {
-				SAMRecord record = iter.next();
-				
-				ret = record.getReadLength();
+				if (iter.hasNext()) {
+					SAMRecord record = iter.next();
+
+					ret = record.getReadLength();
+				}
 			}
 		} finally {
 			inputSam.close();
 		}
-		
+
 		return ret;
 	}
-	
+
 	public static GenomicRegion getRegion(SAMRecord r) {
 		return GenomicRegion.create(r.getReferenceName(), r.getStart(), r.getEnd());
 	}

@@ -64,7 +64,7 @@ public class GenomicRegion extends Region {
 	private static final Pattern NUM_REGEX =
 			Pattern.compile("[\\-\\+\\t\\=\\: ](\\d+(?:,\\d+)*)");
 
-	public static final String DEFAULT_TYPE = "genomic";
+	//public static final String DEFAULT_TYPE = "genomic";
 	
 	/**
 	 * The member chr.
@@ -77,7 +77,7 @@ public class GenomicRegion extends Region {
 	protected final Strand mStrand;
 
 
-	protected final String mType;
+	//protected final String mType;
 
 	/**
 	 * The member location.
@@ -96,15 +96,10 @@ public class GenomicRegion extends Region {
 	}
 	
 	public GenomicRegion(GenomicRegion region, Strand strand) {
-		this(region, strand, region.mType);
-	}
-	
-	public GenomicRegion(GenomicRegion region, Strand strand, String type) {
 		this(region.mChr, 
 				region.mStart, 
 				region.mEnd,
-				strand,
-				type);
+				strand);
 	}
 
 
@@ -121,38 +116,14 @@ public class GenomicRegion extends Region {
 		this(chr, start, end, Strand.NONE);
 	}
 
-	/**
-	 * Instantiates a new genomic region.
-	 *
-	 * @param chr the chr
-	 * @param start the start
-	 * @param end the end
-	 * @param strand the strand
-	 */
 	public GenomicRegion(Chromosome chr, 
 			int start, 
 			int end,
 			Strand strand) {
-		this(chr, start, end, strand, DEFAULT_TYPE);
-	}
-	
-	public GenomicRegion(Chromosome chr, 
-			int start, 
-			int end,
-			String type) {
-		this(chr, start, end, Strand.NONE, type);
-	}
-	
-	public GenomicRegion(Chromosome chr, 
-			int start, 
-			int end,
-			Strand strand,
-			String type) {
 		super(start, end);
 
 		mChr = chr;
 		mStrand = strand;
-		mType = type;
 	}
 
 	/**
@@ -198,10 +169,6 @@ public class GenomicRegion extends Region {
 	public Chromosome getChr() {
 		return mChr;
 	}
-	
-	public String getType() {
-		return mType;
-	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
@@ -228,12 +195,6 @@ public class GenomicRegion extends Region {
 			}
 			
 			c = mStrand.compareTo(gr.mStrand);
-			
-			if (c != 0) {
-				return c;
-			}
-			
-			c = mType.compareTo(gr.mType);
 			
 			if (c != 0) {
 				return c;
@@ -1047,12 +1008,5 @@ public class GenomicRegion extends Region {
 		int mid = mid(region);
 
 		return new GenomicRegion(region.mChr, mid, mid);
-	}
-
-	public static GenomicRegion create(Chromosome chr, 
-			int start, 
-			int end, 
-			String type) {
-		return new GenomicRegion(chr, start, end, type);
 	}
 }

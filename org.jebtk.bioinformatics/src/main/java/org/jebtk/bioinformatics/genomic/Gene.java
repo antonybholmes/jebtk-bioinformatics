@@ -27,9 +27,14 @@
  */
 package org.jebtk.bioinformatics.genomic;
 
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.jebtk.core.collections.DefaultTreeMap;
 import org.jebtk.core.collections.IterMap;
@@ -50,14 +55,20 @@ public class Gene implements Comparable<Gene>, Iterable<GenomicRegion> {
 	/** The Constant ENTREZ_TYPE. */
 	public static final String ENTREZ_TYPE = "entrez";
 
-	public static final String TRANSCRIPT_TYPE = "transcript";
+	public static final String TRANSCRIPT_ID_TYPE = "transcript_id";
 
 	/** The m id map. */
 	private IterMap<String, String> mIdMap = 
 			DefaultTreeMap.create(TextUtils.NA); //new IterTreeMap<String, String>();
 
+	private Set<String> mTags = new TreeSet<String>();
+
 	/** The m exons. */
 	private List<GenomicRegion> mExons = new ArrayList<GenomicRegion>();
+	
+	private List<GenomicRegion> m5pUtrs = new ArrayList<GenomicRegion>();
+	
+	private List<GenomicRegion> m3pUtrs = new ArrayList<GenomicRegion>();
 
 	/** The m utr 5 p. */
 	//private List<Exon> mUtr5p = new ArrayList<Exon>();
@@ -67,27 +78,63 @@ public class Gene implements Comparable<Gene>, Iterable<GenomicRegion> {
 
 	protected final GenomicRegion mRegion;
 
+	private Gene mParent = null;
+	
+	private GeneType mType = GeneType.TRANSCRIPT;
+
 
 	public Gene(GenomicRegion region) {
 		mRegion = region;
+	}
+	
+	public Gene(GeneType type, GenomicRegion region) {
+		this(region);
+		
+		mType = type;
+	}
+
+	public Gene(String name, GenomicRegion region) {
+		this(region);
+
+		setSymbol(name);
+	}
+	
+	public GeneType getType() {
+		return mType;
 	}
 
 	public GenomicRegion getRegion() {
 		return mRegion;
 	}
 
+	public void setParent(Gene gene) {
+		mParent = gene;
+	}
+	
+	public Gene getParent() {
+		return mParent;
+	}
+	
 	@Override
 	public int compareTo(Gene g) {
-		for (String type : mIdMap.keySet()) {
+		for (String id : mIdMap.keySet()) {
 			// Find the first point where they differ and return that
 
-			if (g.mIdMap.containsKey(type)) {
-				String type2 = g.mIdMap.get(type);
+			if (g.mIdMap.containsKey(id)) {
+				String id2 = g.mIdMap.get(id);
 
-				if (!type.equals(type2)) {
-					return type.compareTo(type2);
+				if (!id.equals(id2)) {
+					return id.compareTo(id2);
 				}
 			}
+		}
+
+		if (mTags.size() > g.mTags.size()) {
+			return 1;
+		} else if (mTags.size() < g.mTags.size()) {
+			return -1;
+		} else {
+			// Do nothing
 		}
 
 		// Compare exons
@@ -155,6 +202,22 @@ public class Gene implements Comparable<Gene>, Iterable<GenomicRegion> {
 	public void addExon(GenomicRegion exon) {
 		mExons.add(exon);
 	}
+	
+	public void add5pUtr(GenomicRegion exon) {
+		m5pUtrs.add(exon);
+	}
+	
+	public void add3pUtr(GenomicRegion exon) {
+		m3pUtrs.add(exon);
+	}
+	
+	public Iterable<GenomicRegion> get3pUtrs() {
+		return m3pUtrs;
+	}
+	
+	public Iterable<GenomicRegion> get5pUtrs() {
+		return m5pUtrs;
+	}
 
 	/**
 	 * Gets the ref seq.
@@ -212,13 +275,13 @@ public class Gene implements Comparable<Gene>, Iterable<GenomicRegion> {
 	public Gene setEntrez(String name) {
 		return setId(ENTREZ_TYPE, name);
 	}
-	
-	public String getTranscript() {
-		return getId(TRANSCRIPT_TYPE);
+
+	public String getTranscriptId() {
+		return getId(TRANSCRIPT_ID_TYPE);
 	}
-	
-	public Gene setTranscript(String name) {
-		return setId(TRANSCRIPT_TYPE, name);
+
+	public Gene setTranscriptId(String name) {
+		return setId(TRANSCRIPT_ID_TYPE, name);
 	}
 
 	/**
@@ -240,6 +303,27 @@ public class Gene implements Comparable<Gene>, Iterable<GenomicRegion> {
 		return mIdMap.get(type);
 	}
 
+	public void addTag(String tag) {
+		mTags.add(tag);
+	}
+
+	/**
+	 * Add new tags.
+	 * 
+	 * @param tags
+	 */
+	public void addTags(final Collection<String> tags) {
+		mTags.addAll(tags);
+	}
+
+	public Iterable<String> getTags() {
+		return mTags;
+	}
+
+	public boolean hasTag(String name) {
+		return mTags.contains(name);
+	}
+
 	/* (non-Javadoc)
 	 * @see org.jebtk.bioinformatics.genome.GenomicRegion#equals(java.lang.Object)
 	 */
@@ -258,8 +342,38 @@ public class Gene implements Comparable<Gene>, Iterable<GenomicRegion> {
 	@Override
 	public String toString() {
 		return mText;
-	}	
+	}
+	
+	/**
+	 * Returns the number of exons in the gene.
+	 * 
+	 * @return
+	 */
+	public int getExonCount() {
+		return mExons.size();
+	}
 
+	//
+	// Static methods
+	//
+
+	/**
+	 * To symbols.
+	 *
+	 * @param features the features
+	 * @return the sets the
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws ParseException the parse exception
+	 */
+	public static Set<String> toSymbols(List<Gene> genes) {
+		Set<String> ret = new TreeSet<String>();
+
+		for (Gene gene : genes) {
+			ret.add(gene.getSymbol());
+		}
+
+		return ret;
+	}
 
 	/**
 	 * Tss region.
@@ -308,7 +422,7 @@ public class Gene implements Comparable<Gene>, Iterable<GenomicRegion> {
 
 		return GenomicRegion.midDist(region, tssRegion);
 	}
-	
+
 	/**
 	 * Create a new gene.
 	 * 
@@ -322,5 +436,15 @@ public class Gene implements Comparable<Gene>, Iterable<GenomicRegion> {
 		return new Gene(region);
 	}
 
+	public static Gene create(GeneType type, GenomicRegion region) {
+		return new Gene(type, region);
+	}
+
 	
+
+	
+
+
+
+
 }

@@ -36,6 +36,7 @@ import java.util.Map;
 import org.jebtk.bioinformatics.genomic.Chromosome;
 import org.jebtk.bioinformatics.genomic.GenomicRegion;
 import org.jebtk.core.collections.DefaultTreeMap;
+import org.jebtk.core.collections.IterMap;
 import org.jebtk.core.collections.TreeMapCreator;
 import org.jebtk.core.collections.UniqueArrayList;
 
@@ -58,7 +59,7 @@ public class FixedGapSearch<T> extends GapSearch<T> {
 	/**
 	 * The member features.
 	 */
-	protected Map<Chromosome, Map<Integer, GappedSearchFeatures<T>>> mFeatures =
+	protected IterMap<Chromosome, IterMap<Integer, GappedSearchFeatures<T>>> mFeatures =
 			DefaultTreeMap.create(new TreeMapCreator<Integer, GappedSearchFeatures<T>>());
 
 

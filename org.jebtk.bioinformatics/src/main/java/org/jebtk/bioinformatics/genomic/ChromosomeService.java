@@ -29,10 +29,10 @@ package org.jebtk.bioinformatics.genomic;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.jebtk.core.collections.DefaultHashMap;
 import org.jebtk.core.collections.HashMapCreator;
+import org.jebtk.core.collections.IterMap;
 import org.jebtk.core.text.TextUtils;
 
 
@@ -66,7 +66,7 @@ public class ChromosomeService {
 	/**
 	 * Cache parsed chromosomes.
 	 */
-	private Map<String, Map<String, Chromosome>> mChrMap = 
+	private IterMap<String, IterMap<String, Chromosome>> mChrMap = 
 			DefaultHashMap.create(new HashMapCreator<String, Chromosome>());
 	
 	/**

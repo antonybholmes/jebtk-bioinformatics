@@ -29,13 +29,11 @@ package org.jebtk.bioinformatics.motifs;
 
 
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.jebtk.bioinformatics.BaseCounts;
 import org.jebtk.bioinformatics.annotation.Species;
-import org.jebtk.core.text.Parser;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
