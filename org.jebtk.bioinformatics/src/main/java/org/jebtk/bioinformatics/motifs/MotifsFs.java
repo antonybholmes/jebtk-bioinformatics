@@ -222,4 +222,73 @@ public class MotifsFs extends MotifDataSource implements Comparable<MotifsFs> {
 			}
 		}
 	}
+	
+	protected static void filter(Motifs motifs,
+			TreeNode<Motif> rootNode,
+			List<String> terms,
+			boolean inList,
+			boolean exactMatch,
+			boolean caseSensitive) throws Exception {
+
+		TreeNode<Motif> node = new TreeNode<Motif>(motifs.getName());
+
+		int count = 0;
+
+		for (Motif motif : motifs) {
+			if (terms.size() == 0) {
+				node.addChild(new TreeNode<Motif>(motif.getName() + " (" + motif.getId() + ")", motif));
+				++count;
+				continue;
+			}
+
+			boolean found = false;
+
+			for (String term : terms) {
+				if (caseSensitive) {
+					if (exactMatch) {
+						if (motif.getName().equals(term) ||
+								motif.getId().equals(term) ||
+								motif.getGene().equals(term)) {
+							found = true;
+							break;
+						}
+					} else {
+						if (motif.getName().contains(term) ||
+								motif.getId().contains(term) ||
+								motif.getGene().contains(term)) {
+							found = true;
+							break;
+						}
+					}
+				} else {
+					String lcs = term.toLowerCase();
+
+					if (exactMatch) {
+						if (motif.getName().toLowerCase().equals(lcs) ||
+								motif.getId().toLowerCase().equals(lcs) ||
+								motif.getGene().toLowerCase().equals(lcs)) {
+							found = true;
+							break;
+						}
+					} else {
+						if (motif.getName().toLowerCase().contains(lcs) ||
+								motif.getId().toLowerCase().contains(lcs) ||
+								motif.getGene().toLowerCase().contains(lcs)) {
+							found = true;
+							break;
+						}
+					}
+				}
+			}
+
+			if ((found && inList) || (!found && !inList)) {
+				node.addChild(new TreeNode<Motif>(motif.getName() + " (" + motif.getId() + ")", motif));
+				++count;
+			}
+		}
+
+		if (count > 0) {
+			rootNode.addChild(node);
+		}
+	}
 }

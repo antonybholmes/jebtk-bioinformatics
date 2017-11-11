@@ -28,6 +28,9 @@ import org.jebtk.core.text.Parser;
 
 import htsjdk.samtools.AbstractBAMFileIndex;
 import htsjdk.samtools.BAMIndexMetaData;
+import htsjdk.samtools.SAMFileHeader;
+import htsjdk.samtools.SAMFileWriter;
+import htsjdk.samtools.SAMFileWriterFactory;
 import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.SAMRecordIterator;
 import htsjdk.samtools.SamReader;
@@ -227,5 +230,19 @@ public class SamUtils {
 	 */
 	public static String getSam(SAMRecord record) {
 		return record.getSAMString().substring(0, record.getSAMString().length() - 1);
+	}
+
+	public static SAMFileWriter newBamWriter(SamReader reader, Path file) {
+		return newBamWriter(reader.getFileHeader(), file);
+	}
+	
+	public static SAMFileWriter newBamWriter(SAMFileHeader header, Path file) {
+		return new SAMFileWriterFactory()
+				.setCreateIndex(true)
+				.makeBAMWriter(header, true, file.toFile());
+	}
+
+	public static SamReader newBamReader(Path bamFile) {
+		return SamReaderFactory.makeDefault().open(bamFile.toFile());
 	}
 }

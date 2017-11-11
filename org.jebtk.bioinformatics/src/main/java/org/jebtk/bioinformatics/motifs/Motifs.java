@@ -27,22 +27,12 @@
  */
 package org.jebtk.bioinformatics.motifs;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
 import org.jebtk.core.NameProperty;
-import org.jebtk.core.Resources;
 import org.jebtk.core.collections.CollectionUtils;
-import org.jebtk.core.io.FileUtils;
-import org.xml.sax.SAXException;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -66,7 +56,7 @@ public class Motifs implements NameProperty, Iterable<Motif> {
 	 * @param name the name
 	 * @param motifs the motifs
 	 */
-	public Motifs(String name, 	Collection<Motif> motifs) {
+	public Motifs(String name, Collection<Motif> motifs) {
 		mName = name;
 		
 		mMotifs = CollectionUtils.sort(motifs);
@@ -87,78 +77,4 @@ public class Motifs implements NameProperty, Iterable<Motif> {
 	public Iterator<Motif> iterator() {
 		return mMotifs.iterator();
 	}
-	
-	
-	/**
-	 * Parses the motif xml.
-	 *
-	 * @param file the file
-	 * @return the motifs
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 * @throws ParserConfigurationException the parser configuration exception
-	 * @throws SAXException the SAX exception
-	 */
-	public static Motifs parseMotifXml(Path file) throws IOException, ParserConfigurationException, SAXException {
-		InputStream stream = FileUtils.newBufferedInputStream(file);
-
-		Motifs motifs = null;
-		
-		try {
-			motifs = parseMotifXml(stream);
-		} finally {
-			stream.close();
-		}
-		
-		return motifs;
-	}
-	
-	/**
-	 * Parses the motif xml gz.
-	 *
-	 * @param file the file
-	 * @return the motifs
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 * @throws ParserConfigurationException the parser configuration exception
-	 * @throws SAXException the SAX exception
-	 */
-	public static Motifs parseMotifXmlGz(Path file) throws IOException, ParserConfigurationException, SAXException {
-		InputStream stream = Resources.getGzipInputStream(file);
-		
-		Motifs motifs = null;
-		
-		try {
-			motifs = parseMotifXml(stream);
-		} finally {
-			stream.close();
-		}
-		
-		return motifs;
-	}
-
-	/**
-	 * Parses the motif xml.
-	 *
-	 * @param is the is
-	 * @return the motifs
-	 * @throws ParserConfigurationException the parser configuration exception
-	 * @throws SAXException the SAX exception
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public static Motifs parseMotifXml(InputStream is) throws ParserConfigurationException, SAXException, IOException {
-		if (is == null) {
-			return null;
-		}
-
-		SAXParserFactory factory = SAXParserFactory.newInstance();
-		SAXParser saxParser = factory.newSAXParser();
-
-		MotifXmlHandler handler = new MotifXmlHandler();
-
-		saxParser.parse(is, handler);
-
-		return handler.getMotifs();
-	}
-
-	
-	
 }

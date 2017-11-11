@@ -31,6 +31,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -117,7 +118,7 @@ public class Motif implements Comparable<Motif>, Iterable<BaseCounts>, Formatted
 	 * @param name the name
 	 * @param bases the bases
 	 */
-	public Motif(String name, List<BaseCounts> bases) {
+	public Motif(String name, Collection<BaseCounts> bases) {
 		this(name, name, bases);
 	}
 
@@ -128,7 +129,7 @@ public class Motif implements Comparable<Motif>, Iterable<BaseCounts>, Formatted
 	 * @param name the name
 	 * @param bases the bases
 	 */
-	public Motif(String id, String name, List<BaseCounts> bases) {
+	public Motif(String id, String name, Collection<BaseCounts> bases) {
 		this(id, name, name, bases);
 	}
 	
@@ -140,7 +141,10 @@ public class Motif implements Comparable<Motif>, Iterable<BaseCounts>, Formatted
 	 * @param gene the gene
 	 * @param bases the bases
 	 */
-	public Motif(String id, String name, String gene, List<BaseCounts> bases) {
+	public Motif(String id, 
+			String name, 
+			String gene, 
+			Collection<BaseCounts> bases) {
 		this(id, name, gene, null, bases);
 	}
 
@@ -157,7 +161,7 @@ public class Motif implements Comparable<Motif>, Iterable<BaseCounts>, Formatted
 			String name,
 			String gene,
 			String database,
-			List<BaseCounts> bases) {
+			Collection<BaseCounts> bases) {
 		mId = id;
 		mName = name;
 		mGene = gene;

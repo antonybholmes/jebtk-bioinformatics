@@ -76,6 +76,14 @@ public class Genes extends BinaryGapSearch<Gene> {
 	private static final Logger LOG = 
 			LoggerFactory.getLogger(Genes.class);
 
+	/** Empty gene set that can be used as a placeholder */
+	public static final Genes EMPTY_GENES = new Genes() {
+		@Override
+		public void add(GenomicRegion region, Gene gene) {
+			// Do nothing
+		}
+	};
+
 	//public static final GeneService getInstance() {
 	//	return INSTANCE;
 	//}
@@ -458,6 +466,8 @@ public class Genes extends BinaryGapSearch<Gene> {
 	}
 
 	
-
+	public static GTB2Parser gtb2Parser() {
+		return new GTB2Parser();
+	}
 	
 }

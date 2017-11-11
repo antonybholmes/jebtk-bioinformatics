@@ -75,10 +75,6 @@ public class Sequence implements Comparable<Sequence>, NameProperty, Iterable<Ch
 	 */
 	protected String mSequence;
 
-	private byte[] mIndexed;
-
-	private char[] mArray;
-
 	private String mName;
 
 	private SequenceType mType;
@@ -107,7 +103,7 @@ public class Sequence implements Comparable<Sequence>, NameProperty, Iterable<Ch
 		}
 		
 		mName = name;
-		mSequence = sequence;
+		mSequence = sequence.toUpperCase();
 		mType = sequence.contains("U") || sequence.contains("u") ? SequenceType.RNA : SequenceType.DNA;
 	}
 	
@@ -126,11 +122,7 @@ public class Sequence implements Comparable<Sequence>, NameProperty, Iterable<Ch
 	 * @return the array
 	 */
 	public char[] toArray() {
-		if (mArray == null) {
-			mArray = mSequence.toUpperCase().toCharArray();
-		}
-		
-		return mArray;
+		return mSequence.toCharArray();
 	}
 	
 	public int length() {
@@ -305,13 +297,7 @@ public class Sequence implements Comparable<Sequence>, NameProperty, Iterable<Ch
 	 * @return the byte[]
 	 */
 	public byte[] toIndex() {
-		if (mIndexed == null) {
-			char[] seq = mSequence.toLowerCase().toCharArray();
-
-			mIndexed = seqToIndexSeq(seq);
-		}
-
-		return mIndexed;
+		return seqToIndexSeq(getChars());
 	}
 	
 	@Override

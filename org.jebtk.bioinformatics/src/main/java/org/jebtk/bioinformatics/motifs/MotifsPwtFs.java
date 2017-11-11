@@ -27,18 +27,18 @@
  */
 package org.jebtk.bioinformatics.motifs;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 
-import org.jebtk.core.Resources;
+import org.jebtk.bioinformatics.BaseCounts;
 import org.jebtk.core.io.FileUtils;
 import org.jebtk.core.io.PathUtils;
+import org.jebtk.core.text.TextUtils;
 import org.jebtk.core.tree.TreeNode;
 import org.xml.sax.SAXException;
 
@@ -46,14 +46,14 @@ import org.xml.sax.SAXException;
 /**
  * The class MotifsFile.
  */
-public class MotifsXmlFs extends MotifsFs {
+public class MotifsPwtFs extends MotifsFs {
 
 	/**
 	 * Instantiates a new motifs file.
 	 *
 	 * @param dir the dir
 	 */
-	public MotifsXmlFs(Path dir) {
+	public MotifsPwtFs(Path dir) {
 		super(dir);
 	}
 
@@ -62,8 +62,8 @@ public class MotifsXmlFs extends MotifsFs {
 	 */
 	@Override
 	public boolean equals(Object o) {
-		if (o instanceof MotifsXmlFs) {
-			return compareTo((MotifsXmlFs)o) == 0;
+		if (o instanceof MotifsPwtFs) {
+			return compareTo((MotifsPwtFs)o) == 0;
 		} else {
 			return false;
 		}
@@ -110,11 +110,11 @@ public class MotifsXmlFs extends MotifsFs {
 		List<Path> files = FileUtils.ls(root, false, true);
 
 		for (Path file : files) {
-			if (!PathUtils.getName(file).endsWith("xml.gz")) {
+			if (!PathUtils.getName(file).endsWith("pwt.gz")) {
 				continue;
 			}
 
-			Motifs motifs = parseMotifXmlGz(file);
+			Motifs motifs = parseMotifPwt(file);
 
 			filter(motifs,
 					rootNode,
@@ -124,7 +124,9 @@ public class MotifsXmlFs extends MotifsFs {
 					caseSensitive);
 		}
 	}
+
 	
+
 	/**
 	 * Parses the motif xml.
 	 *
@@ -134,64 +136,50 @@ public class MotifsXmlFs extends MotifsFs {
 	 * @throws ParserConfigurationException the parser configuration exception
 	 * @throws SAXException the SAX exception
 	 */
-	public static Motifs parseMotifXml(Path file) throws IOException, ParserConfigurationException, SAXException {
-		InputStream stream = FileUtils.newBufferedInputStream(file);
+	public static Motifs parseMotifPwt(Path file) throws IOException, ParserConfigurationException, SAXException {
+		BufferedReader is = FileUtils.newBufferedReader(file);
 
-		Motifs motifs = null;
-		
+		List<Motif> motifs = new ArrayList<Motif>();
+
+		String db = null;
+
 		try {
-			motifs = parseMotifXml(stream);
+			// Skip 'db:' prefix
+			db = is.readLine().substring(3);
+			
+			// Skip header
+			is.readLine();
+
+			String line;
+
+			while ((line = is.readLine()) != null) {
+				List<String> tokens = TextUtils.tabSplit(line);
+
+				String id = tokens.get(0);
+				String name = tokens.get(1);
+				int l = Integer.parseInt(tokens.get(2));
+				List<String> bases = TextUtils.scSplit(tokens.get(3));
+
+				List<BaseCounts> counts = new ArrayList<BaseCounts>(l);
+
+				for (String base : bases) {
+					List<String> values = TextUtils.commaSplit(base);
+
+					double a = Double.parseDouble(values.get(0));
+					double c = Double.parseDouble(values.get(1));
+					double g = Double.parseDouble(values.get(2));
+					double t = Double.parseDouble(values.get(3));
+
+					counts.add(new BaseCounts(a, c, g, t, true));
+				}
+
+				motifs.add(new Motif(id, name, name, db, counts));
+			}
+
 		} finally {
-			stream.close();
-		}
-		
-		return motifs;
-	}
-	
-	/**
-	 * Parses the motif xml gz.
-	 *
-	 * @param file the file
-	 * @return the motifs
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 * @throws ParserConfigurationException the parser configuration exception
-	 * @throws SAXException the SAX exception
-	 */
-	public static Motifs parseMotifXmlGz(Path file) throws IOException, ParserConfigurationException, SAXException {
-		InputStream stream = Resources.getGzipInputStream(file);
-		
-		Motifs motifs = null;
-		
-		try {
-			motifs = parseMotifXml(stream);
-		} finally {
-			stream.close();
-		}
-		
-		return motifs;
-	}
-
-	/**
-	 * Parses the motif xml.
-	 *
-	 * @param is the is
-	 * @return the motifs
-	 * @throws ParserConfigurationException the parser configuration exception
-	 * @throws SAXException the SAX exception
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public static Motifs parseMotifXml(InputStream is) throws ParserConfigurationException, SAXException, IOException {
-		if (is == null) {
-			return null;
+			is.close();
 		}
 
-		SAXParserFactory factory = SAXParserFactory.newInstance();
-		SAXParser saxParser = factory.newSAXParser();
-
-		MotifXmlHandler handler = new MotifXmlHandler();
-
-		saxParser.parse(is, handler);
-
-		return handler.getMotifs();
+		return new Motifs(db, motifs);
 	}
 }

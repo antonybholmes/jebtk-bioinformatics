@@ -46,12 +46,12 @@ public class GFF3Parser extends GeneParser {
 	}
 
 	@Override
-	public Genes parse(Path file, BufferedReader reader) throws IOException {
-		Genes ret = new Genes();
-
+	public void parse(Path file, 
+			BufferedReader reader, 
+			Genes genes,
+			Chromosome chr) throws IOException {
 		String line;
 		List<String> tokens;
-		Chromosome chr;
 		GeneType type;
 		int start;
 		int end;
@@ -95,7 +95,7 @@ public class GFF3Parser extends GeneParser {
 							region,
 							attributeMap);
 
-					ret.add(gene);
+					genes.add(gene);
 					
 					break;
 				case EXON:
@@ -113,7 +113,7 @@ public class GFF3Parser extends GeneParser {
 						exon.setParent(gene);
 					}
 
-					ret.add(exon);
+					genes.add(exon);
 
 					break;
 				default:
@@ -123,8 +123,6 @@ public class GFF3Parser extends GeneParser {
 		} finally {
 			reader.close();
 		}
-
-		return ret;
 	}
 
 	@Override

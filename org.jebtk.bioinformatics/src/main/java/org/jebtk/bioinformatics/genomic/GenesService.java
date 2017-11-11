@@ -77,11 +77,25 @@ public class GenesService implements Iterable<String> {
 	private IterMap<String, IterMap<String, Genes>> mGenesMap = 
 			DefaultTreeMap.create(new TreeMapCreator<String, Genes>());
 
+	private String mCurrentDb;
+
 	/**
 	 * Instantiates a new gene entrez service.
 	 */
 	private GenesService() {
 		// do nothing
+	}
+	
+	/**
+	 * Get the genes associated with the current database. If there is more
+	 * than one database associated with the genome, the first is chosen
+	 * alphabetically by name.
+	 * 
+	 * @param genome
+	 * @return
+	 */
+	public Genes getGenes(String genome) {
+		return getGenes(genome, mGenesMap.get(genome).keySet().iterator().next());
 	}
 	
 	/**
@@ -92,6 +106,11 @@ public class GenesService implements Iterable<String> {
 	 * @return the genes
 	 */
 	public Genes getGenes(String genome, String db) {
+		if (!mGenesMap.containsKey(genome) || 
+				!mGenesMap.get(genome).containsKey(db)) {
+			return Genes.EMPTY_GENES;
+		}
+		
 		return mGenesMap.get(genome).get(db);
 	}
 
@@ -120,8 +139,10 @@ public class GenesService implements Iterable<String> {
 	 * @param name the name
 	 * @param genes the genes
 	 */
-	public void put(String genome, String name, Genes genes) {
-		mGenesMap.get(genome).put(name, genes);
+	public void put(String genome, String db, Genes genes) {
+		mGenesMap.get(genome).put(db, genes);
+		
+		mCurrentDb = db;
 	}
 
 	/**
@@ -131,6 +152,14 @@ public class GenesService implements Iterable<String> {
 	 */
 	public Collection<String> getGenomes() {
 		return mGenesMap.keySet();
+	}
+
+	public String getCurrentDb() {
+		return mCurrentDb;
+	}
+	
+	public String getCurrentDb(String genome) {
+		return mGenesMap.get(genome).keySet().iterator().next();
 	}
 	
 }

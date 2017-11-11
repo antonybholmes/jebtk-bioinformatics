@@ -174,17 +174,31 @@ public abstract class GeneParser {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public Genes parse(Path file) throws IOException {
+		return parse(file, (Chromosome)null);
+	}
+	
+	public Genes parse(Path file, Chromosome chr) throws IOException {
+		Genes genes = new Genes();
+		
+		parse(file, genes);
+		
+		return genes;
+	}
+	
+	public Genes parse(Path file, Genes genes) throws IOException {
+		return parse(file, genes, null);
+	}
+	
+	public Genes parse(Path file, Genes genes, Chromosome chr) throws IOException {
 		BufferedReader reader = FileUtils.newBufferedReader(file);
 
-		Genes ret = null;
-
 		try {
-			ret = parse(file, reader);
+			parse(file, reader, genes, chr);
 		} finally {
 			reader.close();
 		}
 
-		return ret;
+		return genes;
 	}
 
 	/**
@@ -194,7 +208,24 @@ public abstract class GeneParser {
 	 * @return the genes
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public abstract Genes parse(Path file, BufferedReader reader) throws IOException;
+	public Genes parse(Path file, BufferedReader reader) throws IOException {
+		Genes genes = new Genes();
+		
+		parse(file, reader, genes);
+		
+		return genes;
+	}
+	
+	public void parse(Path file, BufferedReader reader, Genes genes) throws IOException {
+		parse(file, reader, genes, null);
+	}
+	
+	public abstract void parse(Path file, 
+			BufferedReader reader, 
+			Genes genes,
+			Chromosome chr) throws IOException;
+		
+	
 	
 	public Map<String, Set<String>> idMap(Path file,
 			String id1,

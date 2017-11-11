@@ -66,11 +66,12 @@ public class GTB2Parser extends GTBParser {
 	 * @return the genes
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public Genes parse(Path file, BufferedReader reader) throws IOException {
+	@Override
+	public void parse(Path file, 
+			BufferedReader reader, 
+			Genes genes,
+			Chromosome chr) throws IOException {
 		LOG.info("Parsing GTB2 file {}, levels: {}...", file, mLevels);
-
-
-		Genes ret = new Genes();
 
 		String line;
 		List<String> tokens;
@@ -96,7 +97,7 @@ public class GTB2Parser extends GTBParser {
 
 			tokens = Splitter.onTab().text(line);
 
-			Chromosome chr = Chromosome.parse(tokens.get(0));
+			chr = Chromosome.parse(tokens.get(0));
 
 			// Skip random and unofficial chromosomes
 			if (chr.toString().contains("_")) {
@@ -149,7 +150,7 @@ public class GTB2Parser extends GTBParser {
 					attributeMap);
 
 			if (containsLevel(GeneType.TRANSCRIPT)) {
-				ret.add(gene);
+				genes.add(gene);
 			}
 
 			if (hasExonLevel || mKeepExons) {
@@ -177,21 +178,19 @@ public class GTB2Parser extends GTBParser {
 
 						g.setParent(gene);
 
-						ret.add(g);
+						genes.add(g);
 					}
 				}
 			}
 
 			if (has5pUtrLevel) {
-				processUTR(tokens, gene, attributeMap, 7, GeneType.UTR_5P, ret);
+				processUTR(tokens, gene, attributeMap, 7, GeneType.UTR_5P, genes);
 			}
 
 			if (has3pUtrLevel) {
-				processUTR(tokens, gene, attributeMap, 10, GeneType.UTR_3P, ret);
+				processUTR(tokens, gene, attributeMap, 10, GeneType.UTR_3P, genes);
 			}
 		}
-
-		return ret;
 	}
 
 	private static void processUTR(List<String> tokens,
