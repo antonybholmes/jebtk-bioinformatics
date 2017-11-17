@@ -102,6 +102,8 @@ public abstract class GapSearch<T> implements Iterable<Chromosome> {
 	 * @return the feature list
 	 */
 	public abstract List<T> getFeatures(Chromosome chr);
+	
+	public abstract boolean contains(Chromosome chr);
 
 	/**
 	 * Gets the features.

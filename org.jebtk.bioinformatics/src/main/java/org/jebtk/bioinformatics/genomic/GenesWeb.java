@@ -110,7 +110,7 @@ public class GenesWeb extends GenesDb {
 				Json exonEndsJson = geneJson.get("exon_ends");
 
 				for (int j = 0; j < exonStartsJson.size(); ++j) {
-					GenomicRegion exon = GenomicRegion.create(gene.mRegion.mChr,
+					GenomicRegion exon = GenomicRegion.create(gene.mChr,
 							exonStartsJson.get(j).getAsInt(),
 							exonEndsJson.get(j).getAsInt());
 
@@ -153,7 +153,7 @@ public class GenesWeb extends GenesDb {
 			Json exonEndsJson = geneJson.get("exon_ends");
 
 			for (int j = 0; j < exonStartsJson.size(); ++j) {
-				GenomicRegion exon = GenomicRegion.create(gene.mRegion.mChr,
+				GenomicRegion exon = GenomicRegion.create(gene.mChr,
 						exonStartsJson.get(j).getAsInt(),
 						exonEndsJson.get(j).getAsInt());
 

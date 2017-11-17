@@ -29,7 +29,6 @@ package org.jebtk.bioinformatics.genomic;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -38,13 +37,14 @@ import java.util.TreeSet;
 
 import org.jebtk.core.collections.DefaultTreeMap;
 import org.jebtk.core.collections.IterMap;
+import org.jebtk.core.collections.UniqueArrayListCreator;
 import org.jebtk.core.text.TextUtils;
 
 // TODO: Auto-generated Javadoc
 /**
  * The class Gene.
  */
-public class Gene implements Comparable<Gene>, Iterable<GenomicRegion> {
+public class Gene extends GenomicRegion  {
 
 	/** The Constant SYMBOL_TYPE. */
 	public static final String SYMBOL_TYPE = "symbol";
@@ -55,7 +55,7 @@ public class Gene implements Comparable<Gene>, Iterable<GenomicRegion> {
 	/** The Constant ENTREZ_TYPE. */
 	public static final String ENTREZ_TYPE = "entrez";
 
-	public static final String TRANSCRIPT_ID_TYPE = "transcript_id";
+	public static final String TRANSCRIPT_ID_TYPE = "transcript";
 
 	/** The m id map. */
 	private IterMap<String, String> mIdMap = 
@@ -63,12 +63,8 @@ public class Gene implements Comparable<Gene>, Iterable<GenomicRegion> {
 
 	private Set<String> mTags = new TreeSet<String>();
 
-	/** The m exons. */
-	private List<GenomicRegion> mExons = new ArrayList<GenomicRegion>();
-	
-	private List<GenomicRegion> m5pUtrs = new ArrayList<GenomicRegion>();
-	
-	private List<GenomicRegion> m3pUtrs = new ArrayList<GenomicRegion>();
+	private IterMap<GeneType, List<Gene>> mElemMap = 
+			DefaultTreeMap.create(new UniqueArrayListCreator<Gene>());
 
 	/** The m utr 5 p. */
 	//private List<Exon> mUtr5p = new ArrayList<Exon>();
@@ -76,71 +72,75 @@ public class Gene implements Comparable<Gene>, Iterable<GenomicRegion> {
 	/** The m text. */
 	private String mText;
 
-	protected final GenomicRegion mRegion;
-
 	private Gene mParent = null;
-	
-	private GeneType mType = GeneType.TRANSCRIPT;
+
+	public final GeneType mType;
 
 
 	public Gene(GenomicRegion region) {
-		mRegion = region;
+		this(GeneType.GENE, region);
 	}
-	
+
 	public Gene(GeneType type, GenomicRegion region) {
-		this(region);
+		super(region);
 		
 		mType = type;
 	}
 
-	public Gene(String name, GenomicRegion region) {
-		this(region);
+	public Gene(String name, GeneType type, GenomicRegion region) {
+		this(type, region);
 
 		setSymbol(name);
 	}
-	
+
 	public GeneType getType() {
 		return mType;
-	}
-
-	public GenomicRegion getRegion() {
-		return mRegion;
 	}
 
 	public void setParent(Gene gene) {
 		mParent = gene;
 	}
-	
+
 	public Gene getParent() {
 		return mParent;
 	}
-	
+
+	/*
 	@Override
-	public int compareTo(Gene g) {
-		for (String id : mIdMap.keySet()) {
-			// Find the first point where they differ and return that
+	public int compareTo(Region r) {
+		if (r instanceof Gene) {
+			Gene g = (Gene)r;
 
-			if (g.mIdMap.containsKey(id)) {
-				String id2 = g.mIdMap.get(id);
+			for (String id : mIdMap.keySet()) {
+				// Find the first point where they differ and return that
 
-				if (!id.equals(id2)) {
-					return id.compareTo(id2);
+				if (g.mIdMap.containsKey(id)) {
+					String id2 = g.mIdMap.get(id);
+
+					if (!id.equals(id2)) {
+						return id.compareTo(id2);
+					}
 				}
+			}
+
+			if (mTags.size() > g.mTags.size()) {
+				return 1;
+			} else if (mTags.size() < g.mTags.size()) {
+				return -1;
+			} else {
+				// Do nothing
 			}
 		}
 
-		if (mTags.size() > g.mTags.size()) {
-			return 1;
-		} else if (mTags.size() < g.mTags.size()) {
-			return -1;
-		} else {
-			// Do nothing
-		}
-
 		// Compare exons
-		return mRegion.compareTo(g.mRegion);
+		return super.compareTo(r);
 	}
+	*/
 
+	public Gene setId(GeneIdType type, String name) {
+		return setId(type.toString().toLowerCase(), name);
+	}
+	
 	/**
 	 * Assign a gene id to the gene (e.g. a symbol or RefSeq Id).
 	 *
@@ -149,12 +149,20 @@ public class Gene implements Comparable<Gene>, Iterable<GenomicRegion> {
 	 * @return 		The instance of the gene
 	 */
 	public Gene setId(String type, String name) {
-		if (type != null && 
-				name != null && 
-				!type.equals(TextUtils.NA) && 
-				!name.equals(TextUtils.NA)) {
+		if (!TextUtils.isNullEmptyNA(type) && 
+				!TextUtils.isNullEmptyNA(name)) {
 			mIdMap.put(type, name);
 
+			if (type.contains("transcript")) {
+				mIdMap.put(TRANSCRIPT_ID_TYPE, name);
+			} 
+
+			// Gene name is the same as symbol
+			if (type.contains("gene_name") ||
+					type.contains("gene_id")) {
+				mIdMap.put(SYMBOL_TYPE, name);
+			}
+			
 			setText();
 		}
 
@@ -165,13 +173,22 @@ public class Gene implements Comparable<Gene>, Iterable<GenomicRegion> {
 	 * Set a text description of the gene.
 	 */
 	private void setText() {
-		StringBuilder buffer = new StringBuilder();
-
-		for (String id : mIdMap) {
-			buffer.append(id).append("=").append(getId(id)).append(", ");
+		StringBuilder buffer = new StringBuilder(super.toString());
+		buffer.append(" [");
+		
+		Iterator<String> iter = mIdMap.iterator();
+		
+		while (iter.hasNext()) {
+			String id = iter.next();
+			
+			buffer.append(id).append("=").append(getId(id));
+			
+			if (iter.hasNext()) {
+				buffer.append(", ");
+			}
 		}
 
-		buffer.append("[").append(super.toString()).append("]");
+		buffer.append("]");
 
 		mText = buffer.toString();
 	}
@@ -182,16 +199,8 @@ public class Gene implements Comparable<Gene>, Iterable<GenomicRegion> {
 	 *
 	 * @return the ids
 	 */
-	public Iterable<String> getIds() {
+	public Iterable<String> getIdTypes() {
 		return mIdMap.keySet();
-	}
-
-	/* (non-Javadoc)
-	 * @see java.lang.Iterable#iterator()
-	 */
-	@Override
-	public Iterator<GenomicRegion> iterator() {
-		return mExons.iterator();
 	}
 
 	/**
@@ -200,23 +209,35 @@ public class Gene implements Comparable<Gene>, Iterable<GenomicRegion> {
 	 * @param exon the exon
 	 */
 	public void addExon(GenomicRegion exon) {
-		mExons.add(exon);
+		add(Gene.create(GeneType.EXON, exon));
 	}
-	
+
 	public void add5pUtr(GenomicRegion exon) {
-		m5pUtrs.add(exon);
+		add(Gene.create(GeneType.UTR_5P, exon));
 	}
-	
+
 	public void add3pUtr(GenomicRegion exon) {
-		m3pUtrs.add(exon);
+		add(Gene.create(GeneType.UTR_3P, exon));
 	}
-	
-	public Iterable<GenomicRegion> get3pUtrs() {
-		return m3pUtrs;
+
+	public void add(Gene gene) {
+		mElemMap.get(gene.mType).add(gene);
 	}
-	
-	public Iterable<GenomicRegion> get5pUtrs() {
-		return m5pUtrs;
+
+	public Iterable<Gene> get3pUtrs() {
+		return getElements(GeneType.UTR_3P);
+	}
+
+	public Iterable<Gene> get5pUtrs() {
+		return getElements(GeneType.UTR_5P);
+	}
+
+	public Iterable<Gene> getExons() {
+		return getElements(GeneType.EXON);
+	}
+
+	public Iterable<Gene> getElements(GeneType type) {
+		return mElemMap.get(type);
 	}
 
 	/**
@@ -294,6 +315,19 @@ public class Gene implements Comparable<Gene>, Iterable<GenomicRegion> {
 	}
 
 	/**
+	 * Return the first available id.
+	 * 
+	 * @return
+	 */
+	public String getId() {
+		return getTranscriptId(); //getId(mIdMap.keySet().iterator().next());
+	}
+	
+	public String getId(GeneIdType type) {
+		return getId(type.toString().toLowerCase());
+	}
+
+	/**
 	 * Return a gene id. If the id does not exist 'n/a' is returned.
 	 *
 	 * @param type the type
@@ -343,15 +377,7 @@ public class Gene implements Comparable<Gene>, Iterable<GenomicRegion> {
 	public String toString() {
 		return mText;
 	}
-	
-	/**
-	 * Returns the number of exons in the gene.
-	 * 
-	 * @return
-	 */
-	public int getExonCount() {
-		return mExons.size();
-	}
+
 
 	//
 	// Static methods
@@ -386,10 +412,10 @@ public class Gene implements Comparable<Gene>, Iterable<GenomicRegion> {
 			return null;
 		}
 
-		if (gene.mRegion.mStrand == Strand.SENSE) {
-			return new GenomicRegion(gene.mRegion.mChr, gene.mRegion.mStart, gene.mRegion.mStart);
+		if (gene.mStrand == Strand.SENSE) {
+			return new GenomicRegion(gene.mChr, gene.mStart, gene.mStart);
 		} else {
-			return new GenomicRegion(gene.mRegion.mChr, gene.mRegion.mEnd, gene.mRegion.mEnd);
+			return new GenomicRegion(gene.mChr, gene.mEnd, gene.mEnd);
 		}
 	}
 
@@ -403,7 +429,7 @@ public class Gene implements Comparable<Gene>, Iterable<GenomicRegion> {
 	public static int tssDist(Gene gene, GenomicRegion region) {
 		GenomicRegion tssRegion = tssRegion(gene);
 
-		if (gene.mRegion.mStrand == Strand.SENSE) {
+		if (gene.mStrand == Strand.SENSE) {
 			return GenomicRegion.midDist(region, tssRegion);
 		} else {
 			return GenomicRegion.midDist(tssRegion, region);
@@ -423,28 +449,7 @@ public class Gene implements Comparable<Gene>, Iterable<GenomicRegion> {
 		return GenomicRegion.midDist(region, tssRegion);
 	}
 
-	/**
-	 * Create a new gene.
-	 * 
-	 * @param chr		The chromosome.
-	 * @param start		The start.
-	 * @param end		The end.
-	 * @param strand	The strand.
-	 * @return			The new gene.
-	 */
-	public static Gene create(GenomicRegion region) {
-		return new Gene(region);
-	}
-
 	public static Gene create(GeneType type, GenomicRegion region) {
 		return new Gene(type, region);
 	}
-
-	
-
-	
-
-
-
-
 }

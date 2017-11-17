@@ -37,7 +37,9 @@ import java.util.Set;
 import org.jebtk.core.collections.DefaultTreeMap;
 import org.jebtk.core.collections.IterMap;
 import org.jebtk.core.collections.TreeSetCreator;
+import org.jebtk.core.io.FileUtils;
 import org.jebtk.core.io.Io;
+import org.jebtk.core.io.TokenFunction;
 import org.jebtk.core.text.Splitter;
 import org.jebtk.core.text.TextUtils;
 
@@ -67,130 +69,119 @@ public class GTB2Parser extends GTBParser {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	@Override
-	public void parse(Path file, 
+	protected void parse(Path file, 
 			BufferedReader reader, 
-			Genes genes,
-			Chromosome chr) throws IOException {
+			final Genes genes) throws IOException {
 		LOG.info("Parsing GTB2 file {}, levels: {}...", file, mLevels);
-
-		String line;
-		List<String> tokens;
-
-		Gene gene = null;
-
-		// Skip header
-		reader.readLine();
-
-		Splitter splitter = Splitter.on(';');
+		
+		final Splitter splitter = Splitter.on(';');
 
 		// Add the exons
-		boolean hasExonLevel = containsLevel(GeneType.EXON);
-		boolean has3pUtrLevel = containsLevel(GeneType.UTR_3P);
-		boolean has5pUtrLevel = containsLevel(GeneType.UTR_5P);
+		final boolean hasExonLevel = containsLevel(GeneType.EXON);
+		final boolean has3pUtrLevel = containsLevel(GeneType.UTR_3P);
+		final boolean has5pUtrLevel = containsLevel(GeneType.UTR_5P);
 
-		while ((line = reader.readLine()) != null) {
-			if (Io.isEmptyLine(line)) {
-				continue;
-			}
+		FileUtils.tokenize(reader, true, new TokenFunction() {
+			@Override
+			public void parse(final List<String> tokens) {
+				//System.err.println("gtb2 " + line);
 
-			boolean add = true;
+				boolean add = true;
 
-			tokens = Splitter.onTab().text(line);
+				Chromosome chr = Chromosome.parse(tokens.get(0));
 
-			chr = Chromosome.parse(tokens.get(0));
-
-			// Skip random and unofficial chromosomes
-			if (chr.toString().contains("_")) {
-				continue;
-			}
-
-			Strand strand = Strand.parse(tokens.get(1));
-			int start = Integer.parseInt(tokens.get(2));
-			int end = Integer.parseInt(tokens.get(3));
-
-			//int exonCount = Integer.parseInt(tokens.get(4));
-
-			// Because of the UCSC using zero based start and one
-			// based end, we need to increment the start by 1
-
-
-			List<String> tags = getTags(splitter, tokens);
-
-			if (mExcludeTags.size() > 0) {
-				for (String tag : tags) {
-					if (mExcludeTags.contains(tag)) {
-						add = false;
-						break;
-					}
+				// Skip random and unofficial chromosomes
+				if (chr.toString().contains("_")) {
+					return;
 				}
-			}
 
-			if (mMatchTags.size() > 0) {
-				add = false;
+				Strand strand = Strand.parse(tokens.get(1));
+				int start = Integer.parseInt(tokens.get(2));
+				int end = Integer.parseInt(tokens.get(3));
 
-				for (String tag : tags) {
-					if (mMatchTags.contains(tag)) {
-						add = true;
-						break;
-					}
-				}
-			}
+				//int exonCount = Integer.parseInt(tokens.get(4));
 
-			if (!add) {
-				continue;
-			}
+				// Because of the UCSC using zero based start and one
+				// based end, we need to increment the start by 1
 
-			IterMap<String, String> attributeMap = 
-					getAttributes(splitter, tokens);
 
-			// Create the gene
+				List<String> tags = getTags(splitter, tokens);
 
-			gene = addAttributes(GeneType.TRANSCRIPT,
-					GenomicRegion.create(chr, start, end, strand),
-					attributeMap);
-
-			if (containsLevel(GeneType.TRANSCRIPT)) {
-				genes.add(gene);
-			}
-
-			if (hasExonLevel || mKeepExons) {
-				List<Integer> starts = 
-						TextUtils.splitInts(tokens.get(5), TextUtils.SEMI_COLON_DELIMITER);
-
-				List<Integer> ends = 
-						TextUtils.splitInts(tokens.get(6), TextUtils.SEMI_COLON_DELIMITER);
-
-				for (int i = 0; i < starts.size(); ++i) {
-					// Again correct for the ucsc
-					GenomicRegion region = GenomicRegion.create(chr, 
-							starts.get(i), 
-							ends.get(i), 
-							strand);
-
-					if (mKeepExons) {
-						if (gene != null) {
-							gene.addExon(region);
+				if (mExcludeTags.size() > 0) {
+					for (String tag : tags) {
+						if (mExcludeTags.contains(tag)) {
+							add = false;
+							break;
 						}
 					}
+				}
 
-					if (hasExonLevel) {
-						Gene g = addAttributes(GeneType.EXON, region, attributeMap);
+				if (mMatchTags.size() > 0) {
+					add = false;
 
-						g.setParent(gene);
-
-						genes.add(g);
+					for (String tag : tags) {
+						if (mMatchTags.contains(tag)) {
+							add = true;
+							break;
+						}
 					}
 				}
-			}
 
-			if (has5pUtrLevel) {
-				processUTR(tokens, gene, attributeMap, 7, GeneType.UTR_5P, genes);
-			}
+				if (!add) {
+					return;
+				}
 
-			if (has3pUtrLevel) {
-				processUTR(tokens, gene, attributeMap, 10, GeneType.UTR_3P, genes);
-			}
-		}
+				IterMap<String, String> attributeMap = 
+						getAttributes(splitter, tokens);
+
+				// Create the gene
+
+				Gene gene = addAttributes(GeneType.TRANSCRIPT,
+						GenomicRegion.create(chr, start, end, strand),
+						attributeMap);
+
+				if (containsLevel(GeneType.TRANSCRIPT)) {
+					genes.add(gene);
+				}
+
+				if (hasExonLevel || mKeepExons) {
+					List<Integer> starts = 
+							TextUtils.splitInts(tokens.get(5), TextUtils.SEMI_COLON_DELIMITER);
+
+					List<Integer> ends = 
+							TextUtils.splitInts(tokens.get(6), TextUtils.SEMI_COLON_DELIMITER);
+
+					for (int i = 0; i < starts.size(); ++i) {
+						// Again correct for the ucsc
+						GenomicRegion region = GenomicRegion.create(chr, 
+								starts.get(i), 
+								ends.get(i), 
+								strand);
+						
+						Gene exon = addAttributes(GeneType.EXON, region, attributeMap);
+
+						if (mKeepExons) {
+							if (gene != null) {
+								gene.add(exon);
+							}
+						}
+
+						if (hasExonLevel) {
+							exon.setParent(gene);
+
+							genes.add(exon);
+						}
+					}
+				}
+
+				if (has5pUtrLevel) {
+					processUTR(tokens, gene, attributeMap, 7, GeneType.UTR_5P, genes);
+				}
+
+				if (has3pUtrLevel) {
+					processUTR(tokens, gene, attributeMap, 10, GeneType.UTR_3P, genes);
+				}
+			}});
 	}
 
 	private static void processUTR(List<String> tokens,
@@ -199,13 +190,13 @@ public class GTB2Parser extends GTBParser {
 			int offset,
 			GeneType type,
 			Genes ret) {
-		
+
 		int count = Integer.parseInt(tokens.get(offset));
-		
+
 		if (count == 0) {
 			return;
 		}
-		
+
 		List<Integer> starts = 
 				TextUtils.splitInts(tokens.get(offset + 1), TextUtils.SEMI_COLON_DELIMITER);
 
@@ -213,10 +204,10 @@ public class GTB2Parser extends GTBParser {
 				TextUtils.splitInts(tokens.get(offset + 2), TextUtils.SEMI_COLON_DELIMITER);
 
 		for (int i = 0; i < starts.size(); ++i) {
-			GenomicRegion region = GenomicRegion.create(gene.mRegion.mChr, 
+			GenomicRegion region = GenomicRegion.create(gene.mChr, 
 					starts.get(i), 
 					ends.get(i), 
-					gene.mRegion.mStrand);
+					gene.mStrand);
 
 			Gene g = addAttributes(type, region, attributeMap);
 
@@ -303,7 +294,7 @@ public class GTB2Parser extends GTBParser {
 
 		return ret;
 	}
-	
+
 	@Override
 	public GeneParser create(GeneParser parser) {
 		return new GTB2Parser(parser);
@@ -313,7 +304,7 @@ public class GTB2Parser extends GTBParser {
 			final List<String> tokens) {
 		return getAttributes(splitter, tokens.get(13));
 	}
-	
+
 	private static List<String> getTags(Splitter splitter, final List<String> tokens) {
 		return TextUtils.removeNA(splitter.text(tokens.get(14)));
 	}

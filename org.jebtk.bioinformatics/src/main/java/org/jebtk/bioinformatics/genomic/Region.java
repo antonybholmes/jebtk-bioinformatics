@@ -52,17 +52,17 @@ public class Region implements Comparable<Region>, FormattedTxt {
 	/**
 	 * The member start.
 	 */
-	protected final int mStart;
+	public final int mStart;
 
 	/**
 	 * The member end.
 	 */
-	protected final int mEnd;
+	public final int mEnd;
 
 	/**
 	 * The member length.
 	 */
-	protected final int mLength;
+	public final int mLength;
 
 	/**
 	 * Instantiates a new region.

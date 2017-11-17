@@ -35,6 +35,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import org.jebtk.bioinformatics.genomic.Chromosome;
 import org.jebtk.bioinformatics.genomic.GenomicRegion;
@@ -59,7 +61,7 @@ import org.slf4j.LoggerFactory;
  * @author Antony Holmes Holmes
  *
  */
-public class GenomeAssemblyExt2BitMem extends GenomeAssemblyDir {
+public class GenomeAssemblyExt2BitZip extends GenomeAssemblyDir {
 
 	private static interface Process1Bit {
 		/**
@@ -99,16 +101,8 @@ public class GenomeAssemblyExt2BitMem extends GenomeAssemblyDir {
 
 
 	public static final Logger LOG = 
-			LoggerFactory.getLogger(GenomeAssemblyExt2BitMem.class);
+			LoggerFactory.getLogger(GenomeAssemblyExt2BitZip.class);
 
-
-	/** The m N file map. */
-	protected Map<Chromosome, Path> mNFileMap = 
-			new HashMap<Chromosome, Path>();
-
-	/** The m mask file map. */
-	protected Map<Chromosome, Path> mMaskFileMap = 
-			new HashMap<Chromosome, Path>();
 
 	// Use fixed size arrays to cache chromosome features. Arrays are set
 	// to be larger than the amount of data that will be cached.
@@ -130,6 +124,10 @@ public class GenomeAssemblyExt2BitMem extends GenomeAssemblyDir {
 	private char[] mCharBuf = new char[MAX_SIZE_BP];
 
 	private Chromosome mChr;
+	
+	/** How many 'N' were read */
+	private int mNL = 0;
+	private int mML = 0;
 
 	/**
 	 * Directory containing genome Paths which must be of the form
@@ -138,13 +136,13 @@ public class GenomeAssemblyExt2BitMem extends GenomeAssemblyDir {
 	 *
 	 * @param directory the directory
 	 */
-	public GenomeAssemblyExt2BitMem(Path directory) {
-		super(directory);
+	public GenomeAssemblyExt2BitZip(Path zip) {
+		super(zip);
 	}
 
 	@Override
 	public String getName() {
-		return "2bit-ext-mem";
+		return "2bit-ext-zip";
 	}
 
 	@Override
@@ -194,54 +192,8 @@ public class GenomeAssemblyExt2BitMem extends GenomeAssemblyDir {
 			GenomicRegion region,
 			boolean displayUpper,
 			RepeatMaskType repeatMaskType) throws IOException {
-		Chromosome chr = region.getChr();
-
-		// Cache file names
-		if (!mFileMap.containsKey(chr)) {
-			addFile(chr, 
-					".dna.2bit", 
-					mDirectory,
-					mFileMap);
-
-			addFile(chr, 
-					".n.1bit", 
-					mDirectory,
-					mNFileMap);
-
-			addFile(chr, 
-					".mask.1bit", 
-					mDirectory,
-					mMaskFileMap);
-		}
-
 		return new SequenceRegion(region, 
 				getSequence2Bit(region, displayUpper, repeatMaskType));
-	}
-
-	private static boolean addFile(Chromosome chr, 
-			String ext, 
-			Path dir,
-			Map<Chromosome, Path> fileMap) {
-		Path file;
-
-		file = dir.resolve(chr + ext);
-
-		if (FileUtils.exists(file)) {
-			fileMap.put(chr, file);
-
-			return true;
-		} else {
-			// Look for the gz form
-			file = dir.resolve(chr + ext + ".gz");
-
-			if (FileUtils.exists(file)) {
-				fileMap.put(chr, file);
-
-				return true;
-			} else {
-				return false;
-			}
-		}
 	}
 
 	/**
@@ -272,9 +224,9 @@ public class GenomeAssemblyExt2BitMem extends GenomeAssemblyDir {
 		if (mChr == null || !chr.equals(mChr)) {
 			LOG.info("Caching chromosome {}...", chr);
 
-			cacheEncodedBases(chr, mFileMap, mChrBuf);
-			cacheEncodedBases(chr, mNFileMap, mChrNBuf);
-			cacheEncodedBases(chr, mMaskFileMap, mChrMaskBuf);
+			cacheEncodedBases(mDirectory, chr, ".dna.2bit", mChrBuf);
+			mNL = cacheEncodedBases(mDirectory, chr, ".n.1bit", mChrNBuf);
+			mML = cacheEncodedBases(mDirectory, chr, ".mask.1bit", mChrMaskBuf);
 
 			mChr = chr;
 		}
@@ -344,13 +296,20 @@ public class GenomeAssemblyExt2BitMem extends GenomeAssemblyDir {
 	 * @return
 	 * @throws IOException
 	 */
-	private static int cacheEncodedBases(Chromosome chr, 
-			Map<Chromosome, Path> fileMap,
+	private static int cacheEncodedBases(Path zip,
+			Chromosome chr, 
+			String ext,
 			byte[] buf) throws IOException {
 		int n = -1;
 
-		if (fileMap.containsKey(chr)) {
-			InputStream in = FileUtils.newBufferedInputStream(fileMap.get(chr));
+		String file = chr + ext;
+		
+		ZipFile zipFile = FileUtils.newZipFile(zip);
+		
+		ZipEntry zipEntry = zipFile.getEntry(file);
+		
+		if (zipEntry != null) {
+			InputStream in = FileUtils.newBufferedInputStream(zipFile, zipEntry);
 
 			try {
 				n = in.read(buf);
@@ -361,72 +320,6 @@ public class GenomeAssemblyExt2BitMem extends GenomeAssemblyDir {
 
 		return n;
 	}
-
-	/**
-	 * Load a genome from file into memory to speed up finding the dna.
-	 * 
-	 * @param chr
-	 * @param fileMap
-	 * @param buf
-	 * @return 
-	 * @throws IOException
-	 */
-	/*
-	private static int cacheDna(Chromosome chr, 
-			Map<Chromosome, Path> fileMap,
-			byte[] buf,
-			char[] dnaBuf) throws IOException {
-		int n = cacheEncodedBases(chr, fileMap, buf);
-
-		if (n == -1) {
-			return -1;
-		}
-
-		// Each byte contains 4 bases
-		n *= 4;
-
-		int v = 0;
-
-		// the offset to start reading from
-		int b = 0;
-		int bi = 0;
-		int block;
-
-		for (int i = 0; i < n; ++i) {
-			block = b % 4;
-
-			switch (block) {
-			case 0:
-				v = (buf[bi] >> 6);
-				break;
-			case 1:
-				v = (buf[bi] >> 4);
-				break;
-			case 2:
-				v = (buf[bi] >> 2);
-				break;
-			default:
-				v = buf[bi];
-				// We are at the end of a byte so the next read must skip to
-				// the next byte in the array
-				++bi;
-				break;
-			}
-
-			// AND with 3 to get the lowest 2 bits
-			v &= 3;
-
-			char c = toChar(v);
-
-
-			dnaBuf[i] = c;
-
-			++b;
-		}
-
-		return n;
-	}
-	*/
 
 	/**
 	 * Convert byte to DNA bases where the byte represents 4 bases.
@@ -558,7 +451,7 @@ public class GenomeAssemblyExt2BitMem extends GenomeAssemblyDir {
 			int start,
 			int end,
 			byte[] ret) throws IOException {
-		if (!mNFileMap.containsKey(chr)) {
+		if (mNL == 0) {
 			return -1;
 		}
 
@@ -582,7 +475,7 @@ public class GenomeAssemblyExt2BitMem extends GenomeAssemblyDir {
 			int start,
 			int end,
 			byte[] ret) throws IOException {
-		if (!mMaskFileMap.containsKey(chr)) {
+		if (mML == 0) {
 			return -1;
 		}
 

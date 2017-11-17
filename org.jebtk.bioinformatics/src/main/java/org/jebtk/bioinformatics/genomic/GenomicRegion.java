@@ -69,12 +69,12 @@ public class GenomicRegion extends Region {
 	/**
 	 * The member chr.
 	 */
-	protected final Chromosome mChr;
+	public final Chromosome mChr;
 
 	/**
 	 * The member strand.
 	 */
-	protected final Strand mStrand;
+	public final Strand mStrand;
 
 
 	//protected final String mType;

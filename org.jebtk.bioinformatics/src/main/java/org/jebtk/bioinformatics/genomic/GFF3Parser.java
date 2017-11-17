@@ -46,10 +46,9 @@ public class GFF3Parser extends GeneParser {
 	}
 
 	@Override
-	public void parse(Path file, 
+	protected void parse(Path file, 
 			BufferedReader reader, 
-			Genes genes,
-			Chromosome chr) throws IOException {
+			Genes genes) throws IOException {
 		String line;
 		List<String> tokens;
 		GeneType type;
@@ -68,7 +67,7 @@ public class GFF3Parser extends GeneParser {
 
 				tokens = splitter.text(line);
 
-				chr = ChromosomeService.getInstance().parse(tokens.get(0));
+				Chromosome chr = ChromosomeService.getInstance().parse(tokens.get(0));
 				type = GeneType.parse(tokens.get(2));
 				start = Integer.parseInt(tokens.get(3));
 				end = Integer.parseInt(tokens.get(4));
@@ -107,7 +106,7 @@ public class GFF3Parser extends GeneParser {
 						// Add to the current gene
 
 						if (mKeepExons) {
-							gene.addExon(region);
+							gene.add(exon);
 						}
 
 						exon.setParent(gene);
@@ -269,7 +268,7 @@ public class GFF3Parser extends GeneParser {
 		FixedGapSearch<Gene> ret = new FixedGapSearch<Gene>(1000);
 
 		for (Gene gene : features) {
-			ret.add(gene.getRegion(), gene);
+			ret.add(gene, gene);
 		}
 
 		return ret;

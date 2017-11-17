@@ -67,10 +67,9 @@ public class GTB1Parser extends GTBParser {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	@Override
-	public void parse(Path file, 
+	protected void parse(Path file, 
 			BufferedReader reader, 
-			Genes genes,
-			Chromosome chr) throws IOException {
+			Genes genes) throws IOException {
 		LOG.info("Parsing GTB file {}, levels: {}...", file, mLevels);
 
 		String line;
@@ -95,7 +94,7 @@ public class GTB1Parser extends GTBParser {
 
 			tokens = Splitter.onTab().text(line);
 
-			chr = Chromosome.parse(tokens.get(0));
+			Chromosome chr = Chromosome.parse(tokens.get(0));
 
 			// Skip random and unofficial chromosomes
 			if (chr.toString().contains("_")) {
@@ -171,18 +170,19 @@ public class GTB1Parser extends GTBParser {
 							ends.get(i), 
 							strand);
 
+					Gene exon = addAttributes(GeneType.EXON, region, attributeMap);
+					
 					if (mKeepExons) {
 						if (gene != null) {
-							gene.addExon(region);
+							gene.add(exon);
 						}
 					}
 
 					if (hasExonLevel) {
-						Gene g = addAttributes(GeneType.EXON, region, attributeMap);
+						
+						exon.setParent(gene);
 
-						g.setParent(gene);
-
-						genes.add(g);
+						genes.add(exon);
 					}
 				}
 			}

@@ -134,6 +134,11 @@ public class FixedGapSearch<T> extends GapSearch<T> {
 	public int size() {
 		return mSize;
 	}
+	
+	@Override
+	public boolean contains(Chromosome chr) {
+		return mFeatures.containsKey(chr);
+	}
 
 	/* (non-Javadoc)
 	 * @see edu.columbia.rdf.lib.bioinformatics.gapsearch.GapSearch#getFeatureList()

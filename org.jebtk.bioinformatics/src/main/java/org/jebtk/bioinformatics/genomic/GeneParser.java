@@ -53,7 +53,7 @@ public abstract class GeneParser {
 			LoggerFactory.getLogger(GeneParser.class);
 
 	protected Set<GeneType> mLevels = new HashSet<GeneType>();
-	
+
 	/** Whether to add exons to gene structure */
 	protected boolean mKeepExons = true;
 	protected Set<String> mMatchTags = new HashSet<String>();
@@ -69,19 +69,19 @@ public abstract class GeneParser {
 		mMatchTags.addAll(parser.mMatchTags);
 		mExcludeTags.addAll(parser.mExcludeTags);
 	}
-	
+
 	public GeneParser setKeepExons(boolean keep) {
 		GeneParser parser = create(this);
-		
+
 		parser._setKeepExons(keep);
-		
+
 		return parser;
 	}
-	
+
 	protected void _setKeepExons(boolean keep) {
 		mKeepExons = keep;
 	}
-	
+
 	/**
 	 * Exclude entries matching given tags.
 	 * 
@@ -100,7 +100,7 @@ public abstract class GeneParser {
 
 		return parser;
 	}
-	
+
 	public GeneParser excludeByTag(Collection<String> excludeTags) {
 		GeneParser parser = create(this);
 
@@ -120,7 +120,7 @@ public abstract class GeneParser {
 
 		return parser;
 	}
-	
+
 	public GeneParser setLevels(GeneType level, GeneType... levels) {
 		GeneParser parser = create(this);
 
@@ -128,16 +128,16 @@ public abstract class GeneParser {
 
 		return parser;
 	}
-	
+
 	protected void _setLevels(GeneType level, GeneType... levels) {
 		mLevels.clear();
 		mLevels.add(level);
-		
+
 		for (GeneType l : levels) {
 			mLevels.add(l);
 		}
 	}
-	
+
 	public GeneParser setLevels(Collection<GeneType> levels) {
 		GeneParser parser = create(this);
 
@@ -145,13 +145,13 @@ public abstract class GeneParser {
 
 		return parser;
 	}
-	
+
 	protected void _setLevels(Collection<GeneType> levels) {
 		mLevels.clear();
-		
+
 		_addLevels(levels);
 	}
-	
+
 	public GeneParser addLevels(Collection<GeneType> levels) {
 		GeneParser parser = create(this);
 
@@ -159,11 +159,11 @@ public abstract class GeneParser {
 
 		return parser;
 	}
-	
+
 	protected void _addLevels(Collection<GeneType> levels) {
 		mLevels.addAll(levels);
 	}
-	
+
 	public abstract GeneParser create(GeneParser parser);
 
 	/**
@@ -174,31 +174,21 @@ public abstract class GeneParser {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public Genes parse(Path file) throws IOException {
-		return parse(file, (Chromosome)null);
-	}
-	
-	public Genes parse(Path file, Chromosome chr) throws IOException {
 		Genes genes = new Genes();
-		
+
 		parse(file, genes);
-		
+
 		return genes;
 	}
-	
-	public Genes parse(Path file, Genes genes) throws IOException {
-		return parse(file, genes, null);
-	}
-	
-	public Genes parse(Path file, Genes genes, Chromosome chr) throws IOException {
+
+	public void parse(Path file, Genes genes) throws IOException {
 		BufferedReader reader = FileUtils.newBufferedReader(file);
 
 		try {
-			parse(file, reader, genes, chr);
+			parse(file, reader, genes);
 		} finally {
 			reader.close();
 		}
-
-		return genes;
 	}
 
 	/**
@@ -208,38 +198,107 @@ public abstract class GeneParser {
 	 * @return the genes
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public Genes parse(Path file, BufferedReader reader) throws IOException {
+	protected Genes parse(Path file, BufferedReader reader) throws IOException {
 		Genes genes = new Genes();
-		
+
 		parse(file, reader, genes);
-		
+
 		return genes;
 	}
-	
-	public void parse(Path file, BufferedReader reader, Genes genes) throws IOException {
-		parse(file, reader, genes, null);
+
+	protected void parse(Path file, 
+			BufferedReader reader, 
+			Genes genes) throws IOException {
+		// Do nothin
 	}
-	
-	public abstract void parse(Path file, 
+
+
+
+	public Genes parse(Path file, Chromosome chr) throws IOException {
+		Genes genes = new Genes();
+
+		parse(file, genes, chr);
+
+		return genes;
+	}
+
+	protected Genes parse(Path file, BufferedReader reader, Chromosome chr) throws IOException {
+		Genes genes = new Genes();
+
+		parse(file, reader, genes, chr);
+
+		return genes;
+	}
+
+	public void parse(Path file, Genes genes, Chromosome chr) throws IOException {
+		BufferedReader reader = FileUtils.newBufferedReader(file);
+
+		try {
+			parse(file, reader, genes, chr);
+		} finally {
+			reader.close();
+		}
+	}
+
+	protected void parse(Path file, 
 			BufferedReader reader, 
 			Genes genes,
-			Chromosome chr) throws IOException;
-		
-	
-	
+			Chromosome chr) throws IOException {
+		parse(file, reader, genes);
+	}
+
+
+	public Genes parse(Path file, Chromosome chr, int window) throws IOException {
+		Genes genes = new Genes();
+
+		parse(file, genes, chr, window);
+
+		return genes;
+	}
+
+	protected Genes parse(Path file, 
+			BufferedReader reader, 
+			Chromosome chr, 
+			int window) throws IOException {
+		Genes genes = new Genes();
+
+		parse(file, reader, genes, chr, window);
+
+		return genes;
+	}
+
+	public void parse(Path file, Genes genes, Chromosome chr, int window) throws IOException {
+		BufferedReader reader = FileUtils.newBufferedReader(file);
+
+		try {
+			parse(file, reader, genes, chr, window);
+		} finally {
+			reader.close();
+		}
+	}
+
+	protected void parse(Path file, 
+			BufferedReader reader, 
+			Genes genes,
+			Chromosome chr,
+			int window) throws IOException {
+		parse(file, reader, genes, chr);
+	}
+
+
 	public Map<String, Set<String>> idMap(Path file,
 			String id1,
 			String id2) throws IOException {
 		BufferedReader reader = FileUtils.newBufferedReader(file);
 
 		Map<String, Set<String>> ret;
-		
+
 		try {
 			ret = idMap(file, reader, id1, id2);
 		} finally {
 			reader.close();
 		}
-		
+
 		return ret;
 	}
 
@@ -254,15 +313,15 @@ public abstract class GeneParser {
 			BufferedReader reader,
 			String id1,
 			String id2) throws IOException; 
-	
+
 	public boolean containsLevel(GeneType level) {
 		if (mLevels.size() == 0) {
 			return true;
 		}
-		
+
 		return mLevels.contains(level);
 	}
-	
+
 	public static Gene addAttributes(GeneType type,
 			final GenomicRegion region,
 			final IterMap<String, String> attributeMap) {
@@ -273,23 +332,13 @@ public abstract class GeneParser {
 		for (String id : attributeMap) {
 			String name = attributeMap.get(id);
 
-			if (id.contains("transcript")) {
-				gene.setTranscriptId(name);
-			} else {
-				// Gene name is the same as symbol
-				if (id.contains("gene_name") ||
-						id.contains("gene_id")) {
-					gene.setSymbol(name);
-				}
-				
-				gene.setId(id, name);
-			}
+			gene.setId(id, name);
 		}
 
 		// If there are any tags
 
 
-		//genes.add(gene.mRegion, gene);
+		//genes.add(gene, gene);
 
 		return gene;
 	}

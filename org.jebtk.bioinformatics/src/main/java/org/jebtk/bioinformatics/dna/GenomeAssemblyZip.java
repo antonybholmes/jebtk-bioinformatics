@@ -54,85 +54,27 @@ import org.jebtk.core.io.PathUtils;
  * @author Antony Holmes Holmes
  *
  */
-public class GenomeAssemblyLocal extends GenomeAssembly {
+public class GenomeAssemblyZip extends GenomeAssemblyFS {
 
-	/** The m map. */
-	protected Map<String, GenomeAssembly> mMap = 
-			new HashMap<String, GenomeAssembly>();
-	
-	/** The m directory. */
-	private Path mDirectory;
-
-
-	/**
-	 * Directory containing genome Paths which must be of the form
-	 * chr.n.txt. Each Path must contain exactly one line consisting
-	 * of the entire chromosome.
-	 *
-	 * @param directory the directory
-	 */
-	public GenomeAssemblyLocal(Path directory) {
-		mDirectory = directory;
+	public GenomeAssemblyZip(Path directory) {
+		super(directory);
 	}
-	
+
 	@Override
 	public String getName() {
-		return "local";
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.jebtk.bioinformatics.genome.GenomeAssembly#getGenomes()
-	 */
-	@Override
-	public List<String> getGenomes() throws IOException {
-		
-		List<Path> files = FileUtils.lsdir(mDirectory);
-		
-		List<String> ret = new ArrayList<String>(files.size());
-		
-		for (Path file : files) {
-			ret.add(PathUtils.getName(file));
-		}
-		
-		return ret;
-	}
- 
-	/* (non-Javadoc)
-	 * @see edu.columbia.rdf.lib.bioinformatics.genome.GenomeAssembly#getSequence(edu.columbia.rdf.lib.bioinformatics.genome.GenomicRegion, boolean, edu.columbia.rdf.lib.bioinformatics.genome.RepeatMaskType)
-	 */
-	@Override
-	public final SequenceRegion getSequence(String genome,
-			GenomicRegion region,
-			boolean displayUpper,
-			RepeatMaskType repeatMaskType) throws IOException {
-		createGenomeEntry(genome, mDirectory, mMap);
-
-		return mMap.get(genome).getSequence(genome,
-				region,
-				displayUpper,
-				repeatMaskType);
+		return "zip";
 	}
 	
 	@Override
-	public List<SequenceRegion> getSequences(String genome,
-			Collection<GenomicRegion> regions,
-			boolean displayUpper,
-			RepeatMaskType repeatMaskType) throws IOException {
-		createGenomeEntry(genome, mDirectory, mMap);
-
-		return mMap.get(genome).getSequences(genome,
-				regions,
-				displayUpper,
-				repeatMaskType);
-	}
-	
-	private static void createGenomeEntry(String genome,
+	protected void createGenomeEntry(String genome,
 			Path dir,
 			Map<String, GenomeAssembly> map) {
 		if (!map.containsKey(genome)) {
 			Path d = dir.resolve(genome);
 
-			map.put(genome, new GenomeAssemblyExt2BitMem(d)); //new GenomeAssemblyExt2Bit(dir));
+			Path zip = d.resolve(genome + "_dna.zip");
+			
+			map.put(genome, new GenomeAssemblyExt2BitZip(zip));
 		}
 	}
 }

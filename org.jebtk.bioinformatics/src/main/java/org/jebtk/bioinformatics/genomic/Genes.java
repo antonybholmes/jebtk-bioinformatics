@@ -31,19 +31,21 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.jebtk.bioinformatics.gapsearch.BinaryGapSearch;
 import org.jebtk.bioinformatics.gapsearch.GapSearch;
 import org.jebtk.core.collections.DefaultHashMap;
-import org.jebtk.core.collections.DefaultHashMapCreator;
 import org.jebtk.core.collections.IterMap;
+import org.jebtk.core.collections.TreeSetCreator;
 import org.jebtk.core.collections.UniqueArrayListCreator;
 import org.jebtk.core.io.FileUtils;
-import org.jebtk.core.io.Io;
 import org.jebtk.core.io.PathUtils;
+import org.jebtk.core.io.TokenFunction;
 import org.jebtk.core.text.TextUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -112,8 +114,12 @@ public class Genes extends BinaryGapSearch<Gene> {
 	/**
 	 * The member symbol map.
 	 */
-	private IterMap<String, IterMap<String, List<Gene>>> mIdMap = 
-			DefaultHashMap.create(new DefaultHashMapCreator<String, List<Gene>>(new UniqueArrayListCreator<Gene>()));
+
+	private IterMap<String, Set<String>> mTypeMap = 
+			DefaultHashMap.create(new TreeSetCreator<String>());
+
+	private IterMap<String, List<Gene>> mIdMap = 
+			DefaultHashMap.create(new UniqueArrayListCreator<Gene>());
 
 	/**
 	 * The member ref seq map.
@@ -131,9 +137,9 @@ public class Genes extends BinaryGapSearch<Gene> {
 	}
 
 	public void add(Gene gene) {
-		add(gene.mRegion, gene);
+		add(gene, gene);
 	}
-	
+
 	@Override
 	public void add(GenomicRegion region, Gene gene) {
 		super.add(region, gene);
@@ -148,10 +154,12 @@ public class Genes extends BinaryGapSearch<Gene> {
 		} else {
 			super.add(region, gene);
 		}
-		*/
+		 */
 
-		for (String id : gene.getIds()) {
-			mIdMap.get(id).get(gene.getId(id).toUpperCase()).add(gene);
+		for (String id : gene.getIdTypes()) {
+			String name = gene.getId(id);
+			mTypeMap.get(id).add(name);
+			mIdMap.get(sanitize(name)).add(gene);
 		}
 	}
 
@@ -165,26 +173,22 @@ public class Genes extends BinaryGapSearch<Gene> {
 			// Find the representative gene e.g. variant 1
 			//
 
-			Map<String, List<Gene>> map = mIdMap.get(Gene.SYMBOL_TYPE);
+			Set<String> symbols = mTypeMap.get(Gene.SYMBOL_TYPE);
 
-			for (String name : map.keySet()) {
-				if (map.get(name).size() == 1) {
-					// no variants so add this as being representative
+			for (String name : symbols) {
+				List<Gene> genes = mIdMap.get(sanitize(name));
 
-					mSymbolMainVariant.put(name, map.get(name).iterator().next());
-				} else {
-					// try and find variant 1
+				// try and find variant 1
 
-					int maxWidth = 0;
+				int maxWidth = 0;
 
-					for (Gene gene : map.get(name)) {
-						int width = gene.mRegion.mLength;
+				for (Gene gene : genes) {
+					int width = gene.mLength;
 
-						if (width > maxWidth) {
-							mSymbolMainVariant.put(name, gene);
+					if (width > maxWidth) {
+						mSymbolMainVariant.put(name, gene);
 
-							maxWidth = width;
-						}
+						maxWidth = width;
 					}
 				}
 			}
@@ -206,7 +210,7 @@ public class Genes extends BinaryGapSearch<Gene> {
 	 * @return the gene
 	 */
 	public Gene lookup(String id) {
-		Gene gene = lookupByRefSeq(id);
+		Gene gene = getGene(id);
 
 		if (gene != null) {
 			return gene;
@@ -221,14 +225,8 @@ public class Genes extends BinaryGapSearch<Gene> {
 		return null;
 	}
 
-	/**
-	 * Lookup by ref seq.
-	 *
-	 * @param refseq the refseq
-	 * @return the gene
-	 */
-	public Gene lookupByRefSeq(String refseq) {
-		Iterable<Gene> genes = lookup(Gene.REFSEQ_TYPE, refseq.toUpperCase());
+	public Gene getGene(String symbol) {
+		Iterable<Gene> genes = getGenes(symbol);
 
 		if (genes.iterator().hasNext()) {
 			return genes.iterator().next();
@@ -238,34 +236,14 @@ public class Genes extends BinaryGapSearch<Gene> {
 	}
 
 	/**
-	 * Lookup by entrez.
-	 *
-	 * @param entrez the entrez
-	 * @return the sets the
-	 */
-	public Iterable<Gene> lookupByEntrez(String entrez) {
-		return lookup(Gene.ENTREZ_TYPE, entrez.toUpperCase());
-	}
-
-	/**
-	 * Lookup by symbol.
-	 *
-	 * @param symbol the symbol
-	 * @return the sets the
-	 */
-	public Iterable<Gene> lookupBySymbol(String symbol) {
-		return lookup(Gene.SYMBOL_TYPE, symbol);
-	}
-
-	/**
 	 * Lookup.
 	 *
 	 * @param type the type
 	 * @param symbol the symbol
 	 * @return the collection
 	 */
-	public Iterable<Gene> lookup(String type, String symbol) {
-		return mIdMap.get(type).get(symbol.toUpperCase());
+	public Collection<Gene> getGenes(String symbol) {
+		return mIdMap.get(sanitize(symbol));
 	}
 
 
@@ -275,7 +253,7 @@ public class Genes extends BinaryGapSearch<Gene> {
 	 * @param region the region
 	 * @return the list
 	 */
-	public List<Gene> findGenes(GenomicRegion region) {
+	public Collection<Gene> findGenes(GenomicRegion region) {
 		return getOverlappingFeatures(region, 10).toList();
 	}
 
@@ -285,7 +263,7 @@ public class Genes extends BinaryGapSearch<Gene> {
 	 * @param region the region
 	 * @return the list
 	 */
-	public List<Gene> findClosestGenes(GenomicRegion region) {
+	public Collection<Gene> findClosestGenes(GenomicRegion region) {
 		return getClosestFeatures(region);
 	}
 
@@ -295,10 +273,10 @@ public class Genes extends BinaryGapSearch<Gene> {
 	 * @param region the region
 	 * @return the list
 	 */
-	public List<Gene> findClosestGenesByTss(GenomicRegion region) {
-		List<Gene> genes = findClosestGenes(region); //findGenes(region);
+	public Collection<Gene> findClosestGenesByTss(GenomicRegion region) {
+		Collection<Gene> genes = findClosestGenes(region); //findGenes(region);
 
-		List<Gene> ret = new ArrayList<Gene>(genes.size());
+		List<Gene> ret = new ArrayList<Gene>();
 
 		int minD = Integer.MAX_VALUE;
 
@@ -357,7 +335,7 @@ public class Genes extends BinaryGapSearch<Gene> {
 	 * @return the ids
 	 */
 	public Iterable<String> getIds(String type) {
-		return mIdMap.get(type).keySet();
+		return mTypeMap.get(type);
 	}
 
 	public Iterable<String> getSymbols() {
@@ -395,67 +373,61 @@ public class Genes extends BinaryGapSearch<Gene> {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public static GapSearch<Gene> load(BufferedReader reader) throws IOException {
-		Genes ret = new Genes();
+		final Genes ret = new Genes();
 
-		String line;
-		List<String> tokens;
+		FileUtils.tokenize(reader, new TokenFunction(){
 
-		//List<Gene> genes = new ArrayList<Gene>();
+			@Override
+			public void parse(List<String> tokens) {
+				// TODO Auto-generated method stub
 
-		//Map<Chromosome, Set<Integer>> positionMap = 
-		//		new HashMap<Chromosome, Set<Integer>>();
+				String refseq = tokens.get(1);
+				String entrez = tokens.get(2);
+				String symbol = tokens.get(5);
+				Chromosome chr = Chromosome.parse(tokens.get(8));
+				Strand strand = Strand.parse(tokens.get(9)); //.charAt(0);
+				// Because of the UCSC using zero based start and one
+				// based end, we need to increment the start by 1
+				int start = Integer.parseInt(tokens.get(10)) + 1;
+				int end = Integer.parseInt(tokens.get(11));
 
-		// skip header
-		line = reader.readLine();
+				Gene gene = Gene.create(GeneType.TRANSCRIPT, 
+						GenomicRegion.create(chr, start, end, strand))
+						.setSymbol(symbol)
+						.setRefseq(refseq)
+						.setEntrez(entrez);
 
-		while ((line = reader.readLine()) != null) {
-			if (Io.isEmptyLine(line)) {
-				continue;
-			}
+				List<Integer> starts = 
+						TextUtils.splitInts(tokens.get(13), TextUtils.COMMA_DELIMITER);
 
-			tokens = TextUtils.tabSplit(line);
-
-			String refseq = tokens.get(1);
-			String entrez = tokens.get(2);
-			String symbol = tokens.get(5);
-			Chromosome chr = Chromosome.parse(tokens.get(8));
-			Strand strand = Strand.parse(tokens.get(9)); //.charAt(0);
-			// Because of the UCSC using zero based start and one
-			// based end, we need to increment the start by 1
-			int start = Integer.parseInt(tokens.get(10)) + 1;
-			int end = Integer.parseInt(tokens.get(11));
-
-			Gene gene = Gene.create(GenomicRegion.create(chr, start, end, strand))
-					.setSymbol(symbol)
-					.setRefseq(refseq)
-					.setEntrez(entrez);
-
-			List<Integer> starts = 
-					TextUtils.splitInts(tokens.get(13), TextUtils.COMMA_DELIMITER);
-
-			List<Integer> ends = 
-					TextUtils.splitInts(tokens.get(14), TextUtils.COMMA_DELIMITER);
+				List<Integer> ends = 
+						TextUtils.splitInts(tokens.get(14), TextUtils.COMMA_DELIMITER);
 
 
-			for (int i = 0; i < starts.size(); ++i) {
-				// Again correct for the ucsc
-				GenomicRegion exon = 
-						GenomicRegion.create(chr, starts.get(i) + 1, ends.get(i));
+				for (int i = 0; i < starts.size(); ++i) {
+					// Again correct for the ucsc
+					GenomicRegion exon = 
+							GenomicRegion.create(chr, starts.get(i) + 1, ends.get(i));
 
-				gene.addExon(exon);
-			}
+					gene.addExon(exon);
+				}
 
-			//mRefSeqMap.put(refseq.toUpperCase(), gene);
-			//mEntrezMap.get(entrez.toUpperCase()).add(gene);
-			///mSymbolMap.get(symbol.toUpperCase()).add(gene);
-			//mapGene(gene, ret.mSymbolMap);
+				//mRefSeqMap.put(refseq.toUpperCase(), gene);
+				//mEntrezMap.get(entrez.toUpperCase()).add(gene);
+				///mSymbolMap.get(symbol.toUpperCase()).add(gene);
+				//mapGene(gene, ret.mSymbolMap);
 
-			// add the start and end to the positionMap
-			ret.add(gene.mRegion, gene);
-		}
+				// add the start and end to the positionMap
+				ret.add(gene, gene);
+			}});
 
 		return ret;
 	}
+
+	protected static String sanitize(String name) {
+		return name.toUpperCase();
+	}
+
 
 	public static GFF3Parser gff3Parser() {
 		return new GFF3Parser();
@@ -465,9 +437,8 @@ public class Genes extends BinaryGapSearch<Gene> {
 		return new GTB1Parser();
 	}
 
-	
 	public static GTB2Parser gtb2Parser() {
 		return new GTB2Parser();
 	}
-	
+
 }

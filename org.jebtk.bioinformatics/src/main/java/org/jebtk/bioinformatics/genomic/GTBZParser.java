@@ -44,18 +44,18 @@ import org.jebtk.core.io.FileUtils;
  *
  * @author Antony Holmes Holmes
  */
-public class GTB3Parser extends GTB2Parser {
-
-	public GTB3Parser() {
-		//_setLevels(GeneType.GENE);
+public class GTBZParser extends GTB2Parser {
+	
+	public GTBZParser() {
+		// Do nothing
 	}
-
-	public GTB3Parser(GeneParser parser) {
+	
+	public GTBZParser(GeneParser parser) {
 		super(parser);
 	}
 
 	@Override
-	public Genes parse(Path file, Genes genes, Chromosome chr) throws IOException {
+	public void parse(Path file, Genes genes) throws IOException {
 
 		final ZipFile zipFile = new ZipFile(file.toFile());
 
@@ -65,27 +65,49 @@ public class GTB3Parser extends GTB2Parser {
 			while (entries.hasMoreElements()) {
 				final ZipEntry entry = entries.nextElement();
 
-				if (entry.getName().contains(chr.getName())) {
-					BufferedReader reader = FileUtils.newBufferedReader(zipFile, entry);
+				if (entry.getName().contains("gtb3")) {
+					BufferedReader reader = 
+							FileUtils.newBufferedReader(zipFile, entry);
 
 					try {
-						parse(file, reader, genes, chr);
+						parse(file, reader, genes);
 					} finally {
 						reader.close();
 					}
-					
-					break;
 				}
 			}
 		} finally {
 			zipFile.close();
 		}
+	}
+	
+	@Override
+	public void parse(Path file, Genes genes, Chromosome chr) throws IOException {
 
-		return genes;
+		final ZipFile zipFile = new ZipFile(file.toFile());
+
+		try {
+			ZipEntry entry = zipFile.getEntry(chr.getName() + ".gtb3");
+			
+			if (entry != null) {
+				BufferedReader reader = 
+						FileUtils.newBufferedReader(zipFile, entry);
+
+				try {
+					parse(file, reader, genes, chr);
+				} finally {
+					reader.close();
+				}
+			}
+		} finally {
+			zipFile.close();
+		}
 	}
 	
 	@Override
 	public GeneParser create(GeneParser parser) {
-		return new GTB3Parser(parser);
+		GTBZParser ret = new GTBZParser(parser);
+		
+		return ret;
 	}
 }

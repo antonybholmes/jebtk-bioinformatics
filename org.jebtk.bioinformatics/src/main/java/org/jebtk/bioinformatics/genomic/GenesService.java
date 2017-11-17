@@ -113,6 +113,10 @@ public class GenesService implements Iterable<String> {
 		
 		return mGenesMap.get(genome).get(db);
 	}
+	
+	public boolean containsGenes(String genome, String db) {
+		return mGenesMap.containsKey(genome) && mGenesMap.get(genome).containsKey(db);
+	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Iterable#iterator()

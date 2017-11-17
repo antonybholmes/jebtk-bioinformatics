@@ -2,7 +2,7 @@ package org.jebtk.bioinformatics.genomic;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.List;
+import java.util.Collection;
 
 /**
  * Only load genes when requested.
@@ -40,28 +40,28 @@ public class LazyGenes extends Genes {
 	}
 
 	@Override
-	public Iterable<Gene> lookup(String type, String symbol) {
+	public Collection<Gene> getGenes(String symbol) {
 		autoLoad();
 		
-		return super.lookup(type, symbol);
+		return super.getGenes(symbol);
 	}
 
 	@Override
-	public List<Gene> findGenes(GenomicRegion region) {
+	public Collection<Gene> findGenes(GenomicRegion region) {
 		autoLoad();
 		
 		return super.findGenes(region);
 	}
 
 	@Override
-	public List<Gene> findClosestGenes(GenomicRegion region) {
+	public Collection<Gene> findClosestGenes(GenomicRegion region) {
 		autoLoad();
 		
 		return super.findClosestGenes(region);
 	}
 
 	@Override
-	public List<Gene> findClosestGenesByTss(GenomicRegion region) {
+	public Collection<Gene> findClosestGenesByTss(GenomicRegion region) {
 		autoLoad();
 		
 		return super.findClosestGenesByTss(region);
