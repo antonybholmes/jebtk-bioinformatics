@@ -71,6 +71,8 @@ public class DnaService extends ChangeListeners {
 	 */
 	private static final Logger LOG = 
 			LoggerFactory.getLogger(DnaService.class);
+
+
 	
 	
 	/** The m base A color. */

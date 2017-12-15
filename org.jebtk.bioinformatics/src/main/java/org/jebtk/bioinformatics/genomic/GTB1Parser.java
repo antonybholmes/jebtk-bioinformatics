@@ -94,7 +94,9 @@ public class GTB1Parser extends GTBParser {
 
 			tokens = Splitter.onTab().text(line);
 
-			Chromosome chr = Chromosome.parse(tokens.get(0));
+			Chromosome chr = ChromosomeService
+					.getInstance()
+					.guess(file, tokens.get(0));
 
 			// Skip random and unofficial chromosomes
 			if (chr.toString().contains("_")) {
@@ -218,7 +220,9 @@ public class GTB1Parser extends GTBParser {
 
 			tokens = Splitter.onTab().text(line);
 
-			Chromosome chr = Chromosome.parse(tokens.get(0));
+			Chromosome chr = ChromosomeService
+					.getInstance()
+					.guess(file, tokens.get(0));
 
 			// Skip random and unofficial chromosomes
 			if (chr.toString().contains("_")) {

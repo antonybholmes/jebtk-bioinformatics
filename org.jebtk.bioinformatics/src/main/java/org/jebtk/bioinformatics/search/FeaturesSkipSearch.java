@@ -33,7 +33,6 @@ import java.util.List;
 
 import org.jebtk.bioinformatics.Search;
 import org.jebtk.bioinformatics.genomic.Chromosome;
-import org.jebtk.bioinformatics.genomic.Chromosome.Human;
 
 
 
@@ -75,7 +74,7 @@ public class FeaturesSkipSearch extends FeaturesBinarySearch {
 
 		List<Feature> features = new ArrayList<Feature>();
 
-		List<Feature> locations = allLocations.get(Human.valueOf(chromosome));
+		List<Feature> locations = allLocations.get(chromosome.getId());
 
 		if (locations == null) {
 			//System.out.println("ropey chromosome " + chromosome);

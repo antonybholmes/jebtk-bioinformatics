@@ -140,7 +140,7 @@ public class ChromosomeSizes {
 				continue;
 			}
 
-			Chromosome chromosome = Chromosome.parse(chr);
+			Chromosome chromosome = ChromosomeService.getInstance().parse(chr);
 
 			// skip non standard chrs
 			if (chromosome == null) {

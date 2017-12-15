@@ -38,7 +38,7 @@ public class GappedSearchFeatures<T> extends SearchResults<T> implements Compara
 	/**
 	 * The member p.
 	 */
-	private int mP;
+	private final int mP;
 	
 	/**
 	 * Instantiates a new gapped search features.

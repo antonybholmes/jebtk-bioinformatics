@@ -30,18 +30,16 @@ package org.jebtk.bioinformatics.ext.ucsc;
 import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.jebtk.bioinformatics.genomic.GenomeService;
 import org.jebtk.core.io.FileUtils;
 import org.jebtk.core.io.Io;
 import org.jebtk.core.text.TextUtils;
-import org.jebtk.math.matrix.DataFrame;
 import org.jebtk.math.matrix.DataFrame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -133,7 +131,7 @@ public class BedGraph extends UCSCTrack {
 	public static List<UCSCTrack> parse(Path file) throws IOException {
 		LOG.info("Parsing BED file {}...", file);
 
-		BufferedReader reader = Files.newBufferedReader(file, StandardCharsets.UTF_8);
+		BufferedReader reader = FileUtils.newBufferedReader(file);
 
 		BedGraph bed = null;
 
@@ -183,7 +181,7 @@ public class BedGraph extends UCSCTrack {
 
 					tracks.add(bed);
 				} else {
-					BedGraphRegion region = BedGraphRegion.parse(line);
+					BedGraphRegion region = BedGraphRegion.parse(GenomeService.getInstance().guess(file), line);
 					
 					bed.getRegions().add(region);
 				}

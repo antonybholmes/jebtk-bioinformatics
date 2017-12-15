@@ -15,6 +15,7 @@
  */
 package org.jebtk.bioinformatics.genomic;
 
+import org.jebtk.core.Mathematics;
 import org.jebtk.core.text.TextUtils;
 
 // TODO: Auto-generated Javadoc
@@ -22,28 +23,28 @@ import org.jebtk.core.text.TextUtils;
  * The Class ChrParserHuman.
  */
 public class ChrParserHuman extends ChromosomeParser {
-	
+
 	/* (non-Javadoc)
 	 * @see org.jebtk.bioinformatics.genome.ChromosomeParser#getShortName(java.lang.String)
 	 */
 	@Override
 	public String getShortName(String chr) {
 		String ret = super.getShortName(chr);
-		
+
 		ret = ret.replace("23", "X")
 				.replace("24", "Y")
 				.replace("25", "M");
-		
+
 		return ret;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.jebtk.bioinformatics.genome.ChromosomeParser#getId(java.lang.String)
 	 */
 	@Override
 	public int getId(String chr) {
 		String shortName = getShortName(chr);
-		
+
 		if (TextUtils.isInt(shortName)) {
 			return Integer.parseInt(shortName);
 		} else if (shortName.equals("X")) {
@@ -56,7 +57,25 @@ public class ChrParserHuman extends ChromosomeParser {
 			return -1;
 		}
 	}
-	
+
+	@Override
+	public int valueOf(Chromosome chr) {
+		if (chr.toString().endsWith("X")) {
+			return 23;
+		} else if (chr.toString().endsWith("Y")) {
+			return 24;
+		} else if (chr.toString().endsWith("M")) {
+			return 25;
+		} else {
+			return Integer.parseInt(chr.getShortName());
+		}
+	}
+
+	@Override
+	public int randChrId() {
+		return Mathematics.rand(25) + 1;
+	}
+
 	/* (non-Javadoc)
 	 * @see org.jebtk.bioinformatics.genome.ChromosomeParser#getSpecies()
 	 */
@@ -64,4 +83,5 @@ public class ChrParserHuman extends ChromosomeParser {
 	public String getSpecies() {
 		return "human";
 	}
+
 }

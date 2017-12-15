@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.jebtk.bioinformatics.genomic.Chromosome;
+import org.jebtk.bioinformatics.genomic.ChromosomeService;
 import org.jebtk.core.text.TextUtils;
 
 // TODO: Auto-generated Javadoc
@@ -89,11 +90,11 @@ public class BedGraphRegion extends UCSCTrackRegion {
 	 * @param line the line
 	 * @return the bed graph region
 	 */
-	public static BedGraphRegion parse(String line) {
+	public static BedGraphRegion parse(String genome, String line) {
 		List<String> tokens = TextUtils.fastSplit(line, TextUtils.TAB_DELIMITER);
 
 		// convert first part to chromosome (replacing x,y and m) {
-		Chromosome chromosome = Chromosome.parse(tokens.get(0));
+		Chromosome chromosome = ChromosomeService.getInstance().guess(genome, tokens.get(0));
 
 		// Per UCSC convention, coordinates are zero based in the file
 		// but we shall convert them to one based for consistency

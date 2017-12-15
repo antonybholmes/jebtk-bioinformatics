@@ -1,4 +1,3 @@
-
 package org.jebtk.bioinformatics.genomic;
 
 import java.io.BufferedReader;
@@ -25,13 +24,13 @@ import org.jebtk.core.text.TextUtils;
  *
  * @author Antony Holmes Holmes
  */
-public class GTB2Parser extends GTBParser {
+public class GTB3Parser extends GTBParser {
 
-	public GTB2Parser() {
+	public GTB3Parser() {
 		//_setLevels(GeneType.GENE);
 	}
 
-	public GTB2Parser(GeneParser parser) {
+	public GTB3Parser(GeneParser parser) {
 		super(parser);
 	}
 
@@ -62,7 +61,8 @@ public class GTB2Parser extends GTBParser {
 
 				boolean add = true;
 
-				Chromosome chr = ChromosomeService.getInstance().guess(file, tokens.get(0));
+				Chromosome chr = ChromosomeService.getInstance().guess(file, 
+						tokens.get(0));
 
 				// Skip random and unofficial chromosomes
 				if (chr.toString().contains("_")) {
@@ -173,17 +173,11 @@ public class GTB2Parser extends GTBParser {
 			return;
 		}
 
-		Splitter splitter = Splitter.onSC();
-		
-		List<Integer> starts = splitter
-				.stream(tokens.get(offset + 1))
-				.asInt()
-				.toList(); // TextUtils.splitInts(tokens.get(offset + 1), TextUtils.SEMI_COLON_DELIMITER);
+		List<Integer> starts = 
+				TextUtils.splitInts(tokens.get(offset + 1), TextUtils.SEMI_COLON_DELIMITER);
 
-		List<Integer> ends = splitter
-				.stream(tokens.get(offset + 2))
-				.asInt()
-				.toList(); //TextUtils.splitInts(tokens.get(offset + 2), TextUtils.SEMI_COLON_DELIMITER);
+		List<Integer> ends = 
+				TextUtils.splitInts(tokens.get(offset + 2), TextUtils.SEMI_COLON_DELIMITER);
 
 		for (int i = 0; i < starts.size(); ++i) {
 			GenomicRegion region = GenomicRegion.create(gene.mChr, 
@@ -228,7 +222,8 @@ public class GTB2Parser extends GTBParser {
 
 			tokens = Splitter.onTab().text(line);
 
-			Chromosome chr = ChromosomeService.getInstance().guess(file, tokens.get(0));
+			Chromosome chr = 
+					ChromosomeService.getInstance().guess(file, tokens.get(0));
 
 			// Skip random and unofficial chromosomes
 			if (chr.toString().contains("_")) {
@@ -279,7 +274,7 @@ public class GTB2Parser extends GTBParser {
 
 	@Override
 	public GeneParser create(GeneParser parser) {
-		return new GTB2Parser(parser);
+		return new GTB3Parser(parser);
 	}
 
 	private static IterMap<String, String> getAttributes(Splitter splitter, 

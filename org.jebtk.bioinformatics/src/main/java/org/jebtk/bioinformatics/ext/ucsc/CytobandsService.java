@@ -158,7 +158,7 @@ public class CytobandsService {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public void load(String genome, BufferedReader reader) throws IOException {
-		load(genome, new Cytobands(reader));
+		load(genome, new Cytobands(genome, reader));
 	}
 	
 	/**

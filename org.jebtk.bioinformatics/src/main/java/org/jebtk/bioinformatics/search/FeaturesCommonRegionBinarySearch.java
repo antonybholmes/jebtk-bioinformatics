@@ -38,7 +38,6 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.jebtk.bioinformatics.genomic.Chromosome;
-import org.jebtk.bioinformatics.genomic.Chromosome.Human;
 import org.jebtk.bioinformatics.genomic.ChromosomeService;
 import org.jebtk.core.io.FileUtils;
 import org.jebtk.core.io.Io;
@@ -159,7 +158,7 @@ public class FeaturesCommonRegionBinarySearch extends AbstractFeaturesSearch {
 
 					// start
 
-					mFeaturesAtLocationByIndex.get(Human.valueOf(chromosome)).add(new FeatureBin(startLocation));
+					mFeaturesAtLocationByIndex.get(chromosome.getId()).add(new FeatureBin(startLocation));
 					
 					
 				}
@@ -188,8 +187,10 @@ public class FeaturesCommonRegionBinarySearch extends AbstractFeaturesSearch {
 
 					List<String> row = TextUtils.tabSplit(line);
 
-					Feature feature =
-							new Feature(row.get(0), Chromosome.parse(row.get(1)), Integer.parseInt(row.get(2)), Integer.parseInt(row.get(3)));
+					Feature feature = new Feature(row.get(0), 
+							ChromosomeService.getInstance().guess(mFeatureFile, row.get(1)), 
+							Integer.parseInt(row.get(2)), 
+							Integer.parseInt(row.get(3)));
 
 					List<String> bins = TextUtils.fastSplit(row.get(4), TextUtils.COMMA_DELIMITER);
 
@@ -199,7 +200,7 @@ public class FeaturesCommonRegionBinarySearch extends AbstractFeaturesSearch {
 						//System.out.println(feature.getChromosome() + " " + b + " " + featuresAtLocationByIndex.get(feature.getChromosome()).size() + " " + featuresAtLocationByIndex.get(feature.getChromosome()).get(featuresAtLocationByIndex.get(feature.getChromosome()).size() - 1).getStart());
 						
 						// add the feature to each of the bins it belongs to
-						mFeaturesAtLocationByIndex.get(Human.valueOf(feature.getChromosome())).get(b).add(feature);
+						mFeaturesAtLocationByIndex.get(feature.getChromosome().getId()).get(b).add(feature);
 						
 						++size;
 					}
@@ -232,7 +233,7 @@ public class FeaturesCommonRegionBinarySearch extends AbstractFeaturesSearch {
 
 		List<Feature> returnFeatures = new ArrayList<Feature>();
 
-		List<FeatureBin> features = mFeaturesAtLocationByIndex.get(Human.valueOf(chromosome));
+		List<FeatureBin> features = mFeaturesAtLocationByIndex.get(chromosome.getId());
 
 		if (features.size() == 0) {
 			return returnFeatures;
@@ -289,7 +290,7 @@ public class FeaturesCommonRegionBinarySearch extends AbstractFeaturesSearch {
 
 		List<Feature> returnFeatures = new ArrayList<Feature>();
 
-		List<FeatureBin> features = mFeaturesAtLocationByIndex.get(Human.valueOf(chromosome));
+		List<FeatureBin> features = mFeaturesAtLocationByIndex.get(chromosome.getId());
 
 		if (features.size() == 0) {
 			return returnFeatures;
@@ -423,7 +424,7 @@ public class FeaturesCommonRegionBinarySearch extends AbstractFeaturesSearch {
 		
 		Set<String> used = new HashSet<String>();
 
-		for (FeatureBin featureBin : mFeaturesAtLocationByIndex.get(Human.valueOf(chromosome))) {
+		for (FeatureBin featureBin : mFeaturesAtLocationByIndex.get(chromosome.getId())) {
 			for (Feature feature : featureBin) {
 				if (used.contains(feature.toString())) {
 					continue;

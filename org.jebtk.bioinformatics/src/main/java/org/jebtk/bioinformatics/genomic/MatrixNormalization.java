@@ -46,7 +46,7 @@ public class MatrixNormalization {
 		
 		double[] widthsKb = getWidthsKb(locations);
 		
-		int c = ret.getColumnCount();
+		int c = ret.getCols();
 		
 		ret.colApply(new TPMRPK(widthsKb));
 		
@@ -71,7 +71,7 @@ public class MatrixNormalization {
 	}
 	
 	public static DataFrame rpm(final DataFrame m) {
-		double[] counts = m.getColumnAnnotations("total-reads").rowAsDouble(0);
+		double[] counts = m.getColumnAnnotations("total-reads").rowToDoubleArray(0);
 		
 		return rpm(m, counts);
 	}

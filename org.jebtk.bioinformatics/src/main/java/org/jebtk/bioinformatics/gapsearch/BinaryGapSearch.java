@@ -29,7 +29,6 @@ package org.jebtk.bioinformatics.gapsearch;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +37,8 @@ import java.util.Set;
 import org.jebtk.bioinformatics.genomic.Chromosome;
 import org.jebtk.bioinformatics.genomic.GenomicRegion;
 import org.jebtk.core.collections.CollectionUtils;
+import org.jebtk.core.collections.IterHashMap;
+import org.jebtk.core.collections.IterMap;
 import org.jebtk.core.collections.UniqueArrayList;
 
 
@@ -58,8 +59,8 @@ public class BinaryGapSearch<T> extends FixedGapSearch<T> {
 	protected boolean mAutoSorted = false;
 
 	/** The m bins. */
-	protected Map<Chromosome, List<Integer>> mBins = 
-			new HashMap<Chromosome, List<Integer>>(25);
+	protected IterMap<Chromosome, List<Integer>> mBins = 
+			new IterHashMap<Chromosome, List<Integer>>(25);
 
 
 	/**
@@ -97,7 +98,7 @@ public class BinaryGapSearch<T> extends FixedGapSearch<T> {
 
 			mBins.clear();
 
-			for (Chromosome chr : mFeatures.keySet()) {
+			for (Chromosome chr : mFeatures) {
 				mBins.put(chr, CollectionUtils.sortKeys(mFeatures.get(chr)));
 			}
 
@@ -734,9 +735,9 @@ public class BinaryGapSearch<T> extends FixedGapSearch<T> {
 	public int size(Chromosome chr) {
 		int ret = 0;
 
-		Map<Integer, GappedSearchFeatures<T>> features = mFeatures.get(chr);
+		IterMap<Integer, GappedSearchFeatures<T>> features = mFeatures.get(chr);
 
-		for (int bin : features.keySet()) {
+		for (int bin : features) {
 			ret += features.get(bin).size();
 		}
 

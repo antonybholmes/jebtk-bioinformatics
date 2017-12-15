@@ -59,19 +59,23 @@ public class FixedGapSearch<T> extends GapSearch<T> {
 	/**
 	 * The member features.
 	 */
-	protected IterMap<Chromosome, IterMap<Integer, GappedSearchFeatures<T>>> mFeatures =
+	protected IterMap<Chromosome, IterMap<Integer, GappedSearchFeatures<T>>> mFeatures = 
 			DefaultTreeMap.create(new TreeMapCreator<Integer, GappedSearchFeatures<T>>());
-
+	
+	//protected IterMap<Chromosome, BinMap<GappedSearchFeatures<T>>> mFeatures;
 
 	/**
 	 * The member size.
 	 */
 	protected int mSize = 0;
 
+
+	protected final int mBinSize;
+
 	/**
 	 * The member bin size.
 	 */
-	protected int mBinSize;
+	//protected final int mBinSize;
 
 	/**
 	 * Instantiates a new fixed gap search.
@@ -87,6 +91,14 @@ public class FixedGapSearch<T> extends GapSearch<T> {
 	 */
 	public FixedGapSearch(int binSize) {
 		mBinSize = Math.max(1, binSize);
+
+		/*
+		mFeatures = DefaultTreeMap.create(new EntryCreator<BinMap<GappedSearchFeatures<T>>>(){
+			@Override
+			public BinMap<GappedSearchFeatures<T>> newEntry() {
+				return new BinMap<GappedSearchFeatures<T>>();
+			}});
+		*/
 	}
 
 	/* (non-Javadoc)
@@ -94,8 +106,8 @@ public class FixedGapSearch<T> extends GapSearch<T> {
 	 */
 	@Override
 	public void add(GenomicRegion region, T feature) {
-		int startBin = region.getStart() / mBinSize;
-		int endBin = region.getEnd() / mBinSize;
+		int startBin = getBin(region.getStart());
+		int endBin = getBin(region.getEnd());
 
 		Chromosome chr = region.getChr();
 
@@ -110,6 +122,10 @@ public class FixedGapSearch<T> extends GapSearch<T> {
 		++mSize;
 	}
 
+	private int getBin(int x) {
+		return x / mBinSize;
+	}
+	
 	/**
 	 * Adds the feature.
 	 *
@@ -134,7 +150,7 @@ public class FixedGapSearch<T> extends GapSearch<T> {
 	public int size() {
 		return mSize;
 	}
-	
+
 	@Override
 	public boolean contains(Chromosome chr) {
 		return mFeatures.containsKey(chr);
@@ -147,8 +163,8 @@ public class FixedGapSearch<T> extends GapSearch<T> {
 	public List<T> getFeatures() {
 		List<T> ret = new UniqueArrayList<T>();
 
-		for (Chromosome chr : mFeatures.keySet()) {
-			for (int start : mFeatures.get(chr).keySet()) {
+		for (Chromosome chr : mFeatures) {
+			for (int start : mFeatures.get(chr)) {
 				for (GenomicRegion region : mFeatures.get(chr).get(start)) {
 					for (T item : mFeatures.get(chr).get(start).getValues(region)) {
 						ret.add(item);
@@ -167,7 +183,7 @@ public class FixedGapSearch<T> extends GapSearch<T> {
 	public List<T> getFeatures(Chromosome chr) {
 		List<T> ret = new UniqueArrayList<T>();
 
-		for (int start : mFeatures.get(chr).keySet()) {
+		for (int start : mFeatures.get(chr)) {
 			for (GenomicRegion region : mFeatures.get(chr).get(start)) {
 				for (T item : mFeatures.get(chr).get(start).getValues(region)) {
 					ret.add(item);
@@ -185,8 +201,8 @@ public class FixedGapSearch<T> extends GapSearch<T> {
 	public List<GappedSearchFeatures<T>> getFeatures(Chromosome chr, 
 			int start, 
 			int end) {
-		int is = start / mBinSize;
-		int ie = end / mBinSize;
+		int is = getBin(start);
+		int ie = getBin(end);
 
 		return getFeaturesByBin(chr, is, ie);
 	}
@@ -227,7 +243,7 @@ public class FixedGapSearch<T> extends GapSearch<T> {
 	 */
 	@Override
 	public Iterator<Chromosome> iterator() {
-		return mFeatures.keySet().iterator();
+		return mFeatures.iterator();
 	}
 
 	/**
@@ -236,8 +252,8 @@ public class FixedGapSearch<T> extends GapSearch<T> {
 	 * @param gappedSearch the gapped search
 	 */
 	public void add(FixedGapSearch<T> gappedSearch) {
-		for (Chromosome chr : gappedSearch.mFeatures.keySet()) {
-			for (int bin : gappedSearch.mFeatures.get(chr).keySet()) {
+		for (Chromosome chr : gappedSearch.mFeatures) {
+			for (int bin : gappedSearch.mFeatures.get(chr)) {
 				for (GenomicRegion region : gappedSearch.mFeatures.get(chr).get(bin)) {
 					for (T item : mFeatures.get(chr).get(bin).getValues(region)) {
 						add(region, item);

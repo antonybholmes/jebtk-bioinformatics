@@ -12,7 +12,6 @@ import java.util.zip.ZipFile;
 
 import org.jebtk.core.io.FileUtils;
 import org.jebtk.core.io.TokenFunction;
-import org.jebtk.core.text.TextUtils;
 
 /**
  * Only load genes when requested.
@@ -48,7 +47,7 @@ public class GTBZGenes extends Genes {
 						@Override
 						public void parse(final List<String> tokens) {
 							String name = Genes.sanitize(tokens.get(0));
-							Chromosome chr = Chromosome.parse(tokens.get(1));
+							Chromosome chr = ChromosomeService.getInstance().guess(mFile, tokens.get(1));
 
 							mGeneMap.put(name, chr);
 						}});

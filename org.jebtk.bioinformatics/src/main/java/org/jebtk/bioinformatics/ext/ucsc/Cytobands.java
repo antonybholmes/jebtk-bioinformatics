@@ -65,11 +65,12 @@ public class Cytobands {
 	
 	/**
 	 * Instantiates a new cytobands.
+	 * @param genome 
 	 *
 	 * @param reader the reader
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public Cytobands(BufferedReader reader) throws IOException {
+	public Cytobands(String genome, BufferedReader reader) throws IOException {
 		
 		String line;
 
@@ -87,7 +88,7 @@ public class Cytobands {
 					continue;
 				}
 				
-				Cytoband cytoband = Cytoband.parse(line);
+				Cytoband cytoband = Cytoband.parse(genome, line);
 				
 				if (!mCytobandsMap.containsKey(cytoband.getChr())) {
 					mCytobandsMap.put(cytoband.getChr(), new ArrayList<Cytoband>());

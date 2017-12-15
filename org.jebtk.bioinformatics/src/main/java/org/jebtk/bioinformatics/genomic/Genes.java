@@ -156,9 +156,9 @@ public class Genes extends BinaryGapSearch<Gene> {
 		}
 		 */
 
-		for (String id : gene.getIdTypes()) {
-			String name = gene.getId(id);
-			mTypeMap.get(id).add(name);
+		for (String tid : gene.getIdTypes()) {
+			String name = gene.getId(tid);
+			mTypeMap.get(tid).add(name);
 			mIdMap.get(sanitize(name)).add(gene);
 		}
 	}
@@ -226,9 +226,9 @@ public class Genes extends BinaryGapSearch<Gene> {
 	}
 
 	public Gene getGene(String symbol) {
-		Iterable<Gene> genes = getGenes(symbol);
+		Collection<Gene> genes = getGenes(symbol);
 
-		if (genes.iterator().hasNext()) {
+		if (genes.size() > 0) {
 			return genes.iterator().next();
 		} else {
 			return null;
@@ -357,7 +357,7 @@ public class Genes extends BinaryGapSearch<Gene> {
 		BufferedReader reader = FileUtils.newBufferedReader(file);
 
 		try {
-			ret = load(reader);
+			ret = load(ChromosomeService.getInstance().guess(file), reader);
 		} finally {
 			reader.close();
 		}
@@ -372,10 +372,11 @@ public class Genes extends BinaryGapSearch<Gene> {
 	 * @return the genes
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public static GapSearch<Gene> load(BufferedReader reader) throws IOException {
+	public static GapSearch<Gene> load(final String species, 
+			BufferedReader reader) throws IOException {
 		final Genes ret = new Genes();
 
-		FileUtils.tokenize(reader, new TokenFunction(){
+		FileUtils.tokenize(reader, new TokenFunction() {
 
 			@Override
 			public void parse(List<String> tokens) {
@@ -384,7 +385,7 @@ public class Genes extends BinaryGapSearch<Gene> {
 				String refseq = tokens.get(1);
 				String entrez = tokens.get(2);
 				String symbol = tokens.get(5);
-				Chromosome chr = Chromosome.parse(tokens.get(8));
+				Chromosome chr = ChromosomeService.getInstance().parse(species, tokens.get(8));
 				Strand strand = Strand.parse(tokens.get(9)); //.charAt(0);
 				// Because of the UCSC using zero based start and one
 				// based end, we need to increment the start by 1

@@ -77,14 +77,14 @@ public class ResMatrixParser implements MatrixParser {
 			boolean keepCallCol) {
 		if (keepCallCol) {
 			if (column % 2 == 0) {
-				matrix.set(row, column, DoubleMatrix.parseValue(value));
+				matrix.set(row, column, DoubleMatrix.parseDouble(value));
 			} else {
 				// The second column in each group is the call column so
 				// no need to parse
 				matrix.set(row, column, value);
 			}
 		} else {
-			matrix.set(row, column, DoubleMatrix.parseValue(value));
+			matrix.set(row, column, DoubleMatrix.parseDouble(value));
 		}
 	}
 
@@ -162,13 +162,13 @@ public class ResMatrixParser implements MatrixParser {
 			line = reader.readLine();
 
 			Stream<String> stream = Stream
-					.stream(TextUtils.tabSplit(line))
+					.of(TextUtils.tabSplit(line))
 					.skip(2)
 					.jump(2);
 
 			if (mKeepCallCol) {
 				stream = stream.replicate(2)
-						.mapToString()
+						.asString()
 						.append(" call", 1, 2);
 
 				//tokens = CollectionUtils.replicate(tokens, 2);
@@ -194,7 +194,7 @@ public class ResMatrixParser implements MatrixParser {
 				matrix.setRowName(row, tokens.get(1));
 				matrix.setRowAnnotation("Description", row, tokens.get(0));
 
-				stream = Stream.stream(tokens).skip(2);
+				stream = Stream.of(tokens).skip(2);
 
 				if (!mKeepCallCol) {
 					stream = stream.jump(2);

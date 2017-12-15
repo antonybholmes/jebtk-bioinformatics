@@ -210,7 +210,7 @@ public class ResMatrix extends DataFrame {
 			writer.write(TextUtils.TAB_DELIMITER);
 			writer.write(ACCESSION_COLUMN);
 			
-			for (int i = 0; i < matrix.getColumnCount(); ++i) {
+			for (int i = 0; i < matrix.getCols(); ++i) {
 				if (i > 0) {
 					writer.write(TextUtils.TAB_DELIMITER);
 				}
@@ -231,17 +231,17 @@ public class ResMatrix extends DataFrame {
 			writer.newLine();
 			
 			// Write row count
-			writer.write(Integer.toString(matrix.getRowCount()));
+			writer.write(Integer.toString(matrix.getRows()));
 			writer.newLine();
 			
 			List<String> names = matrix.getRowAnnotationNames();
 			
-			for (int i = 0; i < matrix.getRowCount(); ++i) {
+			for (int i = 0; i < matrix.getRows(); ++i) {
 				writer.write(matrix.getRowAnnotationText(names.get(0), i));
 				writer.write(TextUtils.TAB_DELIMITER);
 				writer.write(matrix.getRowAnnotationText(names.get(names.size() - 1), i));
 
-				for (int j = 0; j < matrix.getColumnCount(); ++j) {
+				for (int j = 0; j < matrix.getCols(); ++j) {
 					if (i > 0) {
 						writer.write(TextUtils.TAB_DELIMITER);
 					}

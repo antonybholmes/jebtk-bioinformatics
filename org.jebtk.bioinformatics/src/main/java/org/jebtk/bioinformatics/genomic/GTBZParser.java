@@ -65,7 +65,7 @@ public class GTBZParser extends GTB2Parser {
 			while (entries.hasMoreElements()) {
 				final ZipEntry entry = entries.nextElement();
 
-				if (entry.getName().contains("gtb3")) {
+				if (entry.getName().contains("gtb2")) {
 					BufferedReader reader = 
 							FileUtils.newBufferedReader(zipFile, entry);
 
@@ -87,12 +87,14 @@ public class GTBZParser extends GTB2Parser {
 		final ZipFile zipFile = new ZipFile(file.toFile());
 
 		try {
-			ZipEntry entry = zipFile.getEntry(chr.getName() + ".gtb3");
+			ZipEntry entry = zipFile.getEntry(chr.getName() + ".gtb2");
 			
 			if (entry != null) {
 				BufferedReader reader = 
 						FileUtils.newBufferedReader(zipFile, entry);
 
+				System.err.println("parse " + zipFile + " " + file);
+				
 				try {
 					parse(file, reader, genes, chr);
 				} finally {

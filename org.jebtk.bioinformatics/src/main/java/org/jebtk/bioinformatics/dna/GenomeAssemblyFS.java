@@ -61,7 +61,7 @@ public class GenomeAssemblyFS extends GenomeAssembly {
 			new HashMap<String, GenomeAssembly>();
 	
 	/** The m directory. */
-	private Path mDirectory;
+	protected final Path mDirectory;
 
 
 	/**
@@ -86,12 +86,12 @@ public class GenomeAssemblyFS extends GenomeAssembly {
 	@Override
 	public List<String> getGenomes() throws IOException {
 		
-		List<Path> files = FileUtils.lsdir(mDirectory);
+		List<Path> dirs = FileUtils.lsdir(mDirectory);
 		
-		List<String> ret = new ArrayList<String>(files.size());
+		List<String> ret = new ArrayList<String>(dirs.size());
 		
-		for (Path file : files) {
-			ret.add(PathUtils.getName(file));
+		for (Path dir : dirs) {
+			ret.add(PathUtils.getName(dir));
 		}
 		
 		return ret;

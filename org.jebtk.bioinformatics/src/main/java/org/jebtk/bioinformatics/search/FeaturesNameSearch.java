@@ -28,14 +28,14 @@
 package org.jebtk.bioinformatics.search;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.jebtk.bioinformatics.genomic.Chromosome;
+import org.jebtk.bioinformatics.genomic.ChromosomeService;
+import org.jebtk.core.io.FileUtils;
 import org.jebtk.core.io.Io;
 import org.jebtk.core.text.TextUtils;
 
@@ -82,14 +82,14 @@ public class FeaturesNameSearch implements Iterable<Feature> {
 	 *
 	 * @param file the file
 	 */
-	public void cacheFeatures(File file) {
+	public void cacheFeatures(Path file) {
 		features.clear();
 
 		short chromosomeCount = 0;
 		int featureCount = 0;
 
 		try {
-			BufferedReader reader = new BufferedReader(new FileReader(file));
+			BufferedReader reader = FileUtils.newBufferedReader(file);
 
 			String line;
 
@@ -104,8 +104,10 @@ public class FeaturesNameSearch implements Iterable<Feature> {
 
 					List<String> row = TextUtils.fastSplitRemoveQuotes(line);
 
-					Feature feature =
-							new Feature(row.get(0), Chromosome.parse(row.get(1)), Integer.parseInt(row.get(2)), Integer.parseInt(row.get(3)));
+					Feature feature = new Feature(row.get(0), 
+							ChromosomeService.getInstance().guess(file, row.get(1)), 
+							Integer.parseInt(row.get(2)), 
+							Integer.parseInt(row.get(3)));
 
 					features.put(feature.getName(), feature);
 

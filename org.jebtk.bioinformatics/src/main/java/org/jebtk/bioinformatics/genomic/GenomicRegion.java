@@ -325,7 +325,7 @@ public class GenomicRegion extends Region {
 	 * @return the genomic region
 	 * @throws ParseException the parse exception
 	 */
-	public static GenomicRegion parse(String chr, String start, String end) throws ParseException {
+	public static GenomicRegion parse(String chr, String start, String end) {
 		return new GenomicRegion(ChromosomeService.getInstance().parse(chr), 
 				TextUtils.parseInt(start), 
 				TextUtils.parseInt(end));
@@ -339,7 +339,7 @@ public class GenomicRegion extends Region {
 	 * @return the genomic region
 	 * @throws ParseException the parse exception
 	 */
-	public static GenomicRegion parse(String chr, String start) throws ParseException {
+	public static GenomicRegion parse(String chr, String start) {
 		return parse(chr, start, start);
 	}
 

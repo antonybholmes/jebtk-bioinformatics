@@ -30,15 +30,10 @@ package org.jebtk.bioinformatics.dna;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.jebtk.bioinformatics.genomic.GenomeAssembly;
-import org.jebtk.bioinformatics.genomic.GenomicRegion;
-import org.jebtk.bioinformatics.genomic.RepeatMaskType;
-import org.jebtk.bioinformatics.genomic.SequenceRegion;
 import org.jebtk.core.io.FileUtils;
 import org.jebtk.core.io.PathUtils;
 
@@ -65,14 +60,31 @@ public class GenomeAssemblyZip extends GenomeAssemblyFS {
 		return "zip";
 	}
 	
+	
+	@Override
+	public List<String> getGenomes() throws IOException {
+		
+		List<Path> files = FileUtils.ls(mDirectory);
+		
+		List<String> ret = new ArrayList<String>(files.size());
+		
+		for (Path file : files) {
+			if (PathUtils.getFileExt(file).equals("zip")) {
+				ret.add(PathUtils.getNameNoExt(file));
+			}
+		}
+		
+		return ret;
+	}
+	
 	@Override
 	protected void createGenomeEntry(String genome,
 			Path dir,
 			Map<String, GenomeAssembly> map) {
 		if (!map.containsKey(genome)) {
-			Path d = dir.resolve(genome);
+			//Path d = dir.resolve(genome);
 
-			Path zip = d.resolve(genome + "_dna.zip");
+			Path zip = dir.resolve(genome + ".zip");
 			
 			map.put(genome, new GenomeAssemblyExt2BitZip(zip));
 		}

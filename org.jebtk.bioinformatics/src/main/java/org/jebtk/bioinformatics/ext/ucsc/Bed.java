@@ -40,12 +40,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.regex.Matcher;
 
+import org.jebtk.bioinformatics.genomic.GenomeService;
 import org.jebtk.bioinformatics.genomic.GenomicRegion;
 import org.jebtk.core.io.FileUtils;
 import org.jebtk.core.io.Io;
 import org.jebtk.core.io.PathUtils;
 import org.jebtk.core.text.TextUtils;
-import org.jebtk.math.matrix.DataFrame;
 import org.jebtk.math.matrix.DataFrame;
 import org.jebtk.math.matrix.MixedMatrix;
 import org.slf4j.Logger;
@@ -150,7 +150,7 @@ public class Bed extends UCSCTrack {
 
 		BufferedReader reader = FileUtils.newBufferedReader(file);
 		
-		return parseTracks(getName(file), reader);
+		return parseTracks(GenomeService.getInstance().guess(file), getName(file), reader);
 	}
 	
 	/**
@@ -161,7 +161,8 @@ public class Bed extends UCSCTrack {
 	 * @return the list
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public static List<UCSCTrack> parseTracks(String defaultName, 
+	public static List<UCSCTrack> parseTracks(String genome,
+			String defaultName, 
 			BufferedReader reader) throws IOException {
 		Bed bed = null;
 
@@ -207,7 +208,7 @@ public class Bed extends UCSCTrack {
 						tracks.add(bed);
 					}
 					
-					BedRegion region = BedRegion.parse(line);
+					BedRegion region = BedRegion.parse(genome, line);
 					
 					if (region != null) {
 						bed.getRegions().add(region);
@@ -314,7 +315,7 @@ public class Bed extends UCSCTrack {
 
 					beds.add(bed);
 				} else {
-					BedRegion region = BedRegion.parse(line);
+					BedRegion region = BedRegion.parse(GenomeService.getInstance().guess(file), line);
 					bed.getRegions().add(region);
 				}
 			}

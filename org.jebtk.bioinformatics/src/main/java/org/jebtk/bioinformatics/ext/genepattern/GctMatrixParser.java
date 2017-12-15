@@ -61,7 +61,7 @@ public class GctMatrixParser implements MatrixParser {
 			int column, 
 			String value) {
 		
-		matrix.set(row, column, DoubleMatrix.parseValue(value));
+		matrix.set(row, column, DoubleMatrix.parseDouble(value));
 	}
 	
 	/* (non-Javadoc)

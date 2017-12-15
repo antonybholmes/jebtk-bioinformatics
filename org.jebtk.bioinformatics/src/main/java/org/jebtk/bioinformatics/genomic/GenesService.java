@@ -95,7 +95,7 @@ public class GenesService implements Iterable<String> {
 	 * @return
 	 */
 	public Genes getGenes(String genome) {
-		return getGenes(genome, mGenesMap.get(genome).keySet().iterator().next());
+		return getGenes(genome, mGenesMap.get(genome).first());
 	}
 	
 	/**
@@ -123,7 +123,7 @@ public class GenesService implements Iterable<String> {
 	 */
 	@Override
 	public Iterator<String> iterator() {
-		return mGenesMap.keySet().iterator();
+		return mGenesMap.iterator();
 	}
 	
 	/**
@@ -132,8 +132,8 @@ public class GenesService implements Iterable<String> {
 	 * @param genome the genome
 	 * @return the names
 	 */
-	public Iterator<String> getNames(String genome) {
-		return mGenesMap.get(genome).keySet().iterator();
+	public Iterable<String> getNames(String genome) {
+		return mGenesMap.get(genome);
 	}
 
 	/**
@@ -163,7 +163,7 @@ public class GenesService implements Iterable<String> {
 	}
 	
 	public String getCurrentDb(String genome) {
-		return mGenesMap.get(genome).keySet().iterator().next();
+		return mGenesMap.get(genome).first();
 	}
 	
 }

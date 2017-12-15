@@ -42,7 +42,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.jebtk.bioinformatics.genomic.Chromosome;
-import org.jebtk.bioinformatics.genomic.Chromosome.Human;
+import org.jebtk.bioinformatics.genomic.ChromosomeService;
 import org.jebtk.bioinformatics.genomic.ChromosomeSizes;
 import org.jebtk.bioinformatics.genomic.GenomeAssembly;
 import org.jebtk.bioinformatics.genomic.GenomicRegion;
@@ -593,7 +593,7 @@ public class Sequence implements Comparable<Sequence>, NameProperty, Iterable<Ch
 			int length) throws IOException {
 		Random rand = new Random();
 		
-		Chromosome chr = Human.randChr();
+		Chromosome chr = ChromosomeService.getInstance().randChr("human");
 		
 		int start = rand.nextInt(mChrSizes.getSize(chr) - length);
 		int end = start + length - 1;

@@ -27,60 +27,61 @@
  */
 package org.jebtk.bioinformatics.genomic;
 
-import java.awt.Color;
 import java.nio.file.Path;
 
-import org.jebtk.core.AppService;
-import org.jebtk.core.settings.SettingsService;
+import org.jebtk.core.io.PathUtils;
+
 
 // TODO: Auto-generated Javadoc
 /**
- * Functions related to DNA.
- * 
+ * Deals with functions related to chromosomes.
+ *
  * @author Antony Holmes Holmes
  *
  */
-public class Dna {
-	
-	public static final Path RES_DIR = 
-			AppService.APP_ROOT.resolve("res").resolve("modules").resolve("dna");
-	
+public class GenomeService {
 	/**
-	 * The constant BASE_A_COLOR.
+	 * The Class ChromosomesLoader.
 	 */
-	public static final Color BASE_A_COLOR = 
-			SettingsService.getInstance().getAsColor("bioinformatics.dna.bases.a.color");
-	
-	/**
-	 * The constant BASE_C_COLOR.
-	 */
-	public static final Color BASE_C_COLOR = 
-			SettingsService.getInstance().getAsColor("bioinformatics.dna.bases.c.color");
-	
-	/**
-	 * The constant BASE_G_COLOR.
-	 */
-	public static final Color BASE_G_COLOR = 
-			SettingsService.getInstance().getAsColor("bioinformatics.dna.bases.g.color");
-	
-	/**
-	 * The constant BASE_T_COLOR.
-	 */
-	public static final Color BASE_T_COLOR = 
-			SettingsService.getInstance().getAsColor("bioinformatics.dna.bases.t.color");
+	private static class GenomeLoader {
+		
+		/** The Constant INSTANCE. */
+		private static final GenomeService INSTANCE = new GenomeService();
+	}
 
 	/**
-	 * The constant BASE_N_COLOR.
+	 * Gets the single instance of SettingsService.
+	 *
+	 * @return single instance of SettingsService
 	 */
-	public static final Color BASE_N_COLOR = Color.BLACK;
-
+	public static GenomeService getInstance() {
+		return GenomeLoader.INSTANCE;
+	}
+	
+	private GenomeGuess mGuess = new GenomeGuess();
+	
 	/**
-	 * The constant MEGABASE.
+	 * Instantiates a new chromosomes.
 	 */
-	public static final int MEGABASE = 1000000;
-
+	private GenomeService() {
+		// Do nothing
+	}
+	
+	public void setGuess(GenomeGuess guess) {
+		mGuess = guess;
+	}
+	
 	/**
-	 * The constant KILOBASE.
+	 * Guess the genome from the filename.
+	 * 
+	 * @param file
+	 * @return
 	 */
-	public static final double KILOBASE = 1000;
+	public String guess(Path file) {
+		return guess(PathUtils.getName(file));
+	}
+	
+	public String guess(String name) {
+		return mGuess.guess(name);
+	}
 }

@@ -131,16 +131,16 @@ public class GctMatrix extends DataFrame {
 		try {
 			writer.write(VERSION_ID);
 			writer.newLine();
-			writer.write(Integer.toString(matrix.getRowCount()));
+			writer.write(Integer.toString(matrix.getRows()));
 			writer.write(TextUtils.TAB_DELIMITER);
-			writer.write(Integer.toString(matrix.getColumnCount()));
+			writer.write(Integer.toString(matrix.getCols()));
 			writer.newLine();
 			
 			writer.write(ID_COLUMN);
 			writer.write(TextUtils.TAB_DELIMITER);
 			writer.write(DESCRIPTION_COLUMN);
 			
-			for (int i = 0; i < matrix.getColumnCount(); ++i) {
+			for (int i = 0; i < matrix.getCols(); ++i) {
 				writer.write(TextUtils.TAB_DELIMITER);
 				writer.write(matrix.getColumnName(i));
 			}
@@ -149,13 +149,13 @@ public class GctMatrix extends DataFrame {
 			
 			List<String> names = matrix.getRowAnnotationNames();
 			
-			for (int i = 0; i < matrix.getRowCount(); ++i) {
+			for (int i = 0; i < matrix.getRows(); ++i) {
 				writer.write(matrix.getRowAnnotationText(names.get(0), i));
 				writer.write(TextUtils.TAB_DELIMITER);
 				
 				writer.write(matrix.getRowAnnotationText(names.get(names.size() - 1), i));
 				
-				for (int j = 0; j < matrix.getColumnCount(); ++j) {
+				for (int j = 0; j < matrix.getCols(); ++j) {
 					writer.write(TextUtils.TAB_DELIMITER);
 					
 					writer.write(Double.toString(matrix.getValue(i, j)));

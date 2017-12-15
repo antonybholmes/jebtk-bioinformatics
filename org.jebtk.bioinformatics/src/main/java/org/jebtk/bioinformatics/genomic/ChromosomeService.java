@@ -27,12 +27,15 @@
  */
 package org.jebtk.bioinformatics.genomic;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.jebtk.core.collections.DefaultHashMap;
 import org.jebtk.core.collections.HashMapCreator;
+import org.jebtk.core.collections.IterHashMap;
 import org.jebtk.core.collections.IterMap;
+import org.jebtk.core.io.PathUtils;
 import org.jebtk.core.text.TextUtils;
 
 
@@ -44,6 +47,8 @@ import org.jebtk.core.text.TextUtils;
  *
  */
 public class ChromosomeService {
+	
+	
 	
 	/**
 	 * The Class ChromosomesLoader.
@@ -63,39 +68,53 @@ public class ChromosomeService {
 		return ChromosomesLoader.INSTANCE;
 	}
 
+	/** The Constant HUMAN_PARSER. */
+	private static final ChromosomeParser HUMAN_PARSER = new ChrParserHuman();
+	
+	/** The Constant MOUSE_PARSER. */
+	private static final ChromosomeParser MOUSE_PARSER = new ChrParserMouse();
+
+	
+	private IterMap<String, ChromosomeParser> mParserMap =
+			new IterHashMap<String, ChromosomeParser>();
+	
 	/**
 	 * Cache parsed chromosomes.
 	 */
 	private IterMap<String, IterMap<String, Chromosome>> mChrMap = 
 			DefaultHashMap.create(new HashMapCreator<String, Chromosome>());
 	
+	private ChrSpeciesGuess mChrGuess = new ChrSpeciesGuess();
+	
+	
 	/**
 	 * Instantiates a new chromosomes.
 	 */
 	private ChromosomeService() {
-		// do nothing
+		register(HUMAN_PARSER);
+		register(MOUSE_PARSER);
 	}
 	
-	/**
-	 * Returns a chromosome representation of a string. Chromosomes are
-	 * cached so that multiple requests for the same chromosome yield
-	 * the same object each time.
-	 *
-	 * @param chr the chr
-	 * @return the chromosome
-	 */
-	public Chromosome parseHuman(String chr) {
-		return parse(chr, Chromosome.HUMAN_PARSER);
+	public void register(ChromosomeParser parser) {
+		mParserMap.put(parser.getSpecies(), parser);
 	}
 	
-	/**
-	 * Parses the mouse.
-	 *
-	 * @param chr the chr
-	 * @return the chromosome
-	 */
-	public Chromosome parseMouse(String chr) {
-		return parse(chr, Chromosome.MOUSE_PARSER);
+	/*
+	public ChromosomeParser human() {
+		return parser("human");
+	}
+	
+	public ChromosomeParser mouse() {
+		return parser("mouse");
+	}
+	
+	public ChromosomeParser parser(String species) {
+		return mParserMap.get(species);
+	}
+	*/
+	
+	public void setChrGuess(ChrSpeciesGuess chrGuess) {
+		mChrGuess = chrGuess;
 	}
 	
 	/**
@@ -105,9 +124,47 @@ public class ChromosomeService {
 	 * @return the chromosome
 	 */
 	public Chromosome parse(String chr) {
-		return parseHuman(chr);
+		return human(chr);
 	}
 	
+	public Chromosome human(String chr) {
+		return parse("human", chr);
+	}
+	
+	public Chromosome mouse(String chr) {
+		return parse("mouse", chr);
+	}
+	
+	/**
+	 * Guess the species from file name.
+	 * 
+	 * @param file
+	 * @param chr
+	 * @return
+	 */
+	public Chromosome guess(Path file, String chr) {
+		return guess(PathUtils.getName(file), chr);
+	}
+	
+	/**
+	 * Guess species from name.
+	 * 
+	 * @param name
+	 * @param chr
+	 * @return
+	 */
+	public Chromosome guess(String name, String chr) {
+		return parse(guess(name), chr);
+	}
+	
+	public String guess(Path file) {
+		return guess(PathUtils.getName(file));
+	}
+	
+	public String guess(String name) {
+		return mChrGuess.guess(name);
+	}
+
 	/**
 	 * Parses the.
 	 *
@@ -115,11 +172,9 @@ public class ChromosomeService {
 	 * @param parser the parser
 	 * @return the chromosome
 	 */
-	public Chromosome parse(String chr, ChromosomeParser parser) {
-		String species = parser.getSpecies();
-		
+	public Chromosome parse(String species, String chr) {
 		if (!mChrMap.get(species).containsKey(chr)) {
-			mChrMap.get(species).put(chr, Chromosome.parse(chr, parser));
+			mChrMap.get(species).put(chr, mParserMap.get(species).parse(chr));
 		}
 		
 		return mChrMap.get(species).get(chr);
@@ -185,5 +240,9 @@ public class ChromosomeService {
 		}
 
 		return numbers;
+	}
+
+	public Chromosome randChr(String species) {
+		return mParserMap.get(species).randChr();
 	}
 }

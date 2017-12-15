@@ -44,6 +44,7 @@ import org.jebtk.bioinformatics.genomic.RepeatMaskType;
 import org.jebtk.bioinformatics.genomic.SequenceRegion;
 import org.jebtk.core.collections.ArrayListCreator;
 import org.jebtk.core.collections.DefaultTreeMap;
+import org.jebtk.core.collections.IterMap;
 import org.jebtk.core.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -109,19 +110,19 @@ public class GenomeAssemblyExt2BitZip extends GenomeAssemblyDir {
 
 	//private char[] mDnaBuf = new char[300000000];
 
-	private byte[] mChrBuf = new byte[100000000];
-	private byte[] mChrMaskBuf = new byte[50000000];
-	private byte[] mChrNBuf = new byte[50000000];
+	private final byte[] mChrBuf = new byte[100000000];
+	private final byte[] mChrMaskBuf = new byte[50000000];
+	private final byte[] mChrNBuf = new byte[50000000];
 
 	/**
-	 * Store read bytes. We assume fewer than 4 million bases will be
+	 * Store read bytes. We assume fewer than 2 million bases will be
 	 * read at once.
 	 */
-	private byte[] mBuf = new byte[500000];
+	private final byte[] mBuf = new byte[500000];
 
 	private static final int MAX_SIZE_BP = 1000000;
 
-	private char[] mCharBuf = new char[MAX_SIZE_BP];
+	private final char[] mCharBuf = new char[MAX_SIZE_BP];
 
 	private Chromosome mChr;
 	
@@ -145,13 +146,14 @@ public class GenomeAssemblyExt2BitZip extends GenomeAssemblyDir {
 		return "2bit-ext-zip";
 	}
 
+
 	@Override
 	public List<SequenceRegion> getSequences(String genome,
 			Collection<GenomicRegion> regions,
 			boolean displayUpper,
 			RepeatMaskType repeatMaskType) throws IOException {
 
-		Map<Chromosome, List<GenomicRegion>> chrMap =
+		IterMap<Chromosome, List<GenomicRegion>> chrMap =
 				DefaultTreeMap.create(new ArrayListCreator<GenomicRegion>());
 
 		for (GenomicRegion region : regions) {
@@ -161,7 +163,7 @@ public class GenomeAssemblyExt2BitZip extends GenomeAssemblyDir {
 		Map<GenomicRegion, SequenceRegion> mSeqMap =
 				new HashMap<GenomicRegion, SequenceRegion>();
 
-		for (Chromosome chr : chrMap.keySet()) {
+		for (Chromosome chr : chrMap) {
 			for (GenomicRegion region : chrMap.get(chr)) {
 				SequenceRegion sequence = getSequence(genome, 
 						region,
@@ -329,7 +331,8 @@ public class GenomeAssemblyExt2BitZip extends GenomeAssemblyDir {
 	 * @param buf
 	 * @param charBuf
 	 */
-	private static void process2bit(int s, int l,
+	private static void process2bit(int s, 
+			int l,
 			final byte[] buf,
 			char[] charBuf) {
 		//byte mask;

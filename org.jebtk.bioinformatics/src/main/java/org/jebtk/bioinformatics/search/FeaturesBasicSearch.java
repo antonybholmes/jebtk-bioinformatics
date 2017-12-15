@@ -35,7 +35,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.jebtk.bioinformatics.Search;
 import org.jebtk.bioinformatics.genomic.Chromosome;
-import org.jebtk.bioinformatics.genomic.Chromosome.Human;
+import org.jebtk.bioinformatics.genomic.ChromosomeService;
 import org.jebtk.core.io.FileUtils;
 import org.jebtk.core.io.Io;
 import org.jebtk.core.text.TextUtils;
@@ -106,13 +106,15 @@ public class FeaturesBasicSearch extends AbstractFeaturesSearch {
 
 					List<String> row = TextUtils.fastSplit(line, TextUtils.TAB_DELIMITER);
 
-					Feature feature =
-							new Feature(row.get(0), Chromosome.parse(row.get(1)), Integer.parseInt(row.get(2)), Integer.parseInt(row.get(3)));
+					Feature feature = new Feature(row.get(0), 
+							ChromosomeService.getInstance().guess(mFile, row.get(1)), 
+							Integer.parseInt(row.get(2)), 
+							Integer.parseInt(row.get(3)));
 					//feature.type = type;
 
 					//System.err.println(line + "  chr:" + feature.getChromosome());
 					
-					allLocations.get(Human.valueOf(feature.getChromosome())).add(feature);
+					allLocations.get(feature.getChromosome().getId()).add(feature);
 					featureByName.put(feature.getName(), feature);
 					
 					++size;
@@ -133,7 +135,7 @@ public class FeaturesBasicSearch extends AbstractFeaturesSearch {
 			cacheFeatures();
 		}
 
-		return allLocations.get(Human.valueOf(chromosome));
+		return allLocations.get(chromosome.getId());
 	}
 
 
@@ -166,7 +168,7 @@ public class FeaturesBasicSearch extends AbstractFeaturesSearch {
 
 		List<Feature> features = new ArrayList<Feature>();
 
-		List<Feature> locations = allLocations.get(Human.valueOf(chromosome));
+		List<Feature> locations = allLocations.get(chromosome.getId());
 
 		if (locations.size() == 0) {
 			return features;
@@ -227,7 +229,7 @@ public class FeaturesBasicSearch extends AbstractFeaturesSearch {
 
 		List<Feature> features = new ArrayList<Feature>();
 
-		List<Feature> locations = allLocations.get(Human.valueOf(chromosome));
+		List<Feature> locations = allLocations.get(chromosome.getId());
 
 		if (locations.size() == 0) {
 			return features;

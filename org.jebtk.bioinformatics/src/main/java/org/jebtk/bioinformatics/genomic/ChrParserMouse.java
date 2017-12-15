@@ -15,6 +15,7 @@
  */
 package org.jebtk.bioinformatics.genomic;
 
+import org.jebtk.core.Mathematics;
 import org.jebtk.core.text.TextUtils;
 
 // TODO: Auto-generated Javadoc
@@ -55,6 +56,23 @@ public class ChrParserMouse extends ChromosomeParser {
 		} else {
 			return -1;
 		}
+	}
+	
+	@Override
+	public int valueOf(Chromosome chr) {
+		if (chr.toString().endsWith("X")) {
+			return 20;
+		} else if (chr.toString().endsWith("Y")) {
+			return 21;
+		} else if (chr.toString().endsWith("M")) {
+			return 22;
+		} else {
+			return Integer.parseInt(chr.getShortName());
+		}
+	}
+	
+	public int randChrId() {
+		return Mathematics.rand(22) + 1;
 	}
 	
 	/* (non-Javadoc)

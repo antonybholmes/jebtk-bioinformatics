@@ -54,4 +54,25 @@ public abstract class ChromosomeParser {
 	 * @return the species
 	 */
 	public abstract String getSpecies();
+	
+	public Chromosome parse(String chr) {
+		int id = getId(chr);
+		String shortName = getShortName(chr);
+		
+		return new Chromosome(id, shortName);
+	}
+
+	/**
+	 * Returns an integer value for the chromosome.
+	 * 
+	 * @param chr
+	 * @return
+	 */
+	public abstract int valueOf(Chromosome chr);
+
+	public abstract int randChrId();
+	
+	public Chromosome randChr() {
+		return parse("chr" + randChrId());
+	}
 }
