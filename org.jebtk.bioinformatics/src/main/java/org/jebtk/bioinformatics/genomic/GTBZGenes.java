@@ -23,8 +23,7 @@ public class GTBZGenes extends Genes {
 	private GeneParser mParser;
 	private boolean mAutoLoad = true;
 	private Path mFile;
-	private Map<String, Chromosome> mGeneMap = 
-			new HashMap<String, Chromosome>();
+	private Map<String, Chromosome> mGeneMap = new HashMap<String, Chromosome>();
 
 	public GTBZGenes(Path file, GeneParser parser) {
 		mFile = file;
@@ -43,14 +42,16 @@ public class GTBZGenes extends Genes {
 						FileUtils.newBufferedReader(zipFile, entry);
 
 				try {
-					FileUtils.tokenize(reader, true, new TokenFunction() {
+					FileUtils.tokenize(new TokenFunction() {
 						@Override
 						public void parse(final List<String> tokens) {
 							String name = Genes.sanitize(tokens.get(0));
 							Chromosome chr = ChromosomeService.getInstance().guess(mFile, tokens.get(1));
 
 							mGeneMap.put(name, chr);
-						}});
+						}})
+					.skipHeader(true)
+					.tokens(reader);
 				} finally {
 					reader.close();
 				}

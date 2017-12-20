@@ -173,6 +173,8 @@ public class ChromosomeService {
 	 * @return the chromosome
 	 */
 	public Chromosome parse(String species, String chr) {
+		species = getSpecies(species);
+		
 		if (!mChrMap.get(species).containsKey(chr)) {
 			mChrMap.get(species).put(chr, mParserMap.get(species).parse(chr));
 		}
@@ -181,6 +183,16 @@ public class ChromosomeService {
 	}
 	
 	
+
+	public static String getSpecies(String species) {
+		if (TextUtils.find(species, "hg17", "hg18", "hg19", "grch38", "human")) {
+			return "human";
+		} else if (TextUtils.find(species, "mm9", "mm10", "grcm38", "mouse")) {
+			return "mouse";
+		} else {
+			return species;
+		}
+	}
 
 	/**
 	 * Parses a range of numbers containing comma separated lists and ranges of the form x-y.
