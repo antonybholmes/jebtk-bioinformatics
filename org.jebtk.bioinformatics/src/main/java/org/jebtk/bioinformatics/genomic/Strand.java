@@ -36,137 +36,143 @@ import java.util.List;
  * Describes a genomic locations strand.
  */
 public enum Strand {
-	/** Unspecified */
-	NONE(0),
-	
-	/** The sense. */
-	SENSE(1),
-	
-	/** The antisense. */
-	ANTISENSE(2);
-	
-	/** The strand's value. */
-	private int mValue;
+  /** Unspecified */
+  NONE(0),
 
-	/**
-	 * Instantiates a new strand.
-	 *
-	 * @param value the value
-	 */
-	private Strand(int value) {
-		mValue = value;
-	}
-	
-	/**
-	 * Gets the value.
-	 *
-	 * @return the value
-	 */
-	public int getValue() {
-		return mValue;
-	}
-	
-	@Override
-	public String toString() {
-		return toString(this);
-	}
-	
-	/**
-	 * Parses the.
-	 *
-	 * @param strand the strand
-	 * @return the strand
-	 */
-	public static Strand parse(char strand) {
-		switch(strand) {
-		case '+':
-			return SENSE;
-		case '-':
-			return ANTISENSE;
-		default:
-			return NONE;
-		}
-	}
+  /** The sense. */
+  SENSE(1),
 
-	/**
-	 * Parses the.
-	 *
-	 * @param strand the strand
-	 * @return the strand
-	 */
-	public static Strand parse(String strand) {
-		return parse(strand.charAt(0));
-	}
+  /** The antisense. */
+  ANTISENSE(2);
 
-	/**
-	 * Convert a strand to its character equivalent: 
-	 * SENSE -> '+'
-	 * ANTI_SENSE -> '-'
-	 * NONE -> '.'
-	 *
-	 * @param strand the strand
-	 * @return the string
-	 */
-	public static String toString(Strand strand) {
-		return Character.toString(toChar(strand));
-	}
-	
-	/**
-	 * To char.
-	 *
-	 * @param strand the strand
-	 * @return the char
-	 */
-	public static char toChar(Strand strand) {
-		switch(strand) {
-		case SENSE:
-			return '+';
-		case ANTISENSE:
-			return '-';
-		default:
-			return '.';
-		}
-	}
-	
-	/**
-	 * Convert a collection of strands to their character equivalents.
-	 *
-	 * @param strands the strands
-	 * @return the list
-	 */
-	public static List<Character> toChar(final Collection<Strand> strands) {
-		List<Character> ret = new ArrayList<Character>(strands.size());
-		
-		for (Strand s : strands) {
-			ret.add(toChar(s));
-		}
-		
-		return ret;
-	}
+  /** The strand's value. */
+  private int mValue;
 
-	/**
-	 * Parse a list of characters as strands.
-	 *
-	 * @param chars the chars
-	 * @return the list
-	 */
-	public static List<Strand> parse(final Collection<Character> chars) {
-		List<Strand> ret = new ArrayList<Strand>(chars.size());
-		
-		for (char c : chars) {
-			ret.add(parse(c));
-		}
-		
-		return ret;
-	}
-	
-	/**
-	 * Checks if is sense.
-	 *
-	 * @param strand the strand
-	 * @return true, if is sense
-	 */
-	public static boolean isSense(Strand strand) {
-		return strand == SENSE;
-	}
+  /**
+   * Instantiates a new strand.
+   *
+   * @param value
+   *          the value
+   */
+  private Strand(int value) {
+    mValue = value;
+  }
+
+  /**
+   * Gets the value.
+   *
+   * @return the value
+   */
+  public int getValue() {
+    return mValue;
+  }
+
+  @Override
+  public String toString() {
+    return toString(this);
+  }
+
+  /**
+   * Parses the.
+   *
+   * @param strand
+   *          the strand
+   * @return the strand
+   */
+  public static Strand parse(char strand) {
+    switch (strand) {
+    case '+':
+      return SENSE;
+    case '-':
+      return ANTISENSE;
+    default:
+      return NONE;
+    }
+  }
+
+  /**
+   * Parses the.
+   *
+   * @param strand
+   *          the strand
+   * @return the strand
+   */
+  public static Strand parse(String strand) {
+    return parse(strand.charAt(0));
+  }
+
+  /**
+   * Convert a strand to its character equivalent: SENSE -> '+' ANTI_SENSE -> '-'
+   * NONE -> '.'
+   *
+   * @param strand
+   *          the strand
+   * @return the string
+   */
+  public static String toString(Strand strand) {
+    return Character.toString(toChar(strand));
+  }
+
+  /**
+   * To char.
+   *
+   * @param strand
+   *          the strand
+   * @return the char
+   */
+  public static char toChar(Strand strand) {
+    switch (strand) {
+    case SENSE:
+      return '+';
+    case ANTISENSE:
+      return '-';
+    default:
+      return '.';
+    }
+  }
+
+  /**
+   * Convert a collection of strands to their character equivalents.
+   *
+   * @param strands
+   *          the strands
+   * @return the list
+   */
+  public static List<Character> toChar(final Collection<Strand> strands) {
+    List<Character> ret = new ArrayList<Character>(strands.size());
+
+    for (Strand s : strands) {
+      ret.add(toChar(s));
+    }
+
+    return ret;
+  }
+
+  /**
+   * Parse a list of characters as strands.
+   *
+   * @param chars
+   *          the chars
+   * @return the list
+   */
+  public static List<Strand> parse(final Collection<Character> chars) {
+    List<Strand> ret = new ArrayList<Strand>(chars.size());
+
+    for (char c : chars) {
+      ret.add(parse(c));
+    }
+
+    return ret;
+  }
+
+  /**
+   * Checks if is sense.
+   *
+   * @param strand
+   *          the strand
+   * @return true, if is sense
+   */
+  public static boolean isSense(Strand strand) {
+    return strand == SENSE;
+  }
 }

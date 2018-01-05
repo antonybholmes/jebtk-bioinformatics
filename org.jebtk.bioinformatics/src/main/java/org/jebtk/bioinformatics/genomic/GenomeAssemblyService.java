@@ -31,8 +31,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
 // TODO: Auto-generated Javadoc
 /**
  * Service for extracting DNA from sequences.
@@ -40,73 +38,73 @@ import java.util.List;
  * @author Antony Holmes Holmes
  */
 public class GenomeAssemblyService extends GenomeAssembly {
-	
-	/**
-	 * The Class GenomeAssemblyServiceLoader.
-	 */
-	private static class GenomeAssemblyServiceLoader {
-		
-		/** The Constant INSTANCE. */
-		private static final GenomeAssemblyService INSTANCE = new GenomeAssemblyService();
+
+  /**
+   * The Class GenomeAssemblyServiceLoader.
+   */
+  private static class GenomeAssemblyServiceLoader {
+
+    /** The Constant INSTANCE. */
+    private static final GenomeAssemblyService INSTANCE = new GenomeAssemblyService();
+  }
+
+  /**
+   * Gets the single instance of GenomeAssemblyService.
+   *
+   * @return single instance of GenomeAssemblyService
+   */
+  public static GenomeAssemblyService getInstance() {
+    return GenomeAssemblyServiceLoader.INSTANCE;
+  }
+
+  /** The m assemblies. */
+  private List<GenomeAssembly> mAssemblies = new ArrayList<GenomeAssembly>();
+
+  @Override
+  public String getName() {
+    return "genome-service";
+  }
+
+  /**
+   * Adds the.
+   *
+   * @param assembly
+   *          the assembly
+   */
+  public void add(GenomeAssembly assembly) {
+    mAssemblies.add(assembly);
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.jebtk.bioinformatics.genome.GenomeAssembly#getSequence(java.lang.String,
+   * org.jebtk.bioinformatics.genome.GenomicRegion, boolean,
+   * org.jebtk.bioinformatics.genome.RepeatMaskType)
+   */
+  @Override
+  public SequenceRegion getSequence(String genome, GenomicRegion region, boolean displayUpper,
+      RepeatMaskType repeatMaskType) throws IOException {
+    SequenceRegion ret = null;
+
+    // Iterate over all assemblies until one works.
+
+    for (GenomeAssembly a : mAssemblies) {
+      try {
+        // System.err.println(a);
+
+        ret = a.getSequence(genome, region, displayUpper, repeatMaskType);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+
+      if (ret != null) {
+        break;
+      }
     }
 
-    /**
-     * Gets the single instance of GenomeAssemblyService.
-     *
-     * @return single instance of GenomeAssemblyService
-     */
-    public static GenomeAssemblyService getInstance() {
-        return GenomeAssemblyServiceLoader.INSTANCE;
-    }
-    
-    /** The m assemblies. */
-    private List<GenomeAssembly> mAssemblies = 
-    		new ArrayList<GenomeAssembly>();
-    
-    @Override
-    public String getName() {
-    	return "genome-service";
-    }
-    
-    /**
-     * Adds the.
-     *
-     * @param assembly the assembly
-     */
-    public void add(GenomeAssembly assembly) {
-    	mAssemblies.add(assembly);
-    }
+    return ret;
+  }
 
-	/* (non-Javadoc)
-	 * @see org.jebtk.bioinformatics.genome.GenomeAssembly#getSequence(java.lang.String, org.jebtk.bioinformatics.genome.GenomicRegion, boolean, org.jebtk.bioinformatics.genome.RepeatMaskType)
-	 */
-	@Override
-	public SequenceRegion getSequence(String genome,
-			GenomicRegion region, 
-			boolean displayUpper, 
-			RepeatMaskType repeatMaskType)
-			throws IOException {
-		SequenceRegion ret = null;
-		
-		// Iterate over all assemblies until one works.
-		
-		for (GenomeAssembly a : mAssemblies) {
-			try {
-				//System.err.println(a);
-				
-				ret = a.getSequence(genome, region, displayUpper, repeatMaskType);
-			} catch(Exception e) {
-				e.printStackTrace();
-			}
-			
-			if (ret != null) {
-				break;
-			}
-		}
-		
-		return ret;
-	}
-
-
-	
 }

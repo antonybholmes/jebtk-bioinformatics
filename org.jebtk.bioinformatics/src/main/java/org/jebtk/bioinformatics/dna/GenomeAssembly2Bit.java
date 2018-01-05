@@ -43,263 +43,266 @@ import org.jebtk.bioinformatics.genomic.RepeatMaskType;
 import org.jebtk.bioinformatics.genomic.SequenceRegion;
 import org.jebtk.core.io.FileUtils;
 
-
 // TODO: Auto-generated Javadoc
 /**
- * Fast search of genome sequence Paths to get get actual genomic data.
- * This Path reads 4bit encoded genomes (i.e. 2 bases per byte).
+ * Fast search of genome sequence Paths to get get actual genomic data. This
+ * Path reads 4bit encoded genomes (i.e. 2 bases per byte).
  *
  * @author Antony Holmes Holmes
  *
  */
 public class GenomeAssembly2Bit extends GenomeAssemblyDir {
 
-	/** The m N map. */
-	private BinaryGapSearch<GenomicRegion> mNMap =
-			new BinarySearch<GenomicRegion>(); //new BinarySearch<GenomicRegion>();
+  /** The m N map. */
+  private BinaryGapSearch<GenomicRegion> mNMap = new BinarySearch<GenomicRegion>(); // new
+                                                                                    // BinarySearch<GenomicRegion>();
 
-	/** The m mask map. */
-	private BinaryGapSearch<GenomicRegion> mMaskMap =
-			new BinarySearch<GenomicRegion>(); //new BinarySearch<GenomicRegion>();
+  /** The m mask map. */
+  private BinaryGapSearch<GenomicRegion> mMaskMap = new BinarySearch<GenomicRegion>(); // new
+                                                                                       // BinarySearch<GenomicRegion>();
 
-	/** The m offset map. */
-	private Map<Chromosome, Integer> mOffsetMap =
-			new HashMap<Chromosome, Integer>(100);
+  /** The m offset map. */
+  private Map<Chromosome, Integer> mOffsetMap = new HashMap<Chromosome, Integer>(100);
 
-	/**
-	 * Directory containing genome Paths which must be of the form
-	 * chr.n.txt. Each Path must contain exactly one line consisting
-	 * of the entire chromosome.
-	 *
-	 * @param directory the directory
-	 */
-	public GenomeAssembly2Bit(Path directory) {
-		super(directory);
-	}
-	
-	@Override
-	public String getName() {
-		return "2bit";
-	}
+  /**
+   * Directory containing genome Paths which must be of the form chr.n.txt. Each
+   * Path must contain exactly one line consisting of the entire chromosome.
+   *
+   * @param directory
+   *          the directory
+   */
+  public GenomeAssembly2Bit(Path directory) {
+    super(directory);
+  }
 
-	/* (non-Javadoc)
-	 * @see edu.columbia.rdf.lib.bioinformatics.genome.GenomeAssembly#getSequence(edu.columbia.rdf.lib.bioinformatics.genome.GenomicRegion, boolean, edu.columbia.rdf.lib.bioinformatics.genome.RepeatMaskType)
-	 */
-	@Override
-	public final SequenceRegion getSequence(String genome,
-			GenomicRegion region,
-			boolean displayUpper,
-			RepeatMaskType repeatMaskType) throws IOException {
-		Chromosome chr = region.getChr();
+  @Override
+  public String getName() {
+    return "2bit";
+  }
 
-		if (!mFileMap.containsKey(chr)) {
-			Path file = mDirectory.resolve(chr + ".2bit.gz");
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * edu.columbia.rdf.lib.bioinformatics.genome.GenomeAssembly#getSequence(edu.
+   * columbia.rdf.lib.bioinformatics.genome.GenomicRegion, boolean,
+   * edu.columbia.rdf.lib.bioinformatics.genome.RepeatMaskType)
+   */
+  @Override
+  public final SequenceRegion getSequence(String genome, GenomicRegion region, boolean displayUpper,
+      RepeatMaskType repeatMaskType) throws IOException {
+    Chromosome chr = region.getChr();
 
-			mFileMap.put(chr, file);
+    if (!mFileMap.containsKey(chr)) {
+      Path file = mDirectory.resolve(chr + ".2bit.gz");
 
-			loadMaskData(chr, file);
-		}
+      mFileMap.put(chr, file);
 
-		return new SequenceRegion(region, 
-				getSequence2Bit(mFileMap.get(chr),
-						chr,
-						region.getStart(), 
-						region.getEnd(),
-						mOffsetMap.get(chr),
-						displayUpper,
-						repeatMaskType));
-	}
+      loadMaskData(chr, file);
+    }
 
-	/**
-	 * Load mask data.
-	 *
-	 * @param chr the chr
-	 * @param file the file
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	private void loadMaskData(Chromosome chr, Path file) throws IOException {
-		// TODO Auto-generated method stub
+    return new SequenceRegion(region, getSequence2Bit(mFileMap.get(chr), chr, region.getStart(), region.getEnd(),
+        mOffsetMap.get(chr), displayUpper, repeatMaskType));
+  }
 
-		DataInputStream in = FileUtils.newDataInputStream(file);
+  /**
+   * Load mask data.
+   *
+   * @param chr
+   *          the chr
+   * @param file
+   *          the file
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   */
+  private void loadMaskData(Chromosome chr, Path file) throws IOException {
+    // TODO Auto-generated method stub
 
-		try {
-			int check = in.readInt();
-			int version = in.readInt();
-			int offset = in.readInt();
+    DataInputStream in = FileUtils.newDataInputStream(file);
 
-			mOffsetMap.put(chr, offset);
+    try {
+      int check = in.readInt();
+      int version = in.readInt();
+      int offset = in.readInt();
 
-			int nc = in.readInt();
+      mOffsetMap.put(chr, offset);
 
-			for (int i = 0; i < nc; ++i) {
-				GenomicRegion region = new GenomicRegion(chr, in.readInt(), in.readInt());
+      int nc = in.readInt();
 
-				mNMap.add(region, region);
-			}
+      for (int i = 0; i < nc; ++i) {
+        GenomicRegion region = new GenomicRegion(chr, in.readInt(), in.readInt());
 
-			int mc = in.readInt();
+        mNMap.add(region, region);
+      }
 
-			for (int i = 0; i < mc; ++i) {
-				GenomicRegion region = new GenomicRegion(chr, in.readInt(), in.readInt());
+      int mc = in.readInt();
 
-				mMaskMap.add(region, region);
-			}
+      for (int i = 0; i < mc; ++i) {
+        GenomicRegion region = new GenomicRegion(chr, in.readInt(), in.readInt());
 
-			//System.err.println(file + " " + check + " " + version + " " + offset);
+        mMaskMap.add(region, region);
+      }
 
-		} finally {
-			in.close();
-		}
+      // System.err.println(file + " " + check + " " + version + " " + offset);
 
-	}
+    } finally {
+      in.close();
+    }
 
-	/**
-	 * Gets the sequence4 bit.
-	 *
-	 * @param Path the Path
-	 * @param chr the chr
-	 * @param start the start
-	 * @param end the end
-	 * @param offset the offset
-	 * @param displayUpper the display upper
-	 * @param repeatMaskType the repeat mask type
-	 * @return the sequence4 bit
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public Sequence getSequence2Bit(Path Path,
-			Chromosome chr,
-			int start,
-			int end,
-			int offset,
-			boolean displayUpper,
-			RepeatMaskType repeatMaskType) throws IOException {
+  }
 
-		int s = start - 1;
-		int e = end - 1;
+  /**
+   * Gets the sequence4 bit.
+   *
+   * @param Path
+   *          the Path
+   * @param chr
+   *          the chr
+   * @param start
+   *          the start
+   * @param end
+   *          the end
+   * @param offset
+   *          the offset
+   * @param displayUpper
+   *          the display upper
+   * @param repeatMaskType
+   *          the repeat mask type
+   * @return the sequence4 bit
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   */
+  public Sequence getSequence2Bit(Path Path, Chromosome chr, int start, int end, int offset, boolean displayUpper,
+      RepeatMaskType repeatMaskType) throws IOException {
 
-		byte[] buf = getBytes2Bit(Path, s, e, offset);
+    int s = start - 1;
+    int e = end - 1;
 
-		// how many characters to read
-		int l = end - start + 1;
+    byte[] buf = getBytes2Bit(Path, s, e, offset);
 
-		char[] buffer = new char[l];
+    // how many characters to read
+    int l = end - start + 1;
 
-		//byte mask;
-		int v = 0;
+    char[] buffer = new char[l];
 
-		// the offset to start reading from
-		//int b = s; // % 4;
-		int bi = 0; //b / 4;
-		int block;
+    // byte mask;
+    int v = 0;
 
-		for (int i = 0; i < l; ++i) {
-			block = s % 4;
+    // the offset to start reading from
+    // int b = s; // % 4;
+    int bi = 0; // b / 4;
+    int block;
 
-			//System.err.println("b "  + b + " " + buf[bi] + " " +  v + " " + bi);
+    for (int i = 0; i < l; ++i) {
+      block = s % 4;
 
-			switch (block) {
-			case 0:
-				v = ((buf[bi] & 192) >> 6);
-				break;
-			case 1:
-				v = ((buf[bi] & 48) >> 4);
-				break;
-			case 2:
-				v = ((buf[bi] & 12) >> 2);
-				break;
-			default:
-				v = (buf[bi] & 3);
-				// We are at the end of a byte so the next read must skip to
-				// the next byte in the array
-				++bi;
-				break;
-			}
+      // System.err.println("b " + b + " " + buf[bi] + " " + v + " " + bi);
 
-			char c = toChar(v); //, repeatMaskType);
+      switch (block) {
+      case 0:
+        v = ((buf[bi] & 192) >> 6);
+        break;
+      case 1:
+        v = ((buf[bi] & 48) >> 4);
+        break;
+      case 2:
+        v = ((buf[bi] & 12) >> 2);
+        break;
+      default:
+        v = (buf[bi] & 3);
+        // We are at the end of a byte so the next read must skip to
+        // the next byte in the array
+        ++bi;
+        break;
+      }
 
-			GenomicRegion testRegion = new GenomicRegion(chr, s, s);
+      char c = toChar(v); // , repeatMaskType);
 
-			//
-			// Determine if N
-			//
-			
-			if (overlaps(mNMap, testRegion)) {
-				c = 'N';
-			}
-			
-			//
-			// Determine if masked
-			//
-			
-			//System.err.println("test repeat region " + testRegion);
-			
-			if (repeatMaskType != RepeatMaskType.UPPERCASE) {
-				if (overlaps(mMaskMap, testRegion)) {
-					if (repeatMaskType == RepeatMaskType.LOWERCASE) {
-						c = toLower(c);
-					} else {
-						// Mask to N
-						c = 'N';
-					}
-				}
-			}
+      GenomicRegion testRegion = new GenomicRegion(chr, s, s);
 
-			buffer[i] = c;
+      //
+      // Determine if N
+      //
 
-			++s;
-		}
+      if (overlaps(mNMap, testRegion)) {
+        c = 'N';
+      }
 
-		String dna = new String(buffer);
+      //
+      // Determine if masked
+      //
 
-		if (displayUpper) {
-			return Sequence.create(dna);
-		} else {
-			return Sequence.create(dna.toLowerCase());
-		}
-	}
+      // System.err.println("test repeat region " + testRegion);
 
-	/**
-	 * Determine if region overlaps an N or mask region.
-	 *
-	 * @param binSearch the bin search
-	 * @param testRegion the test region
-	 * @return true, if successful
-	 */
-	private static boolean overlaps(BinaryGapSearch<GenomicRegion> binSearch,
-			GenomicRegion testRegion) {
-		List<GappedSearchFeatures<GenomicRegion>> allFeatures = 
-				binSearch.getFeatures(testRegion);
+      if (repeatMaskType != RepeatMaskType.UPPERCASE) {
+        if (overlaps(mMaskMap, testRegion)) {
+          if (repeatMaskType == RepeatMaskType.LOWERCASE) {
+            c = toLower(c);
+          } else {
+            // Mask to N
+            c = 'N';
+          }
+        }
+      }
 
-		for (GappedSearchFeatures<GenomicRegion> feature : allFeatures) {
-			for (GenomicRegion region : feature) {
-				if (GenomicRegion.overlaps(region, testRegion)) {
-					return true;
-				}
-			}
-		}
+      buffer[i] = c;
 
-		return false;
-	}
+      ++s;
+    }
 
-	/**
-	 * Gets the bytes4 bit.
-	 *
-	 * @param file the file
-	 * @param start the start
-	 * @param end the end
-	 * @param offset the offset
-	 * @return the bytes4 bit
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public static byte[] getBytes2Bit(Path file, 
-			int start, 
-			int end,
-			int offset) throws IOException {
-		int sb = start / 4 + offset;
-		int eb = end / 4 + offset;
+    String dna = new String(buffer);
 
-		//System.err.println(sb + " " + eb);
+    if (displayUpper) {
+      return Sequence.create(dna);
+    } else {
+      return Sequence.create(dna.toLowerCase());
+    }
+  }
 
-		return getBytes(file, sb, eb);
-	}
+  /**
+   * Determine if region overlaps an N or mask region.
+   *
+   * @param binSearch
+   *          the bin search
+   * @param testRegion
+   *          the test region
+   * @return true, if successful
+   */
+  private static boolean overlaps(BinaryGapSearch<GenomicRegion> binSearch, GenomicRegion testRegion) {
+    List<GappedSearchFeatures<GenomicRegion>> allFeatures = binSearch.getFeatures(testRegion);
+
+    for (GappedSearchFeatures<GenomicRegion> feature : allFeatures) {
+      for (GenomicRegion region : feature) {
+        if (GenomicRegion.overlaps(region, testRegion)) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * Gets the bytes4 bit.
+   *
+   * @param file
+   *          the file
+   * @param start
+   *          the start
+   * @param end
+   *          the end
+   * @param offset
+   *          the offset
+   * @return the bytes4 bit
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   */
+  public static byte[] getBytes2Bit(Path file, int start, int end, int offset) throws IOException {
+    int sb = start / 4 + offset;
+    int eb = end / 4 + offset;
+
+    // System.err.println(sb + " " + eb);
+
+    return getBytes(file, sb, eb);
+  }
 }

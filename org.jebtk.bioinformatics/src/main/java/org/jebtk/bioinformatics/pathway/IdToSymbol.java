@@ -38,79 +38,77 @@ import java.util.TreeSet;
 import org.jebtk.core.io.Io;
 import org.jebtk.core.text.TextUtils;
 
-
 // TODO: Auto-generated Javadoc
 /**
  * Convert between gene ids/symbols.
  */
 public class IdToSymbol {
-	
-	/**
-	 * The member ref seq map.
-	 */
-	private Map<String, String> mId1Map = new HashMap<String, String>();
 
-	/**
-	 * The member symbol map.
-	 */
-	private Set<String> mSymbolSet = new TreeSet<String>();
+  /**
+   * The member ref seq map.
+   */
+  private Map<String, String> mId1Map = new HashMap<String, String>();
 
-	
+  /**
+   * The member symbol map.
+   */
+  private Set<String> mSymbolSet = new TreeSet<String>();
 
-	/**
-	 * Create a conversion tool. Gene symbols
-	 *
-	 * @param reader the reader
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public IdToSymbol(BufferedReader reader) throws IOException {
+  /**
+   * Create a conversion tool. Gene symbols
+   *
+   * @param reader
+   *          the reader
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   */
+  public IdToSymbol(BufferedReader reader) throws IOException {
 
-		
+    try {
+      // Skip header
+      reader.readLine();
 
-		try {
-			// Skip header
-			reader.readLine();
+      String line;
 
-			String line;
+      while ((line = reader.readLine()) != null) {
+        if (Io.isEmptyLine(line)) {
+          continue;
+        }
 
-			while ((line = reader.readLine()) != null) {
-				if (Io.isEmptyLine(line)) {
-					continue;
-				}
+        List<String> tokens = TextUtils.tabSplit(line);
 
-				List<String> tokens = TextUtils.tabSplit(line);
+        String id1 = tokens.get(0);
+        String id2 = tokens.get(1);
+        String symbol = tokens.get(2);
 
-				String id1 = tokens.get(0);
-				String id2 = tokens.get(1);
-				String symbol = tokens.get(2);
-				
-				mId1Map.put(id1.toUpperCase(), symbol);
-				mId1Map.put(id2.toUpperCase(), symbol);
-				mId1Map.put(symbol.toUpperCase(), symbol);
+        mId1Map.put(id1.toUpperCase(), symbol);
+        mId1Map.put(id2.toUpperCase(), symbol);
+        mId1Map.put(symbol.toUpperCase(), symbol);
 
-				mSymbolSet.add(symbol);
-			}
-		} finally {
-			reader.close();
-		}
-	}
-	
-	/**
-	 * Convert.
-	 *
-	 * @param id the id
-	 * @return the string
-	 */
-	public String convert(String id) {
-		return mId1Map.get(id.toUpperCase());
-	}
-	
-	/**
-	 * Gets the symbol count.
-	 *
-	 * @return the symbol count
-	 */
-	public int getSymbolCount() {
-		return mSymbolSet.size();
-	}
+        mSymbolSet.add(symbol);
+      }
+    } finally {
+      reader.close();
+    }
+  }
+
+  /**
+   * Convert.
+   *
+   * @param id
+   *          the id
+   * @return the string
+   */
+  public String convert(String id) {
+    return mId1Map.get(id.toUpperCase());
+  }
+
+  /**
+   * Gets the symbol count.
+   *
+   * @return the symbol count
+   */
+  public int getSymbolCount() {
+    return mSymbolSet.size();
+  }
 }

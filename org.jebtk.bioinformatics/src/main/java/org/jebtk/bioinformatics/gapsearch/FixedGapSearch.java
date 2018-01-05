@@ -40,226 +40,244 @@ import org.jebtk.core.collections.IterMap;
 import org.jebtk.core.collections.TreeMapCreator;
 import org.jebtk.core.collections.UniqueArrayList;
 
-
 // TODO: Auto-generated Javadoc
 /**
  * Use fixed size blocks to find features.
  *
  * @author Antony Holmes Holmes
- * @param <T> the generic type
+ * @param <T>
+ *          the generic type
  */
 public class FixedGapSearch<T> extends GapSearch<T> {
 
-	/**
-	 * The constant DEFAULT_BIN_SIZE.
-	 */
-	protected static final int DEFAULT_BIN_SIZE = 10000;
+  /**
+   * The constant DEFAULT_BIN_SIZE.
+   */
+  protected static final int DEFAULT_BIN_SIZE = 10000;
 
+  /**
+   * The member features.
+   */
+  protected IterMap<Chromosome, IterMap<Integer, GappedSearchFeatures<T>>> mFeatures = DefaultTreeMap
+      .create(new TreeMapCreator<Integer, GappedSearchFeatures<T>>());
 
-	/**
-	 * The member features.
-	 */
-	protected IterMap<Chromosome, IterMap<Integer, GappedSearchFeatures<T>>> mFeatures = 
-			DefaultTreeMap.create(new TreeMapCreator<Integer, GappedSearchFeatures<T>>());
-	
-	//protected IterMap<Chromosome, BinMap<GappedSearchFeatures<T>>> mFeatures;
+  // protected IterMap<Chromosome, BinMap<GappedSearchFeatures<T>>> mFeatures;
 
-	/**
-	 * The member size.
-	 */
-	protected int mSize = 0;
+  /**
+   * The member size.
+   */
+  protected int mSize = 0;
 
+  protected final int mBinSize;
 
-	protected final int mBinSize;
+  /**
+   * The member bin size.
+   */
+  // protected final int mBinSize;
 
-	/**
-	 * The member bin size.
-	 */
-	//protected final int mBinSize;
+  /**
+   * Instantiates a new fixed gap search.
+   */
+  public FixedGapSearch() {
+    this(DEFAULT_BIN_SIZE);
+  }
 
-	/**
-	 * Instantiates a new fixed gap search.
-	 */
-	public FixedGapSearch() {
-		this(DEFAULT_BIN_SIZE);
-	}
+  /**
+   * Instantiates a new fixed gap search.
+   *
+   * @param binSize
+   *          the bin size
+   */
+  public FixedGapSearch(int binSize) {
+    mBinSize = Math.max(1, binSize);
 
-	/**
-	 * Instantiates a new fixed gap search.
-	 *
-	 * @param binSize the bin size
-	 */
-	public FixedGapSearch(int binSize) {
-		mBinSize = Math.max(1, binSize);
+    /*
+     * mFeatures = DefaultTreeMap.create(new
+     * EntryCreator<BinMap<GappedSearchFeatures<T>>>(){
+     * 
+     * @Override public BinMap<GappedSearchFeatures<T>> newEntry() { return new
+     * BinMap<GappedSearchFeatures<T>>(); }});
+     */
+  }
 
-		/*
-		mFeatures = DefaultTreeMap.create(new EntryCreator<BinMap<GappedSearchFeatures<T>>>(){
-			@Override
-			public BinMap<GappedSearchFeatures<T>> newEntry() {
-				return new BinMap<GappedSearchFeatures<T>>();
-			}});
-		*/
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see edu.columbia.rdf.lib.bioinformatics.gapsearch.GapSearch#addFeature(edu.
+   * columbia.rdf.lib.bioinformatics.genome.Chromosome, int, int,
+   * java.lang.Object)
+   */
+  @Override
+  public void add(GenomicRegion region, T feature) {
+    int startBin = getBin(region.getStart());
+    int endBin = getBin(region.getEnd());
 
-	/* (non-Javadoc)
-	 * @see edu.columbia.rdf.lib.bioinformatics.gapsearch.GapSearch#addFeature(edu.columbia.rdf.lib.bioinformatics.genome.Chromosome, int, int, java.lang.Object)
-	 */
-	@Override
-	public void add(GenomicRegion region, T feature) {
-		int startBin = getBin(region.getStart());
-		int endBin = getBin(region.getEnd());
+    Chromosome chr = region.getChr();
 
-		Chromosome chr = region.getChr();
+    for (int bin = startBin; bin <= endBin; ++bin) {
+      if (!mFeatures.get(chr).containsKey(bin)) {
+        mFeatures.get(chr).put(bin, new GappedSearchFeatures<T>(bin));
+      }
 
-		for (int bin = startBin; bin <= endBin; ++bin) {
-			if (!mFeatures.get(chr).containsKey(bin)) {
-				mFeatures.get(chr).put(bin, new GappedSearchFeatures<T>(bin));
-			}
+      mFeatures.get(chr).get(bin).add(region, feature);
+    }
 
-			mFeatures.get(chr).get(bin).add(region, feature);
-		}
+    ++mSize;
+  }
 
-		++mSize;
-	}
+  private int getBin(int x) {
+    return x / mBinSize;
+  }
 
-	private int getBin(int x) {
-		return x / mBinSize;
-	}
-	
-	/**
-	 * Adds the feature.
-	 *
-	 * @param chr the chr
-	 * @param bin the bin
-	 * @param feature the feature
-	 */
-	//	public void addFeature(Chromosome chr, int bin, T feature) {
-	//		if (!mFeatures.get(chr).containsKey(bin)) {
-	//			mFeatures.get(chr).put(bin, new GappedSearchFeatures<T>(bin));
-	//		}
-	//		
-	//		mFeatures.get(chr).get(bin).add(feature);
-	//
-	//		++mSize;
-	//	}
+  /**
+   * Adds the feature.
+   *
+   * @param chr
+   *          the chr
+   * @param bin
+   *          the bin
+   * @param feature
+   *          the feature
+   */
+  // public void addFeature(Chromosome chr, int bin, T feature) {
+  // if (!mFeatures.get(chr).containsKey(bin)) {
+  // mFeatures.get(chr).put(bin, new GappedSearchFeatures<T>(bin));
+  // }
+  //
+  // mFeatures.get(chr).get(bin).add(feature);
+  //
+  // ++mSize;
+  // }
 
-	/* (non-Javadoc)
-	 * @see edu.columbia.rdf.lib.bioinformatics.gapsearch.GapSearch#size()
-	 */
-	@Override
-	public int size() {
-		return mSize;
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see edu.columbia.rdf.lib.bioinformatics.gapsearch.GapSearch#size()
+   */
+  @Override
+  public int size() {
+    return mSize;
+  }
 
-	@Override
-	public boolean contains(Chromosome chr) {
-		return mFeatures.containsKey(chr);
-	}
+  @Override
+  public boolean contains(Chromosome chr) {
+    return mFeatures.containsKey(chr);
+  }
 
-	/* (non-Javadoc)
-	 * @see edu.columbia.rdf.lib.bioinformatics.gapsearch.GapSearch#getFeatureList()
-	 */
-	@Override
-	public List<T> getFeatures() {
-		List<T> ret = new UniqueArrayList<T>();
+  /*
+   * (non-Javadoc)
+   * 
+   * @see edu.columbia.rdf.lib.bioinformatics.gapsearch.GapSearch#getFeatureList()
+   */
+  @Override
+  public List<T> getFeatures() {
+    List<T> ret = new UniqueArrayList<T>();
 
-		for (Chromosome chr : mFeatures) {
-			for (int start : mFeatures.get(chr)) {
-				for (GenomicRegion region : mFeatures.get(chr).get(start)) {
-					for (T item : mFeatures.get(chr).get(start).getValues(region)) {
-						ret.add(item);
-					}
-				}
-			}
-		}
+    for (Chromosome chr : mFeatures) {
+      for (int start : mFeatures.get(chr)) {
+        for (GenomicRegion region : mFeatures.get(chr).get(start)) {
+          for (T item : mFeatures.get(chr).get(start).getValues(region)) {
+            ret.add(item);
+          }
+        }
+      }
+    }
 
-		return ret;
-	}
+    return ret;
+  }
 
-	/* (non-Javadoc)
-	 * @see edu.columbia.rdf.lib.bioinformatics.gapsearch.GapSearch#getFeatureList(edu.columbia.rdf.lib.bioinformatics.genome.Chromosome)
-	 */
-	@Override
-	public List<T> getFeatures(Chromosome chr) {
-		List<T> ret = new UniqueArrayList<T>();
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * edu.columbia.rdf.lib.bioinformatics.gapsearch.GapSearch#getFeatureList(edu.
+   * columbia.rdf.lib.bioinformatics.genome.Chromosome)
+   */
+  @Override
+  public List<T> getFeatures(Chromosome chr) {
+    List<T> ret = new UniqueArrayList<T>();
 
-		for (int start : mFeatures.get(chr)) {
-			for (GenomicRegion region : mFeatures.get(chr).get(start)) {
-				for (T item : mFeatures.get(chr).get(start).getValues(region)) {
-					ret.add(item);
-				}
-			}
-		}
+    for (int start : mFeatures.get(chr)) {
+      for (GenomicRegion region : mFeatures.get(chr).get(start)) {
+        for (T item : mFeatures.get(chr).get(start).getValues(region)) {
+          ret.add(item);
+        }
+      }
+    }
 
-		return ret;
-	}
+    return ret;
+  }
 
-	/* (non-Javadoc)
-	 * @see edu.columbia.rdf.lib.bioinformatics.gapsearch.GapSearch#getFeatures(edu.columbia.rdf.lib.bioinformatics.genome.Chromosome, int, int)
-	 */
-	@Override
-	public List<GappedSearchFeatures<T>> getFeatures(Chromosome chr, 
-			int start, 
-			int end) {
-		int is = getBin(start);
-		int ie = getBin(end);
+  /*
+   * (non-Javadoc)
+   * 
+   * @see edu.columbia.rdf.lib.bioinformatics.gapsearch.GapSearch#getFeatures(edu.
+   * columbia.rdf.lib.bioinformatics.genome.Chromosome, int, int)
+   */
+  @Override
+  public List<GappedSearchFeatures<T>> getFeatures(Chromosome chr, int start, int end) {
+    int is = getBin(start);
+    int ie = getBin(end);
 
-		return getFeaturesByBin(chr, is, ie);
-	}
+    return getFeaturesByBin(chr, is, ie);
+  }
 
-	/**
-	 * Gets the features by bin.
-	 *
-	 * @param chr the chr
-	 * @param sbin the sbin
-	 * @param ebin the ebin
-	 * @return the features by bin
-	 */
-	public List<GappedSearchFeatures<T>> getFeaturesByBin(Chromosome chr, 
-			int sbin,
-			int ebin) {
-		Map<Integer, GappedSearchFeatures<T>> features = mFeatures.get(chr);
+  /**
+   * Gets the features by bin.
+   *
+   * @param chr
+   *          the chr
+   * @param sbin
+   *          the sbin
+   * @param ebin
+   *          the ebin
+   * @return the features by bin
+   */
+  public List<GappedSearchFeatures<T>> getFeaturesByBin(Chromosome chr, int sbin, int ebin) {
+    Map<Integer, GappedSearchFeatures<T>> features = mFeatures.get(chr);
 
-		if (features.size() == 0) {
-			return Collections.emptyList();
-		}
+    if (features.size() == 0) {
+      return Collections.emptyList();
+    }
 
-		List<GappedSearchFeatures<T>> range = 
-				new ArrayList<GappedSearchFeatures<T>>();
+    List<GappedSearchFeatures<T>> range = new ArrayList<GappedSearchFeatures<T>>();
 
-		for (int i = sbin; i <= ebin; ++i) {
-			GappedSearchFeatures<T> f = features.get(i);
+    for (int i = sbin; i <= ebin; ++i) {
+      GappedSearchFeatures<T> f = features.get(i);
 
-			if (f != null) {
-				range.add(f);
-			}
-		}
+      if (f != null) {
+        range.add(f);
+      }
+    }
 
-		return range;
-	}
+    return range;
+  }
 
-	/* (non-Javadoc)
-	 * @see java.lang.Iterable#iterator()
-	 */
-	@Override
-	public Iterator<Chromosome> iterator() {
-		return mFeatures.iterator();
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Iterable#iterator()
+   */
+  @Override
+  public Iterator<Chromosome> iterator() {
+    return mFeatures.iterator();
+  }
 
-	/**
-	 * Adds the.
-	 *
-	 * @param gappedSearch the gapped search
-	 */
-	public void add(FixedGapSearch<T> gappedSearch) {
-		for (Chromosome chr : gappedSearch.mFeatures) {
-			for (int bin : gappedSearch.mFeatures.get(chr)) {
-				for (GenomicRegion region : gappedSearch.mFeatures.get(chr).get(bin)) {
-					for (T item : mFeatures.get(chr).get(bin).getValues(region)) {
-						add(region, item);
-					}
-				}
-			}
-		}
-	}
+  /**
+   * Adds the.
+   *
+   * @param gappedSearch
+   *          the gapped search
+   */
+  public void add(FixedGapSearch<T> gappedSearch) {
+    for (Chromosome chr : gappedSearch.mFeatures) {
+      for (int bin : gappedSearch.mFeatures.get(chr)) {
+        for (GenomicRegion region : gappedSearch.mFeatures.get(chr).get(bin)) {
+          for (T item : mFeatures.get(chr).get(bin).getValues(region)) {
+            add(region, item);
+          }
+        }
+      }
+    }
+  }
 }

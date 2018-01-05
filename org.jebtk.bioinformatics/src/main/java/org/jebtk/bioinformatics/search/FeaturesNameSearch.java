@@ -39,117 +39,117 @@ import org.jebtk.core.io.FileUtils;
 import org.jebtk.core.io.Io;
 import org.jebtk.core.text.TextUtils;
 
-
-
-
-
 // TODO: Auto-generated Javadoc
 /**
  * The class FeaturesNameSearch.
  */
 public class FeaturesNameSearch implements Iterable<Feature> {
-	
-	/**
-	 * The features.
-	 */
-	protected Map<String, Feature> features = new HashMap<String, Feature>();
 
-	/**
-	 * The type.
-	 */
-	protected String type;
+  /**
+   * The features.
+   */
+  protected Map<String, Feature> features = new HashMap<String, Feature>();
 
-	/**
-	 * Instantiates a new features name search.
-	 *
-	 * @param type the type
-	 */
-	public FeaturesNameSearch(String type) {
-		this.type = type;
-	}
+  /**
+   * The type.
+   */
+  protected String type;
 
-	/**
-	 * Gets the type.
-	 *
-	 * @return the type
-	 */
-	public final String getType() {
-		return type;
-	}
+  /**
+   * Instantiates a new features name search.
+   *
+   * @param type
+   *          the type
+   */
+  public FeaturesNameSearch(String type) {
+    this.type = type;
+  }
 
-	/**
-	 * Cache features.
-	 *
-	 * @param file the file
-	 */
-	public void cacheFeatures(Path file) {
-		features.clear();
+  /**
+   * Gets the type.
+   *
+   * @return the type
+   */
+  public final String getType() {
+    return type;
+  }
 
-		short chromosomeCount = 0;
-		int featureCount = 0;
+  /**
+   * Cache features.
+   *
+   * @param file
+   *          the file
+   */
+  public void cacheFeatures(Path file) {
+    features.clear();
 
-		try {
-			BufferedReader reader = FileUtils.newBufferedReader(file);
+    short chromosomeCount = 0;
+    int featureCount = 0;
 
-			String line;
+    try {
+      BufferedReader reader = FileUtils.newBufferedReader(file);
 
-			try {
-				// skip header
-				line = reader.readLine();
+      String line;
 
-				while ((line = reader.readLine()) != null) {
-					if (Io.isEmptyLine(line)) {
-						continue;
-					}
+      try {
+        // skip header
+        line = reader.readLine();
 
-					List<String> row = TextUtils.fastSplitRemoveQuotes(line);
+        while ((line = reader.readLine()) != null) {
+          if (Io.isEmptyLine(line)) {
+            continue;
+          }
 
-					Feature feature = new Feature(row.get(0), 
-							ChromosomeService.getInstance().guess(file, row.get(1)), 
-							Integer.parseInt(row.get(2)), 
-							Integer.parseInt(row.get(3)));
+          List<String> row = TextUtils.fastSplitRemoveQuotes(line);
 
-					features.put(feature.getName(), feature);
+          Feature feature = new Feature(row.get(0), ChromosomeService.getInstance().guess(file, row.get(1)),
+              Integer.parseInt(row.get(2)), Integer.parseInt(row.get(3)));
 
-					++featureCount;
-				}
-			} finally {
-				System.out.println("Loaded " + chromosomeCount + " groups with " + featureCount + " features from " + file + ".");
+          features.put(feature.getName(), feature);
 
-				reader.close();
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+          ++featureCount;
+        }
+      } finally {
+        System.out
+            .println("Loaded " + chromosomeCount + " groups with " + featureCount + " features from " + file + ".");
 
-	/**
-	 * Gets the feature.
-	 *
-	 * @param name the name
-	 * @return the feature
-	 */
-	public final Feature getFeature(String name) {
-		if (features.containsKey(name)) {
-			return features.get(name);
-		}
+        reader.close();
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
 
-		return null;
-	}
+  /**
+   * Gets the feature.
+   *
+   * @param name
+   *          the name
+   * @return the feature
+   */
+  public final Feature getFeature(String name) {
+    if (features.containsKey(name)) {
+      return features.get(name);
+    }
 
-	/* (non-Javadoc)
-	 * @see java.lang.Iterable#iterator()
-	 */
-	public Iterator<Feature> iterator() {
-		return features.values().iterator();
-	}
+    return null;
+  }
 
-	/**
-	 * Size.
-	 *
-	 * @return the int
-	 */
-	public int size() {
-		return features.size();
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Iterable#iterator()
+   */
+  public Iterator<Feature> iterator() {
+    return features.values().iterator();
+  }
+
+  /**
+   * Size.
+   *
+   * @return the int
+   */
+  public int size() {
+    return features.size();
+  }
 }

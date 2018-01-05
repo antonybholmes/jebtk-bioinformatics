@@ -36,116 +36,128 @@ import java.util.List;
  * The class AminoAcid.
  */
 public class AminoAcid implements Comparable<AminoAcid>, Iterable<Codon> {
-	
-	/**
-	 * The abbreviation.
-	 */
-	private String abbreviation;
-	
-	/**
-	 * The name.
-	 */
-	private String name;
-	
-	/**
-	 * The codons.
-	 */
-	private List<Codon> codons = new ArrayList<Codon>();
-	
-	/**
-	 * The display.
-	 */
-	private String display;
-	
-	/**
-	 * The letter.
-	 */
-	private char letter;
 
-	/**
-	 * Instantiates a new amino acid.
-	 *
-	 * @param name the name
-	 * @param abbreviation the abbreviation
-	 * @param letter the letter
-	 */
-	public AminoAcid(String name, String abbreviation, char letter) {
-		this.name = name;
-		this.abbreviation = abbreviation;
-		this.letter = letter;
-		
-		this.display = name + "/" + abbreviation + "/" + letter;
-	}
-	
-	/**
-	 * Gets the name.
-	 *
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
-	
-	/**
-	 * Gets the abbreviation.
-	 *
-	 * @return the abbreviation
-	 */
-	public String getAbbreviation() {
-		return abbreviation;
-	}
-	
-	/**
-	 * Gets the letter.
-	 *
-	 * @return the letter
-	 */
-	public char getLetter() {
-		return letter;
-	}
-	
-	/**
-	 * Adds the codon.
-	 *
-	 * @param codon the codon
-	 */
-	public void addCodon(Codon codon) {
-		codons.add(codon);
-	}
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		return display;
-	}
+  /**
+   * The abbreviation.
+   */
+  private String abbreviation;
 
-	/* (non-Javadoc)
-	 * @see java.lang.Iterable#iterator()
-	 */
-	@Override
-	public Iterator<Codon> iterator() {
-		return codons.iterator();
-	}
+  /**
+   * The name.
+   */
+  private String name;
 
-	/* (non-Javadoc)
-	 * @see java.lang.Comparable#compareTo(java.lang.Object)
-	 */
-	@Override
-	public int compareTo(AminoAcid a) {
-		return name.compareTo(a.name);
-	}
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object o) {
-		if (!(o instanceof AminoAcid)) {
-			return false;
-		}
-		
-		return compareTo((AminoAcid)o) == 0;
-	}
+  /**
+   * The codons.
+   */
+  private List<Codon> codons = new ArrayList<Codon>();
+
+  /**
+   * The display.
+   */
+  private String display;
+
+  /**
+   * The letter.
+   */
+  private char letter;
+
+  /**
+   * Instantiates a new amino acid.
+   *
+   * @param name
+   *          the name
+   * @param abbreviation
+   *          the abbreviation
+   * @param letter
+   *          the letter
+   */
+  public AminoAcid(String name, String abbreviation, char letter) {
+    this.name = name;
+    this.abbreviation = abbreviation;
+    this.letter = letter;
+
+    this.display = name + "/" + abbreviation + "/" + letter;
+  }
+
+  /**
+   * Gets the name.
+   *
+   * @return the name
+   */
+  public String getName() {
+    return name;
+  }
+
+  /**
+   * Gets the abbreviation.
+   *
+   * @return the abbreviation
+   */
+  public String getAbbreviation() {
+    return abbreviation;
+  }
+
+  /**
+   * Gets the letter.
+   *
+   * @return the letter
+   */
+  public char getLetter() {
+    return letter;
+  }
+
+  /**
+   * Adds the codon.
+   *
+   * @param codon
+   *          the codon
+   */
+  public void addCodon(Codon codon) {
+    codons.add(codon);
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#toString()
+   */
+  @Override
+  public String toString() {
+    return display;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Iterable#iterator()
+   */
+  @Override
+  public Iterator<Codon> iterator() {
+    return codons.iterator();
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Comparable#compareTo(java.lang.Object)
+   */
+  @Override
+  public int compareTo(AminoAcid a) {
+    return name.compareTo(a.name);
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
+  @Override
+  public boolean equals(Object o) {
+    if (!(o instanceof AminoAcid)) {
+      return false;
+    }
+
+    return compareTo((AminoAcid) o) == 0;
+  }
 }

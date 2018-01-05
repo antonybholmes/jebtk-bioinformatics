@@ -31,44 +31,48 @@ package org.jebtk.bioinformatics.gapsearch;
 /**
  * The class GappedSearchFeatures.
  *
- * @param <T> the generic type
+ * @param <T>
+ *          the generic type
  */
 public class GappedSearchFeatures<T> extends SearchResults<T> implements Comparable<GappedSearchFeatures<T>> {
-	
-	/**
-	 * The member p.
-	 */
-	private final int mP;
-	
-	/**
-	 * Instantiates a new gapped search features.
-	 *
-	 * @param p the p
-	 */
-	public GappedSearchFeatures(int p) {
-		mP = p;
-	}
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Comparable#compareTo(java.lang.Object)
-	 */
-	@Override
-	public int compareTo(GappedSearchFeatures<T> f) {
-		if (mP < f.mP) {
-			return -1;
-		} else if (mP > f.mP) {
-			return 1;
-		} else {
-			return 0;
-		}
-	}
 
-	/**
-	 * Gets the position.
-	 *
-	 * @return the position
-	 */
-	public int getPosition() {
-		return mP;
-	}
+  /**
+   * The member p.
+   */
+  private final int mP;
+
+  /**
+   * Instantiates a new gapped search features.
+   *
+   * @param p
+   *          the p
+   */
+  public GappedSearchFeatures(int p) {
+    mP = p;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Comparable#compareTo(java.lang.Object)
+   */
+  @Override
+  public int compareTo(GappedSearchFeatures<T> f) {
+    if (mP < f.mP) {
+      return -1;
+    } else if (mP > f.mP) {
+      return 1;
+    } else {
+      return 0;
+    }
+  }
+
+  /**
+   * Gets the position.
+   *
+   * @return the position
+   */
+  public int getPosition() {
+    return mP;
+  }
 }

@@ -31,8 +31,6 @@ import org.jebtk.core.event.ChangeEvent;
 import org.jebtk.core.event.ChangeListener;
 import org.jebtk.core.model.ListModel;
 
-
-
 // TODO: Auto-generated Javadoc
 /**
  * A model for shared bed graphs.
@@ -41,52 +39,57 @@ import org.jebtk.core.model.ListModel;
  *
  */
 public class BedGraphGroupModel extends ListModel<UCSCTrack> implements ChangeListener {
-	
-	/**
-	 * The constant serialVersionUID.
-	 */
-	private static final long serialVersionUID = 1L;
-	
-	/**
-	 * The member name.
-	 */
-	private String mName;
-	
-	/**
-	 * Instantiates a new bed graph group model.
-	 *
-	 * @param name the name
-	 */
-	public BedGraphGroupModel(String name) {
-		mName = name;
-	}
-	
-	/**
-	 * Gets the name.
-	 *
-	 * @return the name
-	 */
-	public String getName() {
-		return mName;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.abh.lib.model.ListModel#add(java.lang.Object)
-	 */
-	@Override
-	public boolean add(UCSCTrack bedGraph) {
-		boolean ret = super.add(bedGraph);
-		
-		bedGraph.addChangeListener(this);
-		
-		return ret;
-	}
 
-	/* (non-Javadoc)
-	 * @see org.abh.lib.event.ChangeListener#changed(org.abh.lib.event.ChangeEvent)
-	 */
-	@Override
-	public void changed(ChangeEvent e) {
-		fireChanged();
-	}
+  /**
+   * The constant serialVersionUID.
+   */
+  private static final long serialVersionUID = 1L;
+
+  /**
+   * The member name.
+   */
+  private String mName;
+
+  /**
+   * Instantiates a new bed graph group model.
+   *
+   * @param name
+   *          the name
+   */
+  public BedGraphGroupModel(String name) {
+    mName = name;
+  }
+
+  /**
+   * Gets the name.
+   *
+   * @return the name
+   */
+  public String getName() {
+    return mName;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.abh.lib.model.ListModel#add(java.lang.Object)
+   */
+  @Override
+  public boolean add(UCSCTrack bedGraph) {
+    boolean ret = super.add(bedGraph);
+
+    bedGraph.addChangeListener(this);
+
+    return ret;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.abh.lib.event.ChangeListener#changed(org.abh.lib.event.ChangeEvent)
+   */
+  @Override
+  public void changed(ChangeEvent e) {
+    fireChanged();
+  }
 }

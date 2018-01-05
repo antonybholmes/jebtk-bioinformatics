@@ -34,161 +34,164 @@ import org.jebtk.bioinformatics.genomic.Chromosome;
 import org.jebtk.bioinformatics.genomic.GenomicRegion;
 import org.jebtk.core.collections.UniqueArrayList;
 
-
 // TODO: Auto-generated Javadoc
 /**
- * Generic interface for quickly searching for features by genomic
- * location.
+ * Generic interface for quickly searching for features by genomic location.
  *
  * @author Antony Holmes Holmes
- * @param <T> the generic type
+ * @param <T>
+ *          the generic type
  */
 public abstract class GapSearch<T> implements Iterable<Chromosome> {
 
-	/**
-	 * Adds the feature.
-	 *
-	 * @param region the region
-	 * @param feature the feature
-	 */ 
-	public abstract void add(GenomicRegion region, T feature);
+  /**
+   * Adds the feature.
+   *
+   * @param region
+   *          the region
+   * @param feature
+   *          the feature
+   */
+  public abstract void add(GenomicRegion region, T feature);
 
-	/**
-	 * Size.
-	 *
-	 * @return the int
-	 */
-	public abstract int size();
+  /**
+   * Size.
+   *
+   * @return the int
+   */
+  public abstract int size();
 
-	/**
-	 * Gets the feature list.
-	 *
-	 * @return the feature list
-	 */
-	public abstract List<T> getFeatures();
+  /**
+   * Gets the feature list.
+   *
+   * @return the feature list
+   */
+  public abstract List<T> getFeatures();
 
-	/**
-	 * Gets the feature list.
-	 *
-	 * @param region the region
-	 * @return the feature list
-	 */
-	public List<T> getFeatureSet(GenomicRegion region) {
-		List<GappedSearchFeatures<T>> range = getFeatures(region);
+  /**
+   * Gets the feature list.
+   *
+   * @param region
+   *          the region
+   * @return the feature list
+   */
+  public List<T> getFeatureSet(GenomicRegion region) {
+    List<GappedSearchFeatures<T>> range = getFeatures(region);
 
-		if (range.size() == 0) {
-			return Collections.emptyList();
-		}
+    if (range.size() == 0) {
+      return Collections.emptyList();
+    }
 
-		List<T> ret = new UniqueArrayList<T>();
+    List<T> ret = new UniqueArrayList<T>();
 
-		for (GappedSearchFeatures<T> features : range) {
-			for (GenomicRegion r : features) {
-				for (T item : features.getValues(r)) {
-					ret.add(item);
-				}
-			}
-		}
+    for (GappedSearchFeatures<T> features : range) {
+      for (GenomicRegion r : features) {
+        for (T item : features.getValues(r)) {
+          ret.add(item);
+        }
+      }
+    }
 
-		return ret;
-	}
+    return ret;
+  }
 
+  /**
+   * Gets the feature list.
+   *
+   * @param chr
+   *          the chr
+   * @return the feature list
+   */
+  public abstract List<T> getFeatures(Chromosome chr);
 
+  public abstract boolean contains(Chromosome chr);
 
-	/**
-	 * Gets the feature list.
-	 *
-	 * @param chr the chr
-	 * @return the feature list
-	 */
-	public abstract List<T> getFeatures(Chromosome chr);
-	
-	public abstract boolean contains(Chromosome chr);
+  /**
+   * Gets the features.
+   *
+   * @param region
+   *          the region
+   * @return the features
+   */
+  public List<GappedSearchFeatures<T>> getFeatures(GenomicRegion region) {
+    if (region == null) {
+      return Collections.emptyList();
+    }
 
-	/**
-	 * Gets the features.
-	 *
-	 * @param region the region
-	 * @return the features
-	 */
-	public List<GappedSearchFeatures<T>> getFeatures(GenomicRegion region) {
-		if (region == null) {
-			return Collections.emptyList();
-		}
+    return getFeatures(region.getChr(), region.getStart(), region.getEnd());
+  }
 
-		return getFeatures(region.getChr(), region.getStart(), region.getEnd());
-	}
+  /**
+   * Gets the features.
+   *
+   * @param chr
+   *          the chr
+   * @param start
+   *          the start
+   * @param end
+   *          the end
+   * @return the features
+   */
+  public abstract List<GappedSearchFeatures<T>> getFeatures(Chromosome chr, int start, int end);
 
-	/**
-	 * Gets the features.
-	 *
-	 * @param chr the chr
-	 * @param start the start
-	 * @param end the end
-	 * @return the features
-	 */
-	public abstract List<GappedSearchFeatures<T>> getFeatures(Chromosome chr, 
-			int start, 
-			int end);
+  public SearchResults<T> getOverlappingFeatures(GenomicRegion region, int minBp) {
+    SearchResults<T> ret = new SearchResults<T>();
 
+    getOverlappingFeatures(region, minBp, ret);
 
-	public SearchResults<T> getOverlappingFeatures(GenomicRegion region, int minBp) {
-		SearchResults<T> ret = new SearchResults<T>();
+    return ret;
+  }
 
-		getOverlappingFeatures(region, minBp, ret);
+  public void getOverlappingFeatures(GenomicRegion region, int minBp, SearchResults<T> ret) {
+    List<GappedSearchFeatures<T>> allFeatures = getFeatures(region);
 
-		return ret;
-	}
-	
-	public void getOverlappingFeatures(GenomicRegion region, 
-			int minBp,
-			SearchResults<T> ret) {
-		List<GappedSearchFeatures<T>> allFeatures = getFeatures(region);
+    if (allFeatures.size() == 0) {
+      return;
+    }
 
-		if (allFeatures.size() == 0) {
-			return;
-		}
+    for (GappedSearchFeatures<T> features : allFeatures) {
+      for (GenomicRegion r : features) {
+        GenomicRegion overlap = GenomicRegion.overlap(region, r);
 
-		for (GappedSearchFeatures<T> features : allFeatures) {
-			for (GenomicRegion r : features) {
-				GenomicRegion overlap = GenomicRegion.overlap(region, r);
+        if (overlap == null || (minBp != -1 && overlap.getLength() < minBp)) {
+          continue;
+        }
 
-				if (overlap == null || (minBp != -1 && overlap.getLength() < minBp)) {
-					continue;
-				}
+        for (T item : features.getValues(r)) {
+          ret.add(r, item);
+        }
+      }
+    }
+  }
 
-				for (T item : features.getValues(r)) {
-					ret.add(r, item);
-				}
-			}
-		}
-	}
-	
-	/**
-	 * Checks for overlapping features.
-	 *
-	 * @param chr the chr
-	 * @param start the start
-	 * @param end the end
-	 * @return true, if successful
-	 */
-	public boolean hasOverlappingFeatures(GenomicRegion region, int minBp) {
-		List<GappedSearchFeatures<T>> allFeatures = getFeatures(region);
+  /**
+   * Checks for overlapping features.
+   *
+   * @param chr
+   *          the chr
+   * @param start
+   *          the start
+   * @param end
+   *          the end
+   * @return true, if successful
+   */
+  public boolean hasOverlappingFeatures(GenomicRegion region, int minBp) {
+    List<GappedSearchFeatures<T>> allFeatures = getFeatures(region);
 
-		if (allFeatures.size() == 0) {
-			return false;
-		}
+    if (allFeatures.size() == 0) {
+      return false;
+    }
 
-		for (GappedSearchFeatures<T> features : allFeatures) {
-			for (GenomicRegion r : features) {
-				GenomicRegion overlap = GenomicRegion.overlap(region, r);
+    for (GappedSearchFeatures<T> features : allFeatures) {
+      for (GenomicRegion r : features) {
+        GenomicRegion overlap = GenomicRegion.overlap(region, r);
 
-				if (minBp == -1 || overlap.getLength() >= minBp) {
-					return true;
-				}
-			}
-		}
-		
-		return false;
-	}
+        if (minBp == -1 || overlap.getLength() >= minBp) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
 }

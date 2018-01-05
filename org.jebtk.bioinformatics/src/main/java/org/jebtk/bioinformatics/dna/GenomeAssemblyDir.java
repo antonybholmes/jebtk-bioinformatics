@@ -37,7 +37,6 @@ import org.jebtk.bioinformatics.genomic.Chromosome;
 import org.jebtk.core.io.FileUtils;
 import org.jebtk.core.io.Io;
 
-
 // TODO: Auto-generated Javadoc
 /**
  * Fast search of genome sequence files to get get actual genomic data.
@@ -45,87 +44,89 @@ import org.jebtk.core.io.Io;
  * @author Antony Holmes Holmes
  */
 public abstract class GenomeAssemblyDir extends GenomeAssemblyDNA {
-	
-	/** The Constant EMPTY_BYTES. */
-	protected static final byte[] EMPTY_BYTES = new byte[0];
 
-	/**
-	 * The member directory.
-	 */
-	protected Path mDirectory;
+  /** The Constant EMPTY_BYTES. */
+  protected static final byte[] EMPTY_BYTES = new byte[0];
 
-	/**
-	 * The member file map.
-	 */
-	protected Map<Chromosome, Path> mFileMap = 
-			new HashMap<Chromosome, Path>();
+  /**
+   * The member directory.
+   */
+  protected Path mDirectory;
 
-	/**
-	 * Directory containing genome files which must be of the form
-	 * chr.n.txt. Each file must contain exactly one line consisting
-	 * of the entire chromosome.
-	 *
-	 * @param directory the directory
-	 */
-	public GenomeAssemblyDir(Path directory) {
-		mDirectory = directory;
-	}
-	
-	/**
-	 * Gets the sequence.
-	 *
-	 * @param file the file
-	 * @param start the start
-	 * @param end the end
-	 * @return the sequence
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public static String getSequence(Path file,
-			int start,
-			int end) throws IOException {
-		
-		byte[] buf = getBytes(file, start - 1, end - 1);
-		
-		return String.valueOf(Io.intToChar(buf)).toUpperCase();
-	}
-	
-	/**
-	 * Gets the bytes.
-	 *
-	 * @param file the file
-	 * @param start the start
-	 * @param end the end
-	 * @return the bytes
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public static byte[] getBytes(Path file, 
-			int start, 
-			int end) throws IOException {
-		
-		//System.err.println(file + " " + FileUtils.exists(file));
-		
-		if (!FileUtils.exists(file)) {
-			return EMPTY_BYTES;
-		}
-		
-		//("Extract sequence for {} from {}...", start, end);
+  /**
+   * The member file map.
+   */
+  protected Map<Chromosome, Path> mFileMap = new HashMap<Chromosome, Path>();
 
-		
-		InputStream in = FileUtils.newBufferedInputStream(file);
-		
-		//GZIPInputStream in = new GZIPInputStream(new FileInputStream(file), 65536);
+  /**
+   * Directory containing genome files which must be of the form chr.n.txt. Each
+   * file must contain exactly one line consisting of the entire chromosome.
+   *
+   * @param directory
+   *          the directory
+   */
+  public GenomeAssemblyDir(Path directory) {
+    mDirectory = directory;
+  }
 
-		int l = end - start + 1;
+  /**
+   * Gets the sequence.
+   *
+   * @param file
+   *          the file
+   * @param start
+   *          the start
+   * @param end
+   *          the end
+   * @return the sequence
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   */
+  public static String getSequence(Path file, int start, int end) throws IOException {
 
-		byte[] buf = new byte[l];
+    byte[] buf = getBytes(file, start - 1, end - 1);
 
-		try {
-			in.skip(start);
-			in.read(buf);
-		} finally {
-			in.close();
-		}
-		
-		return buf; //Io.unsignedToSigned(buf);
-	}
+    return String.valueOf(Io.intToChar(buf)).toUpperCase();
+  }
+
+  /**
+   * Gets the bytes.
+   *
+   * @param file
+   *          the file
+   * @param start
+   *          the start
+   * @param end
+   *          the end
+   * @return the bytes
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   */
+  public static byte[] getBytes(Path file, int start, int end) throws IOException {
+
+    // System.err.println(file + " " + FileUtils.exists(file));
+
+    if (!FileUtils.exists(file)) {
+      return EMPTY_BYTES;
+    }
+
+    // ("Extract sequence for {} from {}...", start, end);
+
+    InputStream in = FileUtils.newBufferedInputStream(file);
+
+    // GZIPInputStream in = new GZIPInputStream(new FileInputStream(file), 65536);
+
+    int l = end - start + 1;
+
+    byte[] buf = new byte[l];
+
+    try {
+      in.skip(start);
+      in.read(buf);
+    } finally {
+      in.close();
+    }
+
+    return buf; // Io.unsignedToSigned(buf);
+  }
 }

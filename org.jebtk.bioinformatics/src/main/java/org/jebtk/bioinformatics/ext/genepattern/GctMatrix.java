@@ -46,136 +46,147 @@ import org.jebtk.math.matrix.DoubleMatrix;
  *
  */
 public class GctMatrix extends DataFrame {
-	
-	/**
-	 * The constant serialVersionUID.
-	 */
-	private static final long serialVersionUID = 1L;
-	
-	/**
-	 * The constant DESCRIPTION_COLUMN.
-	 */
-	public static final String DESCRIPTION_COLUMN = "Description";
 
-	/**
-	 * The constant ID_COLUMN.
-	 */
-	private static final String ID_COLUMN = "ID";
+  /**
+   * The constant serialVersionUID.
+   */
+  private static final long serialVersionUID = 1L;
 
-	/**
-	 * The constant VERSION_ID.
-	 */
-	private static final String VERSION_ID = "#1.2";
-	
-	/**
-	 * Instantiates a new gct matrix.
-	 *
-	 * @param rows the rows
-	 * @param columns the columns
-	 */
-	public GctMatrix(int rows, int columns) {
-		super(DoubleMatrix.createDoubleMatrix(rows, columns));
-	}
-	
-	/**
-	 * Sets the description names.
-	 *
-	 * @param names the new description names
-	 */
-	public void setDescriptionNames(List<String> names) {
-		setTextRowAnnotations(DESCRIPTION_COLUMN, names);
-	}
-	
-	/**
-	 * Gets the description name.
-	 *
-	 * @param i the i
-	 * @return the description name
-	 */
-	public String getDescriptionName(int i) {
-		return getRowAnnotationText(DESCRIPTION_COLUMN, i);
-	}
-	
-	/**
-	 * Gets the description names.
-	 *
-	 * @return the description names
-	 */
-	public List<String> getDescriptionNames() {
-		return getRowAnnotationText(DESCRIPTION_COLUMN);
-	}
-	
-	/**
-	 * Parses the matrix.
-	 *
-	 * @param file the file
-	 * @return the annotation matrix
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public static DataFrame parseMatrix(Path file) throws IOException {
-		return new GctMatrixParser().parse(file);
-	}
-	
-	
-	/**
-	 * Write a simple expression matrix in GCT format.
-	 *
-	 * @param <T> the generic type
-	 * @param matrix the matrix
-	 * @param file the file
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public static <T> void writeGctMatrix(DataFrame matrix, Path file) throws IOException {
-		BufferedWriter writer = FileUtils.newBufferedWriter(file);
-		
-		try {
-			writer.write(VERSION_ID);
-			writer.newLine();
-			writer.write(Integer.toString(matrix.getRows()));
-			writer.write(TextUtils.TAB_DELIMITER);
-			writer.write(Integer.toString(matrix.getCols()));
-			writer.newLine();
-			
-			writer.write(ID_COLUMN);
-			writer.write(TextUtils.TAB_DELIMITER);
-			writer.write(DESCRIPTION_COLUMN);
-			
-			for (int i = 0; i < matrix.getCols(); ++i) {
-				writer.write(TextUtils.TAB_DELIMITER);
-				writer.write(matrix.getColumnName(i));
-			}
-			
-			writer.newLine();
-			
-			List<String> names = matrix.getRowAnnotationNames();
-			
-			for (int i = 0; i < matrix.getRows(); ++i) {
-				writer.write(matrix.getRowAnnotationText(names.get(0), i));
-				writer.write(TextUtils.TAB_DELIMITER);
-				
-				writer.write(matrix.getRowAnnotationText(names.get(names.size() - 1), i));
-				
-				for (int j = 0; j < matrix.getCols(); ++j) {
-					writer.write(TextUtils.TAB_DELIMITER);
-					
-					writer.write(Double.toString(matrix.getValue(i, j)));
-				}
-				
-				writer.newLine();
-			}
-		} finally {
-			writer.close();
-		}
-	}
+  /**
+   * The constant DESCRIPTION_COLUMN.
+   */
+  public static final String DESCRIPTION_COLUMN = "Description";
 
-	/**
-	 * Creates the gct matrix.
-	 *
-	 * @param rows the rows
-	 * @param cols the cols
-	 * @return the annotation matrix
-	 */
-	public static DataFrame createGctMatrix(int rows, int cols) {
-		return new GctMatrix(rows, cols);
-	}
+  /**
+   * The constant ID_COLUMN.
+   */
+  private static final String ID_COLUMN = "ID";
+
+  /**
+   * The constant VERSION_ID.
+   */
+  private static final String VERSION_ID = "#1.2";
+
+  /**
+   * Instantiates a new gct matrix.
+   *
+   * @param rows
+   *          the rows
+   * @param columns
+   *          the columns
+   */
+  public GctMatrix(int rows, int columns) {
+    super(DoubleMatrix.createDoubleMatrix(rows, columns));
+  }
+
+  /**
+   * Sets the description names.
+   *
+   * @param names
+   *          the new description names
+   */
+  public void setDescriptionNames(List<String> names) {
+    setTextRowAnnotations(DESCRIPTION_COLUMN, names);
+  }
+
+  /**
+   * Gets the description name.
+   *
+   * @param i
+   *          the i
+   * @return the description name
+   */
+  public String getDescriptionName(int i) {
+    return getRowAnnotationText(DESCRIPTION_COLUMN, i);
+  }
+
+  /**
+   * Gets the description names.
+   *
+   * @return the description names
+   */
+  public List<String> getDescriptionNames() {
+    return getRowAnnotationText(DESCRIPTION_COLUMN);
+  }
+
+  /**
+   * Parses the matrix.
+   *
+   * @param file
+   *          the file
+   * @return the annotation matrix
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   */
+  public static DataFrame parseMatrix(Path file) throws IOException {
+    return new GctMatrixParser().parse(file);
+  }
+
+  /**
+   * Write a simple expression matrix in GCT format.
+   *
+   * @param <T>
+   *          the generic type
+   * @param matrix
+   *          the matrix
+   * @param file
+   *          the file
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   */
+  public static <T> void writeGctMatrix(DataFrame matrix, Path file) throws IOException {
+    BufferedWriter writer = FileUtils.newBufferedWriter(file);
+
+    try {
+      writer.write(VERSION_ID);
+      writer.newLine();
+      writer.write(Integer.toString(matrix.getRows()));
+      writer.write(TextUtils.TAB_DELIMITER);
+      writer.write(Integer.toString(matrix.getCols()));
+      writer.newLine();
+
+      writer.write(ID_COLUMN);
+      writer.write(TextUtils.TAB_DELIMITER);
+      writer.write(DESCRIPTION_COLUMN);
+
+      for (int i = 0; i < matrix.getCols(); ++i) {
+        writer.write(TextUtils.TAB_DELIMITER);
+        writer.write(matrix.getColumnName(i));
+      }
+
+      writer.newLine();
+
+      List<String> names = matrix.getRowAnnotationNames();
+
+      for (int i = 0; i < matrix.getRows(); ++i) {
+        writer.write(matrix.getRowAnnotationText(names.get(0), i));
+        writer.write(TextUtils.TAB_DELIMITER);
+
+        writer.write(matrix.getRowAnnotationText(names.get(names.size() - 1), i));
+
+        for (int j = 0; j < matrix.getCols(); ++j) {
+          writer.write(TextUtils.TAB_DELIMITER);
+
+          writer.write(Double.toString(matrix.getValue(i, j)));
+        }
+
+        writer.newLine();
+      }
+    } finally {
+      writer.close();
+    }
+  }
+
+  /**
+   * Creates the gct matrix.
+   *
+   * @param rows
+   *          the rows
+   * @param cols
+   *          the cols
+   * @return the annotation matrix
+   */
+  public static DataFrame createGctMatrix(int rows, int cols) {
+    return new GctMatrix(rows, cols);
+  }
 }

@@ -32,15 +32,15 @@ package org.jebtk.bioinformatics.genomic;
  * The enum Genome.
  */
 public class Genome {
-	
-	/**
-	 * The H g18.
-	 */
-	public static final String HG18 = "hg18";
-	
-	/** The Constant HG19. */
-	public static final String HG19 = "hg19";
-	
-	/** The Constant MM10. */
-	public static final String MM10 = "mm10";
+
+  /**
+   * The H g18.
+   */
+  public static final String HG18 = "hg18";
+
+  /** The Constant HG19. */
+  public static final String HG19 = "hg19";
+
+  /** The Constant MM10. */
+  public static final String MM10 = "mm10";
 }

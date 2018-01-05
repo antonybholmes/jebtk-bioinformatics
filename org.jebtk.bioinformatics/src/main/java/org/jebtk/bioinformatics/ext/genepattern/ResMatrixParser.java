@@ -37,7 +37,6 @@ import org.jebtk.core.io.Io;
 import org.jebtk.core.stream.Stream;
 import org.jebtk.core.text.TextUtils;
 import org.jebtk.math.matrix.DataFrame;
-import org.jebtk.math.matrix.DoubleMatrix;
 import org.jebtk.math.matrix.Matrix;
 import org.jebtk.math.matrix.MatrixParser;
 
@@ -49,170 +48,169 @@ import org.jebtk.math.matrix.MatrixParser;
  */
 public class ResMatrixParser implements MatrixParser {
 
-	/** The m keep call col. */
-	private boolean mKeepCallCol;
+  /** The m keep call col. */
+  private boolean mKeepCallCol;
 
-	/**
-	 * Instantiates a new res matrix parser.
-	 *
-	 * @param keepCallCol the keep call col
-	 */
-	public ResMatrixParser(boolean keepCallCol) {
-		mKeepCallCol = keepCallCol;
-	}
+  /**
+   * Instantiates a new res matrix parser.
+   *
+   * @param keepCallCol
+   *          the keep call col
+   */
+  public ResMatrixParser(boolean keepCallCol) {
+    mKeepCallCol = keepCallCol;
+  }
 
-	/**
-	 * Sets the.
-	 *
-	 * @param matrix the matrix
-	 * @param row the row
-	 * @param column the column
-	 * @param value the value
-	 * @param keepCallCol the keep call col
-	 */
-	private static void set(Matrix matrix, 
-			int row, 
-			int column, 
-			String value,
-			boolean keepCallCol) {
-		if (keepCallCol) {
-			if (column % 2 == 0) {
-				matrix.set(row, column, DoubleMatrix.parseDouble(value));
-			} else {
-				// The second column in each group is the call column so
-				// no need to parse
-				matrix.set(row, column, value);
-			}
-		} else {
-			matrix.set(row, column, DoubleMatrix.parseDouble(value));
-		}
-	}
+  /**
+   * Sets the.
+   *
+   * @param matrix
+   *          the matrix
+   * @param row
+   *          the row
+   * @param column
+   *          the column
+   * @param value
+   *          the value
+   * @param keepCallCol
+   *          the keep call col
+   */
+  private static void set(Matrix matrix, int row, int column, String value, boolean keepCallCol) {
+    if (keepCallCol) {
+      if (column % 2 == 0) {
+        matrix.set(row, column, Double.parseDouble(value));
+      } else {
+        // The second column in each group is the call column so
+        // no need to parse
+        matrix.set(row, column, value);
+      }
+    } else {
+      matrix.set(row, column, Double.parseDouble(value));
+    }
+  }
 
-	/* (non-Javadoc)
-	 * @see org.abh.lib.math.matrix.MatrixParser#parse(java.io.Path)
-	 */
-	@Override
-	public DataFrame parse(Path file) throws IOException {
-		DataFrame matrix = null;
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.abh.lib.math.matrix.MatrixParser#parse(java.io.Path)
+   */
+  @Override
+  public DataFrame parse(Path file) throws IOException {
+    DataFrame matrix = null;
 
-		BufferedReader reader = FileUtils.newBufferedReader(file);
+    BufferedReader reader = FileUtils.newBufferedReader(file);
 
-		String line;
+    String line;
 
-		List<String> tokens;
+    List<String> tokens;
 
-		int rows = 0;
-		int columns = -1;
+    int rows = 0;
+    int columns = -1;
 
-		try {
-			// skip first line
-			//line = reader.readLine();
+    try {
+      // skip first line
+      // line = reader.readLine();
 
-			line = reader.readLine();
-			tokens = TextUtils.tabSplit(line);
+      line = reader.readLine();
+      tokens = TextUtils.tabSplit(line);
 
-			// columns is cols - 2 annotation columns then divided
-			// by two to account for present/absent
-			columns = tokens.size() - 2;
+      // columns is cols - 2 annotation columns then divided
+      // by two to account for present/absent
+      columns = tokens.size() - 2;
 
-			if (!mKeepCallCol) {
-				// If we are not keeping the call column, we only need half
-				// as many columns
-				columns /= 2;
-			}
+      if (!mKeepCallCol) {
+        // If we are not keeping the call column, we only need half
+        // as many columns
+        columns /= 2;
+      }
 
-			// skip second header
-			reader.readLine();
+      // skip second header
+      reader.readLine();
 
-			String s = reader.readLine();
+      String s = reader.readLine();
 
-			if (TextUtils.isInt(s)) {
-				rows = Integer.parseInt(s);
-			} else {
-				// Since we read the line to test if it was the number of
-				// rows, we start at 1 for the count since the line was in
-				// fact a valid row
-				rows = 1;
+      if (TextUtils.isInt(s)) {
+        rows = Integer.parseInt(s);
+      } else {
+        // Since we read the line to test if it was the number of
+        // rows, we start at 1 for the count since the line was in
+        // fact a valid row
+        rows = 1;
 
-				while ((line = reader.readLine()) != null) {
-					if (Io.isEmptyLine(line)) {
-						continue;
-					}
+        while ((line = reader.readLine()) != null) {
+          if (Io.isEmptyLine(line)) {
+            continue;
+          }
 
-					++rows;
-				}
-			}
-		} finally {
-			reader.close();
-		}
+          ++rows;
+        }
+      }
+    } finally {
+      reader.close();
+    }
 
-		if (mKeepCallCol) {
-			matrix = ResMatrix.createMixedResMatrix(rows, columns);
-		} else {
-			matrix = ResMatrix.createResMatrix(rows, columns);
-		}
+    if (mKeepCallCol) {
+      matrix = ResMatrix.createMixedResMatrix(rows, columns);
+    } else {
+      matrix = ResMatrix.createResMatrix(rows, columns);
+    }
 
-		reader = FileUtils.newBufferedReader(file);
+    reader = FileUtils.newBufferedReader(file);
 
-		try {
-			// skip header
-			//reader.readLine();
+    try {
+      // skip header
+      // reader.readLine();
 
-			// add column names
-			line = reader.readLine();
+      // add column names
+      line = reader.readLine();
 
-			Stream<String> stream = Stream
-					.of(TextUtils.tabSplit(line))
-					.skip(2)
-					.jump(2);
+      Stream<String> stream = Stream.of(TextUtils.tabSplit(line)).skip(2).jump(2);
 
-			if (mKeepCallCol) {
-				stream = stream.replicate(2)
-						.asString()
-						.append(" call", 1, 2);
+      if (mKeepCallCol) {
+        stream = stream.replicate(2).asString().append(" call", 1, 2);
 
-				//tokens = CollectionUtils.replicate(tokens, 2);
-				//tokens = TextUtils.append(tokens, " call", 2);
-			}
-			
-			tokens = stream.toList();
+        // tokens = CollectionUtils.replicate(tokens, 2);
+        // tokens = TextUtils.append(tokens, " call", 2);
+      }
 
-			matrix.setColumnNames(tokens);
+      tokens = stream.toList();
 
-			// skip second header
-			reader.readLine();
+      matrix.setColumnNames(tokens);
 
-			int row = 0;
+      // skip second header
+      reader.readLine();
 
-			while ((line = reader.readLine()) != null) {
-				if (Io.isEmptyLine(line)) {
-					continue;
-				}
+      int row = 0;
 
-				tokens = TextUtils.tabSplit(line);
+      while ((line = reader.readLine()) != null) {
+        if (Io.isEmptyLine(line)) {
+          continue;
+        }
 
-				matrix.setRowName(row, tokens.get(1));
-				matrix.setRowAnnotation("Description", row, tokens.get(0));
+        tokens = TextUtils.tabSplit(line);
 
-				stream = Stream.of(tokens).skip(2);
+        matrix.setRowName(row, tokens.get(1));
+        matrix.setRowAnnotation("Description", row, tokens.get(0));
 
-				if (!mKeepCallCol) {
-					stream = stream.jump(2);
-				}
+        stream = Stream.of(tokens).skip(2);
 
-				tokens = stream.toList();
+        if (!mKeepCallCol) {
+          stream = stream.jump(2);
+        }
 
-				// the first token is the column name so ignore it
-				for (int i = 0; i < tokens.size(); ++i) {
-					set(matrix, row, i, tokens.get(i), mKeepCallCol);
-				}
+        tokens = stream.toList();
 
-				++row;
-			}
-		} finally {
-			reader.close();
-		}
+        // the first token is the column name so ignore it
+        for (int i = 0; i < tokens.size(); ++i) {
+          set(matrix, row, i, tokens.get(i), mKeepCallCol);
+        }
 
-		return matrix;
-	}
+        ++row;
+      }
+    } finally {
+      reader.close();
+    }
+
+    return matrix;
+  }
 }

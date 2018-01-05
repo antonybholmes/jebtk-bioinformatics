@@ -36,60 +36,70 @@ import java.util.List;
  * The class RangeDouble.
  */
 public class RangeDouble implements Iterable<Double> {
-	
-	/**
-	 * The range.
-	 */
-	private List<Double> range = new ArrayList<Double>();
-	
-	/**
-	 * Instantiates a new range double.
-	 *
-	 * @param start the start
-	 * @param end the end
-	 */
-	public RangeDouble(double start, double end) {
-		double increment = end - start;
-		
-		increment /= Math.abs(increment);
-		
-		setup(start, end, increment);
-	}
-	
-	/**
-	 * Instantiates a new range double.
-	 *
-	 * @param start the start
-	 * @param end the end
-	 * @param increment the increment
-	 */
-	public RangeDouble(double start, double end, double increment) {
-		setup(start, end, increment);
-	}
-	
-	/**
-	 * Setup.
-	 *
-	 * @param start the start
-	 * @param end the end
-	 * @param increment the increment
-	 */
-	private void setup(double start, double end, double increment) {
-		if (increment > 0) {
-			for (double i = start; i <= end; i += increment) {
-				range.add(i);
-			}
-		} else {
-			for (double i = end; i >= start; i -= increment) {
-				range.add(i);
-			}
-		}
-	}
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Iterable#iterator()
-	 */
-	public Iterator<Double> iterator() {
-		return range.iterator();
-	}
+
+  /**
+   * The range.
+   */
+  private List<Double> range = new ArrayList<Double>();
+
+  /**
+   * Instantiates a new range double.
+   *
+   * @param start
+   *          the start
+   * @param end
+   *          the end
+   */
+  public RangeDouble(double start, double end) {
+    double increment = end - start;
+
+    increment /= Math.abs(increment);
+
+    setup(start, end, increment);
+  }
+
+  /**
+   * Instantiates a new range double.
+   *
+   * @param start
+   *          the start
+   * @param end
+   *          the end
+   * @param increment
+   *          the increment
+   */
+  public RangeDouble(double start, double end, double increment) {
+    setup(start, end, increment);
+  }
+
+  /**
+   * Setup.
+   *
+   * @param start
+   *          the start
+   * @param end
+   *          the end
+   * @param increment
+   *          the increment
+   */
+  private void setup(double start, double end, double increment) {
+    if (increment > 0) {
+      for (double i = start; i <= end; i += increment) {
+        range.add(i);
+      }
+    } else {
+      for (double i = end; i >= start; i -= increment) {
+        range.add(i);
+      }
+    }
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Iterable#iterator()
+   */
+  public Iterator<Double> iterator() {
+    return range.iterator();
+  }
 }

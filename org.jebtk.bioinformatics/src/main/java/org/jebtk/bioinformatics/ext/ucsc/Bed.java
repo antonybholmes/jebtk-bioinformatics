@@ -59,501 +59,528 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class Bed extends UCSCTrack {
-	
-	/**
-	 * The constant serialVersionUID.
-	 */
-	private static final long serialVersionUID = 1L;
 
-	/**
-	 * The constant LOG.
-	 */
-	private static final Logger LOG = 
-			LoggerFactory.getLogger(Bed.class);
+  /**
+   * The constant serialVersionUID.
+   */
+  private static final long serialVersionUID = 1L;
 
-	/**
-	 * The constant DEFAULT_BED_COLOR.
-	 */
-	public static final Color DEFAULT_BED_COLOR = Color.BLUE;
+  /**
+   * The constant LOG.
+   */
+  private static final Logger LOG = LoggerFactory.getLogger(Bed.class);
 
-	/**
-	 * The constant BED_TRACK_TYPE.
-	 */
-	private static final String BED_TRACK_TYPE = "bed";
+  /**
+   * The constant DEFAULT_BED_COLOR.
+   */
+  public static final Color DEFAULT_BED_COLOR = Color.BLUE;
 
-	
-	
-	/**
-	 * Instantiates a new bed.
-	 *
-	 * @param name the name
-	 */
-	public Bed(String name) {
-		this(name, name);
-	}
-	
-	/**
-	 * Instantiates a new bed.
-	 *
-	 * @param name the name
-	 * @param description the description
-	 */
-	public Bed(String name, String description) {
-		this(name, description, DEFAULT_BED_COLOR);
-	}
+  /**
+   * The constant BED_TRACK_TYPE.
+   */
+  private static final String BED_TRACK_TYPE = "bed";
 
-	/**
-	 * Instantiates a new bed.
-	 *
-	 * @param name the name
-	 * @param description the description
-	 * @param color the color
-	 */
-	public Bed(String name, String description, Color color) {
-		super(name, description, color, BED_TRACK_TYPE);
-	}
+  /**
+   * Instantiates a new bed.
+   *
+   * @param name
+   *          the name
+   */
+  public Bed(String name) {
+    this(name, name);
+  }
 
-	/* (non-Javadoc)
-	 * @see edu.columbia.rdf.lib.bioinformatics.external.ucsc.UCSCTrack#setColor(java.awt.Color)
-	 */
-	@Override
-	public void setColor(Color color) {
-		// Override the color preferences for all segments
-		for (UCSCTrackRegion region : mChrRegions) {
-			((BedRegion)region).setColor(color);
-		}
-		
-		super.setColor(color);
-	}
+  /**
+   * Instantiates a new bed.
+   *
+   * @param name
+   *          the name
+   * @param description
+   *          the description
+   */
+  public Bed(String name, String description) {
+    this(name, description, DEFAULT_BED_COLOR);
+  }
 
-	/**
-	 * Parses the track.
-	 *
-	 * @param file the file
-	 * @return the UCSC track
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 * @throws ParseException the parse exception
-	 */
-	public static UCSCTrack parseTrack(Path file) throws IOException, ParseException {
-		return parseTracks(file).get(0);
-	}
-	
-	/**
-	 * Parses the.
-	 *
-	 * @param file the file
-	 * @return the list
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public static List<UCSCTrack> parseTracks(Path file) throws IOException {
-		LOG.info("Parsing BED file {}...", file);
+  /**
+   * Instantiates a new bed.
+   *
+   * @param name
+   *          the name
+   * @param description
+   *          the description
+   * @param color
+   *          the color
+   */
+  public Bed(String name, String description, Color color) {
+    super(name, description, color, BED_TRACK_TYPE);
+  }
 
-		BufferedReader reader = FileUtils.newBufferedReader(file);
-		
-		return parseTracks(GenomeService.getInstance().guess(file), getName(file), reader);
-	}
-	
-	/**
-	 * Parses the.
-	 *
-	 * @param defaultName the default name
-	 * @param reader the reader
-	 * @return the list
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public static List<UCSCTrack> parseTracks(String genome,
-			String defaultName, 
-			BufferedReader reader) throws IOException {
-		Bed bed = null;
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * edu.columbia.rdf.lib.bioinformatics.external.ucsc.UCSCTrack#setColor(java.awt
+   * .Color)
+   */
+  @Override
+  public void setColor(Color color) {
+    // Override the color preferences for all segments
+    for (UCSCTrackRegion region : mChrRegions) {
+      ((BedRegion) region).setColor(color);
+    }
 
-		String line;
-		Matcher matcher;
+    super.setColor(color);
+  }
 
-		List<UCSCTrack> tracks = new ArrayList<UCSCTrack>();
+  /**
+   * Parses the track.
+   *
+   * @param file
+   *          the file
+   * @return the UCSC track
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   * @throws ParseException
+   *           the parse exception
+   */
+  public static UCSCTrack parseTrack(Path file) throws IOException, ParseException {
+    return parseTracks(file).get(0);
+  }
 
-		try {
-			while ((line = reader.readLine()) != null) {
-				if (Io.isEmptyLine(line)) {
-					continue;
-				}
+  /**
+   * Parses the.
+   *
+   * @param file
+   *          the file
+   * @return the list
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   */
+  public static List<UCSCTrack> parseTracks(Path file) throws IOException {
+    LOG.info("Parsing BED file {}...", file);
 
-				matcher = NAME_PATTERN.matcher(line);
+    BufferedReader reader = FileUtils.newBufferedReader(file);
 
-				if (matcher.find()) {
+    return parseTracks(GenomeService.getInstance().guess(file), getName(file), reader);
+  }
 
-					String name = matcher.group(1);
+  /**
+   * Parses the.
+   *
+   * @param defaultName
+   *          the default name
+   * @param reader
+   *          the reader
+   * @return the list
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   */
+  public static List<UCSCTrack> parseTracks(String genome, String defaultName, BufferedReader reader)
+      throws IOException {
+    Bed bed = null;
 
-					String description = name;
-					
-					matcher = DESCRIPTION_PATTERN.matcher(line);
-					
-					if(matcher.find()) {
-						description = matcher.group(1);
-					}
+    String line;
+    Matcher matcher;
 
-					matcher = COLOR_PATTERN.matcher(line);
+    List<UCSCTrack> tracks = new ArrayList<UCSCTrack>();
 
-					Color color = DEFAULT_BED_COLOR;
-					
-					if (matcher.find()) {
-						color = parseColor(matcher);
-					}
+    try {
+      while ((line = reader.readLine()) != null) {
+        if (Io.isEmptyLine(line)) {
+          continue;
+        }
 
-					bed = new Bed(name, description, color);
+        matcher = NAME_PATTERN.matcher(line);
 
-					tracks.add(bed);
-				} else {
-					if (bed == null) {
-						bed = new Bed(defaultName);
-						tracks.add(bed);
-					}
-					
-					BedRegion region = BedRegion.parse(genome, line);
-					
-					if (region != null) {
-						bed.getRegions().add(region);
-					}
-				}
-			}
-		} finally {
-			reader.close();
-		}
+        if (matcher.find()) {
 
-		LOG.info("BED {} ({} peaks).", bed.getName(), bed.getRegions().size());
-		
-		return tracks;
-	}
+          String name = matcher.group(1);
 
-	/**
-	 * Creates the bed from track line.
-	 *
-	 * @param line the line
-	 * @return the bed
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public static Bed createBedFromTrackLine(String line) throws IOException {
-		String name = null;
-		String description = name;
-		Color color = DEFAULT_BED_COLOR;
+          String description = name;
 
-		// see if the file has a header
+          matcher = DESCRIPTION_PATTERN.matcher(line);
 
-		Matcher matcher;
+          if (matcher.find()) {
+            description = matcher.group(1);
+          }
 
-		matcher = NAME_PATTERN.matcher(line);
+          matcher = COLOR_PATTERN.matcher(line);
 
-		matcher.find();
+          Color color = DEFAULT_BED_COLOR;
 
-		name = matcher.group(1);
+          if (matcher.find()) {
+            color = parseColor(matcher);
+          }
 
-		matcher = DESCRIPTION_PATTERN.matcher(line);
+          bed = new Bed(name, description, color);
 
-		if(matcher.find()) {
-			description = matcher.group(1);
-		}
+          tracks.add(bed);
+        } else {
+          if (bed == null) {
+            bed = new Bed(defaultName);
+            tracks.add(bed);
+          }
 
-		matcher = COLOR_PATTERN.matcher(line);
+          BedRegion region = BedRegion.parse(genome, line);
 
-		if (matcher.find()) {
-			color = parseColor(matcher);
-		}
+          if (region != null) {
+            bed.getRegions().add(region);
+          }
+        }
+      }
+    } finally {
+      reader.close();
+    }
 
-		matcher = NAME_PATTERN.matcher(line);
+    LOG.info("BED {} ({} peaks).", bed.getName(), bed.getRegions().size());
 
-		if (matcher.find()) {
-			name = matcher.group(1);
-		}
+    return tracks;
+  }
 
-		matcher = DESCRIPTION_PATTERN.matcher(line);
+  /**
+   * Creates the bed from track line.
+   *
+   * @param line
+   *          the line
+   * @return the bed
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   */
+  public static Bed createBedFromTrackLine(String line) throws IOException {
+    String name = null;
+    String description = name;
+    Color color = DEFAULT_BED_COLOR;
 
-		if (matcher.find()) {
-			description = matcher.group(1);
-		}
+    // see if the file has a header
 
-		Bed bed = new Bed(name, description, color);
+    Matcher matcher;
 
-		return bed;
-	}
-	
-	/**
-	 * Parses the bed graph.
-	 *
-	 * @param file the file
-	 * @return the bed
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public static Bed parseBedGraph(Path file) throws IOException {
-		return parseBedGraphs(file).get(0);
-	}
-	
-	/**
-	 * Parses the bed graphs.
-	 *
-	 * @param file the file
-	 * @return the list
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public static List<Bed> parseBedGraphs(Path file) throws IOException {
-		LOG.info("Parsing Bedgraph as BED file {}...", file);
+    matcher = NAME_PATTERN.matcher(line);
 
-		BufferedReader reader = Files.newBufferedReader(file, StandardCharsets.UTF_8);
+    matcher.find();
 
-		Bed bed = null;
+    name = matcher.group(1);
 
-		String line;
+    matcher = DESCRIPTION_PATTERN.matcher(line);
 
-		List<Bed> beds = new ArrayList<Bed>();
+    if (matcher.find()) {
+      description = matcher.group(1);
+    }
 
-		try {
-			while ((line = reader.readLine()) != null) {
-				if (Io.isEmptyLine(line)) {
-					continue;
-				}
+    matcher = COLOR_PATTERN.matcher(line);
 
-				if (isTrackLine(line)) {
-					bed = createBedFromTrackLine(line);
+    if (matcher.find()) {
+      color = parseColor(matcher);
+    }
 
-					beds.add(bed);
-				} else {
-					BedRegion region = BedRegion.parse(GenomeService.getInstance().guess(file), line);
-					bed.getRegions().add(region);
-				}
-			}
-		} finally {
-			reader.close();
-		}
+    matcher = NAME_PATTERN.matcher(line);
 
-		return beds;
-	}
+    if (matcher.find()) {
+      name = matcher.group(1);
+    }
 
-	/**
-	 * Write.
-	 *
-	 * @param regions the regions
-	 * @param file the file
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public static void writeBed(List<GenomicRegion> regions, 
-			Path file) throws IOException {
-		writeBed(PathUtils.getName(file), regions, file);
-	}
+    matcher = DESCRIPTION_PATTERN.matcher(line);
 
-	/**
-	 * Write.
-	 *
-	 * @param name the name
-	 * @param regions the regions
-	 * @param file the file
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public static void writeBed(String name,
-			List<GenomicRegion> regions, 
-			Path file) throws IOException {
-		writeBed(name, name, regions, file);
-	}
+    if (matcher.find()) {
+      description = matcher.group(1);
+    }
 
-	/**
-	 * Write.
-	 *
-	 * @param name the name
-	 * @param description the description
-	 * @param regions the regions
-	 * @param file the file
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public static void writeBed(String name,
-			String description,
-			List<GenomicRegion> regions, 
-			Path file) throws IOException {
-		BufferedWriter writer = FileUtils.newBufferedWriter(file);
+    Bed bed = new Bed(name, description, color);
 
-		try {
-			writer.write(getHeader(BED_TRACK_TYPE, 
-					name, 
-					description,
-					DEFAULT_BED_COLOR));
-			
-			writer.newLine();
+    return bed;
+  }
 
-			for (GenomicRegion region : regions) {
-				writer.write(region.getChr().toString());
-				writer.write(TextUtils.TAB_DELIMITER);
-				writer.write(Integer.toString(region.getStart() - 1));
-				writer.write(TextUtils.TAB_DELIMITER);
-				writer.write(Integer.toString(region.getEnd()));
-				writer.write(TextUtils.TAB_DELIMITER);
-				writer.write(region.getLocation());
-				writer.newLine();
-			}
-		} finally {
-			writer.close();
-		}
-	}
-	
-	/**
-	 * Gets the header.
-	 *
-	 * @param name the name
-	 * @param description the description
-	 * @return the header
-	 */
-	public static String getHeader(String name, String description) {
-		return getHeader(name, 
-				description,
-				DEFAULT_BED_COLOR);
-	}
-	
-	/**
-	 * Gets the header.
-	 *
-	 * @param name the name
-	 * @param description the description
-	 * @param color the color
-	 * @return the header
-	 */
-	public static String getHeader(String name, String description, Color color) {
-		return getHeader(name, 
-				description,
-				color,
-				1);
-	}
-	
-	/**
-	 * Gets the header.
-	 *
-	 * @param name the name
-	 * @param description the description
-	 * @param color the color
-	 * @param priority the priority
-	 * @return the header
-	 */
-	public static String getHeader(String name, 
-			String description, 
-			Color color,
-			int priority) {
-		return getHeader(BED_TRACK_TYPE, 
-				name, 
-				description,
-				color,
-				priority);
-	}
-	
-	/**
-	 * Create a BED line from a region.
-	 *
-	 * @param region the region
-	 * @return the string
-	 */
-	public static String toString(GenomicRegion region) {
-		return toString(region, region.getLocation());
-	}
+  /**
+   * Parses the bed graph.
+   *
+   * @param file
+   *          the file
+   * @return the bed
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   */
+  public static Bed parseBedGraph(Path file) throws IOException {
+    return parseBedGraphs(file).get(0);
+  }
 
-	/**
-	 * Create a BED line from a region with a name.
-	 *
-	 * @param region the region
-	 * @param name the name
-	 * @return the string
-	 */
-	public static String toString(GenomicRegion region, String name) {
-		StringBuilder buffer = new StringBuilder();
+  /**
+   * Parses the bed graphs.
+   *
+   * @param file
+   *          the file
+   * @return the list
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   */
+  public static List<Bed> parseBedGraphs(Path file) throws IOException {
+    LOG.info("Parsing Bedgraph as BED file {}...", file);
 
-		buffer.append(region.getChr().toString());
-		buffer.append(TextUtils.TAB_DELIMITER);
-		buffer.append(Integer.toString(region.getStart()));
-		buffer.append(TextUtils.TAB_DELIMITER);
-		buffer.append(Integer.toString(region.getEnd()));
-		buffer.append(TextUtils.TAB_DELIMITER);
-		buffer.append(name);
+    BufferedReader reader = Files.newBufferedReader(file, StandardCharsets.UTF_8);
 
-		return buffer.toString();
-	}
+    Bed bed = null;
 
-	/**
-	 * To matrix.
-	 *
-	 * @param file the file
-	 * @return the annotation matrix
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public static DataFrame toMatrix(Path file) throws IOException {
-		String line;
-		
-		BufferedReader reader = FileUtils.newBufferedReader(file);
-		
-		int r = 0;
-		
-		try {
-			while ((line = reader.readLine()) != null) {
-				if (Io.isEmptyLine(line)) {
-					continue;
-				}
+    String line;
 
-				if (isTrackLine(line)) {
-					continue;
-				}
+    List<Bed> beds = new ArrayList<Bed>();
 
-				++r;
-			}
-		} finally {
-			reader.close();
-		}
-		
-		DataFrame ret = 
-				new DataFrame(new MixedMatrix(r, 4));
-		
-		ret.setColumnName(0, "Chr");
-		ret.setColumnName(1, "Start");
-		ret.setColumnName(2, "End");
-		ret.setColumnName(3, "Name");
-		
-		reader = FileUtils.newBufferedReader(file);
-		
-		r = 0;
-		
-		try {
-			while ((line = reader.readLine()) != null) {
-				if (Io.isEmptyLine(line)) {
-					continue;
-				}
+    try {
+      while ((line = reader.readLine()) != null) {
+        if (Io.isEmptyLine(line)) {
+          continue;
+        }
 
-				if (isTrackLine(line)) {
-					continue;
-				}
+        if (isTrackLine(line)) {
+          bed = createBedFromTrackLine(line);
 
-				List<String> tokens = TextUtils.tabSplit(line);
-				
-				ret.set(r, 0, tokens.get(0));
-				// UCSC convention
-				ret.set(r, 1, Integer.parseInt(tokens.get(1)) + 1);
-				ret.set(r, 2, Integer.parseInt(tokens.get(2)));
-				ret.set(r, 3, tokens.get(3));
-				
-				++r;
-				
-			}
-		} finally {
-			reader.close();
-		}
-		
-		return ret;
-	}
-	
-	/**
-	 * Creates the.
-	 *
-	 * @param name the name
-	 * @param regions the regions
-	 * @return the bed
-	 */
-	public static Bed create(String name, Collection<GenomicRegion> regions) {
-		
-		Bed bed = new Bed(name);
-		
-		for (GenomicRegion region : regions) {
-			bed.getRegions().add(BedRegion.create(region));
-		}
-		
-		return bed;
-	}
+          beds.add(bed);
+        } else {
+          BedRegion region = BedRegion.parse(GenomeService.getInstance().guess(file), line);
+          bed.getRegions().add(region);
+        }
+      }
+    } finally {
+      reader.close();
+    }
+
+    return beds;
+  }
+
+  /**
+   * Write.
+   *
+   * @param regions
+   *          the regions
+   * @param file
+   *          the file
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   */
+  public static void writeBed(List<GenomicRegion> regions, Path file) throws IOException {
+    writeBed(PathUtils.getName(file), regions, file);
+  }
+
+  /**
+   * Write.
+   *
+   * @param name
+   *          the name
+   * @param regions
+   *          the regions
+   * @param file
+   *          the file
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   */
+  public static void writeBed(String name, List<GenomicRegion> regions, Path file) throws IOException {
+    writeBed(name, name, regions, file);
+  }
+
+  /**
+   * Write.
+   *
+   * @param name
+   *          the name
+   * @param description
+   *          the description
+   * @param regions
+   *          the regions
+   * @param file
+   *          the file
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   */
+  public static void writeBed(String name, String description, List<GenomicRegion> regions, Path file)
+      throws IOException {
+    BufferedWriter writer = FileUtils.newBufferedWriter(file);
+
+    try {
+      writer.write(getHeader(BED_TRACK_TYPE, name, description, DEFAULT_BED_COLOR));
+
+      writer.newLine();
+
+      for (GenomicRegion region : regions) {
+        writer.write(region.getChr().toString());
+        writer.write(TextUtils.TAB_DELIMITER);
+        writer.write(Integer.toString(region.getStart() - 1));
+        writer.write(TextUtils.TAB_DELIMITER);
+        writer.write(Integer.toString(region.getEnd()));
+        writer.write(TextUtils.TAB_DELIMITER);
+        writer.write(region.getLocation());
+        writer.newLine();
+      }
+    } finally {
+      writer.close();
+    }
+  }
+
+  /**
+   * Gets the header.
+   *
+   * @param name
+   *          the name
+   * @param description
+   *          the description
+   * @return the header
+   */
+  public static String getHeader(String name, String description) {
+    return getHeader(name, description, DEFAULT_BED_COLOR);
+  }
+
+  /**
+   * Gets the header.
+   *
+   * @param name
+   *          the name
+   * @param description
+   *          the description
+   * @param color
+   *          the color
+   * @return the header
+   */
+  public static String getHeader(String name, String description, Color color) {
+    return getHeader(name, description, color, 1);
+  }
+
+  /**
+   * Gets the header.
+   *
+   * @param name
+   *          the name
+   * @param description
+   *          the description
+   * @param color
+   *          the color
+   * @param priority
+   *          the priority
+   * @return the header
+   */
+  public static String getHeader(String name, String description, Color color, int priority) {
+    return getHeader(BED_TRACK_TYPE, name, description, color, priority);
+  }
+
+  /**
+   * Create a BED line from a region.
+   *
+   * @param region
+   *          the region
+   * @return the string
+   */
+  public static String toString(GenomicRegion region) {
+    return toString(region, region.getLocation());
+  }
+
+  /**
+   * Create a BED line from a region with a name.
+   *
+   * @param region
+   *          the region
+   * @param name
+   *          the name
+   * @return the string
+   */
+  public static String toString(GenomicRegion region, String name) {
+    StringBuilder buffer = new StringBuilder();
+
+    buffer.append(region.getChr().toString());
+    buffer.append(TextUtils.TAB_DELIMITER);
+    buffer.append(Integer.toString(region.getStart()));
+    buffer.append(TextUtils.TAB_DELIMITER);
+    buffer.append(Integer.toString(region.getEnd()));
+    buffer.append(TextUtils.TAB_DELIMITER);
+    buffer.append(name);
+
+    return buffer.toString();
+  }
+
+  /**
+   * To matrix.
+   *
+   * @param file
+   *          the file
+   * @return the annotation matrix
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   */
+  public static DataFrame toMatrix(Path file) throws IOException {
+    String line;
+
+    BufferedReader reader = FileUtils.newBufferedReader(file);
+
+    int r = 0;
+
+    try {
+      while ((line = reader.readLine()) != null) {
+        if (Io.isEmptyLine(line)) {
+          continue;
+        }
+
+        if (isTrackLine(line)) {
+          continue;
+        }
+
+        ++r;
+      }
+    } finally {
+      reader.close();
+    }
+
+    DataFrame ret = new DataFrame(new MixedMatrix(r, 4));
+
+    ret.setColumnName(0, "Chr");
+    ret.setColumnName(1, "Start");
+    ret.setColumnName(2, "End");
+    ret.setColumnName(3, "Name");
+
+    reader = FileUtils.newBufferedReader(file);
+
+    r = 0;
+
+    try {
+      while ((line = reader.readLine()) != null) {
+        if (Io.isEmptyLine(line)) {
+          continue;
+        }
+
+        if (isTrackLine(line)) {
+          continue;
+        }
+
+        List<String> tokens = TextUtils.tabSplit(line);
+
+        ret.set(r, 0, tokens.get(0));
+        // UCSC convention
+        ret.set(r, 1, Integer.parseInt(tokens.get(1)) + 1);
+        ret.set(r, 2, Integer.parseInt(tokens.get(2)));
+        ret.set(r, 3, tokens.get(3));
+
+        ++r;
+
+      }
+    } finally {
+      reader.close();
+    }
+
+    return ret;
+  }
+
+  /**
+   * Creates the.
+   *
+   * @param name
+   *          the name
+   * @param regions
+   *          the regions
+   * @return the bed
+   */
+  public static Bed create(String name, Collection<GenomicRegion> regions) {
+
+    Bed bed = new Bed(name);
+
+    for (GenomicRegion region : regions) {
+      bed.getRegions().add(BedRegion.create(region));
+    }
+
+    return bed;
+  }
 }

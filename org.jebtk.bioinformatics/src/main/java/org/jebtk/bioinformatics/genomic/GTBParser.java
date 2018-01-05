@@ -33,8 +33,6 @@ import org.jebtk.core.collections.IterMap;
 import org.jebtk.core.text.Splitter;
 import org.jebtk.core.text.TextUtils;
 
-
-
 // TODO: Auto-generated Javadoc
 /**
  * Genes lookup to m.
@@ -43,26 +41,24 @@ import org.jebtk.core.text.TextUtils;
  */
 public abstract class GTBParser extends GeneParser {
 
-	public GTBParser() {
-		//_setLevels(GeneType.GENE);
-	}
-	
-	public GTBParser(GeneParser parser) {
-		super(parser);
-	}
+  public GTBParser() {
+    // _setLevels(GeneType.GENE);
+  }
 
-	protected static IterMap<String, String> getAttributes(Splitter splitter,
-			String text) {
-		List<String> attributes = splitter.text(TextUtils.removeQuotes(text));
+  public GTBParser(GeneParser parser) {
+    super(parser);
+  }
 
-		IterMap<String, String> attributeMap = 
-				Splitter.toMap(attributes, '=');
-		
-		// Add symbol as convenience
-		if (attributeMap.containsKey("gene_name")) {
-			attributeMap.put("symbol", attributeMap.get("gene_name"));
-		}
-		
-		return attributeMap;
-	}
+  protected static IterMap<String, String> getAttributes(Splitter splitter, String text) {
+    List<String> attributes = splitter.text(TextUtils.removeQuotes(text));
+
+    IterMap<String, String> attributeMap = Splitter.toMap(attributes, '=');
+
+    // Add symbol as convenience
+    if (attributeMap.containsKey("gene_name")) {
+      attributeMap.put("symbol", attributeMap.get("gene_name"));
+    }
+
+    return attributeMap;
+  }
 }

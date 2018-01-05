@@ -20,10 +20,10 @@ package org.jebtk.bioinformatics;
  * The Enum DataSource.
  */
 public enum DataSource {
-	
-	/** The local. */
-	LOCAL,
-	
-	/** The web. */
-	WEB
+
+  /** The local. */
+  LOCAL,
+
+  /** The web. */
+  WEB
 }

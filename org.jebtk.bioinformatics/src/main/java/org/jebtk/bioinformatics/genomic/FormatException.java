@@ -32,18 +32,19 @@ package org.jebtk.bioinformatics.genomic;
  * The class FormatException.
  */
 public class FormatException extends Exception {
-	
-	/**
-	 * The constant serialVersionUID.
-	 */
-	private static final long serialVersionUID = 1L;
 
-	/**
-	 * Instantiates a new format exception.
-	 *
-	 * @param message the message
-	 */
-	public FormatException(String message) {
-		super(message);
-	}
+  /**
+   * The constant serialVersionUID.
+   */
+  private static final long serialVersionUID = 1L;
+
+  /**
+   * Instantiates a new format exception.
+   *
+   * @param message
+   *          the message
+   */
+  public FormatException(String message) {
+    super(message);
+  }
 }

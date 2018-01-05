@@ -27,8 +27,6 @@
  */
 package org.jebtk.bioinformatics.motifs;
 
-
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,102 +36,100 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-
-
 // TODO: Auto-generated Javadoc
 /**
  * The class KeyXmlHandler.
  */
 public class MotifXmlHandler extends DefaultHandler {
-	
-	/** The m motifs. */
-	private List<Motif> mMotifs = new ArrayList<Motif>();
-	
-	/** The m name. */
-	private String mName;
-	
-	/** The m id. */
-	private String mId;
-	
-	/** The m organisms. */
-	private List<Species> mOrganisms = new ArrayList<Species>();
-	
-	/** The m counts. */
-	private List<BaseCounts> mCounts = new ArrayList<BaseCounts>();
-	
-	/** The m db name. */
-	private String mDbName;
-	
-	/** The m ret. */
-	private Motifs mRet;
 
-	
-	//mPwm = new double[4][bases.size()];
-	
-	/* (non-Javadoc)
-	 * @see org.xml.sax.helpers.DefaultHandler#startElement(java.lang.String, java.lang.String, java.lang.String, org.xml.sax.Attributes)
-	 */
-	public void startElement(String uri, 
-			String localName,
-			String qName, 
-            Attributes attributes) throws SAXException {
+  /** The m motifs. */
+  private List<Motif> mMotifs = new ArrayList<Motif>();
 
-		if (qName.equals("motifs")) {
-			mDbName = attributes.getValue("name");
-		} else if (qName.equals("motif")) {
-			mName = attributes.getValue("name");
-			mId = attributes.getValue("id");
-		} else if (qName.equals("pos") || qName.equals("position")) {
-			double a = Double.parseDouble(attributes.getValue("score-a"));
-			double c = Double.parseDouble(attributes.getValue("score-c"));
-			double g = Double.parseDouble(attributes.getValue("score-g"));
-			
-			double t;
-			
-			if (attributes.getValue("score-t") != null) {
-				t = Double.parseDouble(attributes.getValue("score-t"));
-			} else if (attributes.getValue("score-u") != null) {
-				t = Double.parseDouble(attributes.getValue("score-u"));
-			} else {
-				t = -1;
-			}
-			
-			mCounts.add(new BaseCounts(a, c, g, t, true));
-		} else {
-			
-		}
-			
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.xml.sax.helpers.DefaultHandler#endElement(java.lang.String, java.lang.String, java.lang.String)
-	 */
-	public void endElement(String uri, 
-			String localName,
-			String qName) throws SAXException {
+  /** The m name. */
+  private String mName;
 
-		if (qName.equals("motifs")) {
-			mRet = new Motifs(mDbName, mMotifs);
-		} else if (qName.equals("motif")) {
-			Motif motif = new Motif(mId, mName, mName, mDbName, mCounts);
-			
-			motif.setOrganisms(mOrganisms);
-			
-			mMotifs.add(motif);
+  /** The m id. */
+  private String mId;
 
-			mCounts.clear();
-			mOrganisms.clear();
-		} else {
-			// Do nothing
-		}
-	}
+  /** The m organisms. */
+  private List<Species> mOrganisms = new ArrayList<Species>();
 
-	/**
-	 * Gets the motifs.
-	 *
-	 * @return the motifs
-	 */
-	public Motifs getMotifs() {
-		return mRet;
-	}
+  /** The m counts. */
+  private List<BaseCounts> mCounts = new ArrayList<BaseCounts>();
+
+  /** The m db name. */
+  private String mDbName;
+
+  /** The m ret. */
+  private Motifs mRet;
+
+  // mPwm = new double[4][bases.size()];
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.xml.sax.helpers.DefaultHandler#startElement(java.lang.String,
+   * java.lang.String, java.lang.String, org.xml.sax.Attributes)
+   */
+  public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+
+    if (qName.equals("motifs")) {
+      mDbName = attributes.getValue("name");
+    } else if (qName.equals("motif")) {
+      mName = attributes.getValue("name");
+      mId = attributes.getValue("id");
+    } else if (qName.equals("pos") || qName.equals("position")) {
+      double a = Double.parseDouble(attributes.getValue("score-a"));
+      double c = Double.parseDouble(attributes.getValue("score-c"));
+      double g = Double.parseDouble(attributes.getValue("score-g"));
+
+      double t;
+
+      if (attributes.getValue("score-t") != null) {
+        t = Double.parseDouble(attributes.getValue("score-t"));
+      } else if (attributes.getValue("score-u") != null) {
+        t = Double.parseDouble(attributes.getValue("score-u"));
+      } else {
+        t = -1;
+      }
+
+      mCounts.add(new BaseCounts(a, c, g, t, true));
+    } else {
+
+    }
+
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.xml.sax.helpers.DefaultHandler#endElement(java.lang.String,
+   * java.lang.String, java.lang.String)
+   */
+  public void endElement(String uri, String localName, String qName) throws SAXException {
+
+    if (qName.equals("motifs")) {
+      mRet = new Motifs(mDbName, mMotifs);
+    } else if (qName.equals("motif")) {
+      Motif motif = new Motif(mId, mName, mName, mDbName, mCounts);
+
+      motif.setOrganisms(mOrganisms);
+
+      mMotifs.add(motif);
+
+      mCounts.clear();
+      mOrganisms.clear();
+    } else {
+      // Do nothing
+    }
+  }
+
+  /**
+   * Gets the motifs.
+   *
+   * @return the motifs
+   */
+  public Motifs getMotifs() {
+    return mRet;
+  }
 }

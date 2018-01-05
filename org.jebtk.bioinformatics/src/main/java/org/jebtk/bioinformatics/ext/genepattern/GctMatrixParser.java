@@ -38,7 +38,6 @@ import org.jebtk.core.io.FileUtils;
 import org.jebtk.core.io.Io;
 import org.jebtk.core.text.TextUtils;
 import org.jebtk.math.matrix.DataFrame;
-import org.jebtk.math.matrix.DoubleMatrix;
 import org.jebtk.math.matrix.Matrix;
 import org.jebtk.math.matrix.MatrixParser;
 
@@ -47,100 +46,103 @@ import org.jebtk.math.matrix.MatrixParser;
  * The class GctMatrixParser.
  */
 public class GctMatrixParser implements MatrixParser {
-	
-	/**
-	 * Sets the.
-	 *O
-	 * @param matrix the matrix
-	 * @param row the row
-	 * @param column the column
-	 * @param value the value
-	 */
-	protected void set(Matrix matrix, 
-			int row, 
-			int column, 
-			String value) {
-		
-		matrix.set(row, column, DoubleMatrix.parseDouble(value));
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.abh.lib.math.matrix.MatrixParser#parse(java.io.Path)
-	 */
-	@Override
-	public DataFrame parse(Path file) throws IOException {
-		DataFrame matrix = null;
-		
-		BufferedReader reader = FileUtils.newBufferedReader(file);
-		
-		String line;
-		
-		int r = 0;
-		int c = 0;
-		
-		List<String> tokens;
-		
-		try {
-			// skip #1.2
-			
-			line = reader.readLine();
-			
-			line = reader.readLine();
-			
-			tokens = TextUtils.tabSplit(line);
-			
-			r = Integer.parseInt(tokens.get(0));
-			c = Integer.parseInt(tokens.get(1));
-			
-			matrix = GctMatrix.createGctMatrix(r, c);
-			
-			List<String> rowNames = new ArrayList<String>();
-			List<String> descriptionNames = new ArrayList<String>();
-			
-			line = reader.readLine();
-			
-			// Look at the columns
-			tokens = TextUtils.tabSplit(line);
-			
-			String idHeader = tokens.get(0);
-			String descriptionHeader = tokens.get(1);
-			
-			matrix.setColumnNames(CollectionUtils.subList(tokens, 2));
-			
-			int row = 0;
-			
-			while ((line = reader.readLine()) != null) {
-				if (Io.isEmptyLine(line)) {
-					continue;
-				}
-				
-				tokens = TextUtils.tabSplit(TextUtils.removeQuotes(line));
-				
-				rowNames.add(tokens.get(0));
-				
-				String description = tokens.get(1);
-				
-				if (description.length() == 0) {
-					description = TextUtils.NA;
-				}
-				
-				descriptionNames.add(description);
-				
-				// the first token is the column name so ignore it
-				for (int i = 2; i < tokens.size(); ++i) {
-					set(matrix, row, i - 2, tokens.get(i));
-				}
-				
-				++row;
-			}
-			
-			matrix.setTextRowAnnotations(idHeader, rowNames);
-			
-			matrix.setTextRowAnnotations(descriptionHeader, descriptionNames);
-		} finally {
-			reader.close();
-		}
-		
-		return matrix;
-	}
+
+  /**
+   * Sets the. O
+   * 
+   * @param matrix
+   *          the matrix
+   * @param row
+   *          the row
+   * @param column
+   *          the column
+   * @param value
+   *          the value
+   */
+  protected void set(Matrix matrix, int row, int column, String value) {
+
+    matrix.set(row, column, Double.parseDouble(value));
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.abh.lib.math.matrix.MatrixParser#parse(java.io.Path)
+   */
+  @Override
+  public DataFrame parse(Path file) throws IOException {
+    DataFrame matrix = null;
+
+    BufferedReader reader = FileUtils.newBufferedReader(file);
+
+    String line;
+
+    int r = 0;
+    int c = 0;
+
+    List<String> tokens;
+
+    try {
+      // skip #1.2
+
+      line = reader.readLine();
+
+      line = reader.readLine();
+
+      tokens = TextUtils.tabSplit(line);
+
+      r = Integer.parseInt(tokens.get(0));
+      c = Integer.parseInt(tokens.get(1));
+
+      matrix = GctMatrix.createGctMatrix(r, c);
+
+      List<String> rowNames = new ArrayList<String>();
+      List<String> descriptionNames = new ArrayList<String>();
+
+      line = reader.readLine();
+
+      // Look at the columns
+      tokens = TextUtils.tabSplit(line);
+
+      String idHeader = tokens.get(0);
+      String descriptionHeader = tokens.get(1);
+
+      matrix.setColumnNames(CollectionUtils.subList(tokens, 2));
+
+      int row = 0;
+
+      while ((line = reader.readLine()) != null) {
+        if (Io.isEmptyLine(line)) {
+          continue;
+        }
+
+        tokens = TextUtils.tabSplit(TextUtils.removeQuotes(line));
+
+        rowNames.add(tokens.get(0));
+
+        String description = tokens.get(1);
+
+        if (description.length() == 0) {
+          description = TextUtils.NA;
+        }
+
+        descriptionNames.add(description);
+
+        // the first token is the column name so ignore it
+        for (int i = 2; i < tokens.size(); ++i) {
+          set(matrix, row, i - 2, tokens.get(i));
+        }
+
+        ++row;
+      }
+
+      matrix.setTextRowAnnotations(idHeader, rowNames);
+
+      matrix.setTextRowAnnotations(descriptionHeader, descriptionNames);
+    } finally {
+      reader.close();
+    }
+
+    return matrix;
+  }
 }

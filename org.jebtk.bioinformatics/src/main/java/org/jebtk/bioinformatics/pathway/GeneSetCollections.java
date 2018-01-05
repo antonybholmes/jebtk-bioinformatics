@@ -41,81 +41,88 @@ import org.jebtk.core.model.SetModel;
  * The class GeneSetCollections.
  */
 public class GeneSetCollections extends SetModel<GeneSetCollection> {
-	
-	/**
-	 * The constant serialVersionUID.
-	 */
-	private static final long serialVersionUID = 1L;
-	
-	
-	/**
-	 * Parses the.
-	 *
-	 * @param files the files
-	 * @return the gene set collections
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public static GeneSetCollections parse(Path[] files) throws IOException {
-		return parse(Arrays.asList(files));
-	}
-	
-	/**
-	 * Parses the.
-	 *
-	 * @param files the files
-	 * @return the gene set collections
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public static GeneSetCollections parse(List<Path> files) throws IOException {
-		GeneSetCollections model = new GeneSetCollections();
-		
-		for (Path file : files) {			
-			GeneSetCollection collection = GeneSetCollection.parse(file);
-			
-			model.add(collection);
-		}
-		
-		return model;
-	}
-	
-	/**
-	 * Parses the.
-	 *
-	 * @param files the files
-	 * @param collections the collections
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public static void parse(List<Path> files, Set<GeneSet> collections) throws IOException {
-		for (Path file : files) {			
-			GeneSetCollection collection = GeneSetCollection.parse(file);
-			
-			for (GeneSet geneset : collection) {
-				collections.add(geneset);
-			}
-		}
-	}
-	
-	/**
-	 * Load from resources.
-	 *
-	 * @return the gene set collections
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public static GeneSetCollections loadFromResources() throws IOException {
-		GeneSetCollections model = new GeneSetCollections();
-		
-		for (String res : Resources.getInstance()) {
-			if (!res.contains(".gmt")) {
-				continue;
-			}
-			
-			String name = res.toLowerCase().replaceFirst("^.+\\/", "").replaceFirst("\\.symbols.+", "");
-			
-			GeneSetCollection collection = GeneSetCollection.parse(Resources.getResInputStream(res), name);
-			
-			model.add(collection);
-		}
-		
-		return model;
-	}
+
+  /**
+   * The constant serialVersionUID.
+   */
+  private static final long serialVersionUID = 1L;
+
+  /**
+   * Parses the.
+   *
+   * @param files
+   *          the files
+   * @return the gene set collections
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   */
+  public static GeneSetCollections parse(Path[] files) throws IOException {
+    return parse(Arrays.asList(files));
+  }
+
+  /**
+   * Parses the.
+   *
+   * @param files
+   *          the files
+   * @return the gene set collections
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   */
+  public static GeneSetCollections parse(List<Path> files) throws IOException {
+    GeneSetCollections model = new GeneSetCollections();
+
+    for (Path file : files) {
+      GeneSetCollection collection = GeneSetCollection.parse(file);
+
+      model.add(collection);
+    }
+
+    return model;
+  }
+
+  /**
+   * Parses the.
+   *
+   * @param files
+   *          the files
+   * @param collections
+   *          the collections
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   */
+  public static void parse(List<Path> files, Set<GeneSet> collections) throws IOException {
+    for (Path file : files) {
+      GeneSetCollection collection = GeneSetCollection.parse(file);
+
+      for (GeneSet geneset : collection) {
+        collections.add(geneset);
+      }
+    }
+  }
+
+  /**
+   * Load from resources.
+   *
+   * @return the gene set collections
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   */
+  public static GeneSetCollections loadFromResources() throws IOException {
+    GeneSetCollections model = new GeneSetCollections();
+
+    for (String res : Resources.getInstance()) {
+      if (!res.contains(".gmt")) {
+        continue;
+      }
+
+      String name = res.toLowerCase().replaceFirst("^.+\\/", "").replaceFirst("\\.symbols.+", "");
+
+      GeneSetCollection collection = GeneSetCollection.parse(Resources.getResInputStream(res), name);
+
+      model.add(collection);
+    }
+
+    return model;
+  }
 }

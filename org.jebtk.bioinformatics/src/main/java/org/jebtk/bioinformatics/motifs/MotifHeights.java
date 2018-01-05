@@ -34,32 +34,33 @@ import org.jebtk.core.model.ListModel;
  * The class MotifHeights.
  */
 public class MotifHeights extends ListModel<BaseHeights> {
-	
-	/**
-	 * The constant serialVersionUID.
-	 */
-	private static final long serialVersionUID = 1L;
-	
-	/**
-	 * The member name.
-	 */
-	private String mName;
 
-	/**
-	 * Instantiates a new motif heights.
-	 *
-	 * @param name the name
-	 */
-	public MotifHeights(String name) {
-		mName = name;
-	}
-	
-	/**
-	 * Gets the name.
-	 *
-	 * @return the name
-	 */
-	public String getName() {
-		return mName;
-	}
+  /**
+   * The constant serialVersionUID.
+   */
+  private static final long serialVersionUID = 1L;
+
+  /**
+   * The member name.
+   */
+  private String mName;
+
+  /**
+   * Instantiates a new motif heights.
+   *
+   * @param name
+   *          the name
+   */
+  public MotifHeights(String name) {
+    mName = name;
+  }
+
+  /**
+   * Gets the name.
+   *
+   * @return the name
+   */
+  public String getName() {
+    return mName;
+  }
 }

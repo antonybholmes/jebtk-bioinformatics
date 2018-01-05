@@ -35,106 +35,115 @@ package org.jebtk.bioinformatics.genomic;
  *
  */
 public class ProbeGene implements Comparable<ProbeGene> {
-	
-	/**
-	 * The member name.
-	 */
-	private String mName;
-	
-	/**
-	 * The member description.
-	 */
-	private String mGeneSymbol;
 
-	private String mDescription;
+  /**
+   * The member name.
+   */
+  private String mName;
 
+  /**
+   * The member description.
+   */
+  private String mGeneSymbol;
 
-	/**
-	 * Instantiates a new probe gene.
-	 *
-	 * @param name the name
-	 * @param description the description
-	 */
-	public ProbeGene(String name, 
-			String symbol) {
-		this(name, symbol, symbol);
-	}
-	
-	/**
-	 * Instantiates a new probe gene.
-	 *
-	 * @param name the name
-	 * @param description the description
-	 * @param chr the chr
-	 */
-	public ProbeGene(String name, 
-			String symbol,
-			String description) {
-		mName = name;
-		mGeneSymbol = symbol;
-		mDescription = description;
-	}
-	
-	/**
-	 * Gets the name.
-	 *
-	 * @return the name
-	 */
-	public String getName() {
-		return mName;
-	}
-	
-	/**
-	 * Gets the gene symbol.
-	 *
-	 * @return the gene symbol.
-	 */
-	public String getGeneSymbol() {
-		return mGeneSymbol;
-	}
-	
-	/**
-	 * Gets the description.
-	 *
-	 * @return the description
-	 */
-	public String getDescription() {
-		return mDescription;
-	}
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		return mName;
-	}
+  private String mDescription;
 
-	/* (non-Javadoc)
-	 * @see java.lang.Comparable#compareTo(java.lang.Object)
-	 */
-	@Override
-	public int compareTo(ProbeGene gene) {
-		return mName.compareTo(gene.mName);
-	}
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object o) {
-		if (!(o instanceof ProbeGene)) {
-			return false;
-		}
-		
-		return compareTo((ProbeGene)o) == 0;
-	}
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		return mName.hashCode();
-	}
+  /**
+   * Instantiates a new probe gene.
+   *
+   * @param name
+   *          the name
+   * @param description
+   *          the description
+   */
+  public ProbeGene(String name, String symbol) {
+    this(name, symbol, symbol);
+  }
+
+  /**
+   * Instantiates a new probe gene.
+   *
+   * @param name
+   *          the name
+   * @param description
+   *          the description
+   * @param chr
+   *          the chr
+   */
+  public ProbeGene(String name, String symbol, String description) {
+    mName = name;
+    mGeneSymbol = symbol;
+    mDescription = description;
+  }
+
+  /**
+   * Gets the name.
+   *
+   * @return the name
+   */
+  public String getName() {
+    return mName;
+  }
+
+  /**
+   * Gets the gene symbol.
+   *
+   * @return the gene symbol.
+   */
+  public String getGeneSymbol() {
+    return mGeneSymbol;
+  }
+
+  /**
+   * Gets the description.
+   *
+   * @return the description
+   */
+  public String getDescription() {
+    return mDescription;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#toString()
+   */
+  @Override
+  public String toString() {
+    return mName;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Comparable#compareTo(java.lang.Object)
+   */
+  @Override
+  public int compareTo(ProbeGene gene) {
+    return mName.compareTo(gene.mName);
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
+  @Override
+  public boolean equals(Object o) {
+    if (!(o instanceof ProbeGene)) {
+      return false;
+    }
+
+    return compareTo((ProbeGene) o) == 0;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#hashCode()
+   */
+  @Override
+  public int hashCode() {
+    return mName.hashCode();
+  }
 }

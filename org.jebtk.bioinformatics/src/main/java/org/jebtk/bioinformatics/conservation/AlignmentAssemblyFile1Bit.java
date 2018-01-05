@@ -40,7 +40,6 @@ import org.jebtk.bioinformatics.genomic.Chromosome;
 import org.jebtk.bioinformatics.genomic.GenomicRegion;
 import org.jebtk.core.io.PathUtils;
 
-
 // TODO: Auto-generated Javadoc
 /**
  * Stores 1 bit per genome base ergo this is only suitable for binary
@@ -50,142 +49,153 @@ import org.jebtk.core.io.PathUtils;
  *
  */
 public class AlignmentAssemblyFile1Bit extends ConservationAssembly {
-	
-	/**
-	 * The member directory.
-	 */
-	protected Path mDirectory;
 
-	/**
-	 * The member file map.
-	 */
-	protected Map<Chromosome, Path> mFileMap = 
-			new HashMap<Chromosome, Path>();
+  /**
+   * The member directory.
+   */
+  protected Path mDirectory;
 
-	/**
-	 * Directory containing genome files. Each file must contain 
-	 * exactly one line consisting of the entire chromosome.
-	 *
-	 * @param directory the directory
-	 */
-	public AlignmentAssemblyFile1Bit(Path directory) {
-		mDirectory = directory;
-	}
+  /**
+   * The member file map.
+   */
+  protected Map<Chromosome, Path> mFileMap = new HashMap<Chromosome, Path>();
 
-	/* (non-Javadoc)
-	 * @see edu.columbia.rdf.lib.bioinformatics.conservation.ConservationAssembly#getScores(edu.columbia.rdf.lib.bioinformatics.genome.GenomicRegion)
-	 */
-	@Override
-	public List<Double> getScores(GenomicRegion region) throws IOException {
-		Chromosome chr = region.getChr();
+  /**
+   * Directory containing genome files. Each file must contain exactly one line
+   * consisting of the entire chromosome.
+   *
+   * @param directory
+   *          the directory
+   */
+  public AlignmentAssemblyFile1Bit(Path directory) {
+    mDirectory = directory;
+  }
 
-		if (!mFileMap.containsKey(chr)) {
-			mFileMap.put(chr, mDirectory.resolve(chr + ".1bit.hg19.mm10"));
-		}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see edu.columbia.rdf.lib.bioinformatics.conservation.ConservationAssembly#
+   * getScores(edu.columbia.rdf.lib.bioinformatics.genome.GenomicRegion)
+   */
+  @Override
+  public List<Double> getScores(GenomicRegion region) throws IOException {
+    Chromosome chr = region.getChr();
 
-		return getScores(mFileMap.get(chr), region.getStart(), region.getEnd());
-	}
+    if (!mFileMap.containsKey(chr)) {
+      mFileMap.put(chr, mDirectory.resolve(chr + ".1bit.hg19.mm10"));
+    }
 
-	/**
-	 * Gets the scores.
-	 *
-	 * @param file the file
-	 * @param start the start
-	 * @param end the end
-	 * @return the scores
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public static List<Double> getScores(Path file,
-			int start,
-			int end) throws IOException {
+    return getScores(mFileMap.get(chr), region.getStart(), region.getEnd());
+  }
 
-		int s = start - 1;
-		int e = end - 1;
+  /**
+   * Gets the scores.
+   *
+   * @param file
+   *          the file
+   * @param start
+   *          the start
+   * @param end
+   *          the end
+   * @return the scores
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   */
+  public static List<Double> getScores(Path file, int start, int end) throws IOException {
 
-		byte[] buf = getBytes1Bit(file, s, e);
+    int s = start - 1;
+    int e = end - 1;
 
-		// how many characters to read
-		int l = end - start + 1;
+    byte[] buf = getBytes1Bit(file, s, e);
 
-		List<Double> scores = new ArrayList<Double>(l);
+    // how many characters to read
+    int l = end - start + 1;
 
-		//byte mask;
-		int v;
+    List<Double> scores = new ArrayList<Double>(l);
 
-		// the offset to start reading from
-		int b = s % 8;
+    // byte mask;
+    int v;
 
-		for (int i = 0; i < l; ++i) {
-			int bi = b / 8;
+    // the offset to start reading from
+    int b = s % 8;
 
-			int offset = b % 8;
+    for (int i = 0; i < l; ++i) {
+      int bi = b / 8;
 
-			switch (offset) {
-			case 0:
-				v = (buf[bi] & 128) >> 7;
-				break;
-			case 1:
-				v = (buf[bi] & 64) >> 6;
-				break;
-			case 2:
-				v = (buf[bi] & 32) >> 5;
-				break;
-			case 3:
-				v = (buf[bi] & 16) >> 4;
-				break;
-			case 4:
-				v = (buf[bi] & 8) >> 3;
-				break;
-			case 5:
-				v = (buf[bi] & 4) >> 2;
-				break;
-			case 6:
-				v = (buf[bi] & 2) >> 1;
-				break;
-			default:
-				v = buf[bi] & 1;
-				break;
-			}
+      int offset = b % 8;
 
-			scores.add((double)v);
+      switch (offset) {
+      case 0:
+        v = (buf[bi] & 128) >> 7;
+        break;
+      case 1:
+        v = (buf[bi] & 64) >> 6;
+        break;
+      case 2:
+        v = (buf[bi] & 32) >> 5;
+        break;
+      case 3:
+        v = (buf[bi] & 16) >> 4;
+        break;
+      case 4:
+        v = (buf[bi] & 8) >> 3;
+        break;
+      case 5:
+        v = (buf[bi] & 4) >> 2;
+        break;
+      case 6:
+        v = (buf[bi] & 2) >> 1;
+        break;
+      default:
+        v = buf[bi] & 1;
+        break;
+      }
 
-			++b;
-		}
+      scores.add((double) v);
 
-		return scores;
-	}
+      ++b;
+    }
 
-	/**
-	 * Gets the bytes1 bit.
-	 *
-	 * @param file the file
-	 * @param start the start
-	 * @param end the end
-	 * @return the bytes1 bit
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public static byte[] getBytes1Bit(Path file, 
-			int start, 
-			int end) throws IOException {
-		int sb = start / 8;
-		int eb = end / 8;
+    return scores;
+  }
 
-		return GenomeAssemblyDir.getBytes(file, sb, eb);
-	}
+  /**
+   * Gets the bytes1 bit.
+   *
+   * @param file
+   *          the file
+   * @param start
+   *          the start
+   * @param end
+   *          the end
+   * @return the bytes1 bit
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   */
+  public static byte[] getBytes1Bit(Path file, int start, int end) throws IOException {
+    int sb = start / 8;
+    int eb = end / 8;
 
-	/**
-	 * The main method.
-	 *
-	 * @param args the arguments
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 * @throws ParseException the parse exception
-	 */
-	public static void main(String[] args) throws IOException, ParseException {
-		AlignmentAssemblyFile1Bit a = 
-				new AlignmentAssemblyFile1Bit(PathUtils.getPath("/ifs/scratch/cancer/Lab_RDF/abh2138/references/ucsc/alignment/human_mouse_hg19_mm10"));
+    return GenomeAssemblyDir.getBytes(file, sb, eb);
+  }
 
-		System.err.println(a.getScores("chr1:11872-12139"));
-		
-		//System.err.println(a.getScores("chr10:87575-87801") + " " + Statistics.pNonZero(a.getScores("chr10:87575-87801")));
-	}
+  /**
+   * The main method.
+   *
+   * @param args
+   *          the arguments
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   * @throws ParseException
+   *           the parse exception
+   */
+  public static void main(String[] args) throws IOException, ParseException {
+    AlignmentAssemblyFile1Bit a = new AlignmentAssemblyFile1Bit(
+        PathUtils.getPath("/ifs/scratch/cancer/Lab_RDF/abh2138/references/ucsc/alignment/human_mouse_hg19_mm10"));
+
+    System.err.println(a.getScores("chr1:11872-12139"));
+
+    // System.err.println(a.getScores("chr10:87575-87801") + " " +
+    // Statistics.pNonZero(a.getScores("chr10:87575-87801")));
+  }
 }

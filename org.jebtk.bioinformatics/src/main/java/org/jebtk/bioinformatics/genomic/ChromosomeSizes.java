@@ -39,8 +39,6 @@ import org.jebtk.core.io.FileUtils;
 import org.jebtk.core.io.Io;
 import org.jebtk.core.text.TextUtils;
 
-
-
 // TODO: Auto-generated Javadoc
 /**
  * Server for genome feature annotations.
@@ -49,110 +47,112 @@ import org.jebtk.core.text.TextUtils;
  *
  */
 public class ChromosomeSizes {
-	//private static final ChromosomeSizes instance = new ChromosomeSizes();
+  // private static final ChromosomeSizes instance = new ChromosomeSizes();
 
-	/**
-	 * The constant DEFAULT_FILE.
-	 */
-	public static final File DEFAULT_HG19_FILE = 
-			new File("res/ucsc_chromosome_sizes_hg19.txt.gz");
+  /**
+   * The constant DEFAULT_FILE.
+   */
+  public static final File DEFAULT_HG19_FILE = new File("res/ucsc_chromosome_sizes_hg19.txt.gz");
 
-	//public static final ChromosomeSizes getInstance() {
-	//	return instance;
-	//}
+  // public static final ChromosomeSizes getInstance() {
+  // return instance;
+  // }
 
-	/**
-	 * The size map.
-	 */
-	// genome, group, feature name
-	private Map<Chromosome, Integer> mSizeMap = 
-			new HashMap<Chromosome, Integer>();
+  /**
+   * The size map.
+   */
+  // genome, group, feature name
+  private Map<Chromosome, Integer> mSizeMap = new HashMap<Chromosome, Integer>();
 
-	/**
-	 * Instantiates a new chromosome sizes.
-	 */
-	public ChromosomeSizes() {
-		// Do nothing
-	}
+  /**
+   * Instantiates a new chromosome sizes.
+   */
+  public ChromosomeSizes() {
+    // Do nothing
+  }
 
-	/**
-	 * Returns the number of bases in the chromosome.
-	 *
-	 * @param chromosome the chromosome
-	 * @return the size
-	 */
-	public int getSize(Chromosome chr) {
-		if (!mSizeMap.containsKey(chr)) {
-			return Integer.MAX_VALUE;
-		}
+  /**
+   * Returns the number of bases in the chromosome.
+   *
+   * @param chromosome
+   *          the chromosome
+   * @return the size
+   */
+  public int getSize(Chromosome chr) {
+    if (!mSizeMap.containsKey(chr)) {
+      return Integer.MAX_VALUE;
+    }
 
-		return mSizeMap.get(chr);
-	}
+    return mSizeMap.get(chr);
+  }
 
-	/**
-	 * Parses the.
-	 *
-	 * @param file the file
-	 * @return the chromosome sizes
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public static ChromosomeSizes parse(Path file) throws IOException {
+  /**
+   * Parses the.
+   *
+   * @param file
+   *          the file
+   * @return the chromosome sizes
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   */
+  public static ChromosomeSizes parse(Path file) throws IOException {
 
-		BufferedReader buffer = FileUtils.newBufferedReader(file);
+    BufferedReader buffer = FileUtils.newBufferedReader(file);
 
-		ChromosomeSizes ret = null;
+    ChromosomeSizes ret = null;
 
-		try {
-			ret = parse(buffer);
-		} finally {
-			buffer.close();
-		}
+    try {
+      ret = parse(buffer);
+    } finally {
+      buffer.close();
+    }
 
-		return ret;
-	}
+    return ret;
+  }
 
-	/**
-	 * Parses the.
-	 *
-	 * @param reader the reader
-	 * @return the chromosome sizes
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public static ChromosomeSizes parse(BufferedReader reader) throws IOException {
+  /**
+   * Parses the.
+   *
+   * @param reader
+   *          the reader
+   * @return the chromosome sizes
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   */
+  public static ChromosomeSizes parse(BufferedReader reader) throws IOException {
 
-		ChromosomeSizes sizes = new ChromosomeSizes();
+    ChromosomeSizes sizes = new ChromosomeSizes();
 
-		reader.readLine();
+    reader.readLine();
 
-		String line;
-		List<String> tokens;
+    String line;
+    List<String> tokens;
 
-		while ((line = reader.readLine()) != null) {
-			if (Io.isEmptyLine(line)) {
-				continue;
-			}
+    while ((line = reader.readLine()) != null) {
+      if (Io.isEmptyLine(line)) {
+        continue;
+      }
 
-			tokens = TextUtils.tabSplit(line);
+      tokens = TextUtils.tabSplit(line);
 
-			String chr = tokens.get(0);
+      String chr = tokens.get(0);
 
-			if (chr.contains("_")) {
-				continue;
-			}
+      if (chr.contains("_")) {
+        continue;
+      }
 
-			Chromosome chromosome = ChromosomeService.getInstance().parse(chr);
+      Chromosome chromosome = ChromosomeService.getInstance().parse(chr);
 
-			// skip non standard chrs
-			if (chromosome == null) {
-				continue;
-			}
+      // skip non standard chrs
+      if (chromosome == null) {
+        continue;
+      }
 
+      int size = Integer.parseInt(tokens.get(1));
 
-			int size = Integer.parseInt(tokens.get(1));
+      sizes.mSizeMap.put(chromosome, size);
+    }
 
-			sizes.mSizeMap.put(chromosome, size);
-		}
-
-		return sizes;
-	}
+    return sizes;
+  }
 }

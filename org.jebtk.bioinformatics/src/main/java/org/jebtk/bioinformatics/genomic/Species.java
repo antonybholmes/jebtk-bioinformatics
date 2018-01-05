@@ -20,10 +20,10 @@ package org.jebtk.bioinformatics.genomic;
  * The Enum Species.
  */
 public enum Species {
-	
-	/** The human. */
-	HUMAN,
-	
-	/** The mouse. */
-	MOUSE
+
+  /** The human. */
+  HUMAN,
+
+  /** The mouse. */
+  MOUSE
 }

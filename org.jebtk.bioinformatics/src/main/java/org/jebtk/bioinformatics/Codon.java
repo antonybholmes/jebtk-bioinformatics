@@ -29,61 +29,70 @@ package org.jebtk.bioinformatics;
 
 // TODO: Auto-generated Javadoc
 /**
- * Represents a three letter amino acid codon. It
- * enforces only 3 letters per codon.
+ * Represents a three letter amino acid codon. It enforces only 3 letters per
+ * codon.
  * 
  * @author Antony Holmes Holmes
  *
  */
 public class Codon implements Comparable<Codon> {
-	
-	/**
-	 * The codon.
-	 */
-	private String codon;
 
-	/**
-	 * Instantiates a new codon.
-	 *
-	 * @param codon the codon
-	 */
-	public Codon(String codon) {
-		this.codon = codon.substring(0, 3);
-	}
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		return codon;
-	}
+  /**
+   * The codon.
+   */
+  private String codon;
 
-	/* (non-Javadoc)
-	 * @see java.lang.Comparable#compareTo(java.lang.Object)
-	 */
-	@Override
-	public int compareTo(Codon c) {
-		return codon.compareTo(c.codon);
-	}
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object o) {
-		if (!(o instanceof Codon)) {
-			return false;
-		}
-		
-		return compareTo((Codon)o) == 0;
-	}
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		return codon.hashCode();
-	}
+  /**
+   * Instantiates a new codon.
+   *
+   * @param codon
+   *          the codon
+   */
+  public Codon(String codon) {
+    this.codon = codon.substring(0, 3);
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#toString()
+   */
+  @Override
+  public String toString() {
+    return codon;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Comparable#compareTo(java.lang.Object)
+   */
+  @Override
+  public int compareTo(Codon c) {
+    return codon.compareTo(c.codon);
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
+  @Override
+  public boolean equals(Object o) {
+    if (!(o instanceof Codon)) {
+      return false;
+    }
+
+    return compareTo((Codon) o) == 0;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#hashCode()
+   */
+  @Override
+  public int hashCode() {
+    return codon.hashCode();
+  }
 }

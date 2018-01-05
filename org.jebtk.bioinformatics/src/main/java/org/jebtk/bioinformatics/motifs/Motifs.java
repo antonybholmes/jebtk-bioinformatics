@@ -36,45 +36,51 @@ import org.jebtk.core.collections.CollectionUtils;
 
 // TODO: Auto-generated Javadoc
 /**
- * Represents a motif sequence. Each position consists of the
- * counts for each base (a,c,g,t).
+ * Represents a motif sequence. Each position consists of the counts for each
+ * base (a,c,g,t).
  * 
  * @author Antony Holmes Holmes
  *
  */
 public class Motifs implements NameProperty, Iterable<Motif> {
-	
-	/** The m name. */
-	private String mName;
-	
-	/** The m motifs. */
-	private List<Motif> mMotifs;
-	
-	/**
-	 * Instantiates a new motifs.
-	 *
-	 * @param name the name
-	 * @param motifs the motifs
-	 */
-	public Motifs(String name, Collection<Motif> motifs) {
-		mName = name;
-		
-		mMotifs = CollectionUtils.sort(motifs);
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.abh.common.NameProperty#getName()
-	 */
-	@Override
-	public String getName() {
-		return mName;
-	}
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Iterable#iterator()
-	 */
-	@Override
-	public Iterator<Motif> iterator() {
-		return mMotifs.iterator();
-	}
+
+  /** The m name. */
+  private String mName;
+
+  /** The m motifs. */
+  private List<Motif> mMotifs;
+
+  /**
+   * Instantiates a new motifs.
+   *
+   * @param name
+   *          the name
+   * @param motifs
+   *          the motifs
+   */
+  public Motifs(String name, Collection<Motif> motifs) {
+    mName = name;
+
+    mMotifs = CollectionUtils.sort(motifs);
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.abh.common.NameProperty#getName()
+   */
+  @Override
+  public String getName() {
+    return mName;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Iterable#iterator()
+   */
+  @Override
+  public Iterator<Motif> iterator() {
+    return mMotifs.iterator();
+  }
 }

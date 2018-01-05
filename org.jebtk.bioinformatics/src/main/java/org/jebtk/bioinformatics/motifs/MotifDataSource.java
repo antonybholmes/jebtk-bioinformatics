@@ -37,24 +37,26 @@ import org.jebtk.core.tree.TreeNode;
  */
 public abstract class MotifDataSource {
 
-	//public List<Path> getPaths() throws IOException;
+  // public List<Path> getPaths() throws IOException;
 
-	//public List<Motif> getMotifs(Path path) throws IOException;
+  // public List<Motif> getMotifs(Path path) throws IOException;
 
-	
-	/**
-	 * Creates the tree.
-	 *
-	 * @param root the root
-	 * @param terms the terms
-	 * @param inList the in list
-	 * @param exactMatch the exact match
-	 * @param caseSensitive the case sensitive
-	 * @throws Exception the exception
-	 */
-	public abstract void createTree(TreeNode<Motif> root,
-			List<String> terms,
-			boolean inList,
-			boolean exactMatch,
-			boolean caseSensitive) throws Exception;
+  /**
+   * Creates the tree.
+   *
+   * @param root
+   *          the root
+   * @param terms
+   *          the terms
+   * @param inList
+   *          the in list
+   * @param exactMatch
+   *          the exact match
+   * @param caseSensitive
+   *          the case sensitive
+   * @throws Exception
+   *           the exception
+   */
+  public abstract void createTree(TreeNode<Motif> root, List<String> terms, boolean inList, boolean exactMatch,
+      boolean caseSensitive) throws Exception;
 }

@@ -51,221 +51,229 @@ import org.slf4j.LoggerFactory;
  * @author Antony Holmes Holmes
  *
  */
-public class BedGraph extends UCSCTrack {	
-	
-	/**
-	 * The constant serialVersionUID.
-	 */
-	private static final long serialVersionUID = 1L;
+public class BedGraph extends UCSCTrack {
 
-	
-	/**
-	 * The constant HEIGHT_PATTERN.
-	 */
-	public static final Pattern HEIGHT_PATTERN = 
-			Pattern.compile("maxHeightPixels=(\\d+):(\\d+):(\\d+)");
+  /**
+   * The constant serialVersionUID.
+   */
+  private static final long serialVersionUID = 1L;
 
-	/**
-	 * The constant LOG.
-	 */
-	private static final Logger LOG = 
-			LoggerFactory.getLogger(BedGraph.class);
+  /**
+   * The constant HEIGHT_PATTERN.
+   */
+  public static final Pattern HEIGHT_PATTERN = Pattern.compile("maxHeightPixels=(\\d+):(\\d+):(\\d+)");
 
-	/**
-	 * The constant DEFAULT_BEDGRAPH_COLOR.
-	 */
-	private static final Color DEFAULT_BEDGRAPH_COLOR = Color.RED;
+  /**
+   * The constant LOG.
+   */
+  private static final Logger LOG = LoggerFactory.getLogger(BedGraph.class);
 
+  /**
+   * The constant DEFAULT_BEDGRAPH_COLOR.
+   */
+  private static final Color DEFAULT_BEDGRAPH_COLOR = Color.RED;
 
-	/**
-	 * The constant TRACK_TYPE.
-	 */
-	private static final String TRACK_TYPE = "bedGraph";
+  /**
+   * The constant TRACK_TYPE.
+   */
+  private static final String TRACK_TYPE = "bedGraph";
 
-	
-	/**
-	 * Instantiates a new bed graph.
-	 *
-	 * @param name the name
-	 * @param description the description
-	 * @param color the color
-	 */
-	public BedGraph(String name, String description, Color color) {
-		this(name, description, color, DEFAULT_HEIGHT);
-	}
+  /**
+   * Instantiates a new bed graph.
+   *
+   * @param name
+   *          the name
+   * @param description
+   *          the description
+   * @param color
+   *          the color
+   */
+  public BedGraph(String name, String description, Color color) {
+    this(name, description, color, DEFAULT_HEIGHT);
+  }
 
-	/**
-	 * Instantiates a new bed graph.
-	 *
-	 * @param name the name
-	 * @param description the description
-	 * @param color the color
-	 * @param height the height
-	 */
-	public BedGraph(String name, String description, 
-			Color color, 
-			int height) {
-		super(name, description, color, TRACK_TYPE);
-		
-		mHeight = height;
-	}
-	
-	/* (non-Javadoc)
-	 * @see edu.columbia.rdf.lib.bioinformatics.external.ucsc.UCSCTrack#bufferHeader(int, java.lang.Appendable)
-	 */
-	@Override
-	public void bufferHeader(int priority, Appendable buffer) throws IOException {
-		super.bufferHeader(priority, buffer);
-		
-		buffer.append(" maxHeightPixels=").append("128:").append(Integer.toString(mHeight)).append(":1");
-		buffer.append(" visibility=full autoScale=on alwaysZero=on");
-	}
-	
-	/**
-	 * Parses the.
-	 *
-	 * @param file the file
-	 * @return the list
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public static List<UCSCTrack> parse(Path file) throws IOException {
-		LOG.info("Parsing BED file {}...", file);
+  /**
+   * Instantiates a new bed graph.
+   *
+   * @param name
+   *          the name
+   * @param description
+   *          the description
+   * @param color
+   *          the color
+   * @param height
+   *          the height
+   */
+  public BedGraph(String name, String description, Color color, int height) {
+    super(name, description, color, TRACK_TYPE);
 
-		BufferedReader reader = FileUtils.newBufferedReader(file);
+    mHeight = height;
+  }
 
-		BedGraph bed = null;
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * edu.columbia.rdf.lib.bioinformatics.external.ucsc.UCSCTrack#bufferHeader(int,
+   * java.lang.Appendable)
+   */
+  @Override
+  public void bufferHeader(int priority, Appendable buffer) throws IOException {
+    super.bufferHeader(priority, buffer);
 
-		String line;
-		Matcher matcher;
+    buffer.append(" maxHeightPixels=").append("128:").append(Integer.toString(mHeight)).append(":1");
+    buffer.append(" visibility=full autoScale=on alwaysZero=on");
+  }
 
-		List<UCSCTrack> tracks = new ArrayList<UCSCTrack>();
+  /**
+   * Parses the.
+   *
+   * @param file
+   *          the file
+   * @return the list
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   */
+  public static List<UCSCTrack> parse(Path file) throws IOException {
+    LOG.info("Parsing BED file {}...", file);
 
-		try {
-			while ((line = reader.readLine()) != null) {
-				if (Io.isEmptyLine(line)) {
-					continue;
-				}
+    BufferedReader reader = FileUtils.newBufferedReader(file);
 
-				matcher = NAME_PATTERN.matcher(line);
+    BedGraph bed = null;
 
-				if (matcher.find()) {
+    String line;
+    Matcher matcher;
 
-					String name = matcher.group(1);
+    List<UCSCTrack> tracks = new ArrayList<UCSCTrack>();
 
-					String description = name;
-					
-					matcher = DESCRIPTION_PATTERN.matcher(line);
-					
-					if(matcher.find()) {
-						description = matcher.group(1);
-					}
+    try {
+      while ((line = reader.readLine()) != null) {
+        if (Io.isEmptyLine(line)) {
+          continue;
+        }
 
-					matcher = COLOR_PATTERN.matcher(line);
+        matcher = NAME_PATTERN.matcher(line);
 
-					Color color = DEFAULT_BEDGRAPH_COLOR;
-					
-					if (matcher.find()) {
-						color = parseColor(matcher);
-					}
-		
-					// Check if we can find the height
-					int height = DEFAULT_HEIGHT;
+        if (matcher.find()) {
 
-					matcher = HEIGHT_PATTERN.matcher(line);
+          String name = matcher.group(1);
 
-					if (matcher.find()) {
-						height = Integer.parseInt(matcher.group(2));
-					}
+          String description = name;
 
-					bed = new BedGraph(name, description, color, height);
+          matcher = DESCRIPTION_PATTERN.matcher(line);
 
-					tracks.add(bed);
-				} else {
-					BedGraphRegion region = BedGraphRegion.parse(GenomeService.getInstance().guess(file), line);
-					
-					bed.getRegions().add(region);
-				}
-			}
-		} finally {
-			reader.close();
-		}
+          if (matcher.find()) {
+            description = matcher.group(1);
+          }
 
-		LOG.info("BED {} ({} peaks).", bed.getName(), bed.getRegions().size());
+          matcher = COLOR_PATTERN.matcher(line);
 
-		return tracks;
-	}
-	
-	/**
-	 * To matrix.
-	 *
-	 * @param file the file
-	 * @return the annotation matrix
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public static DataFrame toMatrix(Path file) throws IOException {
-		String line;
-		
-		BufferedReader reader = FileUtils.newBufferedReader(file);
-		
-		int r = 0;
-		
-		try {
-			// Skip header
-			reader.readLine();
-			
-			while ((line = reader.readLine()) != null) {
-				if (Io.isEmptyLine(line)) {
-					continue;
-				}
+          Color color = DEFAULT_BEDGRAPH_COLOR;
 
-				if (isTrackLine(line)) {
-					break;
-				}
+          if (matcher.find()) {
+            color = parseColor(matcher);
+          }
 
-				++r;
-			}
-		} finally {
-			reader.close();
-		}
-		
-		DataFrame ret = DataFrame.createDataFrame(r, 4);
-		
-		ret.setColumnName(0, "Chr");
-		ret.setColumnName(1, "Start");
-		ret.setColumnName(2, "End");
-		ret.setColumnName(3, "Value");
-		
-		reader = FileUtils.newBufferedReader(file);
-		
-		r = 0;
-		
-		try {
-			// Skip header
-			reader.readLine();
-			
-			while ((line = reader.readLine()) != null) {
-				if (Io.isEmptyLine(line)) {
-					continue;
-				}
+          // Check if we can find the height
+          int height = DEFAULT_HEIGHT;
 
-				if (isTrackLine(line)) {
-					break;
-				}
+          matcher = HEIGHT_PATTERN.matcher(line);
 
-				List<String> tokens = TextUtils.tabSplit(line);
-				
-				ret.set(r, 0, tokens.get(0));
-				ret.set(r, 1, Integer.parseInt(tokens.get(1)));
-				ret.set(r, 2, Integer.parseInt(tokens.get(2)));
-				ret.set(r, 3, Double.parseDouble(tokens.get(3)));
-				
-				++r;
-				
-			}
-		} finally {
-			reader.close();
-		}
-		
-		return ret;
-	}
+          if (matcher.find()) {
+            height = Integer.parseInt(matcher.group(2));
+          }
+
+          bed = new BedGraph(name, description, color, height);
+
+          tracks.add(bed);
+        } else {
+          BedGraphRegion region = BedGraphRegion.parse(GenomeService.getInstance().guess(file), line);
+
+          bed.getRegions().add(region);
+        }
+      }
+    } finally {
+      reader.close();
+    }
+
+    LOG.info("BED {} ({} peaks).", bed.getName(), bed.getRegions().size());
+
+    return tracks;
+  }
+
+  /**
+   * To matrix.
+   *
+   * @param file
+   *          the file
+   * @return the annotation matrix
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   */
+  public static DataFrame toMatrix(Path file) throws IOException {
+    String line;
+
+    BufferedReader reader = FileUtils.newBufferedReader(file);
+
+    int r = 0;
+
+    try {
+      // Skip header
+      reader.readLine();
+
+      while ((line = reader.readLine()) != null) {
+        if (Io.isEmptyLine(line)) {
+          continue;
+        }
+
+        if (isTrackLine(line)) {
+          break;
+        }
+
+        ++r;
+      }
+    } finally {
+      reader.close();
+    }
+
+    DataFrame ret = DataFrame.createDataFrame(r, 4);
+
+    ret.setColumnName(0, "Chr");
+    ret.setColumnName(1, "Start");
+    ret.setColumnName(2, "End");
+    ret.setColumnName(3, "Value");
+
+    reader = FileUtils.newBufferedReader(file);
+
+    r = 0;
+
+    try {
+      // Skip header
+      reader.readLine();
+
+      while ((line = reader.readLine()) != null) {
+        if (Io.isEmptyLine(line)) {
+          continue;
+        }
+
+        if (isTrackLine(line)) {
+          break;
+        }
+
+        List<String> tokens = TextUtils.tabSplit(line);
+
+        ret.set(r, 0, tokens.get(0));
+        ret.set(r, 1, Integer.parseInt(tokens.get(1)));
+        ret.set(r, 2, Integer.parseInt(tokens.get(2)));
+        ret.set(r, 3, Double.parseDouble(tokens.get(3)));
+
+        ++r;
+
+      }
+    } finally {
+      reader.close();
+    }
+
+    return ret;
+  }
 }

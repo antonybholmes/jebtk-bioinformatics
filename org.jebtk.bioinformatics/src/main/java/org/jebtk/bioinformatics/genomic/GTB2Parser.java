@@ -17,8 +17,6 @@ import org.jebtk.core.io.TokenFunction;
 import org.jebtk.core.text.Splitter;
 import org.jebtk.core.text.TextUtils;
 
-
-
 // TODO: Auto-generated Javadoc
 /**
  * Genes lookup to m.
@@ -27,268 +25,241 @@ import org.jebtk.core.text.TextUtils;
  */
 public class GTB2Parser extends GTBParser {
 
-	public GTB2Parser() {
-		//_setLevels(GeneType.GENE);
-	}
+  public GTB2Parser() {
+    // _setLevels(GeneType.GENE);
+  }
 
-	public GTB2Parser(GeneParser parser) {
-		super(parser);
-	}
+  public GTB2Parser(GeneParser parser) {
+    super(parser);
+  }
 
-	/**
-	 * Parses the gene table.
-	 *
-	 * @param reader the reader
-	 * @return the genes
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	@Override
-	protected void parse(final Path file, 
-			BufferedReader reader, 
-			final Genes genes) throws IOException {
-		LOG.info("Parsing GTB2 file {}, levels: {}...", file, mLevels);
-		
-		final Splitter splitter = Splitter.on(';');
+  /**
+   * Parses the gene table.
+   *
+   * @param reader
+   *          the reader
+   * @return the genes
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   */
+  @Override
+  protected void parse(final Path file, BufferedReader reader, final Genes genes) throws IOException {
+    LOG.info("Parsing GTB2 file {}, levels: {}...", file, mLevels);
 
-		// Add the exons
-		final boolean hasExonLevel = containsLevel(GeneType.EXON);
-		final boolean has3pUtrLevel = containsLevel(GeneType.UTR_3P);
-		final boolean has5pUtrLevel = containsLevel(GeneType.UTR_5P);
+    final Splitter splitter = Splitter.on(';');
 
-		FileUtils.tokenize(reader, true, new TokenFunction() {
-			@Override
-			public void parse(final List<String> tokens) {
-				//System.err.println("gtb2 " + line);
+    // Add the exons
+    final boolean hasExonLevel = containsLevel(GeneType.EXON);
+    final boolean has3pUtrLevel = containsLevel(GeneType.UTR_3P);
+    final boolean has5pUtrLevel = containsLevel(GeneType.UTR_5P);
 
-				boolean add = true;
+    FileUtils.tokenize(reader, true, new TokenFunction() {
+      @Override
+      public void parse(final List<String> tokens) {
+        // System.err.println("gtb2 " + line);
 
-				Chromosome chr = ChromosomeService.getInstance().guess(file, tokens.get(0));
+        boolean add = true;
 
-				// Skip random and unofficial chromosomes
-				if (chr.toString().contains("_")) {
-					return;
-				}
+        Chromosome chr = ChromosomeService.getInstance().guess(file, tokens.get(0));
 
-				Strand strand = Strand.parse(tokens.get(1));
-				int start = Integer.parseInt(tokens.get(2));
-				int end = Integer.parseInt(tokens.get(3));
+        // Skip random and unofficial chromosomes
+        if (chr.toString().contains("_")) {
+          return;
+        }
 
-				//int exonCount = Integer.parseInt(tokens.get(4));
+        Strand strand = Strand.parse(tokens.get(1));
+        int start = Integer.parseInt(tokens.get(2));
+        int end = Integer.parseInt(tokens.get(3));
 
-				// Because of the UCSC using zero based start and one
-				// based end, we need to increment the start by 1
+        // int exonCount = Integer.parseInt(tokens.get(4));
 
+        // Because of the UCSC using zero based start and one
+        // based end, we need to increment the start by 1
 
-				List<String> tags = getTags(splitter, tokens);
+        List<String> tags = getTags(splitter, tokens);
 
-				if (mExcludeTags.size() > 0) {
-					for (String tag : tags) {
-						if (mExcludeTags.contains(tag)) {
-							add = false;
-							break;
-						}
-					}
-				}
+        if (mExcludeTags.size() > 0) {
+          for (String tag : tags) {
+            if (mExcludeTags.contains(tag)) {
+              add = false;
+              break;
+            }
+          }
+        }
 
-				if (mMatchTags.size() > 0) {
-					add = false;
+        if (mMatchTags.size() > 0) {
+          add = false;
 
-					for (String tag : tags) {
-						if (mMatchTags.contains(tag)) {
-							add = true;
-							break;
-						}
-					}
-				}
+          for (String tag : tags) {
+            if (mMatchTags.contains(tag)) {
+              add = true;
+              break;
+            }
+          }
+        }
 
-				if (!add) {
-					return;
-				}
+        if (!add) {
+          return;
+        }
 
-				IterMap<String, String> attributeMap = 
-						getAttributes(splitter, tokens);
+        IterMap<String, String> attributeMap = getAttributes(splitter, tokens);
 
-				// Create the gene
+        // Create the gene
 
-				Gene gene = addAttributes(GeneType.TRANSCRIPT,
-						GenomicRegion.create(chr, start, end, strand),
-						attributeMap);
-				
-				
+        Gene gene = addAttributes(GeneType.TRANSCRIPT, GenomicRegion.create(chr, start, end, strand), attributeMap);
 
-				if (containsLevel(GeneType.TRANSCRIPT)) {
-					genes.add(gene);
-				}
+        if (containsLevel(GeneType.TRANSCRIPT)) {
+          genes.add(gene);
+        }
 
-				if (hasExonLevel || mKeepExons) {
-					List<Integer> starts = 
-							TextUtils.splitInts(tokens.get(5), TextUtils.SEMI_COLON_DELIMITER);
+        if (hasExonLevel || mKeepExons) {
+          List<Integer> starts = TextUtils.splitInts(tokens.get(5), TextUtils.SEMI_COLON_DELIMITER);
 
-					List<Integer> ends = 
-							TextUtils.splitInts(tokens.get(6), TextUtils.SEMI_COLON_DELIMITER);
+          List<Integer> ends = TextUtils.splitInts(tokens.get(6), TextUtils.SEMI_COLON_DELIMITER);
 
-					for (int i = 0; i < starts.size(); ++i) {
-						// Again correct for the ucsc
-						GenomicRegion region = GenomicRegion.create(chr, 
-								starts.get(i), 
-								ends.get(i), 
-								strand);
-						
-						Gene exon = addAttributes(GeneType.EXON, region, attributeMap);
+          for (int i = 0; i < starts.size(); ++i) {
+            // Again correct for the ucsc
+            GenomicRegion region = GenomicRegion.create(chr, starts.get(i), ends.get(i), strand);
 
-						if (mKeepExons) {
-							if (gene != null) {
-								gene.add(exon);
-							}
-						}
+            Gene exon = addAttributes(GeneType.EXON, region, attributeMap);
 
-						if (hasExonLevel) {
-							exon.setParent(gene);
+            if (mKeepExons) {
+              if (gene != null) {
+                gene.add(exon);
+              }
+            }
 
-							genes.add(exon);
-						}
-					}
-				}
+            if (hasExonLevel) {
+              exon.setParent(gene);
 
-				if (has5pUtrLevel) {
-					processUTR(tokens, gene, attributeMap, 7, GeneType.UTR_5P, genes);
-				}
+              genes.add(exon);
+            }
+          }
+        }
 
-				if (has3pUtrLevel) {
-					processUTR(tokens, gene, attributeMap, 10, GeneType.UTR_3P, genes);
-				}
-			}});
-	}
+        if (has5pUtrLevel) {
+          processUTR(tokens, gene, attributeMap, 7, GeneType.UTR_5P, genes);
+        }
 
-	private static void processUTR(List<String> tokens,
-			Gene gene,
-			IterMap<String, String> attributeMap,
-			int offset,
-			GeneType type,
-			Genes ret) {
+        if (has3pUtrLevel) {
+          processUTR(tokens, gene, attributeMap, 10, GeneType.UTR_3P, genes);
+        }
+      }
+    });
+  }
 
-		int count = Integer.parseInt(tokens.get(offset));
+  private static void processUTR(List<String> tokens, Gene gene, IterMap<String, String> attributeMap, int offset,
+      GeneType type, Genes ret) {
 
-		if (count == 0) {
-			return;
-		}
+    int count = Integer.parseInt(tokens.get(offset));
 
-		Splitter splitter = Splitter.onSC();
-		
-		List<Integer> starts = splitter
-				.stream(tokens.get(offset + 1))
-				.asInt()
-				.toList(); // TextUtils.splitInts(tokens.get(offset + 1), TextUtils.SEMI_COLON_DELIMITER);
+    if (count == 0) {
+      return;
+    }
 
-		List<Integer> ends = splitter
-				.stream(tokens.get(offset + 2))
-				.asInt()
-				.toList(); //TextUtils.splitInts(tokens.get(offset + 2), TextUtils.SEMI_COLON_DELIMITER);
+    Splitter splitter = Splitter.onSC();
 
-		for (int i = 0; i < starts.size(); ++i) {
-			GenomicRegion region = GenomicRegion.create(gene.mChr, 
-					starts.get(i), 
-					ends.get(i), 
-					gene.mStrand);
+    List<Integer> starts = splitter.stream(tokens.get(offset + 1)).asInt().toList(); // TextUtils.splitInts(tokens.get(offset
+                                                                                     // + 1),
+                                                                                     // TextUtils.SEMI_COLON_DELIMITER);
 
-			Gene g = addAttributes(type, region, attributeMap);
+    List<Integer> ends = splitter.stream(tokens.get(offset + 2)).asInt().toList(); // TextUtils.splitInts(tokens.get(offset
+                                                                                   // + 2),
+                                                                                   // TextUtils.SEMI_COLON_DELIMITER);
 
-			g.setParent(gene);
+    for (int i = 0; i < starts.size(); ++i) {
+      GenomicRegion region = GenomicRegion.create(gene.mChr, starts.get(i), ends.get(i), gene.mStrand);
 
-			ret.add(g);
-		}
-	}
+      Gene g = addAttributes(type, region, attributeMap);
 
-	@Override
-	public Map<String, Set<String>> idMap(Path file, 
-			BufferedReader reader,
-			String id1,
-			String id2) throws IOException {
-		LOG.info("Creating id map from GTB2 file {}, levels: {}...", file, mLevels);
+      g.setParent(gene);
 
+      ret.add(g);
+    }
+  }
 
-		Map<String, Set<String>> ret = 
-				DefaultTreeMap.create(new TreeSetCreator<String>());
+  @Override
+  public Map<String, Set<String>> idMap(Path file, BufferedReader reader, String id1, String id2) throws IOException {
+    LOG.info("Creating id map from GTB2 file {}, levels: {}...", file, mLevels);
 
-		String line;
-		List<String> tokens;
+    Map<String, Set<String>> ret = DefaultTreeMap.create(new TreeSetCreator<String>());
 
-		// Skip header
-		reader.readLine();
+    String line;
+    List<String> tokens;
 
-		Splitter splitter = Splitter.on(';');
+    // Skip header
+    reader.readLine();
 
+    Splitter splitter = Splitter.on(';');
 
-		while ((line = reader.readLine()) != null) {
-			if (Io.isEmptyLine(line)) {
-				continue;
-			}
+    while ((line = reader.readLine()) != null) {
+      if (Io.isEmptyLine(line)) {
+        continue;
+      }
 
-			boolean add = true;
+      boolean add = true;
 
-			tokens = Splitter.onTab().text(line);
+      tokens = Splitter.onTab().text(line);
 
-			Chromosome chr = ChromosomeService.getInstance().guess(file, tokens.get(0));
+      Chromosome chr = ChromosomeService.getInstance().guess(file, tokens.get(0));
 
-			// Skip random and unofficial chromosomes
-			if (chr.toString().contains("_")) {
-				continue;
-			}
+      // Skip random and unofficial chromosomes
+      if (chr.toString().contains("_")) {
+        continue;
+      }
 
-			List<String> tags = getTags(splitter, tokens);
+      List<String> tags = getTags(splitter, tokens);
 
-			if (mExcludeTags.size() > 0) {
-				for (String tag : tags) {
-					if (mExcludeTags.contains(tag)) {
-						add = false;
-						break;
-					}
-				}
-			}
+      if (mExcludeTags.size() > 0) {
+        for (String tag : tags) {
+          if (mExcludeTags.contains(tag)) {
+            add = false;
+            break;
+          }
+        }
+      }
 
-			if (mMatchTags.size() > 0) {
-				add = false;
+      if (mMatchTags.size() > 0) {
+        add = false;
 
-				for (String tag : tags) {
-					if (mMatchTags.contains(tag)) {
-						add = true;
-						break;
-					}
-				}
-			}
+        for (String tag : tags) {
+          if (mMatchTags.contains(tag)) {
+            add = true;
+            break;
+          }
+        }
+      }
 
-			if (!add) {
-				continue;
-			}
+      if (!add) {
+        continue;
+      }
 
-			IterMap<String, String> attributeMap = 
-					getAttributes(splitter, tokens);
+      IterMap<String, String> attributeMap = getAttributes(splitter, tokens);
 
-			String name1 = attributeMap.get(id1);
-			String name2 = attributeMap.get(id2);
+      String name1 = attributeMap.get(id1);
+      String name2 = attributeMap.get(id2);
 
-			//System.err.println("id " + id1 + " " + name1 + " " + id2 + " " + name2);
+      // System.err.println("id " + id1 + " " + name1 + " " + id2 + " " + name2);
 
-			if (name1 != null && name2 != null) {
-				ret.get(name1).add(name2);
-			}	
-		}
+      if (name1 != null && name2 != null) {
+        ret.get(name1).add(name2);
+      }
+    }
 
-		return ret;
-	}
+    return ret;
+  }
 
-	@Override
-	public GeneParser create(GeneParser parser) {
-		return new GTB2Parser(parser);
-	}
+  @Override
+  public GeneParser create(GeneParser parser) {
+    return new GTB2Parser(parser);
+  }
 
-	private static IterMap<String, String> getAttributes(Splitter splitter, 
-			final List<String> tokens) {
-		return getAttributes(splitter, tokens.get(13));
-	}
+  private static IterMap<String, String> getAttributes(Splitter splitter, final List<String> tokens) {
+    return getAttributes(splitter, tokens.get(13));
+  }
 
-	private static List<String> getTags(Splitter splitter, final List<String> tokens) {
-		return TextUtils.removeNA(splitter.text(tokens.get(14)));
-	}
+  private static List<String> getTags(Splitter splitter, final List<String> tokens) {
+    return TextUtils.removeNA(splitter.text(tokens.get(14)));
+  }
 
 }

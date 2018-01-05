@@ -29,8 +29,6 @@ package org.jebtk.bioinformatics.genomic;
 
 import org.jebtk.core.model.ItemModel;
 
-
-
 // TODO: Auto-generated Javadoc
 /**
  * A model for shared genomic regions.
@@ -39,9 +37,9 @@ import org.jebtk.core.model.ItemModel;
  *
  */
 public class GenomicRegionModel extends ItemModel<GenomicRegion> {
-	
-	/**
-	 * The constant serialVersionUID.
-	 */
-	private static final long serialVersionUID = 1L;
+
+  /**
+   * The constant serialVersionUID.
+   */
+  private static final long serialVersionUID = 1L;
 }

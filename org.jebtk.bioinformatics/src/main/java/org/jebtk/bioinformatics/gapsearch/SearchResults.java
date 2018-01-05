@@ -41,69 +41,71 @@ import org.jebtk.core.collections.UniqueArrayList;
 /**
  * The class GappedSearchFeatures.
  *
- * @param <T> the generic type
+ * @param <T>
+ *          the generic type
  */
 public class SearchResults<T> implements Iterable<GenomicRegion> {
-	
-	public static final SearchResults<Object> EMPTY_RESULTS = 
-			new SearchResults<Object>();
-	
-	@SuppressWarnings("unchecked")
-	public static final <T> SearchResults<T> emptyResults() {
-		return (SearchResults<T>)EMPTY_RESULTS;
-	}
-	
-	/**
-	 * The member features.
-	 */
-	private Map<GenomicRegion, Set<T>> mFeatures = 
-			DefaultTreeMap.create(new TreeSetCreator<T>());
-	
-	/**
-	 * Adds the.
-	 *
-	 * @param feature the feature
-	 */
-	public void add(GenomicRegion region, T feature) {
-		mFeatures.get(region).add(feature);
-	}
-	
-	public Set<T> getValues(GenomicRegion region) {
-		return mFeatures.get(region);
-	}
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Iterable#iterator()
-	 */
-	@Override
-	public Iterator<GenomicRegion> iterator() {
-		return mFeatures.keySet().iterator();
-	}
 
-	/**
-	 * Size.
-	 *
-	 * @return the int
-	 */
-	public int size() {
-		return mFeatures.size();
-	}
-	
-	public List<T> toList() {
-		List<T> ret = new UniqueArrayList<T>(mFeatures.size());
-		
-		for (GenomicRegion r : this) {
-			for (T t : this.getValues(r)) {
-				ret.add(t);
-			}
-		}
-		
-		return ret;
-	}
+  public static final SearchResults<Object> EMPTY_RESULTS = new SearchResults<Object>();
 
-	public void addAll(SearchResults<T> s) {
-		for (GenomicRegion r : s) {
-			mFeatures.get(r).addAll(s.mFeatures.get(r));
-		}
-	}
+  @SuppressWarnings("unchecked")
+  public static final <T> SearchResults<T> emptyResults() {
+    return (SearchResults<T>) EMPTY_RESULTS;
+  }
+
+  /**
+   * The member features.
+   */
+  private Map<GenomicRegion, Set<T>> mFeatures = DefaultTreeMap.create(new TreeSetCreator<T>());
+
+  /**
+   * Adds the.
+   *
+   * @param feature
+   *          the feature
+   */
+  public void add(GenomicRegion region, T feature) {
+    mFeatures.get(region).add(feature);
+  }
+
+  public Set<T> getValues(GenomicRegion region) {
+    return mFeatures.get(region);
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Iterable#iterator()
+   */
+  @Override
+  public Iterator<GenomicRegion> iterator() {
+    return mFeatures.keySet().iterator();
+  }
+
+  /**
+   * Size.
+   *
+   * @return the int
+   */
+  public int size() {
+    return mFeatures.size();
+  }
+
+  public List<T> toList() {
+    List<T> ret = new UniqueArrayList<T>(mFeatures.size());
+
+    for (GenomicRegion r : this) {
+      for (T t : this.getValues(r)) {
+        ret.add(t);
+      }
+    }
+
+    return ret;
+  }
+
+  public void addAll(SearchResults<T> s) {
+    for (GenomicRegion r : s) {
+      mFeatures.get(r).addAll(s.mFeatures.get(r));
+    }
+  }
 }

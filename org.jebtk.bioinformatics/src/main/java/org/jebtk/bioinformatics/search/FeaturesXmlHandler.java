@@ -34,55 +34,52 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-
-
-
 // TODO: Auto-generated Javadoc
 /**
  * The class FeaturesXmlHandler.
  */
 public class FeaturesXmlHandler extends DefaultHandler {
-	
-	/**
-	 * The current genome.
-	 */
-	private String currentGenome = Genome.HG18;
-	
-	/**
-	 * The group.
-	 */
-	private String group;
 
-    /* (non-Javadoc)
-     * @see org.xml.sax.helpers.DefaultHandler#startElement(java.lang.String, java.lang.String, java.lang.String, org.xml.sax.Attributes)
-     */
-    public final void startElement(String uri,
-    		String localName,
-    		String qName,
-    		Attributes attributes) throws SAXException {
+  /**
+   * The current genome.
+   */
+  private String currentGenome = Genome.HG18;
 
-    	if (qName.equals("genome")) {
-    		if (attributes.getValue("name").equals("hg19")) {
-    			currentGenome = Genome.HG19;
-    		} else {
-    			currentGenome = Genome.HG18;
-    		}
-        } else if (qName.equals("group")) {
-        	group = attributes.getValue("name");
-        } else if (qName.equals("feature")) {
+  /**
+   * The group.
+   */
+  private String group;
 
-    		String name = attributes.getValue("name");
-    		String filePrefix = attributes.getValue("file");
-    		String description = attributes.getValue("description");
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.xml.sax.helpers.DefaultHandler#startElement(java.lang.String,
+   * java.lang.String, java.lang.String, org.xml.sax.Attributes)
+   */
+  public final void startElement(String uri, String localName, String qName, Attributes attributes)
+      throws SAXException {
 
-    		try {
-				FeaturesServer.getInstance().addCommonRegionBinarySearch(currentGenome, group, name, description, filePrefix);
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			}
-        }
-    	else {
-    		// do nothing
-    	}
+    if (qName.equals("genome")) {
+      if (attributes.getValue("name").equals("hg19")) {
+        currentGenome = Genome.HG19;
+      } else {
+        currentGenome = Genome.HG18;
+      }
+    } else if (qName.equals("group")) {
+      group = attributes.getValue("name");
+    } else if (qName.equals("feature")) {
+
+      String name = attributes.getValue("name");
+      String filePrefix = attributes.getValue("file");
+      String description = attributes.getValue("description");
+
+      try {
+        FeaturesServer.getInstance().addCommonRegionBinarySearch(currentGenome, group, name, description, filePrefix);
+      } catch (FileNotFoundException e) {
+        e.printStackTrace();
+      }
+    } else {
+      // do nothing
     }
+  }
 }

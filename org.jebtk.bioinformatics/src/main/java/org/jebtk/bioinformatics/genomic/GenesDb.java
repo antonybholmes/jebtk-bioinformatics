@@ -40,23 +40,29 @@ import java.util.List;
  */
 public abstract class GenesDb {
 
-	/**
-	 * Should return all variants of a gene.
-	 *
-	 * @param id the id
-	 * @return the genes
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 * @throws ParseException the parse exception
-	 */
-	public abstract List<Gene> getGenes(String id) throws IOException, ParseException;
+  /**
+   * Should return all variants of a gene.
+   *
+   * @param id
+   *          the id
+   * @return the genes
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   * @throws ParseException
+   *           the parse exception
+   */
+  public abstract List<Gene> getGenes(String id) throws IOException, ParseException;
 
-	/**
-	 * Should return the main gene transcript associated with a gene.
-	 *
-	 * @param id the id
-	 * @return the main gene
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 * @throws ParseException the parse exception
-	 */
-	public abstract Gene getMainGene(String id) throws IOException, ParseException;
+  /**
+   * Should return the main gene transcript associated with a gene.
+   *
+   * @param id
+   *          the id
+   * @return the main gene
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   * @throws ParseException
+   *           the parse exception
+   */
+  public abstract Gene getMainGene(String id) throws IOException, ParseException;
 }

@@ -39,8 +39,6 @@ import org.jebtk.core.io.Io;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
-
 // TODO: Auto-generated Javadoc
 /**
  * Server for genome feature annotations.
@@ -50,64 +48,65 @@ import org.slf4j.LoggerFactory;
  */
 public class Cytobands {
 
-	
-	/**
-	 * The constant LOG.
-	 */
-	private static final Logger LOG = 
-			LoggerFactory.getLogger(Cytobands.class);
+  /**
+   * The constant LOG.
+   */
+  private static final Logger LOG = LoggerFactory.getLogger(Cytobands.class);
 
-	/**
-	 * The member cytobands map.
-	 */
-	private Map<Chromosome, List<Cytoband>> mCytobandsMap = 
-			new HashMap<Chromosome, List<Cytoband>>();
-	
-	/**
-	 * Instantiates a new cytobands.
-	 * @param genome 
-	 *
-	 * @param reader the reader
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public Cytobands(String genome, BufferedReader reader) throws IOException {
-		
-		String line;
+  /**
+   * The member cytobands map.
+   */
+  private Map<Chromosome, List<Cytoband>> mCytobandsMap = new HashMap<Chromosome, List<Cytoband>>();
 
-		//List<RefSeqGene> genes = new ArrayList<RefSeqGene>();
-		
-		//Map<Chromosome, Set<Integer>> positionMap = 
-		//		new HashMap<Chromosome, Set<Integer>>();
+  /**
+   * Instantiates a new cytobands.
+   * 
+   * @param genome
+   *
+   * @param reader
+   *          the reader
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   */
+  public Cytobands(String genome, BufferedReader reader) throws IOException {
 
-		try {
-			// skip header
-			line = reader.readLine();
-			
-			while ((line = reader.readLine()) != null) {
-				if (Io.isEmptyLine(line)) {
-					continue;
-				}
-				
-				Cytoband cytoband = Cytoband.parse(genome, line);
-				
-				if (!mCytobandsMap.containsKey(cytoband.getChr())) {
-					mCytobandsMap.put(cytoband.getChr(), new ArrayList<Cytoband>());
-				}
-				
-				mCytobandsMap.get(cytoband.getChr()).add(cytoband);
-			}
-		} finally {
-			reader.close();
-		}
-	}
-	
-	/**
-	 * Gets the cytobands.
-	 *
-	 * @param chr the chr
-	 * @return the cytobands
-	 */
-	public List<Cytoband> getCytobands(Chromosome chr) {
-		return mCytobandsMap.get(chr);
-	}
+    String line;
+
+    // List<RefSeqGene> genes = new ArrayList<RefSeqGene>();
+
+    // Map<Chromosome, Set<Integer>> positionMap =
+    // new HashMap<Chromosome, Set<Integer>>();
+
+    try {
+      // skip header
+      line = reader.readLine();
+
+      while ((line = reader.readLine()) != null) {
+        if (Io.isEmptyLine(line)) {
+          continue;
+        }
+
+        Cytoband cytoband = Cytoband.parse(genome, line);
+
+        if (!mCytobandsMap.containsKey(cytoband.getChr())) {
+          mCytobandsMap.put(cytoband.getChr(), new ArrayList<Cytoband>());
+        }
+
+        mCytobandsMap.get(cytoband.getChr()).add(cytoband);
+      }
+    } finally {
+      reader.close();
+    }
+  }
+
+  /**
+   * Gets the cytobands.
+   *
+   * @param chr
+   *          the chr
+   * @return the cytobands
+   */
+  public List<Cytoband> getCytobands(Chromosome chr) {
+    return mCytobandsMap.get(chr);
+  }
 }

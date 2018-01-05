@@ -45,60 +45,66 @@ import org.jebtk.core.network.UrlBuilder;
  *
  * @author Antony Holmes Holmes
  */
-public class ConservationAssemblyWeb extends ConservationAssembly {	
-	/**
-	 * The member url.
-	 */
-	private UrlBuilder mUrl;
-	
-	/**
-	 * The member score url.
-	 */
-	private UrlBuilder mScoreUrl;
-	
-	/**
-	 * The member parser.
-	 */
-	private JsonParser mParser;
+public class ConservationAssemblyWeb extends ConservationAssembly {
+  /**
+   * The member url.
+   */
+  private UrlBuilder mUrl;
 
-	/**
-	 * Instantiates a new conservation assembly web.
-	 *
-	 * @param url the url
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public ConservationAssemblyWeb(URL url) throws IOException {
-		mUrl = new UrlBuilder(url);
-		
-		mScoreUrl = new UrlBuilder(mUrl).resolve("scores");
-		
-		mParser = new JsonParser();
-	}
-	
-	/* (non-Javadoc)
-	 * @see edu.columbia.rdf.lib.bioinformatics.conservation.ConservationAssembly#getScores(edu.columbia.rdf.lib.bioinformatics.genome.GenomicRegion)
-	 */
-	@Override
-	public List<Double> getScores(GenomicRegion region) throws IOException, ParseException {
-		List<Double> scores = new ArrayList<Double>();
-		
-		try {
-			URL url = new UrlBuilder(mScoreUrl).resolve(region.getChr().toString()).resolve(region.getStart()).resolve(region.getEnd()).toUrl();
-		
-			//System.err.println(url);
-			
-			Json json = mParser.parse(url);
-			
-			Json scoresJson = json.get(0).get("scores");
-			
-			for (int i = 0; i < scoresJson.size(); ++i) {
-				scores.add(scoresJson.get(i).getAsDouble());
-			}
-			
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		}
+  /**
+   * The member score url.
+   */
+  private UrlBuilder mScoreUrl;
 
-		return scores;
-	}
+  /**
+   * The member parser.
+   */
+  private JsonParser mParser;
+
+  /**
+   * Instantiates a new conservation assembly web.
+   *
+   * @param url
+   *          the url
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   */
+  public ConservationAssemblyWeb(URL url) throws IOException {
+    mUrl = new UrlBuilder(url);
+
+    mScoreUrl = new UrlBuilder(mUrl).resolve("scores");
+
+    mParser = new JsonParser();
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see edu.columbia.rdf.lib.bioinformatics.conservation.ConservationAssembly#
+   * getScores(edu.columbia.rdf.lib.bioinformatics.genome.GenomicRegion)
+   */
+  @Override
+  public List<Double> getScores(GenomicRegion region) throws IOException, ParseException {
+    List<Double> scores = new ArrayList<Double>();
+
+    try {
+      URL url = new UrlBuilder(mScoreUrl).resolve(region.getChr().toString()).resolve(region.getStart())
+          .resolve(region.getEnd()).toUrl();
+
+      // System.err.println(url);
+
+      Json json = mParser.parse(url);
+
+      Json scoresJson = json.get(0).get("scores");
+
+      for (int i = 0; i < scoresJson.size(); ++i) {
+        scores.add(scoresJson.get(i).getAsDouble());
+      }
+
+    } catch (MalformedURLException e) {
+      e.printStackTrace();
+    }
+
+    return scores;
+  }
 }

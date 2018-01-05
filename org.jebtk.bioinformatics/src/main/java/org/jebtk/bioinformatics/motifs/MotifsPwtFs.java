@@ -48,138 +48,142 @@ import org.xml.sax.SAXException;
  */
 public class MotifsPwtFs extends MotifsFs {
 
-	/**
-	 * Instantiates a new motifs file.
-	 *
-	 * @param dir the dir
-	 */
-	public MotifsPwtFs(Path dir) {
-		super(dir);
-	}
+  /**
+   * Instantiates a new motifs file.
+   *
+   * @param dir
+   *          the dir
+   */
+  public MotifsPwtFs(Path dir) {
+    super(dir);
+  }
 
-	/* (non-Javadoc)
-	 * @see org.jebtk.bioinformatics.motifs.MotifsFs#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object o) {
-		if (o instanceof MotifsPwtFs) {
-			return compareTo((MotifsPwtFs)o) == 0;
-		} else {
-			return false;
-		}
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.jebtk.bioinformatics.motifs.MotifsFs#equals(java.lang.Object)
+   */
+  @Override
+  public boolean equals(Object o) {
+    if (o instanceof MotifsPwtFs) {
+      return compareTo((MotifsPwtFs) o) == 0;
+    } else {
+      return false;
+    }
+  }
 
-	/* (non-Javadoc)
-	 * @see edu.columbia.rdf.lib.bioinformatics.motifs.MotifsDB#createTree(org.abh.lib.tree.TreeRootNode, java.lang.String)
-	 */
-	@Override
-	public void createTree(TreeNode<Motif> root, 
-			List<String> terms,
-			boolean inList,
-			boolean exactMatch,
-			boolean caseSensitive) throws Exception {
-		//TreeRootNode<Motif> root = new TreeRootNode<Motif>();
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * edu.columbia.rdf.lib.bioinformatics.motifs.MotifsDB#createTree(org.abh.lib.
+   * tree.TreeRootNode, java.lang.String)
+   */
+  @Override
+  public void createTree(TreeNode<Motif> root, List<String> terms, boolean inList, boolean exactMatch,
+      boolean caseSensitive) throws Exception {
+    // TreeRootNode<Motif> root = new TreeRootNode<Motif>();
 
-		createTreeDir(mDir, root, terms, inList, exactMatch, caseSensitive);
+    createTreeDir(mDir, root, terms, inList, exactMatch, caseSensitive);
 
-		//return root;
-	}
+    // return root;
+  }
 
-	/**
-	 * Creates the tree dir.
-	 *
-	 * @param root the root
-	 * @param rootNode the root node
-	 * @param terms the terms
-	 * @param inList the in list
-	 * @param exactMatch the exact match
-	 * @param caseSensitive the case sensitive
-	 * @return the int
-	 * @throws Exception the exception
-	 */
-	private static void createTreeDir(Path root, 
-			TreeNode<Motif> rootNode,
-			List<String> terms,
-			boolean inList,
-			boolean exactMatch,
-			boolean caseSensitive) throws Exception {
-		if (!FileUtils.exists(root)) {
-			return;
-		}
+  /**
+   * Creates the tree dir.
+   *
+   * @param root
+   *          the root
+   * @param rootNode
+   *          the root node
+   * @param terms
+   *          the terms
+   * @param inList
+   *          the in list
+   * @param exactMatch
+   *          the exact match
+   * @param caseSensitive
+   *          the case sensitive
+   * @return the int
+   * @throws Exception
+   *           the exception
+   */
+  private static void createTreeDir(Path root, TreeNode<Motif> rootNode, List<String> terms, boolean inList,
+      boolean exactMatch, boolean caseSensitive) throws Exception {
+    if (!FileUtils.exists(root)) {
+      return;
+    }
 
-		List<Path> files = FileUtils.ls(root, false, true);
+    List<Path> files = FileUtils.ls(root, false, true);
 
-		for (Path file : files) {
-			if (!PathUtils.getName(file).endsWith("pwt.gz")) {
-				continue;
-			}
+    for (Path file : files) {
+      if (!PathUtils.getName(file).endsWith("pwt.gz")) {
+        continue;
+      }
 
-			Motifs motifs = parseMotifPwt(file);
+      Motifs motifs = parseMotifPwt(file);
 
-			filter(motifs,
-					rootNode,
-					terms,
-					inList,
-					exactMatch,
-					caseSensitive);
-		}
-	}
+      filter(motifs, rootNode, terms, inList, exactMatch, caseSensitive);
+    }
+  }
 
-	
+  /**
+   * Parses the motif xml.
+   *
+   * @param file
+   *          the file
+   * @return the motifs
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   * @throws ParserConfigurationException
+   *           the parser configuration exception
+   * @throws SAXException
+   *           the SAX exception
+   */
+  public static Motifs parseMotifPwt(Path file) throws IOException, ParserConfigurationException, SAXException {
+    BufferedReader is = FileUtils.newBufferedReader(file);
 
-	/**
-	 * Parses the motif xml.
-	 *
-	 * @param file the file
-	 * @return the motifs
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 * @throws ParserConfigurationException the parser configuration exception
-	 * @throws SAXException the SAX exception
-	 */
-	public static Motifs parseMotifPwt(Path file) throws IOException, ParserConfigurationException, SAXException {
-		BufferedReader is = FileUtils.newBufferedReader(file);
+    List<Motif> motifs = new ArrayList<Motif>();
 
-		List<Motif> motifs = new ArrayList<Motif>();
+    String db = null;
 
-		String db = null;
+    try {
+      // Skip 'db:' prefix
+      db = is.readLine().substring(3);
 
-		try {
-			// Skip 'db:' prefix
-			db = is.readLine().substring(3);
-			
-			// Skip header
-			is.readLine();
+      // Skip header
+      is.readLine();
 
-			String line;
+      String line;
 
-			while ((line = is.readLine()) != null) {
-				List<String> tokens = TextUtils.tabSplit(line);
+      while ((line = is.readLine()) != null) {
+        List<String> tokens = TextUtils.tabSplit(line);
 
-				String id = tokens.get(0);
-				String name = tokens.get(1);
-				int l = Integer.parseInt(tokens.get(2));
-				List<String> bases = TextUtils.scSplit(tokens.get(3));
+        String id = tokens.get(0);
+        String name = tokens.get(1);
+        int l = Integer.parseInt(tokens.get(2));
+        List<String> bases = TextUtils.scSplit(tokens.get(3));
 
-				List<BaseCounts> counts = new ArrayList<BaseCounts>(l);
+        List<BaseCounts> counts = new ArrayList<BaseCounts>(l);
 
-				for (String base : bases) {
-					List<String> values = TextUtils.commaSplit(base);
+        for (String base : bases) {
+          List<String> values = TextUtils.commaSplit(base);
 
-					double a = Double.parseDouble(values.get(0));
-					double c = Double.parseDouble(values.get(1));
-					double g = Double.parseDouble(values.get(2));
-					double t = Double.parseDouble(values.get(3));
+          double a = Double.parseDouble(values.get(0));
+          double c = Double.parseDouble(values.get(1));
+          double g = Double.parseDouble(values.get(2));
+          double t = Double.parseDouble(values.get(3));
 
-					counts.add(new BaseCounts(a, c, g, t, true));
-				}
+          counts.add(new BaseCounts(a, c, g, t, true));
+        }
 
-				motifs.add(new Motif(id, name, name, db, counts));
-			}
+        motifs.add(new Motif(id, name, name, db, counts));
+      }
 
-		} finally {
-			is.close();
-		}
+    } finally {
+      is.close();
+    }
 
-		return new Motifs(db, motifs);
-	}
+    return new Motifs(db, motifs);
+  }
 }

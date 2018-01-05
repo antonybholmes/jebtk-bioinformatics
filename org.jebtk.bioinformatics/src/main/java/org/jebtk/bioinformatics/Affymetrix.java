@@ -32,9 +32,9 @@ package org.jebtk.bioinformatics;
  * The class Affymetrix.
  */
 public class Affymetrix {
-	
-	/**
-	 * The constant GENE_DELIMITER.
-	 */
-	public static final String GENE_DELIMITER = " /// ";
+
+  /**
+   * The constant GENE_DELIMITER.
+   */
+  public static final String GENE_DELIMITER = " /// ";
 }

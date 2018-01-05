@@ -34,8 +34,6 @@ import java.io.IOException;
 
 import org.jebtk.core.model.ListModel;
 
-
-
 // TODO: Auto-generated Javadoc
 /**
  * A model for shared bed graphs.
@@ -44,28 +42,31 @@ import org.jebtk.core.model.ListModel;
  *
  */
 public class UCSCTracksModel extends ListModel<UCSCTrack> {
-	
-	/**
-	 * The constant serialVersionUID.
-	 */
-	private static final long serialVersionUID = 1L;
 
-	/**
-	 * Write.
-	 *
-	 * @param model the model
-	 * @param file the file
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public static void write(UCSCTracksModel model, File file) throws IOException {
-		BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-		
-		try {
-			for (UCSCTrack track : model) {
-				writer.write(track.toString());
-			}
-		} finally {
-			writer.close();
-		}
-	}
+  /**
+   * The constant serialVersionUID.
+   */
+  private static final long serialVersionUID = 1L;
+
+  /**
+   * Write.
+   *
+   * @param model
+   *          the model
+   * @param file
+   *          the file
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   */
+  public static void write(UCSCTracksModel model, File file) throws IOException {
+    BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+
+    try {
+      for (UCSCTrack track : model) {
+        writer.write(track.toString());
+      }
+    } finally {
+      writer.close();
+    }
+  }
 }

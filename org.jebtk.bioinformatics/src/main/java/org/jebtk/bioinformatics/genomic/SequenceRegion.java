@@ -32,7 +32,6 @@ import java.util.List;
 
 import org.jebtk.bioinformatics.dna.Sequence;
 
-
 // TODO: Auto-generated Javadoc
 /**
  * Describes a region of a genome and its sequence.
@@ -42,104 +41,111 @@ import org.jebtk.bioinformatics.dna.Sequence;
  */
 public class SequenceRegion extends GenomicRegion {
 
-	/** The m sequence. */
-	private Sequence mSequence;
+  /** The m sequence. */
+  private Sequence mSequence;
 
-	/**
-	 * Instantiates a new sequence region.
-	 *
-	 * @param chr the chr
-	 * @param start the start
-	 * @param end the end
-	 * @param sequence the sequence
-	 */
-	public SequenceRegion(Chromosome chr, int start, int end, Sequence sequence) {
-		this(new GenomicRegion(chr, start, end), sequence);
-	}
+  /**
+   * Instantiates a new sequence region.
+   *
+   * @param chr
+   *          the chr
+   * @param start
+   *          the start
+   * @param end
+   *          the end
+   * @param sequence
+   *          the sequence
+   */
+  public SequenceRegion(Chromosome chr, int start, int end, Sequence sequence) {
+    this(new GenomicRegion(chr, start, end), sequence);
+  }
 
-	/**
-	 * Instantiates a new sequence region.
-	 *
-	 * @param region the region
-	 * @param sequence the sequence
-	 */
-	public SequenceRegion(GenomicRegion region, Sequence sequence) {
-		super(region);
+  /**
+   * Instantiates a new sequence region.
+   *
+   * @param region
+   *          the region
+   * @param sequence
+   *          the sequence
+   */
+  public SequenceRegion(GenomicRegion region, Sequence sequence) {
+    super(region);
 
-		mSequence = sequence;
-	}
+    mSequence = sequence;
+  }
 
-	/**
-	 * Gets the region.
-	 *
-	 * @return the region
-	 */
-	public Sequence getSequence() {
-		return mSequence;
-	}
+  /**
+   * Gets the region.
+   *
+   * @return the region
+   */
+  public Sequence getSequence() {
+    return mSequence;
+  }
 
-	/**
-	 * Reverse complement a list of sequences.
-	 *
-	 * @param sequences the sequences
-	 * @return the list
-	 */
-	public static List<SequenceRegion> reverseComplementRegion(List<SequenceRegion> sequences) {
-		List<SequenceRegion> ret = new ArrayList<SequenceRegion>(sequences.size());
+  /**
+   * Reverse complement a list of sequences.
+   *
+   * @param sequences
+   *          the sequences
+   * @return the list
+   */
+  public static List<SequenceRegion> reverseComplementRegion(List<SequenceRegion> sequences) {
+    List<SequenceRegion> ret = new ArrayList<SequenceRegion>(sequences.size());
 
-		for (SequenceRegion sequence : sequences) {
-			ret.add(reverseComplement(sequence));
-		}
+    for (SequenceRegion sequence : sequences) {
+      ret.add(reverseComplement(sequence));
+    }
 
-		return ret;
-	}
+    return ret;
+  }
 
-	/**
-	 * Reverse complement.
-	 *
-	 * @param sequence the sequence
-	 * @return the sequence region
-	 */
-	public static SequenceRegion reverseComplement(SequenceRegion sequence) {
-		return new SequenceRegion(sequence, Sequence.reverseComplement(sequence.mSequence));
-	}
+  /**
+   * Reverse complement.
+   *
+   * @param sequence
+   *          the sequence
+   * @return the sequence region
+   */
+  public static SequenceRegion reverseComplement(SequenceRegion sequence) {
+    return new SequenceRegion(sequence, Sequence.reverseComplement(sequence.mSequence));
+  }
 
-	
+  /**
+   * Seq to index seq.
+   *
+   * @param <X>
+   *          the generic type
+   * @param seqs
+   *          the seqs
+   * @return the char[][]
+   */
+  public static <X extends SequenceRegion> char[][] seqToIndexSeq(List<X> seqs) {
+    char[][] ret = new char[seqs.size()][];
 
+    for (int i = 0; i < seqs.size(); ++i) {
+      ret[i] = seqs.get(i).getSequence().toArray();
+    }
 
-	
+    return ret;
+  }
 
-	/**
-	 * Seq to index seq.
-	 *
-	 * @param <X> the generic type
-	 * @param seqs the seqs
-	 * @return the char[][]
-	 */
-	public static <X extends SequenceRegion> char[][] seqToIndexSeq(List<X> seqs) {
-		char[][] ret = new char[seqs.size()][];
-		
-		for (int i = 0; i < seqs.size(); ++i) {
-			ret[i] = seqs.get(i).getSequence().toArray();
-		}
-		
-		return ret;
-	}
-	
-	/**
-	 * To index.
-	 *
-	 * @param <X> the generic type
-	 * @param seqs the seqs
-	 * @return the byte[][]
-	 */
-	public static <X extends SequenceRegion> byte[][] toIndex(List<X> seqs) {
-		byte[][] ret = new byte[seqs.size()][];
-		
-		for (int i = 0; i < seqs.size(); ++i) {
-			ret[i] = seqs.get(i).getSequence().toIndex();
-		}
-		
-		return ret;
-	}
+  /**
+   * To index.
+   *
+   * @param <X>
+   *          the generic type
+   * @param seqs
+   *          the seqs
+   * @return the byte[][]
+   */
+  public static <X extends SequenceRegion> byte[][] toIndex(List<X> seqs) {
+    byte[][] ret = new byte[seqs.size()][];
+
+    for (int i = 0; i < seqs.size(); ++i) {
+      ret[i] = seqs.get(i).getSequence().toIndex();
+    }
+
+    return ret;
+  }
 }

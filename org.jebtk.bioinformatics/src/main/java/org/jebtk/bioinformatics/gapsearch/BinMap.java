@@ -37,190 +37,191 @@ import java.util.Set;
 import org.jebtk.core.Range;
 import org.jebtk.core.collections.IterMap;
 
-
 // TODO: Auto-generated Javadoc
 /**
  * Use fixed size blocks to find features.
  *
  * @author Antony Holmes Holmes
- * @param <T> the generic type
+ * @param <T>
+ *          the generic type
  */
 public class BinMap<T> implements IterMap<Integer, T> {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+  /**
+   * 
+   */
+  private static final long serialVersionUID = 1L;
 
-	/**
-	 * The constant DEFAULT_BIN_SIZE.
-	 */
-	public static final int DEFAULT_BIN_SIZE = 10000;
+  /**
+   * The constant DEFAULT_BIN_SIZE.
+   */
+  public static final int DEFAULT_BIN_SIZE = 10000;
 
-	/**
-	 * A chromosome does not have more than 270 million bases
-	 */
-	public static final int MAX_BP = 270000000;
+  /**
+   * A chromosome does not have more than 270 million bases
+   */
+  public static final int MAX_BP = 270000000;
 
-	/**
-	 * The member bin size.
-	 */
-	protected final int mBinSize;
+  /**
+   * The member bin size.
+   */
+  protected final int mBinSize;
 
-	private Object[] mData;
-	
-	private class BinMapIter implements Iterator<Integer> {
+  private Object[] mData;
 
-		private int mC = 0;
-		
-		@Override
-		public boolean hasNext() {
-			return mC < mData.length;
-		}
+  private class BinMapIter implements Iterator<Integer> {
 
-		@Override
-		public Integer next() {
-			return mC++;
-		}
+    private int mC = 0;
 
-		@Override
-		public void remove() {
-			// TODO Auto-generated method stub
-			
-		}
-		
-	}
+    @Override
+    public boolean hasNext() {
+      return mC < mData.length;
+    }
 
-	/**
-	 * Instantiates a new fixed gap search.
-	 */
-	public BinMap() {
-		this(DEFAULT_BIN_SIZE);
-	}
+    @Override
+    public Integer next() {
+      return mC++;
+    }
 
-	/**
-	 * Instantiates a new fixed gap search.
-	 *
-	 * @param binSize the bin size
-	 */
-	public BinMap(int binSize) {
-		mBinSize = Math.max(1, binSize);
-		mData = new Object[MAX_BP / mBinSize];
-	}
+    @Override
+    public void remove() {
+      // TODO Auto-generated method stub
 
-	@Override
-	public void clear() {
-		Arrays.fill(mData, null);
-	}
+    }
 
-	@Override
-	public boolean containsKey(Object o) {
-		if (o instanceof Integer) {
-			return containsKey((Integer)o);
-		} else {
-			return false;
-		}
-	}
-	
-	public boolean containsKey(Integer start) {
-		return containsKey((int)start);
-	}
-	
-	public boolean containsKey(int start) {
-		return mData[start] != null;
-	}
+  }
 
-	@Override
-	public boolean containsValue(Object arg0) {
-		return false;
-	}
+  /**
+   * Instantiates a new fixed gap search.
+   */
+  public BinMap() {
+    this(DEFAULT_BIN_SIZE);
+  }
 
-	@Override
-	public Set<java.util.Map.Entry<Integer, T>> entrySet() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+  /**
+   * Instantiates a new fixed gap search.
+   *
+   * @param binSize
+   *          the bin size
+   */
+  public BinMap(int binSize) {
+    mBinSize = Math.max(1, binSize);
+    mData = new Object[MAX_BP / mBinSize];
+  }
 
-	@Override
-	public T get(Object o) {
-		if (o instanceof Integer) {
-			return get((Integer)o);
-		} else {
-			return null;
-		}
-	}
-	
-	public T get(Integer start) {
-		return get((int)start);
-	}
-	
-	@SuppressWarnings("unchecked")
-	public T get(int index) {
-		return (T)mData[index];
-	}
+  @Override
+  public void clear() {
+    Arrays.fill(mData, null);
+  }
 
-	@Override
-	public boolean isEmpty() {
-		return false;
-	}
+  @Override
+  public boolean containsKey(Object o) {
+    if (o instanceof Integer) {
+      return containsKey((Integer) o);
+    } else {
+      return false;
+    }
+  }
 
-	@Override
-	public Set<Integer> keySet() {
-		Set<Integer> ret = new HashSet<Integer>();
-		
-		for (int i : Range.create(mData.length)) {
-			if (mData[i] != null) {
-				ret.add(i);
-			}
-		}
-		
-		return ret;
-	}
+  public boolean containsKey(Integer start) {
+    return containsKey((int) start);
+  }
 
-	@Override
-	public T put(Integer index, T item) {
-		return put((int)index, item);
-	}
-	
-	public T put(int index, T item) {
-		mData[index] = item;
-		
-		return item;
-	}
-	
-	//private int getBin(int start) {
-	//	return start / mBinSize;
-	//}
+  public boolean containsKey(int start) {
+    return mData[start] != null;
+  }
 
-	@Override
-	public void putAll(Map<? extends Integer, ? extends T> arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+  @Override
+  public boolean containsValue(Object arg0) {
+    return false;
+  }
 
-	@Override
-	public T remove(Object arg0) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+  @Override
+  public Set<java.util.Map.Entry<Integer, T>> entrySet() {
+    // TODO Auto-generated method stub
+    return null;
+  }
 
-	@Override
-	public int size() {
-		return mData.length;
-	}
+  @Override
+  public T get(Object o) {
+    if (o instanceof Integer) {
+      return get((Integer) o);
+    } else {
+      return null;
+    }
+  }
 
-	@Override
-	public Collection<T> values() {
-		return null;
-	}
+  public T get(Integer start) {
+    return get((int) start);
+  }
 
-	@Override
-	public Iterator<Integer> iterator() {
-		return new BinMapIter();
-	}
+  @SuppressWarnings("unchecked")
+  public T get(int index) {
+    return (T) mData[index];
+  }
 
-	@Override
-	public Integer first() {
-		return iterator().next();
-	}
+  @Override
+  public boolean isEmpty() {
+    return false;
+  }
+
+  @Override
+  public Set<Integer> keySet() {
+    Set<Integer> ret = new HashSet<Integer>();
+
+    for (int i : Range.create(mData.length)) {
+      if (mData[i] != null) {
+        ret.add(i);
+      }
+    }
+
+    return ret;
+  }
+
+  @Override
+  public T put(Integer index, T item) {
+    return put((int) index, item);
+  }
+
+  public T put(int index, T item) {
+    mData[index] = item;
+
+    return item;
+  }
+
+  // private int getBin(int start) {
+  // return start / mBinSize;
+  // }
+
+  @Override
+  public void putAll(Map<? extends Integer, ? extends T> arg0) {
+    // TODO Auto-generated method stub
+
+  }
+
+  @Override
+  public T remove(Object arg0) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public int size() {
+    return mData.length;
+  }
+
+  @Override
+  public Collection<T> values() {
+    return null;
+  }
+
+  @Override
+  public Iterator<Integer> iterator() {
+    return new BinMapIter();
+  }
+
+  @Override
+  public Integer first() {
+    return iterator().next();
+  }
 }

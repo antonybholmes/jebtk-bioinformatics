@@ -20,26 +20,27 @@ package org.jebtk.bioinformatics.genomic;
  * The Class ChrSpeciesGuess guess the species from a name.
  */
 public class GenomeGuess {
-	
-	/**
-	 * Guess.
-	 *
-	 * @param id the id
-	 * @return the string
-	 */
-	public String guess(String id) {
-		String lid = id.toLowerCase();
-		
-		if (lid.contains("mm10")) {
-			return "mm10";
-		} else if (lid.contains("grcm38")) {
-			return "grcm38";
-		} else if (lid.contains("grch38")) {
-			return "grch38";
-		} else if (lid.contains("hg18")) {
-			return "hg18";
-		} else {
-			return "hg19";
-		}
-	}
+
+  /**
+   * Guess.
+   *
+   * @param id
+   *          the id
+   * @return the string
+   */
+  public String guess(String id) {
+    String lid = id.toLowerCase();
+
+    if (lid.contains("mm10")) {
+      return "mm10";
+    } else if (lid.contains("grcm38")) {
+      return "grcm38";
+    } else if (lid.contains("grch38")) {
+      return "grch38";
+    } else if (lid.contains("hg18")) {
+      return "hg18";
+    } else {
+      return "hg19";
+    }
+  }
 }

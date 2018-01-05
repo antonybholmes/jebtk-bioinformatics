@@ -40,215 +40,231 @@ import org.jebtk.core.io.FileUtils;
 import org.jebtk.core.io.Io;
 import org.jebtk.core.text.TextUtils;
 
-
-
-
 // TODO: Auto-generated Javadoc
 /**
  * The class FeaturesBasicSearch.
  */
 public class FeaturesBasicSearch extends AbstractFeaturesSearch {
-	//protected Map<Short, List<Feature>> allLocations =
-	//		new HashMap<Short, List<Feature>>();
+  // protected Map<Short, List<Feature>> allLocations =
+  // new HashMap<Short, List<Feature>>();
 
-	/**
-	 * The all locations.
-	 */
-	protected List<List<Feature>> allLocations =
-			new CopyOnWriteArrayList<List<Feature>>();
+  /**
+   * The all locations.
+   */
+  protected List<List<Feature>> allLocations = new CopyOnWriteArrayList<List<Feature>>();
 
-	/**
-	 * The member file.
-	 */
-	protected Path mFile;
-	
-	/**
-	 * The size.
-	 */
-	private int size = 0;
+  /**
+   * The member file.
+   */
+  protected Path mFile;
 
-	/**
-	 * Instantiates a new features basic search.
-	 *
-	 * @param name the name
-	 * @param description the description
-	 * @param file the file
-	 */
-	public FeaturesBasicSearch(String name, String description, Path file) {
-		super(name, description);
+  /**
+   * The size.
+   */
+  private int size = 0;
 
-		mFile = file;
-	}
+  /**
+   * Instantiates a new features basic search.
+   *
+   * @param name
+   *          the name
+   * @param description
+   *          the description
+   * @param file
+   *          the file
+   */
+  public FeaturesBasicSearch(String name, String description, Path file) {
+    super(name, description);
 
-	/* (non-Javadoc)
-	 * @see edu.columbia.rdf.lib.bioinformatics.search.AbstractFeaturesSearch#cacheFeatures()
-	 */
-	public final void cacheFeatures() {
-		allLocations.clear();
+    mFile = file;
+  }
 
-		for (int i = 0; i < 26; ++i) {
-			allLocations.add(new ArrayList<Feature>());
-		}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see edu.columbia.rdf.lib.bioinformatics.search.AbstractFeaturesSearch#
+   * cacheFeatures()
+   */
+  public final void cacheFeatures() {
+    allLocations.clear();
 
-		try {
-			BufferedReader reader = FileUtils.newBufferedReader(mFile);
+    for (int i = 0; i < 26; ++i) {
+      allLocations.add(new ArrayList<Feature>());
+    }
 
-			String line;
+    try {
+      BufferedReader reader = FileUtils.newBufferedReader(mFile);
 
-			try {
-				// skip header
-				line = reader.readLine();
+      String line;
 
-				while ((line = reader.readLine()) != null) {
-					if (Io.isEmptyLine(line)) {
-						continue;
-					}
+      try {
+        // skip header
+        line = reader.readLine();
 
-					List<String> row = TextUtils.fastSplit(line, TextUtils.TAB_DELIMITER);
+        while ((line = reader.readLine()) != null) {
+          if (Io.isEmptyLine(line)) {
+            continue;
+          }
 
-					Feature feature = new Feature(row.get(0), 
-							ChromosomeService.getInstance().guess(mFile, row.get(1)), 
-							Integer.parseInt(row.get(2)), 
-							Integer.parseInt(row.get(3)));
-					//feature.type = type;
+          List<String> row = TextUtils.fastSplit(line, TextUtils.TAB_DELIMITER);
 
-					//System.err.println(line + "  chr:" + feature.getChromosome());
-					
-					allLocations.get(feature.getChromosome().getId()).add(feature);
-					featureByName.put(feature.getName(), feature);
-					
-					++size;
-				}
-			} finally {
-				reader.close();
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+          Feature feature = new Feature(row.get(0), ChromosomeService.getInstance().guess(mFile, row.get(1)),
+              Integer.parseInt(row.get(2)), Integer.parseInt(row.get(3)));
+          // feature.type = type;
 
-	/* (non-Javadoc)
-	 * @see edu.columbia.rdf.lib.bioinformatics.search.AbstractFeaturesSearch#getFeatures(edu.columbia.rdf.lib.bioinformatics.genome.Chromosome)
-	 */
-	public final List<Feature> getFeatures(Chromosome chromosome) {
-		if (allLocations.size() == 0) {
-			cacheFeatures();
-		}
+          // System.err.println(line + " chr:" + feature.getChromosome());
 
-		return allLocations.get(chromosome.getId());
-	}
+          allLocations.get(feature.getChromosome().getId()).add(feature);
+          featureByName.put(feature.getName(), feature);
 
+          ++size;
+        }
+      } finally {
+        reader.close();
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
 
-	/* (non-Javadoc)
-	 * @see edu.columbia.rdf.lib.bioinformatics.search.AbstractFeaturesSearch#freeMemory()
-	 */
-	public void freeMemory() {
-		super.freeMemory();
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * edu.columbia.rdf.lib.bioinformatics.search.AbstractFeaturesSearch#getFeatures
+   * (edu.columbia.rdf.lib.bioinformatics.genome.Chromosome)
+   */
+  public final List<Feature> getFeatures(Chromosome chromosome) {
+    if (allLocations.size() == 0) {
+      cacheFeatures();
+    }
 
-		allLocations.clear();
-	}
+    return allLocations.get(chromosome.getId());
+  }
 
-	/* (non-Javadoc)
-	 * @see edu.columbia.rdf.lib.bioinformatics.search.AbstractFeaturesSearch#getFeatures(edu.columbia.rdf.lib.bioinformatics.genome.Chromosome, int, int)
-	 */
-	@Override
-	public List<Feature> getFeatures(Chromosome chromosome, 
-			int start, 
-			int endLocation) {
-		if (allLocations.size() == 0) {
-			cacheFeatures();
-		}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * edu.columbia.rdf.lib.bioinformatics.search.AbstractFeaturesSearch#freeMemory(
+   * )
+   */
+  public void freeMemory() {
+    super.freeMemory();
 
-		//System.err.println(getName() + " " + chromosome + ":loc:" + startLocation + " " + endLocation);
+    allLocations.clear();
+  }
 
-		// go through the table
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * edu.columbia.rdf.lib.bioinformatics.search.AbstractFeaturesSearch#getFeatures
+   * (edu.columbia.rdf.lib.bioinformatics.genome.Chromosome, int, int)
+   */
+  @Override
+  public List<Feature> getFeatures(Chromosome chromosome, int start, int endLocation) {
+    if (allLocations.size() == 0) {
+      cacheFeatures();
+    }
 
-		int startIndex;
-		int endIndex;
+    // System.err.println(getName() + " " + chromosome + ":loc:" + startLocation + "
+    // " + endLocation);
 
-		List<Feature> features = new ArrayList<Feature>();
+    // go through the table
 
-		List<Feature> locations = allLocations.get(chromosome.getId());
+    int startIndex;
+    int endIndex;
 
-		if (locations.size() == 0) {
-			return features;
-		}
-		//endLocations = allEndLocations.get(chromosome);
+    List<Feature> features = new ArrayList<Feature>();
 
+    List<Feature> locations = allLocations.get(chromosome.getId());
 
-		int last = locations.size() - 1;
+    if (locations.size() == 0) {
+      return features;
+    }
+    // endLocations = allEndLocations.get(chromosome);
 
-		if (start > locations.get(last).getEnd() || endLocation < locations.get(0).getStart()) {
-			System.out.println(start + ":" + locations.get(0).getStart() + ":" + endLocation + ":" + locations.get(locations.size() - 1).getEnd());
+    int last = locations.size() - 1;
 
-			// the range is clearly not within the feature set so don't even bother to look
-			return features;
-		}
+    if (start > locations.get(last).getEnd() || endLocation < locations.get(0).getStart()) {
+      System.out.println(start + ":" + locations.get(0).getStart() + ":" + endLocation + ":"
+          + locations.get(locations.size() - 1).getEnd());
 
-		if (start <= locations.get(0).getStart()) {
-			startIndex = 0;
-		} else {
-			startIndex = Search.findInner(start, locations);
-		}
+      // the range is clearly not within the feature set so don't even bother to look
+      return features;
+    }
 
-		if (startIndex == -1) {
-			// there was no valid start within the boundaries so no point
-			// continuing
+    if (start <= locations.get(0).getStart()) {
+      startIndex = 0;
+    } else {
+      startIndex = Search.findInner(start, locations);
+    }
 
-			return features;
-		}
+    if (startIndex == -1) {
+      // there was no valid start within the boundaries so no point
+      // continuing
 
-		if (endLocation >= locations.get(last).getStart()) {
-			endIndex = last;
-		} else {
-			endIndex = Search.findOuter(endLocation, locations);
-		}
+      return features;
+    }
 
-		if (endIndex == -1) {
-			// there was no valid start within the boundaries so no point
-			// continuing
+    if (endLocation >= locations.get(last).getStart()) {
+      endIndex = last;
+    } else {
+      endIndex = Search.findOuter(endLocation, locations);
+    }
 
-			return features;
-		}
+    if (endIndex == -1) {
+      // there was no valid start within the boundaries so no point
+      // continuing
 
-		for (int i = startIndex; i <= endIndex; ++i) {
-			features.add(locations.get(i));
-		}
+      return features;
+    }
 
-		return features;
-	}
+    for (int i = startIndex; i <= endIndex; ++i) {
+      features.add(locations.get(i));
+    }
 
-	/* (non-Javadoc)
-	 * @see edu.columbia.rdf.lib.bioinformatics.search.AbstractFeaturesSearch#getFeatures(edu.columbia.rdf.lib.bioinformatics.genome.Chromosome, int)
-	 */
-	@Override
-	public List<Feature> getFeatures(Chromosome chromosome, int location) {
-		if (allLocations.size() == 0) {
-			cacheFeatures();
-		}
+    return features;
+  }
 
-		List<Feature> features = new ArrayList<Feature>();
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * edu.columbia.rdf.lib.bioinformatics.search.AbstractFeaturesSearch#getFeatures
+   * (edu.columbia.rdf.lib.bioinformatics.genome.Chromosome, int)
+   */
+  @Override
+  public List<Feature> getFeatures(Chromosome chromosome, int location) {
+    if (allLocations.size() == 0) {
+      cacheFeatures();
+    }
 
-		List<Feature> locations = allLocations.get(chromosome.getId());
+    List<Feature> features = new ArrayList<Feature>();
 
-		if (locations.size() == 0) {
-			return features;
-		}
+    List<Feature> locations = allLocations.get(chromosome.getId());
 
-		for (int i = 0; i < locations.size(); ++i) {
-			if (features.get(i).getStart() <= location && features.get(i).getEnd() >= location) {
-				features.add(features.get(i));
-			}
-		}
+    if (locations.size() == 0) {
+      return features;
+    }
 
-		return features;
-	}
+    for (int i = 0; i < locations.size(); ++i) {
+      if (features.get(i).getStart() <= location && features.get(i).getEnd() >= location) {
+        features.add(features.get(i));
+      }
+    }
 
-	/* (non-Javadoc)
-	 * @see edu.columbia.rdf.lib.bioinformatics.search.AbstractFeaturesSearch#size()
-	 */
-	@Override
-	public int size() {
-		return size;
-	}
+    return features;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see edu.columbia.rdf.lib.bioinformatics.search.AbstractFeaturesSearch#size()
+   */
+  @Override
+  public int size() {
+    return size;
+  }
 }

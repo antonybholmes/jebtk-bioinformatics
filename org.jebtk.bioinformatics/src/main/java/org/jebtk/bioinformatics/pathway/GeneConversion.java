@@ -39,97 +39,111 @@ import org.jebtk.core.text.TextUtils;
  * Maps an id to a new set of objects (ids, other mappings etc).
  *
  * @author Antony Holmes Holmes
- * @param <T> the generic type
+ * @param <T>
+ *          the generic type
  */
-public class GeneConversion<T extends Comparable <? super T>> implements Iterable<T>, Comparable<GeneConversion<T>> {
-	
-	/**
-	 * The member name.
-	 */
-	private String mName;
+public class GeneConversion<T extends Comparable<? super T>> implements Iterable<T>, Comparable<GeneConversion<T>> {
 
-	/**
-	 * The member new ids.
-	 */
-	private Set<T> mNewIds = new HashSet<T>(100);
-	
-	/**
-	 * Instantiates a new gene conversion.
-	 *
-	 * @param name the name
-	 */
-	public GeneConversion(String name) {
-		mName = name;
-	}
-	
-	/**
-	 * Gets the name.
-	 *
-	 * @return the name
-	 */
-	public String getName() {
-		return mName;
-	}
-	
-	/**
-	 * Adds the id.
-	 *
-	 * @param name the name
-	 */
-	public void addId(T name) {
-		mNewIds.add(name);
-	}
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		return new StringBuilder("[").append(mName).append(" -> ").append(TextUtils.scJoin(CollectionUtils.sort(mNewIds))).append("]").toString();
-	}
+  /**
+   * The member name.
+   */
+  private String mName;
 
-	/* (non-Javadoc)
-	 * @see java.lang.Iterable#iterator()
-	 */
-	@Override
-	public Iterator<T> iterator() {
-		return CollectionUtils.sort(mNewIds).iterator();
-	}
+  /**
+   * The member new ids.
+   */
+  private Set<T> mNewIds = new HashSet<T>(100);
 
-	/* (non-Javadoc)
-	 * @see java.lang.Comparable#compareTo(java.lang.Object)
-	 */
-	@Override
-	public int compareTo(GeneConversion<T> g) {
-		return mName.compareTo(g.mName);
-	}
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		return mName.hashCode();
-	}
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object o) {
-		if (!(o instanceof GeneConversion)) {
-			return false;
-		}
-		
-		return compareTo((GeneConversion<T>)o) == 0;
-	}
+  /**
+   * Instantiates a new gene conversion.
+   *
+   * @param name
+   *          the name
+   */
+  public GeneConversion(String name) {
+    mName = name;
+  }
 
-	/**
-	 * Gets the new count.
-	 *
-	 * @return the new count
-	 */
-	public int getNewCount() {
-		return mNewIds.size();
-	}
+  /**
+   * Gets the name.
+   *
+   * @return the name
+   */
+  public String getName() {
+    return mName;
+  }
+
+  /**
+   * Adds the id.
+   *
+   * @param name
+   *          the name
+   */
+  public void addId(T name) {
+    mNewIds.add(name);
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#toString()
+   */
+  @Override
+  public String toString() {
+    return new StringBuilder("[").append(mName).append(" -> ").append(TextUtils.scJoin(CollectionUtils.sort(mNewIds)))
+        .append("]").toString();
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Iterable#iterator()
+   */
+  @Override
+  public Iterator<T> iterator() {
+    return CollectionUtils.sort(mNewIds).iterator();
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Comparable#compareTo(java.lang.Object)
+   */
+  @Override
+  public int compareTo(GeneConversion<T> g) {
+    return mName.compareTo(g.mName);
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#hashCode()
+   */
+  @Override
+  public int hashCode() {
+    return mName.hashCode();
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
+  @Override
+  public boolean equals(Object o) {
+    if (!(o instanceof GeneConversion)) {
+      return false;
+    }
+
+    return compareTo((GeneConversion<T>) o) == 0;
+  }
+
+  /**
+   * Gets the new count.
+   *
+   * @return the new count
+   */
+  public int getNewCount() {
+    return mNewIds.size();
+  }
 }

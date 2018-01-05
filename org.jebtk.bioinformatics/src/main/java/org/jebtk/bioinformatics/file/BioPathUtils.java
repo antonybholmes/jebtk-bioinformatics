@@ -23,91 +23,91 @@ import org.jebtk.core.io.PathUtils.Ext;
  * The Class BioPathUtils.
  */
 public class BioPathUtils {
-	
-	/**
-	 * The Class BioExt.
-	 */
-	public static class BioExt extends Ext {
-		
-		/**
-		 * Bedgraph.
-		 *
-		 * @return the ext test
-		 */
-		public ExtTest bedgraph() {
-			return type("bedgraph");
-		}
-		
-		/**
-		 * Bed.
-		 *
-		 * @return the ext test
-		 */
-		public ExtTest bed() {
-			return type("bed");
-		}
 
-		/**
-		 * Xlsx.
-		 *
-		 * @return the ext test
-		 */
-		public ExtTest xlsx() {
-			return type("xlsx");
-		}
-		
-		/**
-		 * Xls.
-		 *
-		 * @return the ext test
-		 */
-		public ExtTest xls() {
-			return type("xls");
-		}
+  /**
+   * The Class BioExt.
+   */
+  public static class BioExt extends Ext {
 
-		/**
-		 * Bam.
-		 *
-		 * @return the ext test
-		 */
-		public ExtTest bam() {
-			return type("bam");
-		}
-		
-		/**
-		 * Brt 2.
-		 *
-		 * @return the ext test
-		 */
-		public ExtTest brt2() {
-			return type("brt2j");
-		}
+    /**
+     * Bedgraph.
+     *
+     * @return the ext test
+     */
+    public ExtTest bedgraph() {
+      return type("bedgraph");
+    }
 
-		/**
-		 * Bvt.
-		 *
-		 * @return the ext test
-		 */
-		public ExtTest bvt() {
-			return type("bvtj");
-		}
+    /**
+     * Bed.
+     *
+     * @return the ext test
+     */
+    public ExtTest bed() {
+      return type("bed");
+    }
 
-		/**
-		 * Bct.
-		 *
-		 * @return the ext test
-		 */
-		public ExtTest bct() {
-			return type("bctj");
-		}
-	}
+    /**
+     * Xlsx.
+     *
+     * @return the ext test
+     */
+    public ExtTest xlsx() {
+      return type("xlsx");
+    }
 
-	/**
-	 * Ext.
-	 *
-	 * @return the bio ext
-	 */
-	public static BioExt ext() {
-		return new BioExt();
-	}
+    /**
+     * Xls.
+     *
+     * @return the ext test
+     */
+    public ExtTest xls() {
+      return type("xls");
+    }
+
+    /**
+     * Bam.
+     *
+     * @return the ext test
+     */
+    public ExtTest bam() {
+      return type("bam");
+    }
+
+    /**
+     * Brt 2.
+     *
+     * @return the ext test
+     */
+    public ExtTest brt2() {
+      return type("brt2j");
+    }
+
+    /**
+     * Bvt.
+     *
+     * @return the ext test
+     */
+    public ExtTest bvt() {
+      return type("bvtj");
+    }
+
+    /**
+     * Bct.
+     *
+     * @return the ext test
+     */
+    public ExtTest bct() {
+      return type("bctj");
+    }
+  }
+
+  /**
+   * Ext.
+   *
+   * @return the bio ext
+   */
+  public static BioExt ext() {
+    return new BioExt();
+  }
 }

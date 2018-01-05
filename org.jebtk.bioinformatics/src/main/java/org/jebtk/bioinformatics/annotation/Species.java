@@ -21,57 +21,65 @@ package org.jebtk.bioinformatics.annotation;
  */
 public class Species extends Type {
 
-	/** The m scientific name. */
-	private String mScientificName;
+  /** The m scientific name. */
+  private String mScientificName;
 
-	/**
-	 * Instantiates a new species.
-	 *
-	 * @param name the name
-	 * @param scientificName the scientific name
-	 */
-	public Species(String name, String scientificName) {
-		this(-1, name, scientificName);
-	}
-	
-	/**
-	 * Instantiates a new species.
-	 *
-	 * @param name the name
-	 */
-	public Species(String name) {
-		this(-1, name);
-	}
-	
-	/**
-	 * Instantiates a new species.
-	 *
-	 * @param id the id
-	 * @param name the name
-	 */
-	public Species(int id, String name) {
-		this(id, name, name);
-	}
-	
-	/**
-	 * Instantiates a new species.
-	 *
-	 * @param id the id
-	 * @param name the name
-	 * @param scientificName the scientific name
-	 */
-	public Species(int id, String name, String scientificName) {
-		super(id, name);
-		
-		mScientificName = scientificName;
-	}
-	
-	/**
-	 * Gets the scientific name.
-	 *
-	 * @return the scientific name
-	 */
-	public String getScientificName() {
-		return mScientificName;
-	}
+  /**
+   * Instantiates a new species.
+   *
+   * @param name
+   *          the name
+   * @param scientificName
+   *          the scientific name
+   */
+  public Species(String name, String scientificName) {
+    this(-1, name, scientificName);
+  }
+
+  /**
+   * Instantiates a new species.
+   *
+   * @param name
+   *          the name
+   */
+  public Species(String name) {
+    this(-1, name);
+  }
+
+  /**
+   * Instantiates a new species.
+   *
+   * @param id
+   *          the id
+   * @param name
+   *          the name
+   */
+  public Species(int id, String name) {
+    this(id, name, name);
+  }
+
+  /**
+   * Instantiates a new species.
+   *
+   * @param id
+   *          the id
+   * @param name
+   *          the name
+   * @param scientificName
+   *          the scientific name
+   */
+  public Species(int id, String name, String scientificName) {
+    super(id, name);
+
+    mScientificName = scientificName;
+  }
+
+  /**
+   * Gets the scientific name.
+   *
+   * @return the scientific name
+   */
+  public String getScientificName() {
+    return mScientificName;
+  }
 }

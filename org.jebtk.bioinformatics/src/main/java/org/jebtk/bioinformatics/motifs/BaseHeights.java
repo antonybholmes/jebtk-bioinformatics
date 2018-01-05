@@ -34,10 +34,10 @@ import org.jebtk.core.model.ListModel;
  * The class BaseHeights.
  */
 public class BaseHeights extends ListModel<BaseHeight> {
-	
-	/**
-	 * The constant serialVersionUID.
-	 */
-	private static final long serialVersionUID = 1L;
+
+  /**
+   * The constant serialVersionUID.
+   */
+  private static final long serialVersionUID = 1L;
 
 }

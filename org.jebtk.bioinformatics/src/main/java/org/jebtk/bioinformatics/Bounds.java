@@ -32,14 +32,14 @@ package org.jebtk.bioinformatics;
  * The class Bounds.
  */
 public class Bounds {
-	
-	/**
-	 * The min.
-	 */
-	public int min = Integer.MAX_VALUE;
-	
-	/**
-	 * The max.
-	 */
-	public int max = -1;
+
+  /**
+   * The min.
+   */
+  public int min = Integer.MAX_VALUE;
+
+  /**
+   * The max.
+   */
+  public int max = -1;
 }

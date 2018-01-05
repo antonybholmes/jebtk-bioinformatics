@@ -39,150 +39,149 @@ import java.util.Set;
 import org.jebtk.core.io.FileUtils;
 import org.jebtk.core.text.TextUtils;
 
-
-
 // TODO: Auto-generated Javadoc
 /**
  * The class FeaturesCommonRegionBinarySearchWriter.
  */
 public class FeaturesCommonRegionBinarySearchWriter extends FeaturesBasicSearch {
-	
-	/**
-	 * Instantiates a new features common region binary search writer.
-	 *
-	 * @param name the name
-	 * @param file the file
-	 */
-	public FeaturesCommonRegionBinarySearchWriter(String name, Path file) {
-		super(name, null, file);
 
-		cacheFeatures();
-	}
+  /**
+   * Instantiates a new features common region binary search writer.
+   *
+   * @param name
+   *          the name
+   * @param file
+   *          the file
+   */
+  public FeaturesCommonRegionBinarySearchWriter(String name, Path file) {
+    super(name, null, file);
 
-	/**
-	 * Write.
-	 */
-	public void write() {
-		System.out.println("Building index...");
+    cacheFeatures();
+  }
 
-		Path dir = mFile.getParent();
+  /**
+   * Write.
+   */
+  public void write() {
+    System.out.println("Building index...");
 
-		Path locationsPath = null;
-		
-		locationsPath = dir.resolve(mName + "_bins_locations.txt");
-		
-		Path binsPath = null;
-		
-		binsPath = dir.resolve(mName + "_bins.txt");
+    Path dir = mFile.getParent();
 
-		System.out.println("writing " + locationsPath);
-		System.out.println("writing " + binsPath);
+    Path locationsPath = null;
 
-		String header = "";
+    locationsPath = dir.resolve(mName + "_bins_locations.txt");
 
-		try {
-			BufferedReader reader = FileUtils.newBufferedReader(mFile);
+    Path binsPath = null;
 
-			try {
-				header = reader.readLine();
-			} finally {
-				reader.close();
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+    binsPath = dir.resolve(mName + "_bins.txt");
 
-		header += TextUtils.TAB_DELIMITER + "bins";
+    System.out.println("writing " + locationsPath);
+    System.out.println("writing " + binsPath);
 
-		try {
-			BufferedWriter locationsWriter = FileUtils.newBufferedWriter(dir.resolve(locationsPath));
-			
-			BufferedWriter featuresWriter = FileUtils.newBufferedWriter(dir.resolve(binsPath));
+    String header = "";
 
-			try {
-				featuresWriter.write(header);
-				featuresWriter.newLine();
+    try {
+      BufferedReader reader = FileUtils.newBufferedReader(mFile);
 
-				locationsWriter.write("chromosome");
-				locationsWriter.write(TextUtils.TAB_DELIMITER);
-				locationsWriter.write("location");
-				locationsWriter.newLine();
+      try {
+        header = reader.readLine();
+      } finally {
+        reader.close();
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
 
-				for (short chromosome = 1; chromosome < allLocations.size(); ++chromosome) {
-					if (allLocations.get(chromosome) == null) {
-						continue;
-					}
+    header += TextUtils.TAB_DELIMITER + "bins";
 
-					List<Integer> locations = new ArrayList<Integer>();
-					
-					Set<Integer> inUse = new HashSet<Integer>();
+    try {
+      BufferedWriter locationsWriter = FileUtils.newBufferedWriter(dir.resolve(locationsPath));
 
-					for (Feature feature : allLocations.get(chromosome)) {
-						if (!inUse.contains(feature.getStart())) {
-							locations.add(feature.getStart());
-							inUse.add(feature.getStart());
-						}
+      BufferedWriter featuresWriter = FileUtils.newBufferedWriter(dir.resolve(binsPath));
 
-						if (!inUse.contains(feature.getEnd())) {
-							locations.add(feature.getEnd());
-							inUse.add(feature.getEnd());
-						}
-					}
+      try {
+        featuresWriter.write(header);
+        featuresWriter.newLine();
 
-					// sort them
+        locationsWriter.write("chromosome");
+        locationsWriter.write(TextUtils.TAB_DELIMITER);
+        locationsWriter.write("location");
+        locationsWriter.newLine();
 
-					System.out.println("chr" + chromosome);
+        for (short chromosome = 1; chromosome < allLocations.size(); ++chromosome) {
+          if (allLocations.get(chromosome) == null) {
+            continue;
+          }
 
-					Collections.sort(locations);
+          List<Integer> locations = new ArrayList<Integer>();
 
-					for(int location : locations) {
-						locationsWriter.write(Integer.toString(chromosome));
-						locationsWriter.write(TextUtils.TAB_DELIMITER);
-						locationsWriter.write(Integer.toString(location));
-						locationsWriter.newLine();
-					}
+          Set<Integer> inUse = new HashSet<Integer>();
 
-					// see which features overlap the start of a location
-					for (Feature feature : allLocations.get(chromosome)) {
-						List<Integer> overlap = new ArrayList<Integer>();
+          for (Feature feature : allLocations.get(chromosome)) {
+            if (!inUse.contains(feature.getStart())) {
+              locations.add(feature.getStart());
+              inUse.add(feature.getStart());
+            }
 
-						for (int i = 0; i < locations.size(); ++i) {
-							int location = locations.get(i);
+            if (!inUse.contains(feature.getEnd())) {
+              locations.add(feature.getEnd());
+              inUse.add(feature.getEnd());
+            }
+          }
 
-							if (feature.getStart() == location ||
-									(feature.getStart() < location && feature.getEnd() > location)) {
-								// every feature will be added to the bin where it starts
-								// also add features that overlap into the bin
-								
-								// Each bin is searched from the start to the beginning of the
-								// next bin (not including the end position, which is the start of
-								// the next bin) so only features that start where this bin does
-								// or overlap it may be added otherwise the feature
-								// is allocated to another bin
-								overlap.add(i);
-							}
-						}
+          // sort them
 
-						featuresWriter.write(feature.getName());
-						featuresWriter.write(TextUtils.TAB_DELIMITER);
-						featuresWriter.write(feature.getChromosome().toString());
-						featuresWriter.write(TextUtils.TAB_DELIMITER);
-						featuresWriter.write(Integer.toString(feature.getStart()));
-						featuresWriter.write(TextUtils.TAB_DELIMITER);
-						featuresWriter.write(Integer.toString(feature.getEnd()));
-						featuresWriter.write(TextUtils.TAB_DELIMITER);
-						featuresWriter.write(TextUtils.join(overlap, TextUtils.COMMA_DELIMITER));
-						featuresWriter.newLine();
-					}
-				}
-			} finally {
-				locationsWriter.close();
-				featuresWriter.close();
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+          System.out.println("chr" + chromosome);
 
-		System.out.println("Finished.");
-	}
+          Collections.sort(locations);
+
+          for (int location : locations) {
+            locationsWriter.write(Integer.toString(chromosome));
+            locationsWriter.write(TextUtils.TAB_DELIMITER);
+            locationsWriter.write(Integer.toString(location));
+            locationsWriter.newLine();
+          }
+
+          // see which features overlap the start of a location
+          for (Feature feature : allLocations.get(chromosome)) {
+            List<Integer> overlap = new ArrayList<Integer>();
+
+            for (int i = 0; i < locations.size(); ++i) {
+              int location = locations.get(i);
+
+              if (feature.getStart() == location || (feature.getStart() < location && feature.getEnd() > location)) {
+                // every feature will be added to the bin where it starts
+                // also add features that overlap into the bin
+
+                // Each bin is searched from the start to the beginning of the
+                // next bin (not including the end position, which is the start of
+                // the next bin) so only features that start where this bin does
+                // or overlap it may be added otherwise the feature
+                // is allocated to another bin
+                overlap.add(i);
+              }
+            }
+
+            featuresWriter.write(feature.getName());
+            featuresWriter.write(TextUtils.TAB_DELIMITER);
+            featuresWriter.write(feature.getChromosome().toString());
+            featuresWriter.write(TextUtils.TAB_DELIMITER);
+            featuresWriter.write(Integer.toString(feature.getStart()));
+            featuresWriter.write(TextUtils.TAB_DELIMITER);
+            featuresWriter.write(Integer.toString(feature.getEnd()));
+            featuresWriter.write(TextUtils.TAB_DELIMITER);
+            featuresWriter.write(TextUtils.join(overlap, TextUtils.COMMA_DELIMITER));
+            featuresWriter.newLine();
+          }
+        }
+      } finally {
+        locationsWriter.close();
+        featuresWriter.close();
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+    System.out.println("Finished.");
+  }
 }

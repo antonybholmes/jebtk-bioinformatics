@@ -37,13 +37,11 @@ import org.jebtk.bioinformatics.genomic.GenomeAssembly;
 import org.jebtk.core.io.FileUtils;
 import org.jebtk.core.io.PathUtils;
 
-
 // TODO: Auto-generated Javadoc
 /**
- * Encodes DNA in a 2 bit file representing ACGT. All other characters such
- * as N map to A. Bases are encoded in two bits, so 4 bases per byte.
- * A = 0, C = 1, G = 2, T = 3.
- * Files can be accompanied by a corresponding n
+ * Encodes DNA in a 2 bit file representing ACGT. All other characters such as N
+ * map to A. Bases are encoded in two bits, so 4 bases per byte. A = 0, C = 1, G
+ * = 2, T = 3. Files can be accompanied by a corresponding n
  * 
  *
  * @author Antony Holmes Holmes
@@ -51,42 +49,39 @@ import org.jebtk.core.io.PathUtils;
  */
 public class GenomeAssemblyZip extends GenomeAssemblyFS {
 
-	public GenomeAssemblyZip(Path directory) {
-		super(directory);
-	}
+  public GenomeAssemblyZip(Path directory) {
+    super(directory);
+  }
 
-	@Override
-	public String getName() {
-		return "zip";
-	}
-	
-	
-	@Override
-	public List<String> getGenomes() throws IOException {
-		
-		List<Path> files = FileUtils.ls(mDirectory);
-		
-		List<String> ret = new ArrayList<String>(files.size());
-		
-		for (Path file : files) {
-			if (PathUtils.getFileExt(file).equals("zip")) {
-				ret.add(PathUtils.getNameNoExt(file));
-			}
-		}
-		
-		return ret;
-	}
-	
-	@Override
-	protected void createGenomeEntry(String genome,
-			Path dir,
-			Map<String, GenomeAssembly> map) {
-		if (!map.containsKey(genome)) {
-			//Path d = dir.resolve(genome);
+  @Override
+  public String getName() {
+    return "zip";
+  }
 
-			Path zip = dir.resolve(genome + ".zip");
-			
-			map.put(genome, new GenomeAssemblyExt2BitZip(zip));
-		}
-	}
+  @Override
+  public List<String> getGenomes() throws IOException {
+
+    List<Path> files = FileUtils.ls(mDirectory);
+
+    List<String> ret = new ArrayList<String>(files.size());
+
+    for (Path file : files) {
+      if (PathUtils.getFileExt(file).equals("zip")) {
+        ret.add(PathUtils.getNameNoExt(file));
+      }
+    }
+
+    return ret;
+  }
+
+  @Override
+  protected void createGenomeEntry(String genome, Path dir, Map<String, GenomeAssembly> map) {
+    if (!map.containsKey(genome)) {
+      // Path d = dir.resolve(genome);
+
+      Path zip = dir.resolve(genome + ".zip");
+
+      map.put(genome, new GenomeAssemblyExt2BitZip(zip));
+    }
+  }
 }

@@ -49,123 +49,127 @@ import org.jebtk.core.network.UrlBuilder;
  * @author Antony Holmes Holmes
  */
 public class GenomeAssemblyWeb extends GenomeAssembly {
-	/**
-	 * The member url.
-	 */
-	private UrlBuilder mUrl;
+  /**
+   * The member url.
+   */
+  private UrlBuilder mUrl;
 
-	/**
-	 * The member parser.
-	 */
-	private JsonParser mParser;
+  /**
+   * The member parser.
+   */
+  private JsonParser mParser;
 
-	/** The m genomes url. */
-	private UrlBuilder mGenomesUrl;
+  /** The m genomes url. */
+  private UrlBuilder mGenomesUrl;
 
-	/** The m dna url. */
-	private UrlBuilder mDnaUrl;
+  /** The m dna url. */
+  private UrlBuilder mDnaUrl;
 
-	/**
-	 * Instantiates a new genome assembly web.
-	 *
-	 * @param url the url
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public GenomeAssemblyWeb(URL url) throws IOException {
-		mUrl = new UrlBuilder(url);
+  /**
+   * Instantiates a new genome assembly web.
+   *
+   * @param url
+   *          the url
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   */
+  public GenomeAssemblyWeb(URL url) throws IOException {
+    mUrl = new UrlBuilder(url);
 
-		mDnaUrl = mUrl.resolve("dna");
-		mGenomesUrl = mUrl.resolve("genomes");
+    mDnaUrl = mUrl.resolve("dna");
+    mGenomesUrl = mUrl.resolve("genomes");
 
-		mParser = new JsonParser();
-	}
-	
-	@Override
-	public String getName() {
-		return "web";
-	}
+    mParser = new JsonParser();
+  }
 
-	/* (non-Javadoc)
-	 * @see edu.columbia.rdf.lib.bioinformatics.genome.GenomeAssembly#getSequence(edu.columbia.rdf.lib.bioinformatics.genome.GenomicRegion, boolean, edu.columbia.rdf.lib.bioinformatics.genome.RepeatMaskType)
-	 */
-	@Override
-	public SequenceRegion getSequence(String genome,
-			GenomicRegion region,
-			boolean displayUpper,
-			RepeatMaskType repeatMaskType) throws IOException {
-		URL url;
+  @Override
+  public String getName() {
+    return "web";
+  }
 
-		try {
-			UrlBuilder tmpUrl = mDnaUrl
-					.resolve(genome)
-					.resolve(region.getChr().toString())
-					.resolve(region.getStart())
-					.resolve(region.getEnd())
-					.param("strand", "s")
-					.param("display", displayUpper ? "u" : "l");
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * edu.columbia.rdf.lib.bioinformatics.genome.GenomeAssembly#getSequence(edu.
+   * columbia.rdf.lib.bioinformatics.genome.GenomicRegion, boolean,
+   * edu.columbia.rdf.lib.bioinformatics.genome.RepeatMaskType)
+   */
+  @Override
+  public SequenceRegion getSequence(String genome, GenomicRegion region, boolean displayUpper,
+      RepeatMaskType repeatMaskType) throws IOException {
+    URL url;
 
-			switch (repeatMaskType) {
-			case UPPERCASE:
-				tmpUrl = tmpUrl.param("mask", "u");
-				break;
-			case N:
-				tmpUrl = tmpUrl.param("mask", "n");
-				break;
-			default:
-				tmpUrl = tmpUrl.param("mask", "l");
-				break;
-			}
+    try {
+      UrlBuilder tmpUrl = mDnaUrl.resolve(genome).resolve(region.getChr().toString()).resolve(region.getStart())
+          .resolve(region.getEnd()).param("strand", "s").param("display", displayUpper ? "u" : "l");
 
-			url = tmpUrl.toUrl();
+      switch (repeatMaskType) {
+      case UPPERCASE:
+        tmpUrl = tmpUrl.param("mask", "u");
+        break;
+      case N:
+        tmpUrl = tmpUrl.param("mask", "n");
+        break;
+      default:
+        tmpUrl = tmpUrl.param("mask", "l");
+        break;
+      }
 
-			//System.err.println(url);
+      url = tmpUrl.toUrl();
 
-			Json json = mParser.parse(url);
+      // System.err.println(url);
 
-			String dna = json.get(0).get("seq").getAsString();
+      Json json = mParser.parse(url);
 
-			SequenceRegion ret = new SequenceRegion(region, Sequence.create(dna));
+      String dna = json.get(0).get("seq").getAsString();
 
-			return ret;
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		}
+      SequenceRegion ret = new SequenceRegion(region, Sequence.create(dna));
 
-		return null;
-	}
+      return ret;
+    } catch (MalformedURLException e) {
+      e.printStackTrace();
+    }
 
-	/* (non-Javadoc)
-	 * @see org.jebtk.bioinformatics.genome.GenomeAssembly#getGenomes()
-	 */
-	@Override
-	public List<String> getGenomes() throws IOException {
+    return null;
+  }
 
-		List<String> ret = new ArrayList<String>(100);
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.jebtk.bioinformatics.genome.GenomeAssembly#getGenomes()
+   */
+  @Override
+  public List<String> getGenomes() throws IOException {
 
-		URL url;
+    List<String> ret = new ArrayList<String>(100);
 
-		try {
-			url = mGenomesUrl.toUrl();
+    URL url;
 
-			//System.err.println(url);
+    try {
+      url = mGenomesUrl.toUrl();
 
-			Json json = mParser.parse(url);
+      // System.err.println(url);
 
-			for (int i = 0; i < json.size(); ++i) {
-				ret.add(json.get(i).getAsString());
-			}
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		}
+      Json json = mParser.parse(url);
 
-		return ret;
-	}
+      for (int i = 0; i < json.size(); ++i) {
+        ret.add(json.get(i).getAsString());
+      }
+    } catch (MalformedURLException e) {
+      e.printStackTrace();
+    }
 
-	/* (non-Javadoc)
-	 * @see org.jebtk.bioinformatics.genome.GenomeAssembly#getDataSource()
-	 */
-	@Override
-	public DataSource getDataSource() {
-		return DataSource.WEB;
-	}
+    return ret;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.jebtk.bioinformatics.genome.GenomeAssembly#getDataSource()
+   */
+  @Override
+  public DataSource getDataSource() {
+    return DataSource.WEB;
+  }
 }

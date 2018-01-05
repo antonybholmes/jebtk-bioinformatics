@@ -20,16 +20,16 @@ package org.jebtk.bioinformatics.genomic;
  * The Enum OverlapType.
  */
 public enum OverlapType {
-	
-	/** The none. */
-	NONE,
-	
-	/** The partial. */
-	PARTIAL,
-	
-	/** The complete. */
-	COMPLETE,
-	
-	/** The within. */
-	WITHIN
+
+  /** The none. */
+  NONE,
+
+  /** The partial. */
+  PARTIAL,
+
+  /** The complete. */
+  COMPLETE,
+
+  /** The within. */
+  WITHIN
 }

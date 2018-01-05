@@ -40,73 +40,73 @@ import org.jebtk.core.io.Io;
 import org.jebtk.core.text.Splitter;
 import org.jebtk.core.text.TextUtils;
 
-
-
 // TODO: Auto-generated Javadoc
 /**
  * The class ChipFile.
  */
 public class ChipFile {
-	
-	/**
-	 * Instantiates a new chip file.
-	 */
-	private ChipFile() {
-		// do nothing
-	}
-	
-	/**
-	 * Parses the chip file.
-	 *
-	 * @param file the file
-	 * @return the map
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public static Map<String, ProbeGene> parseChipFile(Path file) throws IOException {
-		System.err.println("Parsing chip file " + file);
 
-		Map<String, ProbeGene> probeGeneMap = new HashMap<String, ProbeGene>();
+  /**
+   * Instantiates a new chip file.
+   */
+  private ChipFile() {
+    // do nothing
+  }
 
-		BufferedReader reader = FileUtils.newBufferedReader(file);
+  /**
+   * Parses the chip file.
+   *
+   * @param file
+   *          the file
+   * @return the map
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   */
+  public static Map<String, ProbeGene> parseChipFile(Path file) throws IOException {
+    System.err.println("Parsing chip file " + file);
 
-		String line;
+    Map<String, ProbeGene> probeGeneMap = new HashMap<String, ProbeGene>();
 
-		Splitter split = Splitter.onTab();
-		
-		try {
-			// skip header
-			List<String> header = split.text(reader.readLine());
-			
-			int idCol = TextUtils.findFirst(header, "Probe Set ID");
-			int symbolCol = TextUtils.findFirst(header, "Gene Symbol");
-			int titleCol = TextUtils.findFirst(header, "Gene Title");
+    BufferedReader reader = FileUtils.newBufferedReader(file);
 
-			while ((line = reader.readLine()) != null) {
-				if (Io.isEmptyLine(line)) {
-					continue;
-				}
+    String line;
 
-				List<String> tokens = split.text(line);
+    Splitter split = Splitter.onTab();
 
-				String probe = tokens.get(idCol);
+    try {
+      // skip header
+      List<String> header = split.text(reader.readLine());
 
-				ProbeGene gene;
-				
-				if (titleCol != -1) {
-					gene = new ProbeGene(tokens.get(idCol), tokens.get(symbolCol), tokens.get(titleCol));
-				} else {
-					gene = new ProbeGene(tokens.get(idCol), tokens.get(symbolCol));
-				}
+      int idCol = TextUtils.findFirst(header, "Probe Set ID");
+      int symbolCol = TextUtils.findFirst(header, "Gene Symbol");
+      int titleCol = TextUtils.findFirst(header, "Gene Title");
 
-				probeGeneMap.put(probe, gene);
+      while ((line = reader.readLine()) != null) {
+        if (Io.isEmptyLine(line)) {
+          continue;
+        }
 
-				//System.err.println(probe + " " + gene);
-			}
+        List<String> tokens = split.text(line);
 
-		} finally {
-			reader.close();
-		}
+        String probe = tokens.get(idCol);
 
-		return probeGeneMap;
-	}
+        ProbeGene gene;
+
+        if (titleCol != -1) {
+          gene = new ProbeGene(tokens.get(idCol), tokens.get(symbolCol), tokens.get(titleCol));
+        } else {
+          gene = new ProbeGene(tokens.get(idCol), tokens.get(symbolCol));
+        }
+
+        probeGeneMap.put(probe, gene);
+
+        // System.err.println(probe + " " + gene);
+      }
+
+    } finally {
+      reader.close();
+    }
+
+    return probeGeneMap;
+  }
 }

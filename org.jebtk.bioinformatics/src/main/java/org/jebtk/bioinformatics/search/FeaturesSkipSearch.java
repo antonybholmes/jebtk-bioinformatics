@@ -34,104 +34,112 @@ import java.util.List;
 import org.jebtk.bioinformatics.Search;
 import org.jebtk.bioinformatics.genomic.Chromosome;
 
-
-
 // TODO: Auto-generated Javadoc
 /**
  * The class FeaturesSkipSearch.
  */
 public class FeaturesSkipSearch extends FeaturesBinarySearch {
-	
-	/**
-	 * The skip.
-	 */
-	private static int SKIP = 1000;
 
-	/**
-	 * Instantiates a new features skip search.
-	 *
-	 * @param name the name
-	 * @param description the description
-	 * @param file the file
-	 */
-	public FeaturesSkipSearch(String name, String description, Path file) {
-		super(name, description, file);
-	}
+  /**
+   * The skip.
+   */
+  private static int SKIP = 1000;
 
-	/* (non-Javadoc)
-	 * @see edu.columbia.rdf.lib.bioinformatics.search.FeaturesBinarySearch#getFeatures(int, int, short)
-	 */
-	@Override
-	public final List<Feature> getFeatures(int startLocation, 
-			int endLocation, 
-			Chromosome chromosome) {
-		//System.out.println(chromosome + ":loc:" + startLocation + " " + endLocation);
+  /**
+   * Instantiates a new features skip search.
+   *
+   * @param name
+   *          the name
+   * @param description
+   *          the description
+   * @param file
+   *          the file
+   */
+  public FeaturesSkipSearch(String name, String description, Path file) {
+    super(name, description, file);
+  }
 
-		// go through the table
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * edu.columbia.rdf.lib.bioinformatics.search.FeaturesBinarySearch#getFeatures(
+   * int, int, short)
+   */
+  @Override
+  public final List<Feature> getFeatures(int startLocation, int endLocation, Chromosome chromosome) {
+    // System.out.println(chromosome + ":loc:" + startLocation + " " + endLocation);
 
-		int startIndex;
-		int endIndex;
+    // go through the table
 
-		List<Feature> features = new ArrayList<Feature>();
+    int startIndex;
+    int endIndex;
 
-		List<Feature> locations = allLocations.get(chromosome.getId());
+    List<Feature> features = new ArrayList<Feature>();
 
-		if (locations == null) {
-			//System.out.println("ropey chromosome " + chromosome);
-			return features;
-		}
-		//endLocations = allEndLocations.get(chromosome);
+    List<Feature> locations = allLocations.get(chromosome.getId());
 
-		//System.out.println(startLocation + ":" + locations.get(0).getStart() + ":" + endLocation + ":" + locations.get(locations.size() - 1).getEnd());
+    if (locations == null) {
+      // System.out.println("ropey chromosome " + chromosome);
+      return features;
+    }
+    // endLocations = allEndLocations.get(chromosome);
 
-		int last = locations.size() - 1;
+    // System.out.println(startLocation + ":" + locations.get(0).getStart() + ":" +
+    // endLocation + ":" + locations.get(locations.size() - 1).getEnd());
 
-		if (startLocation > locations.get(last).getEnd() || endLocation < locations.get(0).getStart()) {
-			// the range is clearly not within the feature set so don't even bother to look
-			return features;
-		} else if (startLocation <= locations.get(0).getStart() && endLocation >= locations.get(last).getStart()) {
-			// the range spans the entire set of features
+    int last = locations.size() - 1;
 
-			startIndex = 0;
-			endIndex = last;
+    if (startLocation > locations.get(last).getEnd() || endLocation < locations.get(0).getStart()) {
+      // the range is clearly not within the feature set so don't even bother to look
+      return features;
+    } else if (startLocation <= locations.get(0).getStart() && endLocation >= locations.get(last).getStart()) {
+      // the range spans the entire set of features
 
-			//System.out.println("f:" + last + " " + locations.size() + " " + startIndex + " " + endIndex +  " " + locations.get(startIndex).getName() + " " + locations.get(endIndex).getName());
-		} else {
-			// the range is within some part of the features
+      startIndex = 0;
+      endIndex = last;
 
-			//System.out.println(startLocation + " " + locations.get(0).getStart() + " " + locations.get(0).getEnd() + " " + endLocation + " " + locations.get(last).getStart() + " " + locations.get(last).getEnd());
+      // System.out.println("f:" + last + " " + locations.size() + " " + startIndex +
+      // " " + endIndex + " " + locations.get(startIndex).getName() + " " +
+      // locations.get(endIndex).getName());
+    } else {
+      // the range is within some part of the features
 
-			if (startLocation <= locations.get(0).getStart()) {
-				startIndex = 0;
-			} else {
-				startIndex = Search.jumpSearchInner(startLocation, locations, SKIP);
-			}
+      // System.out.println(startLocation + " " + locations.get(0).getStart() + " " +
+      // locations.get(0).getEnd() + " " + endLocation + " " +
+      // locations.get(last).getStart() + " " + locations.get(last).getEnd());
 
-			if (startIndex == -1) {
-				// there was no valid start within the boundaries so no point
-				// continuing
-				return features;
-			}
+      if (startLocation <= locations.get(0).getStart()) {
+        startIndex = 0;
+      } else {
+        startIndex = Search.jumpSearchInner(startLocation, locations, SKIP);
+      }
 
-			if (endLocation >= locations.get(last).getStart()) {
-				endIndex = last;
-			} else {
-				endIndex = Search.jumpSearchOuter(endLocation, locations, SKIP);
-			}
+      if (startIndex == -1) {
+        // there was no valid start within the boundaries so no point
+        // continuing
+        return features;
+      }
 
-			if (endIndex == -1) {
-				// there was no valid start within the boundaries so no point
-				// continuing
-				return features;
-			}
-		}
+      if (endLocation >= locations.get(last).getStart()) {
+        endIndex = last;
+      } else {
+        endIndex = Search.jumpSearchOuter(endLocation, locations, SKIP);
+      }
 
-		//System.out.println(startIndex + " " + endIndex);
+      if (endIndex == -1) {
+        // there was no valid start within the boundaries so no point
+        // continuing
+        return features;
+      }
+    }
 
-		for (int i = startIndex; i <= endIndex; ++i) {
-			features.add(locations.get(i));
-		}
+    // System.out.println(startIndex + " " + endIndex);
 
-		return features;
-	}
+    for (int i = startIndex; i <= endIndex; ++i) {
+      features.add(locations.get(i));
+    }
+
+    return features;
+  }
 }

@@ -35,26 +35,30 @@ package org.jebtk.bioinformatics.genomic;
  *
  */
 public class AminoAcidChange extends BaseChange {
-	
-	/**
-	 * Instantiates a new amino acid change.
-	 *
-	 * @param text the text
-	 */
-	public AminoAcidChange(String text) {
-		super(text);
-		
-		System.err.println("AA " + toString());
-	}
-	
-	/**
-	 * Instantiates a new amino acid change.
-	 *
-	 * @param from the from
-	 * @param to the to
-	 * @param location the location
-	 */
-	public AminoAcidChange(String from, String to, int location) {
-		super(from, to, location);
-	}
+
+  /**
+   * Instantiates a new amino acid change.
+   *
+   * @param text
+   *          the text
+   */
+  public AminoAcidChange(String text) {
+    super(text);
+
+    System.err.println("AA " + toString());
+  }
+
+  /**
+   * Instantiates a new amino acid change.
+   *
+   * @param from
+   *          the from
+   * @param to
+   *          the to
+   * @param location
+   *          the location
+   */
+  public AminoAcidChange(String from, String to, int location) {
+    super(from, to, location);
+  }
 }

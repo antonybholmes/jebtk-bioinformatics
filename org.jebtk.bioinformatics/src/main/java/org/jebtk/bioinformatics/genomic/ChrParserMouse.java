@@ -23,63 +23,68 @@ import org.jebtk.core.text.TextUtils;
  * The Class ChrParserMouse.
  */
 public class ChrParserMouse extends ChromosomeParser {
-	
-	/* (non-Javadoc)
-	 * @see org.jebtk.bioinformatics.genome.ChromosomeParser#getShortName(java.lang.String)
-	 */
-	@Override
-	public String getShortName(String chr) {
-		String ret = super.getShortName(chr);
-		
-		ret = ret.replace("20", "X")
-				.replace("21", "Y")
-				.replace("22", "M");
-		
-		return ret;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.jebtk.bioinformatics.genome.ChromosomeParser#getId(java.lang.String)
-	 */
-	@Override
-	public int getId(String chr) {
-		String shortName = getShortName(chr);
-		
-		if (TextUtils.isInt(shortName)) {
-			return Integer.parseInt(shortName);
-		} else if (shortName.equals("X")) {
-			return 20;
-		} else if (shortName.equals("Y")) {
-			return 21;
-		} else if (shortName.equals("M")) {
-			return 22;
-		} else {
-			return -1;
-		}
-	}
-	
-	@Override
-	public int valueOf(Chromosome chr) {
-		if (chr.toString().endsWith("X")) {
-			return 20;
-		} else if (chr.toString().endsWith("Y")) {
-			return 21;
-		} else if (chr.toString().endsWith("M")) {
-			return 22;
-		} else {
-			return Integer.parseInt(chr.getShortName());
-		}
-	}
-	
-	public int randChrId() {
-		return Mathematics.rand(22) + 1;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.jebtk.bioinformatics.genome.ChromosomeParser#getSpecies()
-	 */
-	@Override
-	public String getSpecies() {
-		return "mouse";
-	}
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.jebtk.bioinformatics.genome.ChromosomeParser#getShortName(java.lang.
+   * String)
+   */
+  @Override
+  public String getShortName(String chr) {
+    String ret = super.getShortName(chr);
+
+    ret = ret.replace("20", "X").replace("21", "Y").replace("22", "M");
+
+    return ret;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.jebtk.bioinformatics.genome.ChromosomeParser#getId(java.lang.String)
+   */
+  @Override
+  public int getId(String chr) {
+    String shortName = getShortName(chr);
+
+    if (TextUtils.isInt(shortName)) {
+      return Integer.parseInt(shortName);
+    } else if (shortName.equals("X")) {
+      return 20;
+    } else if (shortName.equals("Y")) {
+      return 21;
+    } else if (shortName.equals("M")) {
+      return 22;
+    } else {
+      return -1;
+    }
+  }
+
+  @Override
+  public int valueOf(Chromosome chr) {
+    if (chr.toString().endsWith("X")) {
+      return 20;
+    } else if (chr.toString().endsWith("Y")) {
+      return 21;
+    } else if (chr.toString().endsWith("M")) {
+      return 22;
+    } else {
+      return Integer.parseInt(chr.getShortName());
+    }
+  }
+
+  public int randChrId() {
+    return Mathematics.rand(22) + 1;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.jebtk.bioinformatics.genome.ChromosomeParser#getSpecies()
+   */
+  @Override
+  public String getSpecies() {
+    return "mouse";
+  }
 }

@@ -48,150 +48,164 @@ import org.xml.sax.SAXException;
  */
 public class MotifsXmlFs extends MotifsFs {
 
-	/**
-	 * Instantiates a new motifs file.
-	 *
-	 * @param dir the dir
-	 */
-	public MotifsXmlFs(Path dir) {
-		super(dir);
-	}
+  /**
+   * Instantiates a new motifs file.
+   *
+   * @param dir
+   *          the dir
+   */
+  public MotifsXmlFs(Path dir) {
+    super(dir);
+  }
 
-	/* (non-Javadoc)
-	 * @see org.jebtk.bioinformatics.motifs.MotifsFs#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object o) {
-		if (o instanceof MotifsXmlFs) {
-			return compareTo((MotifsXmlFs)o) == 0;
-		} else {
-			return false;
-		}
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.jebtk.bioinformatics.motifs.MotifsFs#equals(java.lang.Object)
+   */
+  @Override
+  public boolean equals(Object o) {
+    if (o instanceof MotifsXmlFs) {
+      return compareTo((MotifsXmlFs) o) == 0;
+    } else {
+      return false;
+    }
+  }
 
-	/* (non-Javadoc)
-	 * @see edu.columbia.rdf.lib.bioinformatics.motifs.MotifsDB#createTree(org.abh.lib.tree.TreeRootNode, java.lang.String)
-	 */
-	@Override
-	public void createTree(TreeNode<Motif> root, 
-			List<String> terms,
-			boolean inList,
-			boolean exactMatch,
-			boolean caseSensitive) throws Exception {
-		//TreeRootNode<Motif> root = new TreeRootNode<Motif>();
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * edu.columbia.rdf.lib.bioinformatics.motifs.MotifsDB#createTree(org.abh.lib.
+   * tree.TreeRootNode, java.lang.String)
+   */
+  @Override
+  public void createTree(TreeNode<Motif> root, List<String> terms, boolean inList, boolean exactMatch,
+      boolean caseSensitive) throws Exception {
+    // TreeRootNode<Motif> root = new TreeRootNode<Motif>();
 
-		createTreeDir(mDir, root, terms, inList, exactMatch, caseSensitive);
+    createTreeDir(mDir, root, terms, inList, exactMatch, caseSensitive);
 
-		//return root;
-	}
+    // return root;
+  }
 
-	/**
-	 * Creates the tree dir.
-	 *
-	 * @param root the root
-	 * @param rootNode the root node
-	 * @param terms the terms
-	 * @param inList the in list
-	 * @param exactMatch the exact match
-	 * @param caseSensitive the case sensitive
-	 * @return the int
-	 * @throws Exception the exception
-	 */
-	private static void createTreeDir(Path root, 
-			TreeNode<Motif> rootNode,
-			List<String> terms,
-			boolean inList,
-			boolean exactMatch,
-			boolean caseSensitive) throws Exception {
-		if (!FileUtils.exists(root)) {
-			return;
-		}
+  /**
+   * Creates the tree dir.
+   *
+   * @param root
+   *          the root
+   * @param rootNode
+   *          the root node
+   * @param terms
+   *          the terms
+   * @param inList
+   *          the in list
+   * @param exactMatch
+   *          the exact match
+   * @param caseSensitive
+   *          the case sensitive
+   * @return the int
+   * @throws Exception
+   *           the exception
+   */
+  private static void createTreeDir(Path root, TreeNode<Motif> rootNode, List<String> terms, boolean inList,
+      boolean exactMatch, boolean caseSensitive) throws Exception {
+    if (!FileUtils.exists(root)) {
+      return;
+    }
 
-		List<Path> files = FileUtils.ls(root, false, true);
+    List<Path> files = FileUtils.ls(root, false, true);
 
-		for (Path file : files) {
-			if (!PathUtils.getName(file).endsWith("xml.gz")) {
-				continue;
-			}
+    for (Path file : files) {
+      if (!PathUtils.getName(file).endsWith("xml.gz")) {
+        continue;
+      }
 
-			Motifs motifs = parseMotifXmlGz(file);
+      Motifs motifs = parseMotifXmlGz(file);
 
-			filter(motifs,
-					rootNode,
-					terms,
-					inList,
-					exactMatch,
-					caseSensitive);
-		}
-	}
-	
-	/**
-	 * Parses the motif xml.
-	 *
-	 * @param file the file
-	 * @return the motifs
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 * @throws ParserConfigurationException the parser configuration exception
-	 * @throws SAXException the SAX exception
-	 */
-	public static Motifs parseMotifXml(Path file) throws IOException, ParserConfigurationException, SAXException {
-		InputStream stream = FileUtils.newBufferedInputStream(file);
+      filter(motifs, rootNode, terms, inList, exactMatch, caseSensitive);
+    }
+  }
 
-		Motifs motifs = null;
-		
-		try {
-			motifs = parseMotifXml(stream);
-		} finally {
-			stream.close();
-		}
-		
-		return motifs;
-	}
-	
-	/**
-	 * Parses the motif xml gz.
-	 *
-	 * @param file the file
-	 * @return the motifs
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 * @throws ParserConfigurationException the parser configuration exception
-	 * @throws SAXException the SAX exception
-	 */
-	public static Motifs parseMotifXmlGz(Path file) throws IOException, ParserConfigurationException, SAXException {
-		InputStream stream = Resources.getGzipInputStream(file);
-		
-		Motifs motifs = null;
-		
-		try {
-			motifs = parseMotifXml(stream);
-		} finally {
-			stream.close();
-		}
-		
-		return motifs;
-	}
+  /**
+   * Parses the motif xml.
+   *
+   * @param file
+   *          the file
+   * @return the motifs
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   * @throws ParserConfigurationException
+   *           the parser configuration exception
+   * @throws SAXException
+   *           the SAX exception
+   */
+  public static Motifs parseMotifXml(Path file) throws IOException, ParserConfigurationException, SAXException {
+    InputStream stream = FileUtils.newBufferedInputStream(file);
 
-	/**
-	 * Parses the motif xml.
-	 *
-	 * @param is the is
-	 * @return the motifs
-	 * @throws ParserConfigurationException the parser configuration exception
-	 * @throws SAXException the SAX exception
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public static Motifs parseMotifXml(InputStream is) throws ParserConfigurationException, SAXException, IOException {
-		if (is == null) {
-			return null;
-		}
+    Motifs motifs = null;
 
-		SAXParserFactory factory = SAXParserFactory.newInstance();
-		SAXParser saxParser = factory.newSAXParser();
+    try {
+      motifs = parseMotifXml(stream);
+    } finally {
+      stream.close();
+    }
 
-		MotifXmlHandler handler = new MotifXmlHandler();
+    return motifs;
+  }
 
-		saxParser.parse(is, handler);
+  /**
+   * Parses the motif xml gz.
+   *
+   * @param file
+   *          the file
+   * @return the motifs
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   * @throws ParserConfigurationException
+   *           the parser configuration exception
+   * @throws SAXException
+   *           the SAX exception
+   */
+  public static Motifs parseMotifXmlGz(Path file) throws IOException, ParserConfigurationException, SAXException {
+    InputStream stream = Resources.getGzipInputStream(file);
 
-		return handler.getMotifs();
-	}
+    Motifs motifs = null;
+
+    try {
+      motifs = parseMotifXml(stream);
+    } finally {
+      stream.close();
+    }
+
+    return motifs;
+  }
+
+  /**
+   * Parses the motif xml.
+   *
+   * @param is
+   *          the is
+   * @return the motifs
+   * @throws ParserConfigurationException
+   *           the parser configuration exception
+   * @throws SAXException
+   *           the SAX exception
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   */
+  public static Motifs parseMotifXml(InputStream is) throws ParserConfigurationException, SAXException, IOException {
+    if (is == null) {
+      return null;
+    }
+
+    SAXParserFactory factory = SAXParserFactory.newInstance();
+    SAXParser saxParser = factory.newSAXParser();
+
+    MotifXmlHandler handler = new MotifXmlHandler();
+
+    saxParser.parse(is, handler);
+
+    return handler.getMotifs();
+  }
 }

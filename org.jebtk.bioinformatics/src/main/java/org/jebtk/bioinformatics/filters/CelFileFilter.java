@@ -29,17 +29,16 @@ package org.jebtk.bioinformatics.filters;
 
 import org.jebtk.core.io.FileEndingFilter;
 
-
 // TODO: Auto-generated Javadoc
 /**
  * The class CelFileFilter.
  */
 public class CelFileFilter extends FileEndingFilter {
-	
-	/**
-	 * Instantiates a new cel file filter.
-	 */
-	public CelFileFilter() {
-		super("cel");
-	}
+
+  /**
+   * Instantiates a new cel file filter.
+   */
+  public CelFileFilter() {
+    super("cel");
+  }
 }

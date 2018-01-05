@@ -32,59 +32,65 @@ package org.jebtk.bioinformatics.pathway;
  * The class RdfGene.
  */
 public class GlobalGene implements Comparable<GlobalGene> {
-	
-	/**
-	 * The member rdf id.
-	 */
-	private String mRdfId;
-	
-	/**
-	 * The member name.
-	 */
-	private String mName;
 
-	/**
-	 * Instantiates a new rdf gene.
-	 *
-	 * @param rdfId the rdf id
-	 * @param name the name
-	 */
-	public GlobalGene(String rdfId, String name) {
-		mRdfId = rdfId;
-		mName = name;
-	}
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		return mRdfId + " -> " + mName;
-	}
+  /**
+   * The member rdf id.
+   */
+  private String mRdfId;
 
-	/* (non-Javadoc)
-	 * @see java.lang.Comparable#compareTo(java.lang.Object)
-	 */
-	@Override
-	public int compareTo(GlobalGene s) {
-		return mRdfId.compareTo(s.mRdfId);
-	}
+  /**
+   * The member name.
+   */
+  private String mName;
 
-	/**
-	 * Gets the name.
-	 *
-	 * @return the name
-	 */
-	public String getName() {
-		return mName;
-	}
+  /**
+   * Instantiates a new rdf gene.
+   *
+   * @param rdfId
+   *          the rdf id
+   * @param name
+   *          the name
+   */
+  public GlobalGene(String rdfId, String name) {
+    mRdfId = rdfId;
+    mName = name;
+  }
 
-	/**
-	 * Gets the rdf id.
-	 *
-	 * @return the rdf id
-	 */
-	public String getRdfId() {
-		return mRdfId;
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#toString()
+   */
+  @Override
+  public String toString() {
+    return mRdfId + " -> " + mName;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Comparable#compareTo(java.lang.Object)
+   */
+  @Override
+  public int compareTo(GlobalGene s) {
+    return mRdfId.compareTo(s.mRdfId);
+  }
+
+  /**
+   * Gets the name.
+   *
+   * @return the name
+   */
+  public String getName() {
+    return mName;
+  }
+
+  /**
+   * Gets the rdf id.
+   *
+   * @return the rdf id
+   */
+  public String getRdfId() {
+    return mRdfId;
+  }
 }

@@ -31,7 +31,6 @@ import java.nio.file.Path;
 
 import org.jebtk.core.io.PathUtils;
 
-
 // TODO: Auto-generated Javadoc
 /**
  * Deals with functions related to chromosomes.
@@ -40,48 +39,48 @@ import org.jebtk.core.io.PathUtils;
  *
  */
 public class GenomeService {
-	/**
-	 * The Class ChromosomesLoader.
-	 */
-	private static class GenomeLoader {
-		
-		/** The Constant INSTANCE. */
-		private static final GenomeService INSTANCE = new GenomeService();
-	}
+  /**
+   * The Class ChromosomesLoader.
+   */
+  private static class GenomeLoader {
 
-	/**
-	 * Gets the single instance of SettingsService.
-	 *
-	 * @return single instance of SettingsService
-	 */
-	public static GenomeService getInstance() {
-		return GenomeLoader.INSTANCE;
-	}
-	
-	private GenomeGuess mGuess = new GenomeGuess();
-	
-	/**
-	 * Instantiates a new chromosomes.
-	 */
-	private GenomeService() {
-		// Do nothing
-	}
-	
-	public void setGuess(GenomeGuess guess) {
-		mGuess = guess;
-	}
-	
-	/**
-	 * Guess the genome from the filename.
-	 * 
-	 * @param file
-	 * @return
-	 */
-	public String guess(Path file) {
-		return guess(PathUtils.getName(file));
-	}
-	
-	public String guess(String name) {
-		return mGuess.guess(name);
-	}
+    /** The Constant INSTANCE. */
+    private static final GenomeService INSTANCE = new GenomeService();
+  }
+
+  /**
+   * Gets the single instance of SettingsService.
+   *
+   * @return single instance of SettingsService
+   */
+  public static GenomeService getInstance() {
+    return GenomeLoader.INSTANCE;
+  }
+
+  private GenomeGuess mGuess = new GenomeGuess();
+
+  /**
+   * Instantiates a new chromosomes.
+   */
+  private GenomeService() {
+    // Do nothing
+  }
+
+  public void setGuess(GenomeGuess guess) {
+    mGuess = guess;
+  }
+
+  /**
+   * Guess the genome from the filename.
+   * 
+   * @param file
+   * @return
+   */
+  public String guess(Path file) {
+    return guess(PathUtils.getName(file));
+  }
+
+  public String guess(String name) {
+    return mGuess.guess(name);
+  }
 }

@@ -39,7 +39,6 @@ import org.jebtk.core.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 // TODO: Auto-generated Javadoc
 /**
  * Fast search of genome sequence Paths to get get actual genomic data.
@@ -47,86 +46,89 @@ import org.slf4j.LoggerFactory;
  * @author Antony Holmes Holmes
  */
 public class GenomeAssemblyGZip extends GenomeAssemblyDir {
-	
-	/**
-	 * The constant LOG.
-	 */
-	private static final Logger LOG = 
-			LoggerFactory.getLogger(GenomeAssemblyGZip.class);
 
+  /**
+   * The constant LOG.
+   */
+  private static final Logger LOG = LoggerFactory.getLogger(GenomeAssemblyGZip.class);
 
-	/**
-	 * Directory containing genome Paths which must be of the form
-	 * chr.n.txt. Each Path must contain exactly one line consisting
-	 * of the entire chromosome.
-	 *
-	 * @param directory the directory
-	 */
-	public GenomeAssemblyGZip(Path directory) {
-		super(directory);
-	}
-	
-	@Override
-	public String getName() {
-		return "txt-gz";
-	}
-	
-	/* (non-Javadoc)
-	 * @see edu.columbia.rdf.lib.bioinformatics.genome.GenomeAssembly#getSequence(edu.columbia.rdf.lib.bioinformatics.genome.GenomicRegion, boolean, edu.columbia.rdf.lib.bioinformatics.genome.RepeatMaskType)
-	 */
-	@Override
-	public final SequenceRegion getSequence(String genome,
-			GenomicRegion region,
-			boolean displayUpper,
-			RepeatMaskType repeatMaskType) throws IOException {
-		Chromosome chr = region.getChr();
-		
-		if (!mFileMap.containsKey(region.getChr())) {
-			mFileMap.put(chr, mDirectory.resolve(chr + ".txt.gz"));
-		}
+  /**
+   * Directory containing genome Paths which must be of the form chr.n.txt. Each
+   * Path must contain exactly one line consisting of the entire chromosome.
+   *
+   * @param directory
+   *          the directory
+   */
+  public GenomeAssemblyGZip(Path directory) {
+    super(directory);
+  }
 
-		return getSequence(mFileMap.get(chr), region);
-	}
+  @Override
+  public String getName() {
+    return "txt-gz";
+  }
 
-	/**
-	 * Returns the sequence from a region of a chromosome.
-	 *
-	 * @param file the file
-	 * @param region the region
-	 * @return the sequence
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	private final SequenceRegion getSequence(Path file,
-			GenomicRegion region) throws IOException {
-		LOG.debug("Extract sequence for {} from {}...", region.toString(), file);
-		
-		int s = region.getStart() - 1;
-		int e = region.getEnd() - 1;
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * edu.columbia.rdf.lib.bioinformatics.genome.GenomeAssembly#getSequence(edu.
+   * columbia.rdf.lib.bioinformatics.genome.GenomicRegion, boolean,
+   * edu.columbia.rdf.lib.bioinformatics.genome.RepeatMaskType)
+   */
+  @Override
+  public final SequenceRegion getSequence(String genome, GenomicRegion region, boolean displayUpper,
+      RepeatMaskType repeatMaskType) throws IOException {
+    Chromosome chr = region.getChr();
 
-		//PathInputStream in = new PathInputStream(Path);
-		InputStream in = FileUtils.newGzipInputStream(file); //new GZIPInputStream(new PathInputStream(Path), 65536);
-		
-		int l = e - s + 1;
+    if (!mFileMap.containsKey(region.getChr())) {
+      mFileMap.put(chr, mDirectory.resolve(chr + ".txt.gz"));
+    }
 
-		byte[] cbuf = new byte[l];
+    return getSequence(mFileMap.get(chr), region);
+  }
 
-        SequenceRegion sequence = null;
-        
-		try {
-            in.skip(s);
+  /**
+   * Returns the sequence from a region of a chromosome.
+   *
+   * @param file
+   *          the file
+   * @param region
+   *          the region
+   * @return the sequence
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   */
+  private final SequenceRegion getSequence(Path file, GenomicRegion region) throws IOException {
+    LOG.debug("Extract sequence for {} from {}...", region.toString(), file);
 
-            int bytesRead = in.read(cbuf);
+    int s = region.getStart() - 1;
+    int e = region.getEnd() - 1;
 
-            if (bytesRead == l) {
-            	sequence = new SequenceRegion(region, Sequence.create(new String(cbuf)));
-            } else {
-            	System.err.println(file + " " + region + " " + bytesRead + " " + l + " " + new String(cbuf));
-            	System.exit(0);
-            }
-        } finally {
-        	in.close();
-        }
+    // PathInputStream in = new PathInputStream(Path);
+    InputStream in = FileUtils.newGzipInputStream(file); // new GZIPInputStream(new PathInputStream(Path), 65536);
 
-        return sequence;
-	}
+    int l = e - s + 1;
+
+    byte[] cbuf = new byte[l];
+
+    SequenceRegion sequence = null;
+
+    try {
+      in.skip(s);
+
+      int bytesRead = in.read(cbuf);
+
+      if (bytesRead == l) {
+        sequence = new SequenceRegion(region, Sequence.create(new String(cbuf)));
+      } else {
+        System.err.println(file + " " + region + " " + bytesRead + " " + l + " " + new String(cbuf));
+        System.exit(0);
+      }
+    } finally {
+      in.close();
+    }
+
+    return sequence;
+  }
 }

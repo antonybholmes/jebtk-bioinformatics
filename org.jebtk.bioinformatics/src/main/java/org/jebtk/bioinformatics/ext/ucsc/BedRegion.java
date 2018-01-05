@@ -49,190 +49,184 @@ import org.jebtk.core.text.TextUtils;
  */
 public class BedRegion extends UCSCTrackRegion implements Iterable<String> {
 
-	/**
-	 * The member name.
-	 */
-	protected List<String> mNames;
+  /**
+   * The member name.
+   */
+  protected List<String> mNames;
 
-	/**
-	 * Instantiates a new bed region.
-	 *
-	 * @param region the region
-	 */
-	public BedRegion(GenomicRegion region) {
-		this(region.getChr(), 
-				region.getStart(), 
-				region.getEnd());
-	}
-	
-	/**
-	 * Instantiates a new bed region.
-	 *
-	 * @param chr the chr
-	 * @param start the start
-	 * @param end the end
-	 */
-	public BedRegion(Chromosome chr, 
-			int start, 
-			int end) {
-		this(chr, 
-				start, 
-				end,
-				GenomicRegion.toLocation(chr, start, end));
-	}
-	
-	
+  /**
+   * Instantiates a new bed region.
+   *
+   * @param region
+   *          the region
+   */
+  public BedRegion(GenomicRegion region) {
+    this(region.getChr(), region.getStart(), region.getEnd());
+  }
 
-	/**
-	 * Create a BED region with no orientation ('.') so that when
-	 * visualized, will appear as a solid block.
-	 *
-	 * @param chr the chr
-	 * @param start the start
-	 * @param end the end
-	 * @param name the name
-	 */
-	public BedRegion(Chromosome chr, 
-			int start, 
-			int end,
-			String name) {
-		this(chr, 
-				start, 
-				end,
-				name,
-				Strand.NONE,
-				null);
-	}
+  /**
+   * Instantiates a new bed region.
+   *
+   * @param chr
+   *          the chr
+   * @param start
+   *          the start
+   * @param end
+   *          the end
+   */
+  public BedRegion(Chromosome chr, int start, int end) {
+    this(chr, start, end, GenomicRegion.toLocation(chr, start, end));
+  }
 
-	/**
-	 * Instantiates a new bed region.
-	 *
-	 * @param chromosome the chromosome
-	 * @param start the start
-	 * @param end the end
-	 * @param name the name
-	 * @param strand the strand
-	 * @param color the color
-	 */
-	public BedRegion(Chromosome chromosome, 
-			int start, 
-			int end,
-			String name,
-			Strand strand,
-			Color color) {
-		super(chromosome, start, end, strand, color);
+  /**
+   * Create a BED region with no orientation ('.') so that when visualized, will
+   * appear as a solid block.
+   *
+   * @param chr
+   *          the chr
+   * @param start
+   *          the start
+   * @param end
+   *          the end
+   * @param name
+   *          the name
+   */
+  public BedRegion(Chromosome chr, int start, int end, String name) {
+    this(chr, start, end, name, Strand.NONE, null);
+  }
 
-		mNames = TextUtils.scSplit(name);
-	}
+  /**
+   * Instantiates a new bed region.
+   *
+   * @param chromosome
+   *          the chromosome
+   * @param start
+   *          the start
+   * @param end
+   *          the end
+   * @param name
+   *          the name
+   * @param strand
+   *          the strand
+   * @param color
+   *          the color
+   */
+  public BedRegion(Chromosome chromosome, int start, int end, String name, Strand strand, Color color) {
+    super(chromosome, start, end, strand, color);
 
-	/**
-	 * Gets the name.
-	 *
-	 * @return the name
-	 */
-	public String getName() {
-		return mNames.get(0);
-	}
-	
-	/**
-	 * Gets the names.
-	 *
-	 * @return the names
-	 */
-	public List<String> getNames() {
-		return Collections.unmodifiableList(mNames);
-	}
-	
-	/* (non-Javadoc)
-	 * @see edu.columbia.rdf.lib.bioinformatics.external.ucsc.UCSCTrackRegion#formattedTxt(java.lang.Appendable)
-	 */
-	@Override
-	public void formattedTxt(Appendable buffer) throws IOException {
-		super.formattedTxt(buffer);
-		buffer.append(TextUtils.TAB_DELIMITER);
-		buffer.append(TextUtils.scJoin(mNames));
-	}
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Iterable#iterator()
-	 */
-	@Override
-	public Iterator<String> iterator() {
-		return mNames.iterator();
-	}
+    mNames = TextUtils.scSplit(name);
+  }
 
-	/**
-	 * Parses the.
-	 *
-	 * @param line the line
-	 * @return the bed region
-	 */
-	public static BedRegion parse(String genome, String line) {
-		//System.err.println("bed: " + line);
-		
-		List<String> tokens = TextUtils.tabSplit(line);
+  /**
+   * Gets the name.
+   *
+   * @return the name
+   */
+  public String getName() {
+    return mNames.get(0);
+  }
 
-		// convert first part to chromosome (replacing x,y and m) {
-		Chromosome chr = ChromosomeService.getInstance().guess(genome, tokens.get(0));
-		
-		if (chr == null) {
-			return null;
-		}
+  /**
+   * Gets the names.
+   *
+   * @return the names
+   */
+  public List<String> getNames() {
+    return Collections.unmodifiableList(mNames);
+  }
 
-		// Apply UCSC conventions
-		int start = Integer.parseInt(tokens.get(1)) + 1;
-		int end = Integer.parseInt(tokens.get(2));
+  /*
+   * (non-Javadoc)
+   * 
+   * @see edu.columbia.rdf.lib.bioinformatics.external.ucsc.UCSCTrackRegion#
+   * formattedTxt(java.lang.Appendable)
+   */
+  @Override
+  public void formattedTxt(Appendable buffer) throws IOException {
+    super.formattedTxt(buffer);
+    buffer.append(TextUtils.TAB_DELIMITER);
+    buffer.append(TextUtils.scJoin(mNames));
+  }
 
-		if (tokens.size() > 8) {
-			String name = tokens.get(3);
-			Strand strand = Strand.parse(tokens.get(5));
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Iterable#iterator()
+   */
+  @Override
+  public Iterator<String> iterator() {
+    return mNames.iterator();
+  }
 
-			Matcher matcher = Bed.COLOR_PATTERN.matcher(tokens.get(8));
+  /**
+   * Parses the.
+   *
+   * @param line
+   *          the line
+   * @return the bed region
+   */
+  public static BedRegion parse(String genome, String line) {
+    // System.err.println("bed: " + line);
 
-			Color color = null;
+    List<String> tokens = TextUtils.tabSplit(line);
 
-			if (matcher.find()) {
-				color = UCSCTrack.parseColor(matcher);
-			}	
+    // convert first part to chromosome (replacing x,y and m) {
+    Chromosome chr = ChromosomeService.getInstance().guess(genome, tokens.get(0));
 
-			BedRegion region = new BedRegion(chr, start, end, name, strand, color);
-			
-			if (tokens.size() > 11) {
-				// blocks mode
-				
-				int count = Integer.parseInt(tokens.get(9));
-				
-				List<Integer> sizes = TextUtils.toInt(TextUtils.commaSplit(tokens.get(10)));
-				List<Integer> starts = TextUtils.toInt(TextUtils.commaSplit(tokens.get(11)));
-				
-				for (int i = 0; i < count; ++i) {
-					region.mSubRegions.add(new GenomicRegion(chr, 
-							start + starts.get(i), 
-							start + starts.get(i) + sizes.get(i)));
-				}
-			}
-			
-			return region;
-		} else if (tokens.size() > 3) {
-			String name = tokens.get(3);
+    if (chr == null) {
+      return null;
+    }
 
-			return new BedRegion(chr, start, end, name);
-		} else {
-			return new BedRegion(chr, start, end);
-		}
-	}
+    // Apply UCSC conventions
+    int start = Integer.parseInt(tokens.get(1)) + 1;
+    int end = Integer.parseInt(tokens.get(2));
 
-	/**
-	 * Creates the.
-	 *
-	 * @param region the region
-	 * @return the bed region
-	 */
-	public static BedRegion create(GenomicRegion region) {
-		return new BedRegion(region);
-	}
+    if (tokens.size() > 8) {
+      String name = tokens.get(3);
+      Strand strand = Strand.parse(tokens.get(5));
 
-	
+      Matcher matcher = Bed.COLOR_PATTERN.matcher(tokens.get(8));
 
+      Color color = null;
+
+      if (matcher.find()) {
+        color = UCSCTrack.parseColor(matcher);
+      }
+
+      BedRegion region = new BedRegion(chr, start, end, name, strand, color);
+
+      if (tokens.size() > 11) {
+        // blocks mode
+
+        int count = Integer.parseInt(tokens.get(9));
+
+        List<Integer> sizes = TextUtils.toInt(TextUtils.commaSplit(tokens.get(10)));
+        List<Integer> starts = TextUtils.toInt(TextUtils.commaSplit(tokens.get(11)));
+
+        for (int i = 0; i < count; ++i) {
+          region.mSubRegions.add(new GenomicRegion(chr, start + starts.get(i), start + starts.get(i) + sizes.get(i)));
+        }
+      }
+
+      return region;
+    } else if (tokens.size() > 3) {
+      String name = tokens.get(3);
+
+      return new BedRegion(chr, start, end, name);
+    } else {
+      return new BedRegion(chr, start, end);
+    }
+  }
+
+  /**
+   * Creates the.
+   *
+   * @param region
+   *          the region
+   * @return the bed region
+   */
+  public static BedRegion create(GenomicRegion region) {
+    return new BedRegion(region);
+  }
 
 }

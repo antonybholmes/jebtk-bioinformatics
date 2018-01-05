@@ -32,38 +32,39 @@ package org.jebtk.bioinformatics.genomic;
  * The enum RepeatMaskType.
  */
 public enum RepeatMaskType {
-	
-	/**
-	 * The none.
-	 */
-	UPPERCASE,
-	
-	/**
-	 * The lowercase.
-	 */
-	LOWERCASE,
-	
-	/**
-	 * The n.
-	 */
-	N;
 
-	/**
-	 * Parses the.
-	 *
-	 * @param mask the mask
-	 * @return the repeat mask type
-	 */
-	public static RepeatMaskType parse(String mask) {
-		char c = mask.charAt(0);
-		
-		switch (c) {
-		case 'u':
-			return RepeatMaskType.UPPERCASE;
-		case 'n':
-			return RepeatMaskType.N;
-		default:
-			return RepeatMaskType.LOWERCASE;
-		}
-	}
+  /**
+   * The none.
+   */
+  UPPERCASE,
+
+  /**
+   * The lowercase.
+   */
+  LOWERCASE,
+
+  /**
+   * The n.
+   */
+  N;
+
+  /**
+   * Parses the.
+   *
+   * @param mask
+   *          the mask
+   * @return the repeat mask type
+   */
+  public static RepeatMaskType parse(String mask) {
+    char c = mask.charAt(0);
+
+    switch (c) {
+    case 'u':
+      return RepeatMaskType.UPPERCASE;
+    case 'n':
+      return RepeatMaskType.N;
+    default:
+      return RepeatMaskType.LOWERCASE;
+    }
+  }
 }

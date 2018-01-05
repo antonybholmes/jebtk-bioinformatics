@@ -11,66 +11,66 @@ import java.util.Collection;
  *
  */
 public class LazyGenes extends Genes {
-	private GeneParser mParser;
-	private boolean mAutoLoad = true;
-	private Path mFile;
+  private GeneParser mParser;
+  private boolean mAutoLoad = true;
+  private Path mFile;
 
-	public LazyGenes(Path file, GeneParser parser) {
-		mFile = file;
-		mParser = parser;
-	}
-	
-	private void autoLoad() {
-		if (mAutoLoad) {
-			try {
-				mParser.parse(mFile, this);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			
-			mAutoLoad = false;
-		}
-	}
-	
-	@Override
-	public void autoFindMainVariants() {
-		autoLoad();
-		
-		super.autoFindMainVariants();
-	}
+  public LazyGenes(Path file, GeneParser parser) {
+    mFile = file;
+    mParser = parser;
+  }
 
-	@Override
-	public Collection<Gene> getGenes(String symbol) {
-		autoLoad();
-		
-		return super.getGenes(symbol);
-	}
+  private void autoLoad() {
+    if (mAutoLoad) {
+      try {
+        mParser.parse(mFile, this);
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
 
-	@Override
-	public Collection<Gene> findGenes(GenomicRegion region) {
-		autoLoad();
-		
-		return super.findGenes(region);
-	}
+      mAutoLoad = false;
+    }
+  }
 
-	@Override
-	public Collection<Gene> findClosestGenes(GenomicRegion region) {
-		autoLoad();
-		
-		return super.findClosestGenes(region);
-	}
+  @Override
+  public void autoFindMainVariants() {
+    autoLoad();
 
-	@Override
-	public Collection<Gene> findClosestGenesByTss(GenomicRegion region) {
-		autoLoad();
-		
-		return super.findClosestGenesByTss(region);
-	}
+    super.autoFindMainVariants();
+  }
 
-	@Override
-	public Iterable<String> getIds(String type) {
-		autoLoad();
-		
-		return super.getIds(type);
-	}
+  @Override
+  public Collection<Gene> getGenes(String symbol) {
+    autoLoad();
+
+    return super.getGenes(symbol);
+  }
+
+  @Override
+  public Collection<Gene> findGenes(GenomicRegion region) {
+    autoLoad();
+
+    return super.findGenes(region);
+  }
+
+  @Override
+  public Collection<Gene> findClosestGenes(GenomicRegion region) {
+    autoLoad();
+
+    return super.findClosestGenes(region);
+  }
+
+  @Override
+  public Collection<Gene> findClosestGenesByTss(GenomicRegion region) {
+    autoLoad();
+
+    return super.findClosestGenesByTss(region);
+  }
+
+  @Override
+  public Iterable<String> getIds(String type) {
+    autoLoad();
+
+    return super.getIds(type);
+  }
 }

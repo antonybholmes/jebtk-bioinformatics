@@ -36,8 +36,6 @@ import org.jebtk.core.collections.TreeMapCreator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
-
 // TODO: Auto-generated Javadoc
 /**
  * Keep track of genes associated with genomes.
@@ -45,125 +43,130 @@ import org.slf4j.LoggerFactory;
  * @author Antony Holmes Holmes
  */
 public class GenesService implements Iterable<String> {
-	
-	/**
-	 * The Class GenesServiceLoader.
-	 */
-	private static class GenesServiceLoader {
-		
-		/** The Constant INSTANCE. */
-		private static final GenesService INSTANCE = new GenesService();
+
+  /**
+   * The Class GenesServiceLoader.
+   */
+  private static class GenesServiceLoader {
+
+    /** The Constant INSTANCE. */
+    private static final GenesService INSTANCE = new GenesService();
+  }
+
+  /**
+   * Gets the single instance of SettingsService.
+   *
+   * @return single instance of SettingsService
+   */
+  public static GenesService getInstance() {
+    return GenesServiceLoader.INSTANCE;
+  }
+
+  /**
+   * The constant LOG.
+   */
+  private static final Logger LOG = LoggerFactory.getLogger(GenesService.class);
+
+  /**
+   * The member symbol map.
+   */
+  private IterMap<String, IterMap<String, Genes>> mGenesMap = DefaultTreeMap
+      .create(new TreeMapCreator<String, Genes>());
+
+  private String mCurrentDb;
+
+  /**
+   * Instantiates a new gene entrez service.
+   */
+  private GenesService() {
+    // do nothing
+  }
+
+  /**
+   * Get the genes associated with the current database. If there is more than one
+   * database associated with the genome, the first is chosen alphabetically by
+   * name.
+   * 
+   * @param genome
+   * @return
+   */
+  public Genes getGenes(String genome) {
+    return getGenes(genome, mGenesMap.get(genome).first());
+  }
+
+  /**
+   * Return the genes on a particular genome and database.
+   *
+   * @param genome
+   *          the genome
+   * @param db
+   *          the db
+   * @return the genes
+   */
+  public Genes getGenes(String genome, String db) {
+    if (!mGenesMap.containsKey(genome) || !mGenesMap.get(genome).containsKey(db)) {
+      return Genes.EMPTY_GENES;
     }
 
-	/**
-	 * Gets the single instance of SettingsService.
-	 *
-	 * @return single instance of SettingsService
-	 */
-    public static GenesService getInstance() {
-        return GenesServiceLoader.INSTANCE;
-    }
+    return mGenesMap.get(genome).get(db);
+  }
 
-	
-	/**
-	 * The constant LOG.
-	 */
-	private static final Logger LOG = 
-			LoggerFactory.getLogger(GenesService.class);
+  public boolean containsGenes(String genome, String db) {
+    return mGenesMap.containsKey(genome) && mGenesMap.get(genome).containsKey(db);
+  }
 
-	/**
-	 * The member symbol map.
-	 */
-	private IterMap<String, IterMap<String, Genes>> mGenesMap = 
-			DefaultTreeMap.create(new TreeMapCreator<String, Genes>());
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Iterable#iterator()
+   */
+  @Override
+  public Iterator<String> iterator() {
+    return mGenesMap.iterator();
+  }
 
-	private String mCurrentDb;
+  /**
+   * Gets the names.
+   *
+   * @param genome
+   *          the genome
+   * @return the names
+   */
+  public Iterable<String> getNames(String genome) {
+    return mGenesMap.get(genome);
+  }
 
-	/**
-	 * Instantiates a new gene entrez service.
-	 */
-	private GenesService() {
-		// do nothing
-	}
-	
-	/**
-	 * Get the genes associated with the current database. If there is more
-	 * than one database associated with the genome, the first is chosen
-	 * alphabetically by name.
-	 * 
-	 * @param genome
-	 * @return
-	 */
-	public Genes getGenes(String genome) {
-		return getGenes(genome, mGenesMap.get(genome).first());
-	}
-	
-	/**
-	 * Return the genes on a particular genome and database.
-	 *
-	 * @param genome the genome
-	 * @param db the db
-	 * @return the genes
-	 */
-	public Genes getGenes(String genome, String db) {
-		if (!mGenesMap.containsKey(genome) || 
-				!mGenesMap.get(genome).containsKey(db)) {
-			return Genes.EMPTY_GENES;
-		}
-		
-		return mGenesMap.get(genome).get(db);
-	}
-	
-	public boolean containsGenes(String genome, String db) {
-		return mGenesMap.containsKey(genome) && mGenesMap.get(genome).containsKey(db);
-	}
+  /**
+   * Put.
+   *
+   * @param genome
+   *          the genome
+   * @param name
+   *          the name
+   * @param genes
+   *          the genes
+   */
+  public void put(String genome, String db, Genes genes) {
+    mGenesMap.get(genome).put(db, genes);
 
-	/* (non-Javadoc)
-	 * @see java.lang.Iterable#iterator()
-	 */
-	@Override
-	public Iterator<String> iterator() {
-		return mGenesMap.iterator();
-	}
-	
-	/**
-	 * Gets the names.
-	 *
-	 * @param genome the genome
-	 * @return the names
-	 */
-	public Iterable<String> getNames(String genome) {
-		return mGenesMap.get(genome);
-	}
+    mCurrentDb = db;
+  }
 
-	/**
-	 * Put.
-	 *
-	 * @param genome the genome
-	 * @param name the name
-	 * @param genes the genes
-	 */
-	public void put(String genome, String db, Genes genes) {
-		mGenesMap.get(genome).put(db, genes);
-		
-		mCurrentDb = db;
-	}
+  /**
+   * Gets the genomes.
+   *
+   * @return the genomes
+   */
+  public Collection<String> getGenomes() {
+    return mGenesMap.keySet();
+  }
 
-	/**
-	 * Gets the genomes.
-	 *
-	 * @return the genomes
-	 */
-	public Collection<String> getGenomes() {
-		return mGenesMap.keySet();
-	}
+  public String getCurrentDb() {
+    return mCurrentDb;
+  }
 
-	public String getCurrentDb() {
-		return mCurrentDb;
-	}
-	
-	public String getCurrentDb(String genome) {
-		return mGenesMap.get(genome).first();
-	}
-	
+  public String getCurrentDb(String genome) {
+    return mGenesMap.get(genome).first();
+  }
+
 }

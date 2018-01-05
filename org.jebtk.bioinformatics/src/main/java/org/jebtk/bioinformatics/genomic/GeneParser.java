@@ -40,8 +40,6 @@ import org.jebtk.core.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
-
 // TODO: Auto-generated Javadoc
 /**
  * Genes lookup to m.
@@ -49,297 +47,280 @@ import org.slf4j.LoggerFactory;
  * @author Antony Holmes Holmes
  */
 public abstract class GeneParser {
-	public static final Logger LOG = 
-			LoggerFactory.getLogger(GeneParser.class);
+  public static final Logger LOG = LoggerFactory.getLogger(GeneParser.class);
 
-	protected Set<GeneType> mLevels = new HashSet<GeneType>();
+  protected Set<GeneType> mLevels = new HashSet<GeneType>();
 
-	/** Whether to add exons to gene structure */
-	protected boolean mKeepExons = true;
-	protected Set<String> mMatchTags = new HashSet<String>();
-	protected Set<String> mExcludeTags = new HashSet<String>();
+  /** Whether to add exons to gene structure */
+  protected boolean mKeepExons = true;
+  protected Set<String> mMatchTags = new HashSet<String>();
+  protected Set<String> mExcludeTags = new HashSet<String>();
 
-	public GeneParser() {
-		//setLevels(GeneType.GENE);
-	}
+  public GeneParser() {
+    // setLevels(GeneType.GENE);
+  }
 
-	public GeneParser(GeneParser parser) {
-		mLevels.addAll(parser.mLevels);
-		mKeepExons = parser.mKeepExons;
-		mMatchTags.addAll(parser.mMatchTags);
-		mExcludeTags.addAll(parser.mExcludeTags);
-	}
+  public GeneParser(GeneParser parser) {
+    mLevels.addAll(parser.mLevels);
+    mKeepExons = parser.mKeepExons;
+    mMatchTags.addAll(parser.mMatchTags);
+    mExcludeTags.addAll(parser.mExcludeTags);
+  }
 
-	public GeneParser setKeepExons(boolean keep) {
-		GeneParser parser = create(this);
+  public GeneParser setKeepExons(boolean keep) {
+    GeneParser parser = create(this);
 
-		parser._setKeepExons(keep);
+    parser._setKeepExons(keep);
 
-		return parser;
-	}
+    return parser;
+  }
 
-	protected void _setKeepExons(boolean keep) {
-		mKeepExons = keep;
-	}
+  protected void _setKeepExons(boolean keep) {
+    mKeepExons = keep;
+  }
 
-	/**
-	 * Exclude entries matching given tags.
-	 * 
-	 * @param tag
-	 * @param tags
-	 * @return 
-	 */
-	public GeneParser excludeByTag(String tag, String... tags) {
-		GeneParser parser = create(this);
+  /**
+   * Exclude entries matching given tags.
+   * 
+   * @param tag
+   * @param tags
+   * @return
+   */
+  public GeneParser excludeByTag(String tag, String... tags) {
+    GeneParser parser = create(this);
 
-		parser.mExcludeTags.add(tag);
+    parser.mExcludeTags.add(tag);
 
-		for (String t : tags) {
-			parser.mExcludeTags.add(t);
-		}
+    for (String t : tags) {
+      parser.mExcludeTags.add(t);
+    }
 
-		return parser;
-	}
+    return parser;
+  }
 
-	public GeneParser excludeByTag(Collection<String> excludeTags) {
-		GeneParser parser = create(this);
+  public GeneParser excludeByTag(Collection<String> excludeTags) {
+    GeneParser parser = create(this);
 
-		parser.mExcludeTags.addAll(excludeTags);
+    parser.mExcludeTags.addAll(excludeTags);
 
-		return parser;
-	}
+    return parser;
+  }
 
-	public GeneParser matchOnTag(String tag, String... tags) {
-		GeneParser parser = create(this);
+  public GeneParser matchOnTag(String tag, String... tags) {
+    GeneParser parser = create(this);
 
-		parser.mMatchTags.add(tag);
+    parser.mMatchTags.add(tag);
 
-		for (String t : tags) {
-			parser.mMatchTags.add(t);
-		}
+    for (String t : tags) {
+      parser.mMatchTags.add(t);
+    }
 
-		return parser;
-	}
+    return parser;
+  }
 
-	public GeneParser setLevels(GeneType level, GeneType... levels) {
-		GeneParser parser = create(this);
+  public GeneParser setLevels(GeneType level, GeneType... levels) {
+    GeneParser parser = create(this);
 
-		parser._setLevels(level, levels);
+    parser._setLevels(level, levels);
 
-		return parser;
-	}
+    return parser;
+  }
 
-	protected void _setLevels(GeneType level, GeneType... levels) {
-		mLevels.clear();
-		mLevels.add(level);
+  protected void _setLevels(GeneType level, GeneType... levels) {
+    mLevels.clear();
+    mLevels.add(level);
 
-		for (GeneType l : levels) {
-			mLevels.add(l);
-		}
-	}
+    for (GeneType l : levels) {
+      mLevels.add(l);
+    }
+  }
 
-	public GeneParser setLevels(Collection<GeneType> levels) {
-		GeneParser parser = create(this);
+  public GeneParser setLevels(Collection<GeneType> levels) {
+    GeneParser parser = create(this);
 
-		parser._setLevels(levels);
+    parser._setLevels(levels);
 
-		return parser;
-	}
+    return parser;
+  }
 
-	protected void _setLevels(Collection<GeneType> levels) {
-		mLevels.clear();
+  protected void _setLevels(Collection<GeneType> levels) {
+    mLevels.clear();
 
-		_addLevels(levels);
-	}
+    _addLevels(levels);
+  }
 
-	public GeneParser addLevels(Collection<GeneType> levels) {
-		GeneParser parser = create(this);
+  public GeneParser addLevels(Collection<GeneType> levels) {
+    GeneParser parser = create(this);
 
-		parser._addLevels(levels);
+    parser._addLevels(levels);
 
-		return parser;
-	}
+    return parser;
+  }
 
-	protected void _addLevels(Collection<GeneType> levels) {
-		mLevels.addAll(levels);
-	}
+  protected void _addLevels(Collection<GeneType> levels) {
+    mLevels.addAll(levels);
+  }
 
-	public abstract GeneParser create(GeneParser parser);
+  public abstract GeneParser create(GeneParser parser);
 
-	/**
-	 * Parses the gene table.
-	 *
-	 * @param file the file
-	 * @return the genes
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public Genes parse(Path file) throws IOException {
-		Genes genes = new Genes();
+  /**
+   * Parses the gene table.
+   *
+   * @param file
+   *          the file
+   * @return the genes
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   */
+  public Genes parse(Path file) throws IOException {
+    Genes genes = new Genes();
 
-		parse(file, genes);
+    parse(file, genes);
 
-		return genes;
-	}
+    return genes;
+  }
 
-	public void parse(Path file, Genes genes) throws IOException {
-		BufferedReader reader = FileUtils.newBufferedReader(file);
+  public void parse(Path file, Genes genes) throws IOException {
+    BufferedReader reader = FileUtils.newBufferedReader(file);
 
-		try {
-			parse(file, reader, genes);
-		} finally {
-			reader.close();
-		}
-	}
+    try {
+      parse(file, reader, genes);
+    } finally {
+      reader.close();
+    }
+  }
 
-	/**
-	 * Parses the gene table.
-	 *
-	 * @param reader the reader
-	 * @return the genes
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	protected Genes parse(Path file, BufferedReader reader) throws IOException {
-		Genes genes = new Genes();
+  /**
+   * Parses the gene table.
+   *
+   * @param reader
+   *          the reader
+   * @return the genes
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   */
+  protected Genes parse(Path file, BufferedReader reader) throws IOException {
+    Genes genes = new Genes();
+
+    parse(file, reader, genes);
 
-		parse(file, reader, genes);
+    return genes;
+  }
 
-		return genes;
-	}
+  protected void parse(Path file, BufferedReader reader, Genes genes) throws IOException {
+    // Do nothin
+  }
 
-	protected void parse(Path file, 
-			BufferedReader reader, 
-			Genes genes) throws IOException {
-		// Do nothin
-	}
+  public Genes parse(Path file, Chromosome chr) throws IOException {
+    Genes genes = new Genes();
 
+    parse(file, genes, chr);
 
+    return genes;
+  }
 
-	public Genes parse(Path file, Chromosome chr) throws IOException {
-		Genes genes = new Genes();
+  protected Genes parse(Path file, BufferedReader reader, Chromosome chr) throws IOException {
+    Genes genes = new Genes();
 
-		parse(file, genes, chr);
-
-		return genes;
-	}
+    parse(file, reader, genes, chr);
 
-	protected Genes parse(Path file, BufferedReader reader, Chromosome chr) throws IOException {
-		Genes genes = new Genes();
+    return genes;
+  }
 
-		parse(file, reader, genes, chr);
+  public void parse(Path file, Genes genes, Chromosome chr) throws IOException {
+    BufferedReader reader = FileUtils.newBufferedReader(file);
 
-		return genes;
-	}
+    try {
+      parse(file, reader, genes, chr);
+    } finally {
+      reader.close();
+    }
+  }
 
-	public void parse(Path file, Genes genes, Chromosome chr) throws IOException {
-		BufferedReader reader = FileUtils.newBufferedReader(file);
+  protected void parse(Path file, BufferedReader reader, Genes genes, Chromosome chr) throws IOException {
+    parse(file, reader, genes);
+  }
 
-		try {
-			parse(file, reader, genes, chr);
-		} finally {
-			reader.close();
-		}
-	}
+  public Genes parse(Path file, Chromosome chr, int window) throws IOException {
+    Genes genes = new Genes();
 
-	protected void parse(Path file, 
-			BufferedReader reader, 
-			Genes genes,
-			Chromosome chr) throws IOException {
-		parse(file, reader, genes);
-	}
+    parse(file, genes, chr, window);
 
+    return genes;
+  }
 
-	public Genes parse(Path file, Chromosome chr, int window) throws IOException {
-		Genes genes = new Genes();
+  protected Genes parse(Path file, BufferedReader reader, Chromosome chr, int window) throws IOException {
+    Genes genes = new Genes();
 
-		parse(file, genes, chr, window);
+    parse(file, reader, genes, chr, window);
 
-		return genes;
-	}
+    return genes;
+  }
 
-	protected Genes parse(Path file, 
-			BufferedReader reader, 
-			Chromosome chr, 
-			int window) throws IOException {
-		Genes genes = new Genes();
+  public void parse(Path file, Genes genes, Chromosome chr, int window) throws IOException {
+    BufferedReader reader = FileUtils.newBufferedReader(file);
 
-		parse(file, reader, genes, chr, window);
+    try {
+      parse(file, reader, genes, chr, window);
+    } finally {
+      reader.close();
+    }
+  }
 
-		return genes;
-	}
+  protected void parse(Path file, BufferedReader reader, Genes genes, Chromosome chr, int window) throws IOException {
+    parse(file, reader, genes, chr);
+  }
 
-	public void parse(Path file, Genes genes, Chromosome chr, int window) throws IOException {
-		BufferedReader reader = FileUtils.newBufferedReader(file);
+  public Map<String, Set<String>> idMap(Path file, String id1, String id2) throws IOException {
+    BufferedReader reader = FileUtils.newBufferedReader(file);
 
-		try {
-			parse(file, reader, genes, chr, window);
-		} finally {
-			reader.close();
-		}
-	}
+    Map<String, Set<String>> ret;
 
-	protected void parse(Path file, 
-			BufferedReader reader, 
-			Genes genes,
-			Chromosome chr,
-			int window) throws IOException {
-		parse(file, reader, genes, chr);
-	}
+    try {
+      ret = idMap(file, reader, id1, id2);
+    } finally {
+      reader.close();
+    }
 
+    return ret;
+  }
 
-	public Map<String, Set<String>> idMap(Path file,
-			String id1,
-			String id2) throws IOException {
-		BufferedReader reader = FileUtils.newBufferedReader(file);
+  /**
+   * Parses the gene table.
+   *
+   * @param reader
+   *          the reader
+   * @return the genes
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   */
+  public abstract Map<String, Set<String>> idMap(Path file, BufferedReader reader, String id1, String id2)
+      throws IOException;
 
-		Map<String, Set<String>> ret;
+  public boolean containsLevel(GeneType level) {
+    if (mLevels.size() == 0) {
+      return true;
+    }
 
-		try {
-			ret = idMap(file, reader, id1, id2);
-		} finally {
-			reader.close();
-		}
+    return mLevels.contains(level);
+  }
 
-		return ret;
-	}
+  public static Gene addAttributes(GeneType type, final GenomicRegion region,
+      final IterMap<String, String> attributeMap) {
 
-	/**
-	 * Parses the gene table.
-	 *
-	 * @param reader the reader
-	 * @return the genes
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public abstract Map<String, Set<String>> idMap(Path file, 
-			BufferedReader reader,
-			String id1,
-			String id2) throws IOException; 
+    Gene gene = Gene.create(type, region);
 
-	public boolean containsLevel(GeneType level) {
-		if (mLevels.size() == 0) {
-			return true;
-		}
+    // Add the ids
+    for (String id : attributeMap) {
+      String name = attributeMap.get(id);
 
-		return mLevels.contains(level);
-	}
+      gene.setId(id, name);
+    }
 
-	public static Gene addAttributes(GeneType type,
-			final GenomicRegion region,
-			final IterMap<String, String> attributeMap) {
+    // If there are any tags
 
-		Gene gene = Gene.create(type, region);
+    // genes.add(gene, gene);
 
-		// Add the ids
-		for (String id : attributeMap) {
-			String name = attributeMap.get(id);
-
-			gene.setId(id, name);
-		}
-
-		// If there are any tags
-
-
-		//genes.add(gene, gene);
-
-		return gene;
-	}
+    return gene;
+  }
 }

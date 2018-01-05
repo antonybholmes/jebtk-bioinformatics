@@ -42,13 +42,11 @@ import org.jebtk.bioinformatics.genomic.SequenceRegion;
 import org.jebtk.core.io.FileUtils;
 import org.jebtk.core.io.PathUtils;
 
-
 // TODO: Auto-generated Javadoc
 /**
- * Encodes DNA in a 2 bit file representing ACGT. All other characters such
- * as N map to A. Bases are encoded in two bits, so 4 bases per byte.
- * A = 0, C = 1, G = 2, T = 3.
- * Files can be accompanied by a corresponding n
+ * Encodes DNA in a 2 bit file representing ACGT. All other characters such as N
+ * map to A. Bases are encoded in two bits, so 4 bases per byte. A = 0, C = 1, G
+ * = 2, T = 3. Files can be accompanied by a corresponding n
  * 
  *
  * @author Antony Holmes Holmes
@@ -56,83 +54,76 @@ import org.jebtk.core.io.PathUtils;
  */
 public class GenomeAssemblyFS extends GenomeAssembly {
 
-	/** The m map. */
-	protected Map<String, GenomeAssembly> mMap = 
-			new HashMap<String, GenomeAssembly>();
-	
-	/** The m directory. */
-	protected final Path mDirectory;
+  /** The m map. */
+  protected Map<String, GenomeAssembly> mMap = new HashMap<String, GenomeAssembly>();
 
+  /** The m directory. */
+  protected final Path mDirectory;
 
-	/**
-	 * Directory containing genome Paths which must be of the form
-	 * chr.n.txt. Each Path must contain exactly one line consisting
-	 * of the entire chromosome.
-	 *
-	 * @param directory the directory
-	 */
-	public GenomeAssemblyFS(Path directory) {
-		mDirectory = directory;
-	}
-	
-	@Override
-	public String getName() {
-		return "fs";
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.jebtk.bioinformatics.genome.GenomeAssembly#getGenomes()
-	 */
-	@Override
-	public List<String> getGenomes() throws IOException {
-		
-		List<Path> dirs = FileUtils.lsdir(mDirectory);
-		
-		List<String> ret = new ArrayList<String>(dirs.size());
-		
-		for (Path dir : dirs) {
-			ret.add(PathUtils.getName(dir));
-		}
-		
-		return ret;
-	}
- 
-	/* (non-Javadoc)
-	 * @see edu.columbia.rdf.lib.bioinformatics.genome.GenomeAssembly#getSequence(edu.columbia.rdf.lib.bioinformatics.genome.GenomicRegion, boolean, edu.columbia.rdf.lib.bioinformatics.genome.RepeatMaskType)
-	 */
-	@Override
-	public final SequenceRegion getSequence(String genome,
-			GenomicRegion region,
-			boolean displayUpper,
-			RepeatMaskType repeatMaskType) throws IOException {
-		createGenomeEntry(genome, mDirectory, mMap);
+  /**
+   * Directory containing genome Paths which must be of the form chr.n.txt. Each
+   * Path must contain exactly one line consisting of the entire chromosome.
+   *
+   * @param directory
+   *          the directory
+   */
+  public GenomeAssemblyFS(Path directory) {
+    mDirectory = directory;
+  }
 
-		return mMap.get(genome).getSequence(genome,
-				region,
-				displayUpper,
-				repeatMaskType);
-	}
-	
-	@Override
-	public List<SequenceRegion> getSequences(String genome,
-			Collection<GenomicRegion> regions,
-			boolean displayUpper,
-			RepeatMaskType repeatMaskType) throws IOException {
-		createGenomeEntry(genome, mDirectory, mMap);
+  @Override
+  public String getName() {
+    return "fs";
+  }
 
-		return mMap.get(genome).getSequences(genome,
-				regions,
-				displayUpper,
-				repeatMaskType);
-	}
-	
-	protected void createGenomeEntry(String genome,
-			Path dir,
-			Map<String, GenomeAssembly> map) {
-		if (!map.containsKey(genome)) {
-			Path d = dir.resolve(genome);
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.jebtk.bioinformatics.genome.GenomeAssembly#getGenomes()
+   */
+  @Override
+  public List<String> getGenomes() throws IOException {
 
-			map.put(genome, new GenomeAssemblyExt2BitMem(d)); //new GenomeAssemblyExt2Bit(dir));
-		}
-	}
+    List<Path> dirs = FileUtils.lsdir(mDirectory);
+
+    List<String> ret = new ArrayList<String>(dirs.size());
+
+    for (Path dir : dirs) {
+      ret.add(PathUtils.getName(dir));
+    }
+
+    return ret;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * edu.columbia.rdf.lib.bioinformatics.genome.GenomeAssembly#getSequence(edu.
+   * columbia.rdf.lib.bioinformatics.genome.GenomicRegion, boolean,
+   * edu.columbia.rdf.lib.bioinformatics.genome.RepeatMaskType)
+   */
+  @Override
+  public final SequenceRegion getSequence(String genome, GenomicRegion region, boolean displayUpper,
+      RepeatMaskType repeatMaskType) throws IOException {
+    createGenomeEntry(genome, mDirectory, mMap);
+
+    return mMap.get(genome).getSequence(genome, region, displayUpper, repeatMaskType);
+  }
+
+  @Override
+  public List<SequenceRegion> getSequences(String genome, Collection<GenomicRegion> regions, boolean displayUpper,
+      RepeatMaskType repeatMaskType) throws IOException {
+    createGenomeEntry(genome, mDirectory, mMap);
+
+    return mMap.get(genome).getSequences(genome, regions, displayUpper, repeatMaskType);
+  }
+
+  protected void createGenomeEntry(String genome, Path dir, Map<String, GenomeAssembly> map) {
+    if (!map.containsKey(genome)) {
+      Path d = dir.resolve(genome);
+
+      map.put(genome, new GenomeAssemblyExt2BitMem(d)); // new GenomeAssemblyExt2Bit(dir));
+    }
+  }
 }

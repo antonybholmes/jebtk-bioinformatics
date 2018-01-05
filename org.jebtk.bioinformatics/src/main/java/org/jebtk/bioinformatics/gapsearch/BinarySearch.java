@@ -30,49 +30,52 @@ package org.jebtk.bioinformatics.gapsearch;
 import org.jebtk.bioinformatics.genomic.Chromosome;
 import org.jebtk.bioinformatics.genomic.GenomicRegion;
 
-
-
 // TODO: Auto-generated Javadoc
 /**
- * Uses a binary search to identify the closest points to a genomic
- * coordinate and returns all objects in the range this spans.
+ * Uses a binary search to identify the closest points to a genomic coordinate
+ * and returns all objects in the range this spans.
  *
  * @author Antony Holmes Holmes
- * @param <T> the generic type
+ * @param <T>
+ *          the generic type
  */
 public class BinarySearch<T> extends BinaryGapSearch<T> {
 
-	/**
-	 * Instantiates a new binary search.
-	 */
-	public BinarySearch() {
-		super(1);
-	}
+  /**
+   * Instantiates a new binary search.
+   */
+  public BinarySearch() {
+    super(1);
+  }
 
-	/* (non-Javadoc)
-	 * @see edu.columbia.rdf.lib.bioinformatics.gapsearch.GapSearch#addFeature(edu.columbia.rdf.lib.bioinformatics.genome.Chromosome, int, int, java.lang.Object)
-	 */
-	@Override
-	public void add(GenomicRegion region, T feature) {
-		Chromosome chr = region.getChr();
-		int start = region.getStart();
-		int end = region.getEnd();
-		
-		if (!mFeatures.get(chr).containsKey(start)) {
-			mFeatures.get(chr).put(start, new GappedSearchFeatures<T>(start));
-		}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see edu.columbia.rdf.lib.bioinformatics.gapsearch.GapSearch#addFeature(edu.
+   * columbia.rdf.lib.bioinformatics.genome.Chromosome, int, int,
+   * java.lang.Object)
+   */
+  @Override
+  public void add(GenomicRegion region, T feature) {
+    Chromosome chr = region.getChr();
+    int start = region.getStart();
+    int end = region.getEnd();
 
-		mFeatures.get(chr).get(start).add(region, feature);
+    if (!mFeatures.get(chr).containsKey(start)) {
+      mFeatures.get(chr).put(start, new GappedSearchFeatures<T>(start));
+    }
 
-		if (!mFeatures.get(chr).containsKey(end)) {
-			mFeatures.get(chr).put(end, new GappedSearchFeatures<T>(end));
-		}
+    mFeatures.get(chr).get(start).add(region, feature);
 
-		mFeatures.get(chr).get(end).add(region, feature);
+    if (!mFeatures.get(chr).containsKey(end)) {
+      mFeatures.get(chr).put(end, new GappedSearchFeatures<T>(end));
+    }
 
-		++mSize;
+    mFeatures.get(chr).get(end).add(region, feature);
 
-		// Indicate that indexes will need to be rebuilt before searching
-		mAutoSorted = false;
-	}
+    ++mSize;
+
+    // Indicate that indexes will need to be rebuilt before searching
+    mAutoSorted = false;
+  }
 }

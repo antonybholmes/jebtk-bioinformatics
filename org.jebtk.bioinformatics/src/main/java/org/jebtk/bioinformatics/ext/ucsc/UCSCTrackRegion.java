@@ -44,137 +44,145 @@ import org.jebtk.core.text.TextUtils;
  * @author Antony Holmes Holmes
  */
 public class UCSCTrackRegion extends GenomicRegion {
-	/**
-	 * The member sub regions.
-	 */
-	protected List<GenomicRegion> mSubRegions = new ArrayList<GenomicRegion>();
-	
-	/**
-	 * The member strand.
-	 */
-	protected Strand mStrand = Strand.NONE;
+  /**
+   * The member sub regions.
+   */
+  protected List<GenomicRegion> mSubRegions = new ArrayList<GenomicRegion>();
 
-	/**
-	 * The member color.
-	 */
-	private Color mColor;
-	
-	
-	/**
-	 * Instantiates a new UCSC track region.
-	 *
-	 * @param chromosome the chromosome
-	 * @param start the start
-	 * @param end the end
-	 */
-	public UCSCTrackRegion(Chromosome chromosome, 
-			int start, 
-			int end) {
-		this(chromosome, start, end, Strand.NONE, null);
-	}
-	
-	/**
-	 * Instantiates a new UCSC track region.
-	 *
-	 * @param chromosome the chromosome
-	 * @param start the start
-	 * @param end the end
-	 * @param strand the strand
-	 * @param color the color
-	 */
-	public UCSCTrackRegion(Chromosome chromosome, 
-			int start, 
-			int end,
-			Strand strand,
-			Color color) {
-		super(chromosome, start, end);
+  /**
+   * The member strand.
+   */
+  protected Strand mStrand = Strand.NONE;
 
-		mStrand = strand;
-		
-		setColor(color);
-	}
+  /**
+   * The member color.
+   */
+  private Color mColor;
 
-	/**
-	 * Gets the strand.
-	 *
-	 * @return the strand
-	 */
-	public Strand getStrand() {
-		return mStrand;
-	}
+  /**
+   * Instantiates a new UCSC track region.
+   *
+   * @param chromosome
+   *          the chromosome
+   * @param start
+   *          the start
+   * @param end
+   *          the end
+   */
+  public UCSCTrackRegion(Chromosome chromosome, int start, int end) {
+    this(chromosome, start, end, Strand.NONE, null);
+  }
 
-	/**
-	 * Gets the color.
-	 *
-	 * @return the color
-	 */
-	public Color getColor() {
-		return mColor;
-	}
-	
-	/**
-	 * Sets the color.
-	 *
-	 * @param color the new color
-	 */
-	public void setColor(Color color) {
-		mColor = color;
-	}
-	
-	/**
-	 * Gets the sub regions.
-	 *
-	 * @return the sub regions
-	 */
-	public List<GenomicRegion> getSubRegions() {
-		return mSubRegions;
-	}
-	
-	/* (non-Javadoc)
-	 * @see edu.columbia.rdf.lib.bioinformatics.genome.GenomicRegion#toString()
-	 */
-	@Override
-	public String toString() {
-		StringBuilder buffer = new StringBuilder();
-		
-		try {
-			formattedTxt(buffer);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		return buffer.toString();
-	}
-	
-	/**
-	 * Formatted txt.
-	 *
-	 * @return the string
-	 */
-	public String formattedTxt() {
-		StringBuilder buffer = new StringBuilder();
-		
-		try {
-			formattedTxt(buffer);
-			buffer.append(TextUtils.NEW_LINE);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		return buffer.toString();
-	}
-	
-	/* (non-Javadoc)
-	 * @see edu.columbia.rdf.lib.bioinformatics.genome.GenomicRegion#formattedTxt(java.lang.Appendable)
-	 */
-	@Override
-	public void formattedTxt(Appendable buffer) throws IOException {
-		buffer.append(mChr.toString());
-		buffer.append(TextUtils.TAB_DELIMITER);
-		buffer.append(Integer.toString(mStart));
-		buffer.append(TextUtils.TAB_DELIMITER);
-		buffer.append(Integer.toString(mEnd));
-		//buffer.append(TextUtils.TAB_DELIMITER);
-		//buffer.append(mStrand);
-	}
+  /**
+   * Instantiates a new UCSC track region.
+   *
+   * @param chromosome
+   *          the chromosome
+   * @param start
+   *          the start
+   * @param end
+   *          the end
+   * @param strand
+   *          the strand
+   * @param color
+   *          the color
+   */
+  public UCSCTrackRegion(Chromosome chromosome, int start, int end, Strand strand, Color color) {
+    super(chromosome, start, end);
+
+    mStrand = strand;
+
+    setColor(color);
+  }
+
+  /**
+   * Gets the strand.
+   *
+   * @return the strand
+   */
+  public Strand getStrand() {
+    return mStrand;
+  }
+
+  /**
+   * Gets the color.
+   *
+   * @return the color
+   */
+  public Color getColor() {
+    return mColor;
+  }
+
+  /**
+   * Sets the color.
+   *
+   * @param color
+   *          the new color
+   */
+  public void setColor(Color color) {
+    mColor = color;
+  }
+
+  /**
+   * Gets the sub regions.
+   *
+   * @return the sub regions
+   */
+  public List<GenomicRegion> getSubRegions() {
+    return mSubRegions;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see edu.columbia.rdf.lib.bioinformatics.genome.GenomicRegion#toString()
+   */
+  @Override
+  public String toString() {
+    StringBuilder buffer = new StringBuilder();
+
+    try {
+      formattedTxt(buffer);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    return buffer.toString();
+  }
+
+  /**
+   * Formatted txt.
+   *
+   * @return the string
+   */
+  public String formattedTxt() {
+    StringBuilder buffer = new StringBuilder();
+
+    try {
+      formattedTxt(buffer);
+      buffer.append(TextUtils.NEW_LINE);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    return buffer.toString();
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * edu.columbia.rdf.lib.bioinformatics.genome.GenomicRegion#formattedTxt(java.
+   * lang.Appendable)
+   */
+  @Override
+  public void formattedTxt(Appendable buffer) throws IOException {
+    buffer.append(mChr.toString());
+    buffer.append(TextUtils.TAB_DELIMITER);
+    buffer.append(Integer.toString(mStart));
+    buffer.append(TextUtils.TAB_DELIMITER);
+    buffer.append(Integer.toString(mEnd));
+    // buffer.append(TextUtils.TAB_DELIMITER);
+    // buffer.append(mStrand);
+  }
 }

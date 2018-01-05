@@ -22,53 +22,62 @@ import org.jebtk.core.NameProperty;
  * The Class Type.
  */
 public class Type extends Entity implements Comparable<Type>, NameProperty {
-	
-	/** The m name. */
-	protected String mName;
 
-	/**
-	 * Instantiates a new type.
-	 *
-	 * @param id the id
-	 * @param name the name
-	 */
-	public Type(int id, String name) {
-		super(id);
-		
-		mName = name;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.abh.common.NameProperty#getName()
-	 */
-	@Override
-	public String getName() {
-		return mName;
-	}
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		return mName;
-	}
+  /** The m name. */
+  protected String mName;
 
-	/* (non-Javadoc)
-	 * @see java.lang.Comparable#compareTo(java.lang.Object)
-	 */
-	@Override
-	public int compareTo(Type t) {
-		return mName.compareTo(t.mName);
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.jebtk.bioinformatics.annotation.Entity#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		return mName.hashCode();
-	}
-	
-	
+  /**
+   * Instantiates a new type.
+   *
+   * @param id
+   *          the id
+   * @param name
+   *          the name
+   */
+  public Type(int id, String name) {
+    super(id);
+
+    mName = name;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.abh.common.NameProperty#getName()
+   */
+  @Override
+  public String getName() {
+    return mName;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#toString()
+   */
+  @Override
+  public String toString() {
+    return mName;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Comparable#compareTo(java.lang.Object)
+   */
+  @Override
+  public int compareTo(Type t) {
+    return mName.compareTo(t.mName);
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.jebtk.bioinformatics.annotation.Entity#hashCode()
+   */
+  @Override
+  public int hashCode() {
+    return mName.hashCode();
+  }
+
 }

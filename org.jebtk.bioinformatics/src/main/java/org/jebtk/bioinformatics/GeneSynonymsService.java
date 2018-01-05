@@ -40,8 +40,6 @@ import java.util.Set;
 import org.jebtk.core.io.Io;
 import org.jebtk.core.text.TextUtils;
 
-
-
 // TODO: Auto-generated Javadoc
 /**
  * Server for gene synonyms.
@@ -49,89 +47,88 @@ import org.jebtk.core.text.TextUtils;
  * @author Antony Holmes Holmes
  */
 public class GeneSynonymsService {
-	
-	/**
-	 * The constant INSTANCE.
-	 */
-	private static final GeneSynonymsService INSTANCE = 
-			new GeneSynonymsService();
-	
-	/**
-	 * The constant DEFAULT_GENES_FILE.
-	 */
-	public static final File DEFAULT_GENES_FILE = 
-			new File("res/gene_synonyms.txt");
 
-	/**
-	 * Gets the single instance of GeneSynonymsService.
-	 *
-	 * @return single instance of GeneSynonymsService
-	 */
-	public static final GeneSynonymsService getInstance() {
-		return INSTANCE;
-	}
-	
-	/**
-	 * The map.
-	 */
-	// genome, group, feature name
-	private Map<String, Set<String>> map = new HashMap<String, Set<String>>();
+  /**
+   * The constant INSTANCE.
+   */
+  private static final GeneSynonymsService INSTANCE = new GeneSynonymsService();
 
+  /**
+   * The constant DEFAULT_GENES_FILE.
+   */
+  public static final File DEFAULT_GENES_FILE = new File("res/gene_synonyms.txt");
 
-	/**
-	 * Instantiates a new gene synonyms service.
-	 */
-	private GeneSynonymsService() {
-		try {
-			load();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+  /**
+   * Gets the single instance of GeneSynonymsService.
+   *
+   * @return single instance of GeneSynonymsService
+   */
+  public static final GeneSynonymsService getInstance() {
+    return INSTANCE;
+  }
 
-	/**
-	 * Load.
-	 *
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public final void load() throws IOException {
-		BufferedReader reader = new BufferedReader(new FileReader(DEFAULT_GENES_FILE));
-		
-		String line;
-		List<String> tokens;
-		
-		try {
-			reader.readLine();
-			
-			while ((line = reader.readLine()) != null) {
-				if (Io.isEmptyLine(line)) {
-					continue;
-				}
-				
-				tokens = TextUtils.fastSplit(line, TextUtils.TAB_DELIMITER);
-				
-				if (!map.containsKey(tokens.get(0))) {
-					map.put(tokens.get(0), new HashSet<String>());
-				}
-				
-				map.get(tokens.get(0)).add(tokens.get(1));
-			}
-		} finally {
-			reader.close();
-		}
-	}
+  /**
+   * The map.
+   */
+  // genome, group, feature name
+  private Map<String, Set<String>> map = new HashMap<String, Set<String>>();
 
-	/**
-	 * Gets the synonyms.
-	 *
-	 * @param name the name
-	 * @return the synonyms
-	 */
-	public Set<String> getSynonyms(String name) {
-		if (!map.containsKey(name)) {
-			return null;
-		}
-		
-		return new HashSet<String>(map.get(name));
-	}
+  /**
+   * Instantiates a new gene synonyms service.
+   */
+  private GeneSynonymsService() {
+    try {
+      load();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  /**
+   * Load.
+   *
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   */
+  public final void load() throws IOException {
+    BufferedReader reader = new BufferedReader(new FileReader(DEFAULT_GENES_FILE));
+
+    String line;
+    List<String> tokens;
+
+    try {
+      reader.readLine();
+
+      while ((line = reader.readLine()) != null) {
+        if (Io.isEmptyLine(line)) {
+          continue;
+        }
+
+        tokens = TextUtils.fastSplit(line, TextUtils.TAB_DELIMITER);
+
+        if (!map.containsKey(tokens.get(0))) {
+          map.put(tokens.get(0), new HashSet<String>());
+        }
+
+        map.get(tokens.get(0)).add(tokens.get(1));
+      }
+    } finally {
+      reader.close();
+    }
+  }
+
+  /**
+   * Gets the synonyms.
+   *
+   * @param name
+   *          the name
+   * @return the synonyms
+   */
+  public Set<String> getSynonyms(String name) {
+    if (!map.containsKey(name)) {
+      return null;
+    }
+
+    return new HashSet<String>(map.get(name));
+  }
 }

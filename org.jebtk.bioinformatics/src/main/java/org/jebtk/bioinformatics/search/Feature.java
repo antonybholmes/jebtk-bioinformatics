@@ -37,100 +37,110 @@ import org.jebtk.bioinformatics.genomic.Chromosome;
  *
  */
 public class Feature implements Comparable<Feature> {
-	
-	/**
-	 * The member name.
-	 */
-	private String mName = null;
-	
-	/**
-	 * The member chr.
-	 */
-	private Chromosome mChr;
-	
-	/**
-	 * The member start.
-	 */
-	private int mStart = -1;
-	
-	/**
-	 * The member end.
-	 */
-	private int mEnd = -1;
 
-	/**
-	 * Instantiates a new feature.
-	 *
-	 * @param name the name
-	 * @param chromosome the chromosome
-	 * @param start the start
-	 * @param end the end
-	 */
-	public Feature(String name, Chromosome chromosome, int start, int end) {
-		mName = name;
-		mChr = chromosome;
-		mStart = start;
-		mEnd = end;
-	}
+  /**
+   * The member name.
+   */
+  private String mName = null;
 
-	/**
-	 * Gets the name.
-	 *
-	 * @return the name
-	 */
-	public final String getName() {
-		return mName;
-	}
+  /**
+   * The member chr.
+   */
+  private Chromosome mChr;
 
-	/**
-	 * Gets the chromosome.
-	 *
-	 * @return the chromosome
-	 */
-	public final Chromosome getChromosome() {
-		return mChr;
-	}
+  /**
+   * The member start.
+   */
+  private int mStart = -1;
 
-	/**
-	 * Gets the start.
-	 *
-	 * @return the start
-	 */
-	public final int getStart() {
-		return mStart;
-	}
+  /**
+   * The member end.
+   */
+  private int mEnd = -1;
 
-	/**
-	 * Gets the end.
-	 *
-	 * @return the end
-	 */
-	public final int getEnd() {
-		return mEnd;
-	}
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
-	public String toString() {
-		return mName + "_" + mStart;
-	}
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	public boolean equals(Object o) {
-		if (!(o instanceof Feature)) {
-			return false;
-		}
-		
-		return (toString().equals(o.toString()));
-	}
+  /**
+   * Instantiates a new feature.
+   *
+   * @param name
+   *          the name
+   * @param chromosome
+   *          the chromosome
+   * @param start
+   *          the start
+   * @param end
+   *          the end
+   */
+  public Feature(String name, Chromosome chromosome, int start, int end) {
+    mName = name;
+    mChr = chromosome;
+    mStart = start;
+    mEnd = end;
+  }
 
-	/* (non-Javadoc)
-	 * @see java.lang.Comparable#compareTo(java.lang.Object)
-	 */
-	public int compareTo(Feature f) {
-		return toString().compareTo(f.toString());
-	}
+  /**
+   * Gets the name.
+   *
+   * @return the name
+   */
+  public final String getName() {
+    return mName;
+  }
+
+  /**
+   * Gets the chromosome.
+   *
+   * @return the chromosome
+   */
+  public final Chromosome getChromosome() {
+    return mChr;
+  }
+
+  /**
+   * Gets the start.
+   *
+   * @return the start
+   */
+  public final int getStart() {
+    return mStart;
+  }
+
+  /**
+   * Gets the end.
+   *
+   * @return the end
+   */
+  public final int getEnd() {
+    return mEnd;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#toString()
+   */
+  public String toString() {
+    return mName + "_" + mStart;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
+  public boolean equals(Object o) {
+    if (!(o instanceof Feature)) {
+      return false;
+    }
+
+    return (toString().equals(o.toString()));
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Comparable#compareTo(java.lang.Object)
+   */
+  public int compareTo(Feature f) {
+    return toString().compareTo(f.toString());
+  }
 }

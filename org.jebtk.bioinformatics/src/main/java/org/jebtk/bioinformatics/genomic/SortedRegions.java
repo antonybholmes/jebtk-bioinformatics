@@ -36,161 +36,169 @@ import org.jebtk.core.collections.CollectionUtils;
 
 // TODO: Auto-generated Javadoc
 /**
- * Keeps together sorted regions on the same chromosome.
- * Regions are auto-sorted before search
+ * Keeps together sorted regions on the same chromosome. Regions are auto-sorted
+ * before search
  *
  * @author Antony Holmes Holmes
- * @param <T> the generic type
+ * @param <T>
+ *          the generic type
  */
 public class SortedRegions<T extends GenomicRegion> implements Iterable<T> {
-	/**
-	 * Keep the regions sorted.
-	 */
-	private List<T> mRegions = new ArrayList<T>(100);
-	
-	/**
-	 * The member sorted.
-	 */
-	private boolean mSorted = false;
-	
-	/**
-	 * Adds the.
-	 *
-	 * @param region the region
-	 */
-	public void add(T region) {
-		mRegions.add(region);
-		
-		mSorted = false;
-	}
-	
-	/**
-	 * Sort regions by start position if they are not sorted.
-	 */
-	private void autoSort() {
-		if (mSorted) {
-			return;
-		}
+  /**
+   * Keep the regions sorted.
+   */
+  private List<T> mRegions = new ArrayList<T>(100);
 
-		mRegions = GenomicRegion.sortSingleChr(mRegions);
-		
-		mSorted = true;
-	}
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Iterable#iterator()
-	 */
-	@Override
-	public Iterator<T> iterator() {
-		autoSort();
-		
-		return mRegions.iterator();
-	}
+  /**
+   * The member sorted.
+   */
+  private boolean mSorted = false;
 
-	/**
-	 * Size.
-	 *
-	 * @return the int
-	 */
-	public int size() {
-		return mRegions.size();
-	}
-	
-	/**
-	 * Given a range, returns elements within that range (inclusive of
-	 * start and end).
-	 *
-	 * @param start the start
-	 * @param end the end
-	 * @return the list
-	 */
-	public List<T> findRegionsInRange(int start, int end) {
-		autoSort();
-		
-		int s = findStartIndex(start);
-		
-		int l = Mathematics.getLength(s, findEndIndex(end));
-		
-		//System.err.println("find reg l " + l);
-		
-		return CollectionUtils.subList(mRegions, s, l);
-	}
-	
-	/**
-	 * Find start index.
-	 *
-	 * @param start the start
-	 * @return the int
-	 */
-	private int findStartIndex(int start) {
-		if (mRegions.size() == 0) {
-			return -1;
-		}
-		
-		if (mRegions.get(mRegions.size() - 1).getStart() < start) {
-			return -1;
-		}
-		
-		if (start < mRegions.get(0).getStart()) {
-			return 0;
-		}
-		
-		// since the indices are ordered by start find
-		// the smallest start greater than this start
-		
-		int s = 0;
-		int e = mRegions.size() - 1;
-		int mid;
-		
-		while (e - s > 1) {
-			mid = (s + e) / 2;
-			
-			if (mRegions.get(mid).getStart() < start) {
-				s = mid;
-			} else {
-				e = mid;
-			}
-		}
+  /**
+   * Adds the.
+   *
+   * @param region
+   *          the region
+   */
+  public void add(T region) {
+    mRegions.add(region);
 
-		return e;
-	}
-	
-	/**
-	 * Find end index.
-	 *
-	 * @param end the end
-	 * @return the int
-	 */
-	private int findEndIndex(int end) {
-		if (mRegions.size() == 0) {
-			return -1;
-		}
-		
-		if (end < mRegions.get(0).getStart()) {
-			return -1;
-		}
-		
-		if (mRegions.get(mRegions.size() - 1).getEnd() < end) {
-			return mRegions.size() - 1;
-		}
-		
-		// since the indices are ordered by start find
-		// the smallest start greater than this start
-		
-		int s = 0;
-		int e = mRegions.size() - 1;
-		int mid;
-		
-		while (e - s > 1) {
-			mid = (s + e) / 2;
-			
-			if (mRegions.get(mid).getStart() < end) {
-				s = mid;
-			} else {
-				e = mid;
-			}
-		}
-		
-		return s;
-	}
+    mSorted = false;
+  }
+
+  /**
+   * Sort regions by start position if they are not sorted.
+   */
+  private void autoSort() {
+    if (mSorted) {
+      return;
+    }
+
+    mRegions = GenomicRegion.sortSingleChr(mRegions);
+
+    mSorted = true;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Iterable#iterator()
+   */
+  @Override
+  public Iterator<T> iterator() {
+    autoSort();
+
+    return mRegions.iterator();
+  }
+
+  /**
+   * Size.
+   *
+   * @return the int
+   */
+  public int size() {
+    return mRegions.size();
+  }
+
+  /**
+   * Given a range, returns elements within that range (inclusive of start and
+   * end).
+   *
+   * @param start
+   *          the start
+   * @param end
+   *          the end
+   * @return the list
+   */
+  public List<T> findRegionsInRange(int start, int end) {
+    autoSort();
+
+    int s = findStartIndex(start);
+
+    int l = Mathematics.getLength(s, findEndIndex(end));
+
+    // System.err.println("find reg l " + l);
+
+    return CollectionUtils.subList(mRegions, s, l);
+  }
+
+  /**
+   * Find start index.
+   *
+   * @param start
+   *          the start
+   * @return the int
+   */
+  private int findStartIndex(int start) {
+    if (mRegions.size() == 0) {
+      return -1;
+    }
+
+    if (mRegions.get(mRegions.size() - 1).getStart() < start) {
+      return -1;
+    }
+
+    if (start < mRegions.get(0).getStart()) {
+      return 0;
+    }
+
+    // since the indices are ordered by start find
+    // the smallest start greater than this start
+
+    int s = 0;
+    int e = mRegions.size() - 1;
+    int mid;
+
+    while (e - s > 1) {
+      mid = (s + e) / 2;
+
+      if (mRegions.get(mid).getStart() < start) {
+        s = mid;
+      } else {
+        e = mid;
+      }
+    }
+
+    return e;
+  }
+
+  /**
+   * Find end index.
+   *
+   * @param end
+   *          the end
+   * @return the int
+   */
+  private int findEndIndex(int end) {
+    if (mRegions.size() == 0) {
+      return -1;
+    }
+
+    if (end < mRegions.get(0).getStart()) {
+      return -1;
+    }
+
+    if (mRegions.get(mRegions.size() - 1).getEnd() < end) {
+      return mRegions.size() - 1;
+    }
+
+    // since the indices are ordered by start find
+    // the smallest start greater than this start
+
+    int s = 0;
+    int e = mRegions.size() - 1;
+    int mid;
+
+    while (e - s > 1) {
+      mid = (s + e) / 2;
+
+      if (mRegions.get(mid).getStart() < end) {
+        s = mid;
+      } else {
+        e = mid;
+      }
+    }
+
+    return s;
+  }
 }

@@ -33,32 +33,37 @@ import java.util.List;
 
 import org.jebtk.bioinformatics.genomic.GenomicRegion;
 
-
 // TODO: Auto-generated Javadoc
 /**
  * The class ConservationAssembly.
  */
 public abstract class ConservationAssembly {
 
-	/**
-	 * Gets the scores.
-	 *
-	 * @param region the region
-	 * @return the scores
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 * @throws ParseException the parse exception
-	 */
-	public List<Double> getScores(String region) throws IOException, ParseException {
-		return getScores(GenomicRegion.parse(region));
-	}
-	
-	/**
-	 * Gets the scores.
-	 *
-	 * @param region the region
-	 * @return the scores
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 * @throws ParseException the parse exception
-	 */
-	public abstract List<Double> getScores(GenomicRegion region) throws IOException, ParseException;
+  /**
+   * Gets the scores.
+   *
+   * @param region
+   *          the region
+   * @return the scores
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   * @throws ParseException
+   *           the parse exception
+   */
+  public List<Double> getScores(String region) throws IOException, ParseException {
+    return getScores(GenomicRegion.parse(region));
+  }
+
+  /**
+   * Gets the scores.
+   *
+   * @param region
+   *          the region
+   * @return the scores
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   * @throws ParseException
+   *           the parse exception
+   */
+  public abstract List<Double> getScores(GenomicRegion region) throws IOException, ParseException;
 }

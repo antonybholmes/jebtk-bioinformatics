@@ -41,21 +41,21 @@ import org.jebtk.core.text.FormattedTxt;
  */
 public class UCSCTrackRegions extends GenomicRegions<UCSCTrackRegion> implements FormattedTxt {
 
+  /**
+   * The constant serialVersionUID.
+   */
+  private static final long serialVersionUID = 1L;
 
-	/**
-	 * The constant serialVersionUID.
-	 */
-	private static final long serialVersionUID = 1L;
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.abh.lib.FormattedTxt#formattedTxt(java.lang.Appendable)
+   */
+  @Override
+  public void formattedTxt(Appendable buffer) throws IOException {
+    for (UCSCTrackRegion region : this) {
+      region.formattedTxt(buffer);
+    }
+  }
 
-	/* (non-Javadoc)
-	 * @see org.abh.lib.FormattedTxt#formattedTxt(java.lang.Appendable)
-	 */
-	@Override
-	public void formattedTxt(Appendable buffer) throws IOException {
-		for (UCSCTrackRegion region : this) {
-			region.formattedTxt(buffer);
-		}
-	}
-
-	
 }

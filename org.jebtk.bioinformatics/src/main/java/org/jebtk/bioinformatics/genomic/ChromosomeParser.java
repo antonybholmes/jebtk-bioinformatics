@@ -22,57 +22,55 @@ import org.jebtk.core.text.TextUtils;
  * The Class ChromosomeParser.
  */
 public abstract class ChromosomeParser {
-	
-	/**
-	 * Cleans up the chr name and returns the short name variant where
-	 * the chr prefix is removed to leave just the number or letter.
-	 *
-	 * @param chr the chr
-	 * @return the short name
-	 */
-	public String getShortName(String chr) {
-		return chr.toUpperCase()
-				.replace("CHROMOSOME", TextUtils.EMPTY_STRING)
-				.replace("CHR_", TextUtils.EMPTY_STRING)
-				.replace("CHR-", TextUtils.EMPTY_STRING)
-				.replace("CHR", TextUtils.EMPTY_STRING)
-				.replaceFirst("P.*", TextUtils.EMPTY_STRING)
-				.replaceFirst("Q.*", TextUtils.EMPTY_STRING);
-	}
 
-	/**
-	 * Gets the id.
-	 *
-	 * @param chr the chr
-	 * @return the id
-	 */
-	public abstract int getId(String chr);
-	
-	/**
-	 * Gets the species.
-	 *
-	 * @return the species
-	 */
-	public abstract String getSpecies();
-	
-	public Chromosome parse(String chr) {
-		int id = getId(chr);
-		String shortName = getShortName(chr);
-		
-		return new Chromosome(id, shortName);
-	}
+  /**
+   * Cleans up the chr name and returns the short name variant where the chr
+   * prefix is removed to leave just the number or letter.
+   *
+   * @param chr
+   *          the chr
+   * @return the short name
+   */
+  public String getShortName(String chr) {
+    return chr.toUpperCase().replace("CHROMOSOME", TextUtils.EMPTY_STRING).replace("CHR_", TextUtils.EMPTY_STRING)
+        .replace("CHR-", TextUtils.EMPTY_STRING).replace("CHR", TextUtils.EMPTY_STRING)
+        .replaceFirst("P.*", TextUtils.EMPTY_STRING).replaceFirst("Q.*", TextUtils.EMPTY_STRING);
+  }
 
-	/**
-	 * Returns an integer value for the chromosome.
-	 * 
-	 * @param chr
-	 * @return
-	 */
-	public abstract int valueOf(Chromosome chr);
+  /**
+   * Gets the id.
+   *
+   * @param chr
+   *          the chr
+   * @return the id
+   */
+  public abstract int getId(String chr);
 
-	public abstract int randChrId();
-	
-	public Chromosome randChr() {
-		return parse("chr" + randChrId());
-	}
+  /**
+   * Gets the species.
+   *
+   * @return the species
+   */
+  public abstract String getSpecies();
+
+  public Chromosome parse(String chr) {
+    int id = getId(chr);
+    String shortName = getShortName(chr);
+
+    return new Chromosome(id, shortName);
+  }
+
+  /**
+   * Returns an integer value for the chromosome.
+   * 
+   * @param chr
+   * @return
+   */
+  public abstract int valueOf(Chromosome chr);
+
+  public abstract int randChrId();
+
+  public Chromosome randChr() {
+    return parse("chr" + randChrId());
+  }
 }

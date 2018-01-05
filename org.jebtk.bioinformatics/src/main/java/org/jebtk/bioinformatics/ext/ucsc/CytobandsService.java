@@ -38,8 +38,6 @@ import org.jebtk.core.Resources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
-
 // TODO: Auto-generated Javadoc
 /**
  * Server for genome feature annotations.
@@ -48,138 +46,141 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class CytobandsService {
-	
-	/**
-	 * The constant INSTANCE.
-	 */
-	private static final CytobandsService INSTANCE = new CytobandsService();
-	
-	/**
-	 * The constant LOG.
-	 */
-	private static final Logger LOG = 
-			LoggerFactory.getLogger(CytobandsService.class);
-	
-	/**
-	 * The constant DEFAULT_RES.
-	 */
-	public static final String DEFAULT_HG18_RES = 
-			"res/ucsc_cytobands_hg18.txt.gz";
-	
-	/**
-	 * The constant DEFAULT_FILE.
-	 */
-	public static final File DEFAULT_HG18_FILE = new File(DEFAULT_HG18_RES);
 
-	
-	/**
-	 * The constant DEFAULT_RES.
-	 */
-	public static final String DEFAULT_HG19_RES = 
-			"res/ucsc_cytobands_hg19.txt.gz";
-	
-	/**
-	 * The constant DEFAULT_FILE.
-	 */
-	public static final File DEFAULT_HG19_FILE = new File(DEFAULT_HG19_RES);
+  /**
+   * The constant INSTANCE.
+   */
+  private static final CytobandsService INSTANCE = new CytobandsService();
 
-	
-	/**
-	 * Gets the single instance of Cytobands.
-	 *
-	 * @return single instance of Cytobands
-	 */
-	public static final CytobandsService getInstance() {
-		return INSTANCE;
-	}
+  /**
+   * The constant LOG.
+   */
+  private static final Logger LOG = LoggerFactory.getLogger(CytobandsService.class);
 
-	/**
-	 * The member cytobands map.
-	 */
-	private Map<String, Cytobands> mCytobandsMap = 
-			new HashMap<String, Cytobands>();
-	
-	/**
-	 * Instantiates a new cytobands.
-	 */
-	public CytobandsService() {
-		// do nothing
-	}
+  /**
+   * The constant DEFAULT_RES.
+   */
+  public static final String DEFAULT_HG18_RES = "res/ucsc_cytobands_hg18.txt.gz";
 
-	/**
-	 * Load internal hg 18.
-	 *
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public final void loadInternalHg18() throws IOException {
-		LOG.info("Parsing {}...", DEFAULT_HG18_RES);
-		
-		load(Genome.HG18, Resources.getResGzipReader(DEFAULT_HG18_RES));
-	}
-	
-	/**
-	 * Load the default lib from an external file.
-	 *
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public final void loadRefSeqHg18() throws IOException {
-		LOG.info("Parsing {}...", DEFAULT_HG18_FILE);
-		
-		load(Genome.HG18, Resources.getGzipReader(DEFAULT_HG18_FILE));
-	}
-	
-	/**
-	 * Load the default lib from the jar resource.
-	 *
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public final void loadInternalHg19() throws IOException {
-		LOG.info("Parsing {}...", DEFAULT_HG19_RES);
-		
-		load(Genome.HG19, Resources.getResGzipReader(DEFAULT_HG19_RES));
-	}
-	
-	/**
-	 * Load the default lib from an external file.
-	 *
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public final void loadRefSeqHg19() throws IOException {
-		LOG.info("Parsing {}...", DEFAULT_HG19_FILE);
-		
-		load(Genome.HG19, Resources.getGzipReader(DEFAULT_HG19_FILE));
-	}
-	
-	/**
-	 * Load.
-	 *
-	 * @param genome the genome
-	 * @param reader the reader
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public void load(String genome, BufferedReader reader) throws IOException {
-		load(genome, new Cytobands(genome, reader));
-	}
-	
-	/**
-	 * Load.
-	 *
-	 * @param genome the genome
-	 * @param cytobands the cytobands
-	 */
-	public void load(String genome, Cytobands cytobands) {
-		mCytobandsMap.put(genome, cytobands);
-	}
-	
-	/**
-	 * Gets the cytobands.
-	 *
-	 * @param genome the genome
-	 * @return the cytobands
-	 */
-	public Cytobands getCytobands(String genome) {
-		return mCytobandsMap.get(genome);
-	}
+  /**
+   * The constant DEFAULT_FILE.
+   */
+  public static final File DEFAULT_HG18_FILE = new File(DEFAULT_HG18_RES);
 
-	
+  /**
+   * The constant DEFAULT_RES.
+   */
+  public static final String DEFAULT_HG19_RES = "res/ucsc_cytobands_hg19.txt.gz";
+
+  /**
+   * The constant DEFAULT_FILE.
+   */
+  public static final File DEFAULT_HG19_FILE = new File(DEFAULT_HG19_RES);
+
+  /**
+   * Gets the single instance of Cytobands.
+   *
+   * @return single instance of Cytobands
+   */
+  public static final CytobandsService getInstance() {
+    return INSTANCE;
+  }
+
+  /**
+   * The member cytobands map.
+   */
+  private Map<String, Cytobands> mCytobandsMap = new HashMap<String, Cytobands>();
+
+  /**
+   * Instantiates a new cytobands.
+   */
+  public CytobandsService() {
+    // do nothing
+  }
+
+  /**
+   * Load internal hg 18.
+   *
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   */
+  public final void loadInternalHg18() throws IOException {
+    LOG.info("Parsing {}...", DEFAULT_HG18_RES);
+
+    load(Genome.HG18, Resources.getResGzipReader(DEFAULT_HG18_RES));
+  }
+
+  /**
+   * Load the default lib from an external file.
+   *
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   */
+  public final void loadRefSeqHg18() throws IOException {
+    LOG.info("Parsing {}...", DEFAULT_HG18_FILE);
+
+    load(Genome.HG18, Resources.getGzipReader(DEFAULT_HG18_FILE));
+  }
+
+  /**
+   * Load the default lib from the jar resource.
+   *
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   */
+  public final void loadInternalHg19() throws IOException {
+    LOG.info("Parsing {}...", DEFAULT_HG19_RES);
+
+    load(Genome.HG19, Resources.getResGzipReader(DEFAULT_HG19_RES));
+  }
+
+  /**
+   * Load the default lib from an external file.
+   *
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   */
+  public final void loadRefSeqHg19() throws IOException {
+    LOG.info("Parsing {}...", DEFAULT_HG19_FILE);
+
+    load(Genome.HG19, Resources.getGzipReader(DEFAULT_HG19_FILE));
+  }
+
+  /**
+   * Load.
+   *
+   * @param genome
+   *          the genome
+   * @param reader
+   *          the reader
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   */
+  public void load(String genome, BufferedReader reader) throws IOException {
+    load(genome, new Cytobands(genome, reader));
+  }
+
+  /**
+   * Load.
+   *
+   * @param genome
+   *          the genome
+   * @param cytobands
+   *          the cytobands
+   */
+  public void load(String genome, Cytobands cytobands) {
+    mCytobandsMap.put(genome, cytobands);
+  }
+
+  /**
+   * Gets the cytobands.
+   *
+   * @param genome
+   *          the genome
+   * @return the cytobands
+   */
+  public Cytobands getCytobands(String genome) {
+    return mCytobandsMap.get(genome);
+  }
+
 }

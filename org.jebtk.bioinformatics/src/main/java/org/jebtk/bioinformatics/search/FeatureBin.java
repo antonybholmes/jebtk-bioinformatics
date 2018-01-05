@@ -36,49 +36,52 @@ import java.util.List;
  * The class FeatureBin.
  */
 public class FeatureBin implements Iterable<Feature> {
-	
-	/**
-	 * The member start.
-	 */
-	private int mStart;
 
-	/**
-	 * The features.
-	 */
-	private List<Feature> features = new ArrayList<Feature>();
+  /**
+   * The member start.
+   */
+  private int mStart;
 
+  /**
+   * The features.
+   */
+  private List<Feature> features = new ArrayList<Feature>();
 
-	/**
-	 * Instantiates a new feature bin.
-	 *
-	 * @param start the start
-	 */
-	public FeatureBin(int start) {
-		mStart = start;
-	}
+  /**
+   * Instantiates a new feature bin.
+   *
+   * @param start
+   *          the start
+   */
+  public FeatureBin(int start) {
+    mStart = start;
+  }
 
-	/**
-	 * Gets the start.
-	 *
-	 * @return the start
-	 */
-	public final int getStart() {
-		return mStart;
-	}
+  /**
+   * Gets the start.
+   *
+   * @return the start
+   */
+  public final int getStart() {
+    return mStart;
+  }
 
-	/**
-	 * Adds the.
-	 *
-	 * @param feature the feature
-	 */
-	public final void add(Feature feature) {
-		features.add(feature);
-	}
+  /**
+   * Adds the.
+   *
+   * @param feature
+   *          the feature
+   */
+  public final void add(Feature feature) {
+    features.add(feature);
+  }
 
-	/* (non-Javadoc)
-	 * @see java.lang.Iterable#iterator()
-	 */
-	public Iterator<Feature> iterator() {
-		return features.iterator();
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Iterable#iterator()
+   */
+  public Iterator<Feature> iterator() {
+    return features.iterator();
+  }
 }

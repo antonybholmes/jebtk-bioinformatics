@@ -43,68 +43,73 @@ import org.jebtk.core.text.TextUtils;
  */
 public class Cytoband extends BedRegion {
 
-	/**
-	 * The member stain.
-	 */
-	private String mStain;
+  /**
+   * The member stain.
+   */
+  private String mStain;
 
-	/**
-	 * Instantiates a new cytoband.
-	 *
-	 * @param chromosome the chromosome
-	 * @param start the start
-	 * @param end the end
-	 * @param name the name
-	 * @param stain the stain
-	 */
-	public Cytoband(Chromosome chromosome, 
-			int start, 
-			int end,
-			String name,
-			String stain) {
-		super(chromosome, start, end, name);
-		
-		mStain = stain;
-	}
+  /**
+   * Instantiates a new cytoband.
+   *
+   * @param chromosome
+   *          the chromosome
+   * @param start
+   *          the start
+   * @param end
+   *          the end
+   * @param name
+   *          the name
+   * @param stain
+   *          the stain
+   */
+  public Cytoband(Chromosome chromosome, int start, int end, String name, String stain) {
+    super(chromosome, start, end, name);
 
-	/**
-	 * Gets the stain.
-	 *
-	 * @return the stain
-	 */
-	public String getStain() {
-		return mStain;
-	}
-	
-	/* (non-Javadoc)
-	 * @see edu.columbia.rdf.lib.bioinformatics.external.ucsc.UCSCTrackRegion#formattedTxt(java.lang.Appendable)
-	 */
-	@Override
-	public void formattedTxt(Appendable buffer) throws IOException {
-		super.formattedTxt(buffer);
-		
-		buffer.append(TextUtils.TAB_DELIMITER);
-		buffer.append(mStain);
-	}
-	
-	/**
-	 * Parses the.
-	 *
-	 * @param line the line
-	 * @return the cytoband
-	 */
-	public static Cytoband parse(String genome, String line) {
-		List<String> tokens = TextUtils.fastSplit(line, TextUtils.TAB_DELIMITER);
+    mStain = stain;
+  }
 
-		// convert first part to chromosome (replacing x,y and m) {
-		Chromosome chromosome = ChromosomeService.getInstance().guess(genome, tokens.get(0));
+  /**
+   * Gets the stain.
+   *
+   * @return the stain
+   */
+  public String getStain() {
+    return mStain;
+  }
 
-		// ucsc convention
-		int start = Integer.parseInt(tokens.get(1)) + 1;
-		int end = Integer.parseInt(tokens.get(2));
-		String name = tokens.get(3);
-		String stain = tokens.get(4);
+  /*
+   * (non-Javadoc)
+   * 
+   * @see edu.columbia.rdf.lib.bioinformatics.external.ucsc.UCSCTrackRegion#
+   * formattedTxt(java.lang.Appendable)
+   */
+  @Override
+  public void formattedTxt(Appendable buffer) throws IOException {
+    super.formattedTxt(buffer);
 
-		return new Cytoband(chromosome, start, end, name, stain);
-	}
+    buffer.append(TextUtils.TAB_DELIMITER);
+    buffer.append(mStain);
+  }
+
+  /**
+   * Parses the.
+   *
+   * @param line
+   *          the line
+   * @return the cytoband
+   */
+  public static Cytoband parse(String genome, String line) {
+    List<String> tokens = TextUtils.fastSplit(line, TextUtils.TAB_DELIMITER);
+
+    // convert first part to chromosome (replacing x,y and m) {
+    Chromosome chromosome = ChromosomeService.getInstance().guess(genome, tokens.get(0));
+
+    // ucsc convention
+    int start = Integer.parseInt(tokens.get(1)) + 1;
+    int end = Integer.parseInt(tokens.get(2));
+    String name = tokens.get(3);
+    String stain = tokens.get(4);
+
+    return new Cytoband(chromosome, start, end, name, stain);
+  }
 }

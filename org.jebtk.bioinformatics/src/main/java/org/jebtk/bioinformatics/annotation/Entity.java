@@ -22,44 +22,51 @@ import org.jebtk.core.IdProperty;
  * The Class Entity.
  */
 public class Entity implements IdProperty {
-	
-	/** The m id. */
-	protected int mId;
 
-	/**
-	 * Instantiates a new entity.
-	 *
-	 * @param id the id
-	 */
-	public Entity(int id) {
-		mId = id;
-	}
+  /** The m id. */
+  protected int mId;
 
-	/* (non-Javadoc)
-	 * @see org.abh.common.IdProperty#getId()
-	 */
-	@Override
-	public int getId() {
-		return mId;
-	}
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object o) {
-		if (o instanceof Entity) {
-			return mId == ((Entity)o).mId;
-		} else {
-			return false;
-		}
-	}
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		return mId;
-	}
+  /**
+   * Instantiates a new entity.
+   *
+   * @param id
+   *          the id
+   */
+  public Entity(int id) {
+    mId = id;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.abh.common.IdProperty#getId()
+   */
+  @Override
+  public int getId() {
+    return mId;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
+  @Override
+  public boolean equals(Object o) {
+    if (o instanceof Entity) {
+      return mId == ((Entity) o).mId;
+    } else {
+      return false;
+    }
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#hashCode()
+   */
+  @Override
+  public int hashCode() {
+    return mId;
+  }
 }

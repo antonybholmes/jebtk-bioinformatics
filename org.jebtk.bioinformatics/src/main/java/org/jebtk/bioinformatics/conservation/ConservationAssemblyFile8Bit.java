@@ -40,89 +40,97 @@ import org.jebtk.bioinformatics.genomic.Chromosome;
 import org.jebtk.bioinformatics.genomic.GenomicRegion;
 import org.jebtk.core.io.PathUtils;
 
-
 // TODO: Auto-generated Javadoc
 /**
- * Fast search of genome sequence files to get get actual genomic data.
- * This file reads 4bit encoded genomes (i.e. 2 bases per byte).
+ * Fast search of genome sequence files to get get actual genomic data. This
+ * file reads 4bit encoded genomes (i.e. 2 bases per byte).
  *
  * @author Antony Holmes Holmes
  *
  */
 public class ConservationAssemblyFile8Bit extends ConservationAssembly {
-	
-	/**
-	 * The member directory.
-	 */
-	protected Path mDirectory;
 
-	/**
-	 * The member file map.
-	 */
-	protected Map<Chromosome, Path> mFileMap = new HashMap<Chromosome, Path>();
+  /**
+   * The member directory.
+   */
+  protected Path mDirectory;
 
-	/**
-	 * Directory containing genome files which must be of the form
-	 * chr.n.txt. Each file must contain exactly one line consisting
-	 * of the entire chromosome.
-	 *
-	 * @param directory the directory
-	 */
-	public ConservationAssemblyFile8Bit(Path directory) {
-		mDirectory = directory;
-	}
-	
-	/* (non-Javadoc)
-	 * @see edu.columbia.rdf.lib.bioinformatics.conservation.ConservationAssembly#getScores(edu.columbia.rdf.lib.bioinformatics.genome.GenomicRegion)
-	 */
-	@Override
-	public List<Double> getScores(GenomicRegion region) throws IOException {
-		Chromosome chr = region.getChr();
-		
-		if (!mFileMap.containsKey(chr)) {
-			mFileMap.put(chr, mDirectory.resolve(chr + ".8bit.phastcons"));
-		}
+  /**
+   * The member file map.
+   */
+  protected Map<Chromosome, Path> mFileMap = new HashMap<Chromosome, Path>();
 
-		return getScores(mFileMap.get(chr), region.getStart(), region.getEnd());
-	}
+  /**
+   * Directory containing genome files which must be of the form chr.n.txt. Each
+   * file must contain exactly one line consisting of the entire chromosome.
+   *
+   * @param directory
+   *          the directory
+   */
+  public ConservationAssemblyFile8Bit(Path directory) {
+    mDirectory = directory;
+  }
 
-	/**
-	 * Gets the scores.
-	 *
-	 * @param file the file
-	 * @param start the start
-	 * @param end the end
-	 * @return the scores
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public static List<Double> getScores(Path file,
-			int start,
-			int end) throws IOException {
-		
-		int s = start - 1;
-		int e = end - 1;
-		
-		byte[] buf = GenomeAssemblyDir.getBytes(file, s, e);
-		
-		List<Double> scores = new ArrayList<Double>(buf.length);
-		
-		for (int b : buf) {
-			scores.add((double)b);
-		}
-		
-		return scores;
-	}
-	
-	/**
-	 * The main method.
-	 *
-	 * @param args the arguments
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 * @throws ParseException the parse exception
-	 */
-	public static void main(String[] args) throws IOException, ParseException {
-		ConservationAssemblyFile8Bit a = new ConservationAssemblyFile8Bit(PathUtils.getPath("/ifs/scratch/cancer/Lab_RDF/abh2138/references/ucsc/phastcons/hg19"));
-		
-		System.err.println(a.getScores("chr1:90040-90050"));
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see edu.columbia.rdf.lib.bioinformatics.conservation.ConservationAssembly#
+   * getScores(edu.columbia.rdf.lib.bioinformatics.genome.GenomicRegion)
+   */
+  @Override
+  public List<Double> getScores(GenomicRegion region) throws IOException {
+    Chromosome chr = region.getChr();
+
+    if (!mFileMap.containsKey(chr)) {
+      mFileMap.put(chr, mDirectory.resolve(chr + ".8bit.phastcons"));
+    }
+
+    return getScores(mFileMap.get(chr), region.getStart(), region.getEnd());
+  }
+
+  /**
+   * Gets the scores.
+   *
+   * @param file
+   *          the file
+   * @param start
+   *          the start
+   * @param end
+   *          the end
+   * @return the scores
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   */
+  public static List<Double> getScores(Path file, int start, int end) throws IOException {
+
+    int s = start - 1;
+    int e = end - 1;
+
+    byte[] buf = GenomeAssemblyDir.getBytes(file, s, e);
+
+    List<Double> scores = new ArrayList<Double>(buf.length);
+
+    for (int b : buf) {
+      scores.add((double) b);
+    }
+
+    return scores;
+  }
+
+  /**
+   * The main method.
+   *
+   * @param args
+   *          the arguments
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   * @throws ParseException
+   *           the parse exception
+   */
+  public static void main(String[] args) throws IOException, ParseException {
+    ConservationAssemblyFile8Bit a = new ConservationAssemblyFile8Bit(
+        PathUtils.getPath("/ifs/scratch/cancer/Lab_RDF/abh2138/references/ucsc/phastcons/hg19"));
+
+    System.err.println(a.getScores("chr1:90040-90050"));
+  }
 }

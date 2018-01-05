@@ -48,150 +48,165 @@ import org.jebtk.core.text.TextUtils;
  * The class Fasta.
  */
 public class Fasta {
-	
-	/**
-	 * The constant FASTA_START.
-	 */
-	private static final String FASTA_START = ">";
-	
-	/**
-	 * The header pattern.
-	 */
-	public static Pattern HEADER_PATTERN = Pattern.compile(">(.+)");
-	
-	/**
-	 * Parses the.
-	 *
-	 * @param file the file
-	 * @return the list
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public static final List<Sequence> parse(Path file) throws IOException {
-		List<Sequence> sequences = new ArrayList<Sequence>();
-		
-		//System.out.println(file.toString());
 
-		BufferedReader reader = FileUtils.newBufferedReader(file);
+  /**
+   * The constant FASTA_START.
+   */
+  private static final String FASTA_START = ">";
 
-		String line;
+  /**
+   * The header pattern.
+   */
+  public static Pattern HEADER_PATTERN = Pattern.compile(">(.+)");
 
-		Matcher fastaHeaderMatcher;
+  /**
+   * Parses the.
+   *
+   * @param file
+   *          the file
+   * @return the list
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   */
+  public static final List<Sequence> parse(Path file) throws IOException {
+    List<Sequence> sequences = new ArrayList<Sequence>();
 
-		String name = null;
-		StringBuilder buffer = null;
+    // System.out.println(file.toString());
 
-		try {
-			while ((line = reader.readLine()) != null) {
-				if (Io.isEmptyLine(line)) {
-					continue;
-				}
-				
-				fastaHeaderMatcher = HEADER_PATTERN.matcher(line);
+    BufferedReader reader = FileUtils.newBufferedReader(file);
 
-				if (fastaHeaderMatcher.find()) {
-					if (buffer != null) {
-						sequences.add(Sequence.create(name, buffer.toString()));
-					}
-					
-					name = fastaHeaderMatcher.group(1);
+    String line;
 
-					buffer = new StringBuilder();
-				} else {
-					buffer.append(line);
-				}
-			}
-		} finally {
-			reader.close();
-		}
+    Matcher fastaHeaderMatcher;
 
-		// Add the last sequence read
-		sequences.add(Sequence.create(name, buffer.toString()));
-		
-		return sequences;
-	}
-	
-	/**
-	 * Write.
-	 *
-	 * @param file the file
-	 * @param sequence the sequence
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public static void write(Path file, Sequence sequence) throws IOException {
-		write(file, CollectionUtils.asList(sequence));
-	}
+    String name = null;
+    StringBuilder buffer = null;
 
-	/**
-	 * Write a series of fasta sequences to a file.
-	 *
-	 * @param file the file
-	 * @param sequences the sequences
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public static void write(Path file, Collection<Sequence> sequences) throws IOException {
-		BufferedWriter writer = FileUtils.newBufferedWriter(file);
-		
-		try {
-			for (Sequence sequence : sequences) {
-				writer.write(getHeader(sequence.getName()));
-				writer.newLine();
-				writer.write(sequence.toString());
-				writer.newLine();
-			}
-		} finally {
-			writer.close();
-		}
-	}
-	
-	/**
-	 * Write.
-	 *
-	 * @param file the file
-	 * @param sequence the sequence
-	 * @param width the width
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public static void write(Path file, Sequence sequence, int width) throws IOException {
-		write(file, CollectionUtils.asList(sequence), width);
-	}
-	
-	/**
-	 * Write.
-	 *
-	 * @param file the file
-	 * @param sequences the sequences
-	 * @param width the width
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public static void write(Path file, 
-			Collection<Sequence> sequences,
-			int width) throws IOException {
-		BufferedWriter writer = FileUtils.newBufferedWriter(file);
-		
-		try {
-			for (Sequence sequence : sequences) {
-				writer.write(getHeader(sequence.getName()));
-				writer.newLine();
-				
-				List<String> lines = TextUtils.breakApart(sequence.toString(), width);
-				
-				for (String line : lines) {
-					writer.write(line);
-					writer.newLine();
-				}
-			}
-		} finally {
-			writer.close();
-		}
-	}
+    try {
+      while ((line = reader.readLine()) != null) {
+        if (Io.isEmptyLine(line)) {
+          continue;
+        }
 
-	/**
-	 * Gets the header.
-	 *
-	 * @param text the text
-	 * @return the header
-	 */
-	public static String getHeader(String text) {
-		return FASTA_START + text;
-	}
+        fastaHeaderMatcher = HEADER_PATTERN.matcher(line);
+
+        if (fastaHeaderMatcher.find()) {
+          if (buffer != null) {
+            sequences.add(Sequence.create(name, buffer.toString()));
+          }
+
+          name = fastaHeaderMatcher.group(1);
+
+          buffer = new StringBuilder();
+        } else {
+          buffer.append(line);
+        }
+      }
+    } finally {
+      reader.close();
+    }
+
+    // Add the last sequence read
+    sequences.add(Sequence.create(name, buffer.toString()));
+
+    return sequences;
+  }
+
+  /**
+   * Write.
+   *
+   * @param file
+   *          the file
+   * @param sequence
+   *          the sequence
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   */
+  public static void write(Path file, Sequence sequence) throws IOException {
+    write(file, CollectionUtils.asList(sequence));
+  }
+
+  /**
+   * Write a series of fasta sequences to a file.
+   *
+   * @param file
+   *          the file
+   * @param sequences
+   *          the sequences
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   */
+  public static void write(Path file, Collection<Sequence> sequences) throws IOException {
+    BufferedWriter writer = FileUtils.newBufferedWriter(file);
+
+    try {
+      for (Sequence sequence : sequences) {
+        writer.write(getHeader(sequence.getName()));
+        writer.newLine();
+        writer.write(sequence.toString());
+        writer.newLine();
+      }
+    } finally {
+      writer.close();
+    }
+  }
+
+  /**
+   * Write.
+   *
+   * @param file
+   *          the file
+   * @param sequence
+   *          the sequence
+   * @param width
+   *          the width
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   */
+  public static void write(Path file, Sequence sequence, int width) throws IOException {
+    write(file, CollectionUtils.asList(sequence), width);
+  }
+
+  /**
+   * Write.
+   *
+   * @param file
+   *          the file
+   * @param sequences
+   *          the sequences
+   * @param width
+   *          the width
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   */
+  public static void write(Path file, Collection<Sequence> sequences, int width) throws IOException {
+    BufferedWriter writer = FileUtils.newBufferedWriter(file);
+
+    try {
+      for (Sequence sequence : sequences) {
+        writer.write(getHeader(sequence.getName()));
+        writer.newLine();
+
+        List<String> lines = TextUtils.breakApart(sequence.toString(), width);
+
+        for (String line : lines) {
+          writer.write(line);
+          writer.newLine();
+        }
+      }
+    } finally {
+      writer.close();
+    }
+  }
+
+  /**
+   * Gets the header.
+   *
+   * @param text
+   *          the text
+   * @return the header
+   */
+  public static String getHeader(String text) {
+    return FASTA_START + text;
+  }
 }

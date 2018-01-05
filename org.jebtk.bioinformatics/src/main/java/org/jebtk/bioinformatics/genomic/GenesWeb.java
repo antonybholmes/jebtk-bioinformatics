@@ -45,124 +45,125 @@ import org.jebtk.core.network.UrlBuilder;
  * @author Antony Holmes Holmes
  */
 public class GenesWeb extends GenesDb {
-	
-	/**
-	 * The member url.
-	 */
-	private UrlBuilder mUrl;
-	
-	/**
-	 * The member gene url.
-	 */
-	private UrlBuilder mGeneUrl;
-	
-	/**
-	 * The member main url.
-	 */
-	private UrlBuilder mMainUrl;
-	
-	/**
-	 * The member parser.
-	 */
-	private JsonParser mParser;
 
-	/**
-	 * Instantiates a new genes web.
-	 *
-	 * @param url the url
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public GenesWeb(URL url) throws IOException {
-		mUrl = new UrlBuilder(url);
+  /**
+   * The member url.
+   */
+  private UrlBuilder mUrl;
 
-		mGeneUrl = new UrlBuilder(mUrl).resolve("gene");
+  /**
+   * The member gene url.
+   */
+  private UrlBuilder mGeneUrl;
 
-		mMainUrl = new UrlBuilder(mUrl).resolve("gene").resolve("main");
-		
-		mParser = new JsonParser();
-	}
+  /**
+   * The member main url.
+   */
+  private UrlBuilder mMainUrl;
 
-	/* (non-Javadoc)
-	 * @see edu.columbia.rdf.lib.bioinformatics.genome.GenesDb#getGenes(java.lang.String)
-	 */
-	@Override
-	public List<Gene> getGenes(String id) throws IOException, ParseException {
-		List<Gene> genes = new ArrayList<Gene>();
+  /**
+   * The member parser.
+   */
+  private JsonParser mParser;
 
-		try {
-			URL url = new UrlBuilder(mGeneUrl).resolve(id).toUrl();
+  /**
+   * Instantiates a new genes web.
+   *
+   * @param url
+   *          the url
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   */
+  public GenesWeb(URL url) throws IOException {
+    mUrl = new UrlBuilder(url);
 
-			Json json = mParser.parse(url);
+    mGeneUrl = new UrlBuilder(mUrl).resolve("gene");
 
-			for (int i = 0; i < json.size(); ++i) {
-				Json geneJson = json.get(i);
+    mMainUrl = new UrlBuilder(mUrl).resolve("gene").resolve("main");
 
-				Gene gene = new RdfGene(geneJson.get("rdf").getAsString(),
-						geneJson.get("refseq").getAsString(),
-						geneJson.get("entrez").getAsString(),
-						geneJson.get("symbol").getAsString(),
-						GenomicRegion.create(ChromosomeService.getInstance().parse(geneJson.get("chr").getAsString()), 
-						geneJson.get("start").getAsInt(), 
-						geneJson.get("end").getAsInt(),
-						Strand.parse(geneJson.get("strand").getAsChar())));
+    mParser = new JsonParser();
+  }
 
-				Json exonStartsJson = geneJson.get("exon_starts");
-				Json exonEndsJson = geneJson.get("exon_ends");
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * edu.columbia.rdf.lib.bioinformatics.genome.GenesDb#getGenes(java.lang.String)
+   */
+  @Override
+  public List<Gene> getGenes(String id) throws IOException, ParseException {
+    List<Gene> genes = new ArrayList<Gene>();
 
-				for (int j = 0; j < exonStartsJson.size(); ++j) {
-					GenomicRegion exon = GenomicRegion.create(gene.mChr,
-							exonStartsJson.get(j).getAsInt(),
-							exonEndsJson.get(j).getAsInt());
+    try {
+      URL url = new UrlBuilder(mGeneUrl).resolve(id).toUrl();
 
-					gene.addExon(exon);
-				}
+      Json json = mParser.parse(url);
 
-				genes.add(gene);
-			}
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		}
+      for (int i = 0; i < json.size(); ++i) {
+        Json geneJson = json.get(i);
 
-		return genes;
-	}
+        Gene gene = new RdfGene(geneJson.get("rdf").getAsString(), geneJson.get("refseq").getAsString(),
+            geneJson.get("entrez").getAsString(), geneJson.get("symbol").getAsString(),
+            GenomicRegion.create(ChromosomeService.getInstance().parse(geneJson.get("chr").getAsString()),
+                geneJson.get("start").getAsInt(), geneJson.get("end").getAsInt(),
+                Strand.parse(geneJson.get("strand").getAsChar())));
 
-	/* (non-Javadoc)
-	 * @see edu.columbia.rdf.lib.bioinformatics.genome.GenesDb#getMainGene(java.lang.String)
-	 */
-	@Override
-	public Gene getMainGene(String id) throws IOException, ParseException {
-		Gene gene = null;
+        Json exonStartsJson = geneJson.get("exon_starts");
+        Json exonEndsJson = geneJson.get("exon_ends");
 
-		try {
-			URL url = new UrlBuilder(mMainUrl).resolve(id).toUrl();
+        for (int j = 0; j < exonStartsJson.size(); ++j) {
+          GenomicRegion exon = GenomicRegion.create(gene.mChr, exonStartsJson.get(j).getAsInt(),
+              exonEndsJson.get(j).getAsInt());
 
-			Json json = mParser.parse(url);
+          gene.addExon(exon);
+        }
 
-			Json geneJson = json.get(0);
+        genes.add(gene);
+      }
+    } catch (MalformedURLException e) {
+      e.printStackTrace();
+    }
 
-			gene = new RdfGene(geneJson.get("rdf").getAsString(),
-					geneJson.get("refseq").getAsString(),
-					geneJson.get("entrez").getAsString(),
-					geneJson.get("symbol").getAsString(), 
-					GenomicRegion.create(ChromosomeService.getInstance().parse(geneJson.get("chr").getAsString()), 
-					geneJson.get("start").getAsInt(), 
-					geneJson.get("end").getAsInt(),
-					Strand.parse(geneJson.get("strand").getAsChar())));
+    return genes;
+  }
 
-			Json exonStartsJson = geneJson.get("exon_starts");
-			Json exonEndsJson = geneJson.get("exon_ends");
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * edu.columbia.rdf.lib.bioinformatics.genome.GenesDb#getMainGene(java.lang.
+   * String)
+   */
+  @Override
+  public Gene getMainGene(String id) throws IOException, ParseException {
+    Gene gene = null;
 
-			for (int j = 0; j < exonStartsJson.size(); ++j) {
-				GenomicRegion exon = GenomicRegion.create(gene.mChr,
-						exonStartsJson.get(j).getAsInt(),
-						exonEndsJson.get(j).getAsInt());
+    try {
+      URL url = new UrlBuilder(mMainUrl).resolve(id).toUrl();
 
-				gene.addExon(exon);
-			}
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		}
+      Json json = mParser.parse(url);
 
-		return gene;
-	}
+      Json geneJson = json.get(0);
+
+      gene = new RdfGene(geneJson.get("rdf").getAsString(), geneJson.get("refseq").getAsString(),
+          geneJson.get("entrez").getAsString(), geneJson.get("symbol").getAsString(),
+          GenomicRegion.create(ChromosomeService.getInstance().parse(geneJson.get("chr").getAsString()),
+              geneJson.get("start").getAsInt(), geneJson.get("end").getAsInt(),
+              Strand.parse(geneJson.get("strand").getAsChar())));
+
+      Json exonStartsJson = geneJson.get("exon_starts");
+      Json exonEndsJson = geneJson.get("exon_ends");
+
+      for (int j = 0; j < exonStartsJson.size(); ++j) {
+        GenomicRegion exon = GenomicRegion.create(gene.mChr, exonStartsJson.get(j).getAsInt(),
+            exonEndsJson.get(j).getAsInt());
+
+        gene.addExon(exon);
+      }
+    } catch (MalformedURLException e) {
+      e.printStackTrace();
+    }
+
+    return gene;
+  }
 }

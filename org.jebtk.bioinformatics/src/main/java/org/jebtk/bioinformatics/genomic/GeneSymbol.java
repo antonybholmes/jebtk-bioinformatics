@@ -34,72 +34,79 @@ package org.jebtk.bioinformatics.genomic;
  * @author Antony Holmes Holmes
  */
 public class GeneSymbol implements Comparable<GeneSymbol> {
-	
-	/**
-	 * The member symbol.
-	 */
-	private String mSymbol;
-	
-	/**
-	 * The member entrez.
-	 */
-	private String mEntrez;
 
-	/**
-	 * Instantiates a new gene symbol.
-	 *
-	 * @param entrez the entrez
-	 * @param symbol the symbol
-	 */
-	public GeneSymbol(String entrez,
-			String symbol) {
-		mEntrez = entrez.toLowerCase();
-		mSymbol = symbol.toLowerCase();
-	}
-	
-	/**
-	 * Gets the entrez.
-	 *
-	 * @return the entrez
-	 */
-	public String getEntrez() {
-		return mEntrez;
-	}
-	
-	/**
-	 * Gets the symbol.
-	 *
-	 * @return the symbol
-	 */
-	public String getSymbol() {
-		return mSymbol;
-	}
+  /**
+   * The member symbol.
+   */
+  private String mSymbol;
 
-	/* (non-Javadoc)
-	 * @see java.lang.Comparable#compareTo(java.lang.Object)
-	 */
-	@Override
-	public int compareTo(GeneSymbol geneSymbol) {
-		return mEntrez.compareTo(((GeneSymbol)geneSymbol).mEntrez);
-	}
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object o) {
-		if (!(o instanceof GeneSymbol)) {
-			return false;
-		}
-		
-		return compareTo((GeneSymbol)o) == 0;
-	}
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		return mEntrez.hashCode();
-	}
+  /**
+   * The member entrez.
+   */
+  private String mEntrez;
+
+  /**
+   * Instantiates a new gene symbol.
+   *
+   * @param entrez
+   *          the entrez
+   * @param symbol
+   *          the symbol
+   */
+  public GeneSymbol(String entrez, String symbol) {
+    mEntrez = entrez.toLowerCase();
+    mSymbol = symbol.toLowerCase();
+  }
+
+  /**
+   * Gets the entrez.
+   *
+   * @return the entrez
+   */
+  public String getEntrez() {
+    return mEntrez;
+  }
+
+  /**
+   * Gets the symbol.
+   *
+   * @return the symbol
+   */
+  public String getSymbol() {
+    return mSymbol;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Comparable#compareTo(java.lang.Object)
+   */
+  @Override
+  public int compareTo(GeneSymbol geneSymbol) {
+    return mEntrez.compareTo(((GeneSymbol) geneSymbol).mEntrez);
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
+  @Override
+  public boolean equals(Object o) {
+    if (!(o instanceof GeneSymbol)) {
+      return false;
+    }
+
+    return compareTo((GeneSymbol) o) == 0;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#hashCode()
+   */
+  @Override
+  public int hashCode() {
+    return mEntrez.hashCode();
+  }
 }

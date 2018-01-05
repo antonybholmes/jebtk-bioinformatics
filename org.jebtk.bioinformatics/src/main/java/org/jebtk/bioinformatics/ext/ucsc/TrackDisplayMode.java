@@ -35,14 +35,14 @@ package org.jebtk.bioinformatics.ext.ucsc;
  *
  */
 public enum TrackDisplayMode {
-	
-	/**
-	 * The compact.
-	 */
-	COMPACT,
-	
-	/**
-	 * The full.
-	 */
-	FULL
+
+  /**
+   * The compact.
+   */
+  COMPACT,
+
+  /**
+   * The full.
+   */
+  FULL
 }

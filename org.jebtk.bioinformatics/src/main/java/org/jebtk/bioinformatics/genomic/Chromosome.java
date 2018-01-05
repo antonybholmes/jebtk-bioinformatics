@@ -39,132 +39,147 @@ import org.jebtk.core.text.TextUtils;
  */
 public class Chromosome implements Comparable<Chromosome>, IdProperty, NameProperty {
 
-	
-	/**
-	 * Represents an invalid chromosome.
-	 */
-	public static final Chromosome NO_CHR = new Chromosome(-1, "U");
-	
-	/**
-	 * The member chr.
-	 */
-	private String mChr = null;
-	
-	/** The m short name. */
-	private String mShortName;
-	//private String mSpecies;
+  /**
+   * Represents an invalid chromosome.
+   */
+  public static final Chromosome NO_CHR = new Chromosome(-1, "U");
 
-	/** The m id. */
-	private int mId;
-	
-	/**
-	 * Instantiates a new chromosome.
-	 *
-	 * @param chr the chr
-	 * @param parser the parser
-	 */
-	protected Chromosome(int id, String shortName) {
-		//mSpecies = parser.getSpecies();
-		
-		// Ensures chromosome always begins with chr prefix and not cHr or
-		// some other variant
-		
-		// The suffix of the chromosome without the chr prefix. 
-		mShortName = shortName;
-		
-		mId = id;
-		
-		mChr = "chr" + mShortName.toUpperCase().replaceAll("CHR", TextUtils.EMPTY_STRING);
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.abh.common.IdProperty#getId()
-	 */
-	@Override
-	public int getId() {
-		return mId;
-	}
-	
-	//public String getSpecies() {
-	//	return mSpecies;
-	//}
-	
-	/* (non-Javadoc)
-	 * @see org.abh.common.NameProperty#getName()
-	 */
-	@Override
-	public String getName() {
-		return mChr;
-	}
+  /**
+   * The member chr.
+   */
+  private String mChr = null;
 
-	/**
-	 * Gets the short name.
-	 *
-	 * @return the short name
-	 */
-	public String getShortName() {
-		return mShortName;
-	}
+  /** The m short name. */
+  private String mShortName;
+  // private String mSpecies;
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		return mChr;
-	}
+  /** The m id. */
+  private int mId;
 
-	/* (non-Javadoc)
-	 * @see java.lang.Comparable#compareTo(java.lang.Object)
-	 */
-	@Override
-	public int compareTo(Chromosome c) {
-		//System.err.println("compare chr " + mId + " " + c.mId + " " + mChr + " " + c.mChr);
-		
-		if (mId != -1 && c.mId != -1) {
-			if (mId > c.mId) {
-				return 1;
-			} else if (mId < c.mId) {
-				return -1;
-			} else {
-				return 0;
-			}
-		} else {
-			return mChr.compareTo(c.mChr);
-		}
-	}
+  /**
+   * Instantiates a new chromosome.
+   *
+   * @param chr
+   *          the chr
+   * @param parser
+   *          the parser
+   */
+  protected Chromosome(int id, String shortName) {
+    // mSpecies = parser.getSpecies();
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object o) {
-		if (o instanceof Chromosome) {
-			return compareTo((Chromosome)o) == 0;
-		} else {
-			return false;
-		}
-	}
+    // Ensures chromosome always begins with chr prefix and not cHr or
+    // some other variant
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		return mChr.hashCode();
-	}
-	
-	/**
-	 * Returns true if a string starts with chr (case insensitive).
-	 *
-	 * @param value the value
-	 * @return true, if is chr
-	 */
-	public static boolean isChr(String value) {
-		if (value == null) {
-			return false;
-		}
-		
-		return value.toLowerCase().startsWith("chr");
-	}
+    // The suffix of the chromosome without the chr prefix.
+    mShortName = shortName;
+
+    mId = id;
+
+    mChr = "chr" + mShortName.toUpperCase().replaceAll("CHR", TextUtils.EMPTY_STRING);
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.abh.common.IdProperty#getId()
+   */
+  @Override
+  public int getId() {
+    return mId;
+  }
+
+  // public String getSpecies() {
+  // return mSpecies;
+  // }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.abh.common.NameProperty#getName()
+   */
+  @Override
+  public String getName() {
+    return mChr;
+  }
+
+  /**
+   * Gets the short name.
+   *
+   * @return the short name
+   */
+  public String getShortName() {
+    return mShortName;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#toString()
+   */
+  @Override
+  public String toString() {
+    return mChr;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Comparable#compareTo(java.lang.Object)
+   */
+  @Override
+  public int compareTo(Chromosome c) {
+    // System.err.println("compare chr " + mId + " " + c.mId + " " + mChr + " " +
+    // c.mChr);
+
+    if (mId != -1 && c.mId != -1) {
+      if (mId > c.mId) {
+        return 1;
+      } else if (mId < c.mId) {
+        return -1;
+      } else {
+        return 0;
+      }
+    } else {
+      return mChr.compareTo(c.mChr);
+    }
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
+  @Override
+  public boolean equals(Object o) {
+    if (o instanceof Chromosome) {
+      return compareTo((Chromosome) o) == 0;
+    } else {
+      return false;
+    }
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#hashCode()
+   */
+  @Override
+  public int hashCode() {
+    return mChr.hashCode();
+  }
+
+  /**
+   * Returns true if a string starts with chr (case insensitive).
+   *
+   * @param value
+   *          the value
+   * @return true, if is chr
+   */
+  public static boolean isChr(String value) {
+    if (value == null) {
+      return false;
+    }
+
+    return value.toLowerCase().startsWith("chr");
+  }
 }

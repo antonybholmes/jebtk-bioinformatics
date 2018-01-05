@@ -41,46 +41,41 @@ import org.jebtk.core.settings.SettingsService;
  *
  */
 public class Dna {
-	
-	public static final Path RES_DIR = 
-			AppService.APP_ROOT.resolve("res").resolve("modules").resolve("dna");
-	
-	/**
-	 * The constant BASE_A_COLOR.
-	 */
-	public static final Color BASE_A_COLOR = 
-			SettingsService.getInstance().getAsColor("bioinformatics.dna.bases.a.color");
-	
-	/**
-	 * The constant BASE_C_COLOR.
-	 */
-	public static final Color BASE_C_COLOR = 
-			SettingsService.getInstance().getAsColor("bioinformatics.dna.bases.c.color");
-	
-	/**
-	 * The constant BASE_G_COLOR.
-	 */
-	public static final Color BASE_G_COLOR = 
-			SettingsService.getInstance().getAsColor("bioinformatics.dna.bases.g.color");
-	
-	/**
-	 * The constant BASE_T_COLOR.
-	 */
-	public static final Color BASE_T_COLOR = 
-			SettingsService.getInstance().getAsColor("bioinformatics.dna.bases.t.color");
 
-	/**
-	 * The constant BASE_N_COLOR.
-	 */
-	public static final Color BASE_N_COLOR = Color.BLACK;
+  public static final Path RES_DIR = AppService.APP_ROOT.resolve("res").resolve("modules").resolve("dna");
 
-	/**
-	 * The constant MEGABASE.
-	 */
-	public static final int MEGABASE = 1000000;
+  /**
+   * The constant BASE_A_COLOR.
+   */
+  public static final Color BASE_A_COLOR = SettingsService.getInstance().getAsColor("bioinformatics.dna.bases.a.color");
 
-	/**
-	 * The constant KILOBASE.
-	 */
-	public static final double KILOBASE = 1000;
+  /**
+   * The constant BASE_C_COLOR.
+   */
+  public static final Color BASE_C_COLOR = SettingsService.getInstance().getAsColor("bioinformatics.dna.bases.c.color");
+
+  /**
+   * The constant BASE_G_COLOR.
+   */
+  public static final Color BASE_G_COLOR = SettingsService.getInstance().getAsColor("bioinformatics.dna.bases.g.color");
+
+  /**
+   * The constant BASE_T_COLOR.
+   */
+  public static final Color BASE_T_COLOR = SettingsService.getInstance().getAsColor("bioinformatics.dna.bases.t.color");
+
+  /**
+   * The constant BASE_N_COLOR.
+   */
+  public static final Color BASE_N_COLOR = Color.BLACK;
+
+  /**
+   * The constant MEGABASE.
+   */
+  public static final int MEGABASE = 1000000;
+
+  /**
+   * The constant KILOBASE.
+   */
+  public static final double KILOBASE = 1000;
 }

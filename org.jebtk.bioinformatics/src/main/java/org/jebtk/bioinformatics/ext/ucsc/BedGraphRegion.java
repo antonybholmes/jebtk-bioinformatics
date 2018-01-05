@@ -43,66 +43,70 @@ import org.jebtk.core.text.TextUtils;
  */
 public class BedGraphRegion extends UCSCTrackRegion {
 
-	/**
-	 * The member value.
-	 */
-	private double mValue;
+  /**
+   * The member value.
+   */
+  private double mValue;
 
-	/**
-	 * Create a new region. Coordinates are one based.
-	 *
-	 * @param chromosome the chromosome
-	 * @param start the start
-	 * @param end the end
-	 * @param value the value
-	 */
-	public BedGraphRegion(Chromosome chromosome, 
-			int start, 
-			int end,
-			double value) {
-		super(chromosome, start, end);
-		
-		mValue = value;
-	}
-	
-	/**
-	 * Gets the value.
-	 *
-	 * @return the value
-	 */
-	public double getValue() {
-		return mValue;
-	}
-	
-	/* (non-Javadoc)
-	 * @see edu.columbia.rdf.lib.bioinformatics.external.ucsc.UCSCTrackRegion#formattedTxt(java.lang.Appendable)
-	 */
-	@Override
-	public void formattedTxt(Appendable buffer) throws IOException {
-		super.formattedTxt(buffer);
-		buffer.append(TextUtils.TAB_DELIMITER);
-		buffer.append(Double.toString(mValue));
-	}
-	
-	/**
-	 * Parses the.
-	 *
-	 * @param line the line
-	 * @return the bed graph region
-	 */
-	public static BedGraphRegion parse(String genome, String line) {
-		List<String> tokens = TextUtils.fastSplit(line, TextUtils.TAB_DELIMITER);
+  /**
+   * Create a new region. Coordinates are one based.
+   *
+   * @param chromosome
+   *          the chromosome
+   * @param start
+   *          the start
+   * @param end
+   *          the end
+   * @param value
+   *          the value
+   */
+  public BedGraphRegion(Chromosome chromosome, int start, int end, double value) {
+    super(chromosome, start, end);
 
-		// convert first part to chromosome (replacing x,y and m) {
-		Chromosome chromosome = ChromosomeService.getInstance().guess(genome, tokens.get(0));
+    mValue = value;
+  }
 
-		// Per UCSC convention, coordinates are zero based in the file
-		// but we shall convert them to one based for consistency
-		int start = Integer.parseInt(tokens.get(1)) + 1;
-		int end = Integer.parseInt(tokens.get(2));
-		double value = Double.parseDouble(tokens.get(3));
-		
+  /**
+   * Gets the value.
+   *
+   * @return the value
+   */
+  public double getValue() {
+    return mValue;
+  }
 
-		return new BedGraphRegion(chromosome, start, end, value);
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see edu.columbia.rdf.lib.bioinformatics.external.ucsc.UCSCTrackRegion#
+   * formattedTxt(java.lang.Appendable)
+   */
+  @Override
+  public void formattedTxt(Appendable buffer) throws IOException {
+    super.formattedTxt(buffer);
+    buffer.append(TextUtils.TAB_DELIMITER);
+    buffer.append(Double.toString(mValue));
+  }
+
+  /**
+   * Parses the.
+   *
+   * @param line
+   *          the line
+   * @return the bed graph region
+   */
+  public static BedGraphRegion parse(String genome, String line) {
+    List<String> tokens = TextUtils.fastSplit(line, TextUtils.TAB_DELIMITER);
+
+    // convert first part to chromosome (replacing x,y and m) {
+    Chromosome chromosome = ChromosomeService.getInstance().guess(genome, tokens.get(0));
+
+    // Per UCSC convention, coordinates are zero based in the file
+    // but we shall convert them to one based for consistency
+    int start = Integer.parseInt(tokens.get(1)) + 1;
+    int end = Integer.parseInt(tokens.get(2));
+    double value = Double.parseDouble(tokens.get(3));
+
+    return new BedGraphRegion(chromosome, start, end, value);
+  }
 }

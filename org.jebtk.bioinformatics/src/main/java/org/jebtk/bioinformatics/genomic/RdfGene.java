@@ -32,38 +32,42 @@ package org.jebtk.bioinformatics.genomic;
  * The class RdfGene.
  */
 public class RdfGene extends Gene {
-	
-	/**
-	 * Instantiates a new rdf gene.
-	 *
-	 * @param rdf the rdf
-	 * @param refseq the refseq
-	 * @param entrez the entrez
-	 * @param symbol the symbol
-	 * @param chr the chr
-	 * @param start the start
-	 * @param end the end
-	 * @param strand the strand
-	 */
-	public RdfGene(String rdf,
-			String refseq,
-			String entrez,
-			String symbol, 
-			GenomicRegion region) {
-		super(region);
-		
-		setSymbol(symbol);
-		setRefseq(refseq);
-		setEntrez(entrez);
-		setId("rdf", rdf);
-	}
-	
-	/**
-	 * Gets the rdf.
-	 *
-	 * @return the rdf
-	 */
-	public String getRdf() {
-		return getId("rdf");
-	}
+
+  /**
+   * Instantiates a new rdf gene.
+   *
+   * @param rdf
+   *          the rdf
+   * @param refseq
+   *          the refseq
+   * @param entrez
+   *          the entrez
+   * @param symbol
+   *          the symbol
+   * @param chr
+   *          the chr
+   * @param start
+   *          the start
+   * @param end
+   *          the end
+   * @param strand
+   *          the strand
+   */
+  public RdfGene(String rdf, String refseq, String entrez, String symbol, GenomicRegion region) {
+    super(region);
+
+    setSymbol(symbol);
+    setRefseq(refseq);
+    setEntrez(entrez);
+    setId("rdf", rdf);
+  }
+
+  /**
+   * Gets the rdf.
+   *
+   * @return the rdf
+   */
+  public String getRdf() {
+    return getId("rdf");
+  }
 }

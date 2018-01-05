@@ -37,8 +37,6 @@ import org.jebtk.bioinformatics.DataSource;
 import org.jebtk.bioinformatics.dna.InvalidDnaException;
 import org.jebtk.core.NameProperty;
 
-
-
 // TODO: Auto-generated Javadoc
 /**
  * Fast search of genome sequence files to get get actual genomic data.
@@ -46,201 +44,212 @@ import org.jebtk.core.NameProperty;
  * @author Antony Holmes Holmes
  */
 public abstract class GenomeAssembly implements NameProperty {
-	
-	/** The Constant HG18. */
-	public static final String HG18 = "hg18";
-	
-	/**
-	 * The constant HG19.
-	 */
-	public static final String HG19 = "hg19";
-	
-	/**
-	 * The constant MM10.
-	 */
-	public static final String MM10 = "mm10";
-	
-	/**
-	 * Process a sequence of the form chrN:X-Y.
-	 *
-	 * @param genome the genome
-	 * @param position the position
-	 * @param displayUpper the display upper
-	 * @param repeatMaskType the repeat mask type
-	 * @return the sequence
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public SequenceRegion getSequence(String genome,
-			String position,
-			boolean displayUpper,
-			RepeatMaskType repeatMaskType) throws IOException {
-		return getSequence(genome,
-				GenomicRegion.parse(position),
-				displayUpper,
-				repeatMaskType);
-	}
-	
-	/**
-	 * Gets the sequence.
-	 *
-	 * @param genome the genome
-	 * @param position the position
-	 * @param repeatMaskType the repeat mask type
-	 * @return the sequence
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public SequenceRegion getSequence(String genome,
-			String position,
-			RepeatMaskType repeatMaskType) throws IOException {
-		return getSequence(genome,
-				GenomicRegion.parse(position),
-				true,
-				repeatMaskType);
-	}
 
-	/**
-	 * Gets the sequence.
-	 *
-	 * @param genome the genome
-	 * @param chr the chr
-	 * @param start the start
-	 * @param end the end
-	 * @return the sequence
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public SequenceRegion getSequence(String genome,
-			Chromosome chr, 
-			int start, 
-			int end) throws IOException {
-		return getSequence(genome, chr, start, end, true, RepeatMaskType.UPPERCASE);
-	}
-	
-	/**
-	 * Gets the sequence.
-	 *
-	 * @param genome the genome
-	 * @param chr the chr
-	 * @param start the start
-	 * @param end the end
-	 * @param displayUpper the display upper
-	 * @param repeatMaskType the repeat mask type
-	 * @return the sequence
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public SequenceRegion getSequence(String genome,
-			Chromosome chr, 
-			int start, 
-			int end,
-			boolean displayUpper,
-			RepeatMaskType repeatMaskType) throws IOException {
-		return getSequence(genome,
-				new GenomicRegion(chr, start, end),
-				displayUpper,
-				repeatMaskType);
-	}
+  /** The Constant HG18. */
+  public static final String HG18 = "hg18";
 
-	/**
-	 * Default return sequence without repeats, uppercase.
-	 *
-	 * @param genome the genome
-	 * @param region the region
-	 * @return the sequence
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public SequenceRegion getSequence(String genome, GenomicRegion region) throws IOException {
-		return getSequence(genome,
-				region, 
-				true, 
-				RepeatMaskType.UPPERCASE);
-	}
-	
-	/**
-	 * Gets the sequence.
-	 *
-	 * @param genome the genome
-	 * @param sequence the sequence
-	 * @return the sequence
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public SequenceRegion getSequence(String genome, String sequence) throws IOException {
-		return getSequence(genome, sequence, true, RepeatMaskType.UPPERCASE);
-	}
-	
-	/**
-	 * Return upper case DNA sequence, except where there are repeats.
-	 *
-	 * @param genome the genome
-	 * @param region the region
-	 * @param displayUpper the display upper
-	 * @return the sequence
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public SequenceRegion getSequence(String genome, 
-			GenomicRegion region,
-			boolean displayUpper) throws IOException {
-		return getSequence(genome, region, displayUpper, RepeatMaskType.UPPERCASE);
-	}
-	
-	/**
-	 * Gets the sequence.
-	 *
-	 * @param genome the genome
-	 * @param region the region
-	 * @param repeatMaskType the repeat mask type
-	 * @return the sequence
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public SequenceRegion getSequence(String genome,
-			GenomicRegion region,
-			RepeatMaskType repeatMaskType) throws IOException {
-		return getSequence(genome, region, true, repeatMaskType);
-	}
-	
-	/**
-	 * Gets the sequence.
-	 *
-	 * @param genome the genome
-	 * @param region the region
-	 * @param displayUpper the display upper
-	 * @param repeatMaskType the repeat mask type
-	 * @return the sequence
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 * @throws InvalidDnaException 
-	 */
-	public abstract SequenceRegion getSequence(String genome,
-			GenomicRegion region,
-			boolean displayUpper,
-			RepeatMaskType repeatMaskType) throws IOException, InvalidDnaException;
+  /**
+   * The constant HG19.
+   */
+  public static final String HG19 = "hg19";
 
-	public List<SequenceRegion> getSequences(String genome,
-			Collection<GenomicRegion> regions,
-			boolean displayUpper,
-			RepeatMaskType repeatMaskType) throws IOException {
-		List<SequenceRegion> sequences = new ArrayList<SequenceRegion>();
+  /**
+   * The constant MM10.
+   */
+  public static final String MM10 = "mm10";
 
-		for (GenomicRegion region : regions) {
-			sequences.add(getSequence(genome, region, displayUpper, repeatMaskType));
-		}
+  /**
+   * Process a sequence of the form chrN:X-Y.
+   *
+   * @param genome
+   *          the genome
+   * @param position
+   *          the position
+   * @param displayUpper
+   *          the display upper
+   * @param repeatMaskType
+   *          the repeat mask type
+   * @return the sequence
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   */
+  public SequenceRegion getSequence(String genome, String position, boolean displayUpper, RepeatMaskType repeatMaskType)
+      throws IOException {
+    return getSequence(genome, GenomicRegion.parse(position), displayUpper, repeatMaskType);
+  }
 
-		return sequences;
-	}
-	
-	/**
-	 * Should return a list of the available genomes.
-	 *
-	 * @return the genomes
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public List<String> getGenomes() throws IOException {
-		return Collections.emptyList();
-	}
+  /**
+   * Gets the sequence.
+   *
+   * @param genome
+   *          the genome
+   * @param position
+   *          the position
+   * @param repeatMaskType
+   *          the repeat mask type
+   * @return the sequence
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   */
+  public SequenceRegion getSequence(String genome, String position, RepeatMaskType repeatMaskType) throws IOException {
+    return getSequence(genome, GenomicRegion.parse(position), true, repeatMaskType);
+  }
 
-	/**
-	 * Gets the data source.
-	 *
-	 * @return the data source
-	 */
-	public DataSource getDataSource() {
-		return DataSource.LOCAL;
-	}
+  /**
+   * Gets the sequence.
+   *
+   * @param genome
+   *          the genome
+   * @param chr
+   *          the chr
+   * @param start
+   *          the start
+   * @param end
+   *          the end
+   * @return the sequence
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   */
+  public SequenceRegion getSequence(String genome, Chromosome chr, int start, int end) throws IOException {
+    return getSequence(genome, chr, start, end, true, RepeatMaskType.UPPERCASE);
+  }
+
+  /**
+   * Gets the sequence.
+   *
+   * @param genome
+   *          the genome
+   * @param chr
+   *          the chr
+   * @param start
+   *          the start
+   * @param end
+   *          the end
+   * @param displayUpper
+   *          the display upper
+   * @param repeatMaskType
+   *          the repeat mask type
+   * @return the sequence
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   */
+  public SequenceRegion getSequence(String genome, Chromosome chr, int start, int end, boolean displayUpper,
+      RepeatMaskType repeatMaskType) throws IOException {
+    return getSequence(genome, new GenomicRegion(chr, start, end), displayUpper, repeatMaskType);
+  }
+
+  /**
+   * Default return sequence without repeats, uppercase.
+   *
+   * @param genome
+   *          the genome
+   * @param region
+   *          the region
+   * @return the sequence
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   */
+  public SequenceRegion getSequence(String genome, GenomicRegion region) throws IOException {
+    return getSequence(genome, region, true, RepeatMaskType.UPPERCASE);
+  }
+
+  /**
+   * Gets the sequence.
+   *
+   * @param genome
+   *          the genome
+   * @param sequence
+   *          the sequence
+   * @return the sequence
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   */
+  public SequenceRegion getSequence(String genome, String sequence) throws IOException {
+    return getSequence(genome, sequence, true, RepeatMaskType.UPPERCASE);
+  }
+
+  /**
+   * Return upper case DNA sequence, except where there are repeats.
+   *
+   * @param genome
+   *          the genome
+   * @param region
+   *          the region
+   * @param displayUpper
+   *          the display upper
+   * @return the sequence
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   */
+  public SequenceRegion getSequence(String genome, GenomicRegion region, boolean displayUpper) throws IOException {
+    return getSequence(genome, region, displayUpper, RepeatMaskType.UPPERCASE);
+  }
+
+  /**
+   * Gets the sequence.
+   *
+   * @param genome
+   *          the genome
+   * @param region
+   *          the region
+   * @param repeatMaskType
+   *          the repeat mask type
+   * @return the sequence
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   */
+  public SequenceRegion getSequence(String genome, GenomicRegion region, RepeatMaskType repeatMaskType)
+      throws IOException {
+    return getSequence(genome, region, true, repeatMaskType);
+  }
+
+  /**
+   * Gets the sequence.
+   *
+   * @param genome
+   *          the genome
+   * @param region
+   *          the region
+   * @param displayUpper
+   *          the display upper
+   * @param repeatMaskType
+   *          the repeat mask type
+   * @return the sequence
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   * @throws InvalidDnaException
+   */
+  public abstract SequenceRegion getSequence(String genome, GenomicRegion region, boolean displayUpper,
+      RepeatMaskType repeatMaskType) throws IOException, InvalidDnaException;
+
+  public List<SequenceRegion> getSequences(String genome, Collection<GenomicRegion> regions, boolean displayUpper,
+      RepeatMaskType repeatMaskType) throws IOException {
+    List<SequenceRegion> sequences = new ArrayList<SequenceRegion>();
+
+    for (GenomicRegion region : regions) {
+      sequences.add(getSequence(genome, region, displayUpper, repeatMaskType));
+    }
+
+    return sequences;
+  }
+
+  /**
+   * Should return a list of the available genomes.
+   *
+   * @return the genomes
+   * @throws IOException
+   *           Signals that an I/O exception has occurred.
+   */
+  public List<String> getGenomes() throws IOException {
+    return Collections.emptyList();
+  }
+
+  /**
+   * Gets the data source.
+   *
+   * @return the data source
+   */
+  public DataSource getDataSource() {
+    return DataSource.LOCAL;
+  }
 }

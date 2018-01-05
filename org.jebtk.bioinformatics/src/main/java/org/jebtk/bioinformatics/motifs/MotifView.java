@@ -32,28 +32,29 @@ package org.jebtk.bioinformatics.motifs;
  * The enum MotifView.
  */
 public enum MotifView {
-	
-	/**
-	 * The bits.
-	 */
-	BITS,
-	
-	/**
-	 * The p.
-	 */
-	P;
 
-	/**
-	 * Parses the.
-	 *
-	 * @param value the value
-	 * @return the motif view
-	 */
-	public static MotifView parse(String value) {
-		if (value.toLowerCase().toString().equals("bits")) {
-			return BITS;
-		} else {
-			return P;
-		}
-	}
+  /**
+   * The bits.
+   */
+  BITS,
+
+  /**
+   * The p.
+   */
+  P;
+
+  /**
+   * Parses the.
+   *
+   * @param value
+   *          the value
+   * @return the motif view
+   */
+  public static MotifView parse(String value) {
+    if (value.toLowerCase().toString().equals("bits")) {
+      return BITS;
+    } else {
+      return P;
+    }
+  }
 }

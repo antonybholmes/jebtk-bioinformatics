@@ -36,8 +36,6 @@ import java.util.zip.ZipFile;
 
 import org.jebtk.core.io.FileUtils;
 
-
-
 // TODO: Auto-generated Javadoc
 /**
  * Genes lookup to m.
@@ -45,71 +43,69 @@ import org.jebtk.core.io.FileUtils;
  * @author Antony Holmes Holmes
  */
 public class GTBZParser extends GTB2Parser {
-	
-	public GTBZParser() {
-		// Do nothing
-	}
-	
-	public GTBZParser(GeneParser parser) {
-		super(parser);
-	}
 
-	@Override
-	public void parse(Path file, Genes genes) throws IOException {
+  public GTBZParser() {
+    // Do nothing
+  }
 
-		final ZipFile zipFile = new ZipFile(file.toFile());
+  public GTBZParser(GeneParser parser) {
+    super(parser);
+  }
 
-		try {
-			final Enumeration<? extends ZipEntry> entries = zipFile.entries();
-			
-			while (entries.hasMoreElements()) {
-				final ZipEntry entry = entries.nextElement();
+  @Override
+  public void parse(Path file, Genes genes) throws IOException {
 
-				if (entry.getName().contains("gtb2")) {
-					BufferedReader reader = 
-							FileUtils.newBufferedReader(zipFile, entry);
+    final ZipFile zipFile = new ZipFile(file.toFile());
 
-					try {
-						parse(file, reader, genes);
-					} finally {
-						reader.close();
-					}
-				}
-			}
-		} finally {
-			zipFile.close();
-		}
-	}
-	
-	@Override
-	public void parse(Path file, Genes genes, Chromosome chr) throws IOException {
+    try {
+      final Enumeration<? extends ZipEntry> entries = zipFile.entries();
 
-		final ZipFile zipFile = new ZipFile(file.toFile());
+      while (entries.hasMoreElements()) {
+        final ZipEntry entry = entries.nextElement();
 
-		try {
-			ZipEntry entry = zipFile.getEntry(chr.getName() + ".gtb2");
-			
-			if (entry != null) {
-				BufferedReader reader = 
-						FileUtils.newBufferedReader(zipFile, entry);
+        if (entry.getName().contains("gtb2")) {
+          BufferedReader reader = FileUtils.newBufferedReader(zipFile, entry);
 
-				System.err.println("parse " + zipFile + " " + file);
-				
-				try {
-					parse(file, reader, genes, chr);
-				} finally {
-					reader.close();
-				}
-			}
-		} finally {
-			zipFile.close();
-		}
-	}
-	
-	@Override
-	public GeneParser create(GeneParser parser) {
-		GTBZParser ret = new GTBZParser(parser);
-		
-		return ret;
-	}
+          try {
+            parse(file, reader, genes);
+          } finally {
+            reader.close();
+          }
+        }
+      }
+    } finally {
+      zipFile.close();
+    }
+  }
+
+  @Override
+  public void parse(Path file, Genes genes, Chromosome chr) throws IOException {
+
+    final ZipFile zipFile = new ZipFile(file.toFile());
+
+    try {
+      ZipEntry entry = zipFile.getEntry(chr.getName() + ".gtb2");
+
+      if (entry != null) {
+        BufferedReader reader = FileUtils.newBufferedReader(zipFile, entry);
+
+        System.err.println("parse " + zipFile + " " + file);
+
+        try {
+          parse(file, reader, genes, chr);
+        } finally {
+          reader.close();
+        }
+      }
+    } finally {
+      zipFile.close();
+    }
+  }
+
+  @Override
+  public GeneParser create(GeneParser parser) {
+    GTBZParser ret = new GTBZParser(parser);
+
+    return ret;
+  }
 }

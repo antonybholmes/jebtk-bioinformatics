@@ -36,60 +36,70 @@ import java.util.List;
  * The class Range.
  */
 public class Range implements Iterable<Integer> {
-	
-	/**
-	 * The range.
-	 */
-	private List<Integer> range = new ArrayList<Integer>();
-	
-	/**
-	 * Instantiates a new range.
-	 *
-	 * @param start the start
-	 * @param end the end
-	 */
-	public Range(int start, int end) {
-		int increment = end - start;
-		
-		increment /= Math.abs(increment);
-		
-		setup(start, end, increment);
-	}
-	
-	/**
-	 * Instantiates a new range.
-	 *
-	 * @param start the start
-	 * @param end the end
-	 * @param increment the increment
-	 */
-	public Range(int start, int end, int increment) {
-		setup(start, end, increment);
-	}
-	
-	/**
-	 * Setup.
-	 *
-	 * @param start the start
-	 * @param end the end
-	 * @param increment the increment
-	 */
-	private void setup(int start, int end, int increment) {
-		if (increment > 0) {
-			for (int i = start; i <= end; i += increment) {
-				range.add(i);
-			}
-		} else {
-			for (int i = end; i >= start; i -= increment) {
-				range.add(i);
-			}
-		}
-	}
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Iterable#iterator()
-	 */
-	public Iterator<Integer> iterator() {
-		return range.iterator();
-	}
+
+  /**
+   * The range.
+   */
+  private List<Integer> range = new ArrayList<Integer>();
+
+  /**
+   * Instantiates a new range.
+   *
+   * @param start
+   *          the start
+   * @param end
+   *          the end
+   */
+  public Range(int start, int end) {
+    int increment = end - start;
+
+    increment /= Math.abs(increment);
+
+    setup(start, end, increment);
+  }
+
+  /**
+   * Instantiates a new range.
+   *
+   * @param start
+   *          the start
+   * @param end
+   *          the end
+   * @param increment
+   *          the increment
+   */
+  public Range(int start, int end, int increment) {
+    setup(start, end, increment);
+  }
+
+  /**
+   * Setup.
+   *
+   * @param start
+   *          the start
+   * @param end
+   *          the end
+   * @param increment
+   *          the increment
+   */
+  private void setup(int start, int end, int increment) {
+    if (increment > 0) {
+      for (int i = start; i <= end; i += increment) {
+        range.add(i);
+      }
+    } else {
+      for (int i = end; i >= start; i -= increment) {
+        range.add(i);
+      }
+    }
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Iterable#iterator()
+   */
+  public Iterator<Integer> iterator() {
+    return range.iterator();
+  }
 }

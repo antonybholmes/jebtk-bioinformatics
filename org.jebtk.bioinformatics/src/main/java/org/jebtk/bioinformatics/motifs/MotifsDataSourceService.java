@@ -37,71 +37,72 @@ import org.jebtk.core.tree.TreeNode;
  * The class MotifsDBService.
  */
 public class MotifsDataSourceService extends MotifDataSource {
-	
-	/**
-	 * The Class MotifsDBServiceLoader.
-	 */
-	private static class MotifsDBServiceLoader {
-		
-		/** The Constant INSTANCE. */
-		private static final MotifsDataSourceService INSTANCE = new MotifsDataSourceService();
-	}
 
-	/**
-	 * Gets the single instance of SettingsService.
-	 *
-	 * @return single instance of SettingsService
-	 */
-	public static MotifsDataSourceService getInstance() {
-		return MotifsDBServiceLoader.INSTANCE;
-	}
+  /**
+   * The Class MotifsDBServiceLoader.
+   */
+  private static class MotifsDBServiceLoader {
 
-	/**
-	 * The member dbs. We only load each db type once
-	 */
-	private List<MotifDataSource> mDbs = 
-			new UniqueArrayList<MotifDataSource>();
-	
-	/**
-	 * Instantiates a new motifs db service.
-	 */
-	private MotifsDataSourceService() {
-		// do nothing
-	}
-	
-	/**
-	 * Adds the back end.
-	 *
-	 * @param motifsDb the motifs db
-	 */
-	public void addDataSource(MotifDataSource motifsDb) {
-		mDbs.add(motifsDb);
-	}
-	
-	/**
-	 * Gets the DB count.
-	 *
-	 * @return the DB count
-	 */
-	public int getDBCount() {
-		return mDbs.size();
-	}
+    /** The Constant INSTANCE. */
+    private static final MotifsDataSourceService INSTANCE = new MotifsDataSourceService();
+  }
 
-	/* (non-Javadoc)
-	 * @see edu.columbia.rdf.lib.bioinformatics.motifs.MotifsDB#createTree(org.abh.lib.tree.TreeRootNode, java.lang.String)
-	 */
-	@Override
-	public void createTree(TreeNode<Motif> root, 
-			List<String> terms,
-			boolean inList,
-			boolean exactMatch,
-			boolean caseSensitive) throws Exception {
-		
-		for (MotifDataSource db : mDbs) {
-			db.createTree(root, terms, inList, exactMatch, caseSensitive);
-		}
-		
-		// Sort the folders
-		root.sortChildren();
-	}
+  /**
+   * Gets the single instance of SettingsService.
+   *
+   * @return single instance of SettingsService
+   */
+  public static MotifsDataSourceService getInstance() {
+    return MotifsDBServiceLoader.INSTANCE;
+  }
+
+  /**
+   * The member dbs. We only load each db type once
+   */
+  private List<MotifDataSource> mDbs = new UniqueArrayList<MotifDataSource>();
+
+  /**
+   * Instantiates a new motifs db service.
+   */
+  private MotifsDataSourceService() {
+    // do nothing
+  }
+
+  /**
+   * Adds the back end.
+   *
+   * @param motifsDb
+   *          the motifs db
+   */
+  public void addDataSource(MotifDataSource motifsDb) {
+    mDbs.add(motifsDb);
+  }
+
+  /**
+   * Gets the DB count.
+   *
+   * @return the DB count
+   */
+  public int getDBCount() {
+    return mDbs.size();
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * edu.columbia.rdf.lib.bioinformatics.motifs.MotifsDB#createTree(org.abh.lib.
+   * tree.TreeRootNode, java.lang.String)
+   */
+  @Override
+  public void createTree(TreeNode<Motif> root, List<String> terms, boolean inList, boolean exactMatch,
+      boolean caseSensitive) throws Exception {
+
+    for (MotifDataSource db : mDbs) {
+      db.createTree(root, terms, inList, exactMatch, caseSensitive);
+    }
+
+    // Sort the folders
+    root.sortChildren();
+  }
 }

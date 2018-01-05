@@ -32,87 +32,81 @@ import org.jebtk.bioinformatics.gapsearch.FixedGapSearch;
 import org.jebtk.bioinformatics.gapsearch.GapSearch;
 import org.jebtk.core.model.ListModel;
 
-
 // TODO: Auto-generated Javadoc
 /**
  * Keeps a sorted list of regions.
  *
  * @author Antony Holmes Holmes
- * @param <T> the generic type
+ * @param <T>
+ *          the generic type
  */
 public class GenomicRegions<T extends GenomicRegion> extends ListModel<T> {
-	
-	/**
-	 * The constant serialVersionUID.
-	 */
-	private static final long serialVersionUID = 1L;
 
-	/**
-	 * Gets the fixed gap search.
-	 *
-	 * @param <X> the generic type
-	 * @param regions the regions
-	 * @return the fixed gap search
-	 */
-	public static <X extends GenomicRegion> GapSearch<X> getFixedGapSearch(GenomicRegions<X> regions) {
-		GapSearch<X> search = new FixedGapSearch<X>();
-		
-		for (X region : regions) {
-			search.add(region, region);
-		}
-		
-		return search;
-	}
-	
-	/**
-	 * Gets the binary search.
-	 *
-	 * @param <X> the generic type
-	 * @param regions the regions
-	 * @return the binary search
-	 */
-	public static <X extends GenomicRegion> BinaryGapSearch<X> getBinarySearch(GenomicRegions<X> regions) {
-		BinaryGapSearch<X> search = new BinaryGapSearch<X>();
-		
-		for (X region : regions) {
-			search.add(region, region);
-		}
-		
-		return search;
-	}
-	
-	/*
-	protected Map<Chromosome, SortedRegions<T>> mChrRegions = 
-			new TreeMap<Chromosome, SortedRegions<T>>();
-	
-	protected List<T> mRegions = new ArrayList<T>();
-	
-	public void add(T region) {
-		mRegions.add(region);
-		getRegionsByChr(region.getChr()).add(region);
-		
-		fireChanged();
-	}
-	
-	public SortedRegions<T> getRegionsByChr(Chromosome chromosome) {
-		if (!mChrRegions.containsKey(chromosome)) {
-			mChrRegions.put(chromosome, new SortedRegions<T>());
-		}
-		
-		return mChrRegions.get(chromosome);
-	}
-	
-	public T get(int i) {
-		return mRegions.get(i);
-	}
-	
-	public int size() {
-		return mRegions.size();
-	}
+  /**
+   * The constant serialVersionUID.
+   */
+  private static final long serialVersionUID = 1L;
 
-	@Override
-	public Iterator<Chromosome> iterator() {
-		return mChrRegions.keySet().iterator();
-	}
-	*/
+  /**
+   * Gets the fixed gap search.
+   *
+   * @param <X>
+   *          the generic type
+   * @param regions
+   *          the regions
+   * @return the fixed gap search
+   */
+  public static <X extends GenomicRegion> GapSearch<X> getFixedGapSearch(GenomicRegions<X> regions) {
+    GapSearch<X> search = new FixedGapSearch<X>();
+
+    for (X region : regions) {
+      search.add(region, region);
+    }
+
+    return search;
+  }
+
+  /**
+   * Gets the binary search.
+   *
+   * @param <X>
+   *          the generic type
+   * @param regions
+   *          the regions
+   * @return the binary search
+   */
+  public static <X extends GenomicRegion> BinaryGapSearch<X> getBinarySearch(GenomicRegions<X> regions) {
+    BinaryGapSearch<X> search = new BinaryGapSearch<X>();
+
+    for (X region : regions) {
+      search.add(region, region);
+    }
+
+    return search;
+  }
+
+  /*
+   * protected Map<Chromosome, SortedRegions<T>> mChrRegions = new
+   * TreeMap<Chromosome, SortedRegions<T>>();
+   * 
+   * protected List<T> mRegions = new ArrayList<T>();
+   * 
+   * public void add(T region) { mRegions.add(region);
+   * getRegionsByChr(region.getChr()).add(region);
+   * 
+   * fireChanged(); }
+   * 
+   * public SortedRegions<T> getRegionsByChr(Chromosome chromosome) { if
+   * (!mChrRegions.containsKey(chromosome)) { mChrRegions.put(chromosome, new
+   * SortedRegions<T>()); }
+   * 
+   * return mChrRegions.get(chromosome); }
+   * 
+   * public T get(int i) { return mRegions.get(i); }
+   * 
+   * public int size() { return mRegions.size(); }
+   * 
+   * @Override public Iterator<Chromosome> iterator() { return
+   * mChrRegions.keySet().iterator(); }
+   */
 }

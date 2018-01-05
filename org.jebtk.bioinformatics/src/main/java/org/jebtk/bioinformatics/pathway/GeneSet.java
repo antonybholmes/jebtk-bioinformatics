@@ -37,151 +37,167 @@ import java.util.TreeSet;
  * The class GeneSet.
  */
 public class GeneSet implements Comparable<GeneSet>, Iterable<String> {
-	
-	/**
-	 * The member genes.
-	 */
-	private Set<String> mGenes = new TreeSet<String>();
-	
-	/**
-	 * The member name.
-	 */
-	private String mName;
-	
-	/**
-	 * The member description.
-	 */
-	private String mDescription;
-	
-	/**
-	 * The member collection name.
-	 */
-	private String mCollectionName;
-	
-	/**
-	 * Instantiates a new gene set.
-	 *
-	 * @param name the name
-	 * @param collectionName the collection name
-	 */
-	public GeneSet(String name, String collectionName) {
-		mName = name;
-		
-		mCollectionName = collectionName;
-	}
-	
-	/**
-	 * Instantiates a new gene set.
-	 *
-	 * @param name the name
-	 * @param collectionName the collection name
-	 * @param genes the genes
-	 */
-	public GeneSet(String name, String collectionName, Collection<String> genes) {
-		this(name, collectionName);
-		
-		addGenes(genes);
-	}
 
-	/**
-	 * Gets the name.
-	 *
-	 * @return the name
-	 */
-	public String getName() {
-		return mName;
-	}
-	
-	/**
-	 * Adds the genes.
-	 *
-	 * @param genes the genes
-	 */
-	public void addGenes(Collection<String> genes) {
-		for (String gene : genes) {
-			addGene(gene);
-		}
-	}
-	
-	/**
-	 * Adds the gene.
-	 *
-	 * @param gene the gene
-	 */
-	public void addGene(String gene) {
-		mGenes.add(gene.toUpperCase());
-	}
-	
-	/**
-	 * Contains.
-	 *
-	 * @param gene the gene
-	 * @return true, if successful
-	 */
-	public boolean contains(String gene) {
-		return mGenes.contains(gene.toUpperCase());
-	}
+  /**
+   * The member genes.
+   */
+  private Set<String> mGenes = new TreeSet<String>();
 
-	/**
-	 * Size.
-	 *
-	 * @return the int
-	 */
-	public int size() {
-		return mGenes.size();
-	}
+  /**
+   * The member name.
+   */
+  private String mName;
 
-	/* (non-Javadoc)
-	 * @see java.lang.Comparable#compareTo(java.lang.Object)
-	 */
-	@Override
-	public int compareTo(GeneSet o) {
-		return mName.compareTo(o.mName);
-	}
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object o) {
-		if (o instanceof GeneSet) {
-			return compareTo((GeneSet)o) == 0;
-		} else {
-			return false;
-		}
-	}
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		return mName.hashCode();
-	}
+  /**
+   * The member description.
+   */
+  private String mDescription;
 
-	/**
-	 * Gets the description.
-	 *
-	 * @return the description
-	 */
-	public String getDescription() {
-		return mDescription;
-	}
+  /**
+   * The member collection name.
+   */
+  private String mCollectionName;
 
-	/* (non-Javadoc)
-	 * @see java.lang.Iterable#iterator()
-	 */
-	@Override
-	public Iterator<String> iterator() {
-		return mGenes.iterator();
-	}
+  /**
+   * Instantiates a new gene set.
+   *
+   * @param name
+   *          the name
+   * @param collectionName
+   *          the collection name
+   */
+  public GeneSet(String name, String collectionName) {
+    mName = name;
 
-	/**
-	 * Gets the collection name.
-	 *
-	 * @return the collection name
-	 */
-	public String getCollectionName() {
-		return mCollectionName;
-	}
+    mCollectionName = collectionName;
+  }
+
+  /**
+   * Instantiates a new gene set.
+   *
+   * @param name
+   *          the name
+   * @param collectionName
+   *          the collection name
+   * @param genes
+   *          the genes
+   */
+  public GeneSet(String name, String collectionName, Collection<String> genes) {
+    this(name, collectionName);
+
+    addGenes(genes);
+  }
+
+  /**
+   * Gets the name.
+   *
+   * @return the name
+   */
+  public String getName() {
+    return mName;
+  }
+
+  /**
+   * Adds the genes.
+   *
+   * @param genes
+   *          the genes
+   */
+  public void addGenes(Collection<String> genes) {
+    for (String gene : genes) {
+      addGene(gene);
+    }
+  }
+
+  /**
+   * Adds the gene.
+   *
+   * @param gene
+   *          the gene
+   */
+  public void addGene(String gene) {
+    mGenes.add(gene.toUpperCase());
+  }
+
+  /**
+   * Contains.
+   *
+   * @param gene
+   *          the gene
+   * @return true, if successful
+   */
+  public boolean contains(String gene) {
+    return mGenes.contains(gene.toUpperCase());
+  }
+
+  /**
+   * Size.
+   *
+   * @return the int
+   */
+  public int size() {
+    return mGenes.size();
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Comparable#compareTo(java.lang.Object)
+   */
+  @Override
+  public int compareTo(GeneSet o) {
+    return mName.compareTo(o.mName);
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
+  @Override
+  public boolean equals(Object o) {
+    if (o instanceof GeneSet) {
+      return compareTo((GeneSet) o) == 0;
+    } else {
+      return false;
+    }
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#hashCode()
+   */
+  @Override
+  public int hashCode() {
+    return mName.hashCode();
+  }
+
+  /**
+   * Gets the description.
+   *
+   * @return the description
+   */
+  public String getDescription() {
+    return mDescription;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Iterable#iterator()
+   */
+  @Override
+  public Iterator<String> iterator() {
+    return mGenes.iterator();
+  }
+
+  /**
+   * Gets the collection name.
+   *
+   * @return the collection name
+   */
+  public String getCollectionName() {
+    return mCollectionName;
+  }
 }

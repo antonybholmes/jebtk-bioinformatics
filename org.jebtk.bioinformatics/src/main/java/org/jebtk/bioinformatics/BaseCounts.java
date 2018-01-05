@@ -37,124 +37,130 @@ import org.jebtk.core.Mathematics;
  *
  */
 public class BaseCounts {
-	
-	/**
-	 * The member counts.
-	 */
-	private double[] mCounts = new double[4];
-	private double mMax;
 
-	/**
-	 * Instantiates a new base counts.
-	 *
-	 * @param a the a
-	 * @param c the c
-	 * @param g the g
-	 * @param t the t
-	 */
-	public BaseCounts(double a, double c, double g, double t) {
-		this(a, c, g, t, true);
-	}
-	
-	public BaseCounts(double a, double c, double g, double t, boolean norm) {
-		
-		mCounts[0] = a;
-		mCounts[1] = c;
-		mCounts[2] = g;
-		mCounts[3] = t;
-		
-		if (norm) {
-			double total = a + c + g + t;
-			
-			mCounts[0] /= total;
-			mCounts[1] /= total;
-			mCounts[2] /= total;
-			mCounts[3] /= total;
-		}
-	
-		mMax = Mathematics.max(mCounts[0], mCounts[1], mCounts[2], mCounts[3]);
-		
-	}
-	
-	/**
-	 * Gets the count.
-	 *
-	 * @param base the base
-	 * @return the count
-	 */
-	public double getCount(char base) {
-		switch (base) {
-		case 'A':
-		case 'a':
-			return getCount(0);
-		case 'C':
-		case 'c':
-			return getCount(1);
-		case 'G':
-		case 'g':
-			return getCount(2);
-		case 'T':
-		case 't':
-		case 'U':
-		case 'u':
-			return getCount(3);
-		default:
-			// N etc
-			return 0.25; //getCount(0); //0.25;
-		}
-	}
-	
-	/**
-	 * Gets the count.
-	 *
-	 * @param base the base
-	 * @return the count
-	 */
-	public double getCount(int base) {
-		return mCounts[base];
-	}
-	
-	/**
-	 * Gets the a.
-	 *
-	 * @return the a
-	 */
-	public double getA() {
-		return getCount(0);
-	}
-	
-	/**
-	 * Gets the c.
-	 *
-	 * @return the c
-	 */
-	public double getC() {
-		return getCount(1);
-	}
-	
-	/**
-	 * Gets the g.
-	 *
-	 * @return the g
-	 */
-	public double getG() {
-		return getCount(2);
-	}
-	
-	/**
-	 * Gets the t.
-	 *
-	 * @return the t
-	 */
-	public double getT() {
-		return getCount(3);
-	}
-	
-	public double getU() {
-		return getCount(3);
-	}
+  /**
+   * The member counts.
+   */
+  private double[] mCounts = new double[4];
+  private double mMax;
 
-	public double getMaxScore() {
-		return mMax;
-	}
+  /**
+   * Instantiates a new base counts.
+   *
+   * @param a
+   *          the a
+   * @param c
+   *          the c
+   * @param g
+   *          the g
+   * @param t
+   *          the t
+   */
+  public BaseCounts(double a, double c, double g, double t) {
+    this(a, c, g, t, true);
+  }
+
+  public BaseCounts(double a, double c, double g, double t, boolean norm) {
+
+    mCounts[0] = a;
+    mCounts[1] = c;
+    mCounts[2] = g;
+    mCounts[3] = t;
+
+    if (norm) {
+      double total = a + c + g + t;
+
+      mCounts[0] /= total;
+      mCounts[1] /= total;
+      mCounts[2] /= total;
+      mCounts[3] /= total;
+    }
+
+    mMax = Mathematics.max(mCounts[0], mCounts[1], mCounts[2], mCounts[3]);
+
+  }
+
+  /**
+   * Gets the count.
+   *
+   * @param base
+   *          the base
+   * @return the count
+   */
+  public double getCount(char base) {
+    switch (base) {
+    case 'A':
+    case 'a':
+      return getCount(0);
+    case 'C':
+    case 'c':
+      return getCount(1);
+    case 'G':
+    case 'g':
+      return getCount(2);
+    case 'T':
+    case 't':
+    case 'U':
+    case 'u':
+      return getCount(3);
+    default:
+      // N etc
+      return 0.25; // getCount(0); //0.25;
+    }
+  }
+
+  /**
+   * Gets the count.
+   *
+   * @param base
+   *          the base
+   * @return the count
+   */
+  public double getCount(int base) {
+    return mCounts[base];
+  }
+
+  /**
+   * Gets the a.
+   *
+   * @return the a
+   */
+  public double getA() {
+    return getCount(0);
+  }
+
+  /**
+   * Gets the c.
+   *
+   * @return the c
+   */
+  public double getC() {
+    return getCount(1);
+  }
+
+  /**
+   * Gets the g.
+   *
+   * @return the g
+   */
+  public double getG() {
+    return getCount(2);
+  }
+
+  /**
+   * Gets the t.
+   *
+   * @return the t
+   */
+  public double getT() {
+    return getCount(3);
+  }
+
+  public double getU() {
+    return getCount(3);
+  }
+
+  public double getMaxScore() {
+    return mMax;
+  }
 }

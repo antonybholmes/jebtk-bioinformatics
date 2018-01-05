@@ -32,43 +32,45 @@ package org.jebtk.bioinformatics.motifs;
  * The class BaseHeight.
  */
 public class BaseHeight {
-	
-	/**
-	 * The member height.
-	 */
-	private double mHeight;
-	
-	/**
-	 * The member base.
-	 */
-	private char mBase;
 
-	/**
-	 * Instantiates a new base height.
-	 *
-	 * @param base the base
-	 * @param height the height
-	 */
-	public BaseHeight(char base, double height) {
-		mBase = Character.toUpperCase(base);
-		mHeight = height;
-	}
+  /**
+   * The member height.
+   */
+  private double mHeight;
 
-	/**
-	 * Gets the height.
-	 *
-	 * @return the height
-	 */
-	public double getHeight() {
-		return mHeight;
-	}
+  /**
+   * The member base.
+   */
+  private char mBase;
 
-	/**
-	 * Gets the char.
-	 *
-	 * @return the char
-	 */
-	public char getChar() {
-		return mBase;
-	}
+  /**
+   * Instantiates a new base height.
+   *
+   * @param base
+   *          the base
+   * @param height
+   *          the height
+   */
+  public BaseHeight(char base, double height) {
+    mBase = Character.toUpperCase(base);
+    mHeight = height;
+  }
+
+  /**
+   * Gets the height.
+   *
+   * @return the height
+   */
+  public double getHeight() {
+    return mHeight;
+  }
+
+  /**
+   * Gets the char.
+   *
+   * @return the char
+   */
+  public char getChar() {
+    return mBase;
+  }
 }

@@ -27,20 +27,19 @@
  */
 package org.jebtk.bioinformatics.pathway;
 
-
-
 // TODO: Auto-generated Javadoc
 /**
  * The class FinalGene.
  */
 public class FinalGene extends GeneConversion<GlobalGene> {
 
-	/**
-	 * Instantiates a new final gene.
-	 *
-	 * @param name the name
-	 */
-	public FinalGene(String name) {
-		super(name);
-	}
+  /**
+   * Instantiates a new final gene.
+   *
+   * @param name
+   *          the name
+   */
+  public FinalGene(String name) {
+    super(name);
+  }
 }
