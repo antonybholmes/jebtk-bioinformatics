@@ -22,13 +22,13 @@ import org.jebtk.bioinformatics.genomic.GenomicRegion;
 import org.junit.Test;
 
 public class GenomicTest {
-	@Test
-	public void genomicParseTest() throws IOException, ParseException {
-		System.err.println(GenomicRegion.parse("chrX:200-100"));
-	}
-	
-	@Test
-	public void genomicParseSingleTest() throws IOException, ParseException {
-		System.err.println(GenomicRegion.parse("chrY:100"));
-	}
+  @Test
+  public void genomicParseTest() throws IOException, ParseException {
+    System.err.println(GenomicRegion.parse("chrX:200-100"));
+  }
+
+  @Test
+  public void genomicParseSingleTest() throws IOException, ParseException {
+    System.err.println(GenomicRegion.parse("chrY:100"));
+  }
 }

@@ -25,21 +25,19 @@ import org.jebtk.core.io.PathUtils;
 import org.junit.Test;
 
 public class EncodeTest {
-	/*
-	@Test
-	public void encode2BitTest() throws IOException, ParseException {
-		GenomeAssembly2Bit decoder = 
-				new GenomeAssembly2Bit(PathUtils.getPath("/ifs/scratch/cancer/Lab_RDF/abh2138/references/ucsc/assembly/hg19/2bit"));
-		
-		System.err.println(decoder.getSequence("hg19", "chr1:100290-100320", RepeatMaskType.LOWERCASE).getSequence());
-	}
-	
-	@Test
-	public void encode2BitExtTest() throws IOException, ParseException {
-		GenomeAssemblyExt2Bit decoder = 
-				new GenomeAssemblyExt2Bit(PathUtils.getPath("/ifs/scratch/cancer/Lab_RDF/abh2138/references/ucsc/assembly/hg19/"));
-		
-		System.err.println("2bit ext " + decoder.getSequence("hg19", "chr1:100290-100320", RepeatMaskType.LOWERCASE).getSequence());
-	}
-	*/
+  /*
+   * @Test public void encode2BitTest() throws IOException, ParseException {
+   * GenomeAssembly2Bit decoder = new GenomeAssembly2Bit(PathUtils.getPath(
+   * "/ifs/scratch/cancer/Lab_RDF/abh2138/references/ucsc/assembly/hg19/2bit"));
+   * 
+   * System.err.println(decoder.getSequence("hg19", "chr1:100290-100320",
+   * RepeatMaskType.LOWERCASE).getSequence()); }
+   * 
+   * @Test public void encode2BitExtTest() throws IOException, ParseException {
+   * GenomeAssemblyExt2Bit decoder = new GenomeAssemblyExt2Bit(PathUtils.getPath(
+   * "/ifs/scratch/cancer/Lab_RDF/abh2138/references/ucsc/assembly/hg19/"));
+   * 
+   * System.err.println("2bit ext " + decoder.getSequence("hg19",
+   * "chr1:100290-100320", RepeatMaskType.LOWERCASE).getSequence()); }
+   */
 }
