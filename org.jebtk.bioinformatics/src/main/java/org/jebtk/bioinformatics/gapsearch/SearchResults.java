@@ -41,8 +41,7 @@ import org.jebtk.core.collections.UniqueArrayList;
 /**
  * The class GappedSearchFeatures.
  *
- * @param <T>
- *          the generic type
+ * @param <T> the generic type
  */
 public class SearchResults<T> implements Iterable<GenomicRegion> {
 
@@ -56,13 +55,13 @@ public class SearchResults<T> implements Iterable<GenomicRegion> {
   /**
    * The member features.
    */
-  private Map<GenomicRegion, Set<T>> mFeatures = DefaultTreeMap.create(new TreeSetCreator<T>());
+  private Map<GenomicRegion, Set<T>> mFeatures = DefaultTreeMap
+      .create(new TreeSetCreator<T>());
 
   /**
    * Adds the.
    *
-   * @param feature
-   *          the feature
+   * @param feature the feature
    */
   public void add(GenomicRegion region, T feature) {
     mFeatures.get(region).add(feature);

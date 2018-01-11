@@ -37,7 +37,8 @@ import org.jebtk.core.text.TextUtils;
  *
  * @author Antony Holmes Holmes
  */
-public class Chromosome implements Comparable<Chromosome>, IdProperty, NameProperty {
+public class Chromosome
+    implements Comparable<Chromosome>, IdProperty, NameProperty {
 
   /**
    * Represents an invalid chromosome.
@@ -59,10 +60,8 @@ public class Chromosome implements Comparable<Chromosome>, IdProperty, NamePrope
   /**
    * Instantiates a new chromosome.
    *
-   * @param chr
-   *          the chr
-   * @param parser
-   *          the parser
+   * @param chr the chr
+   * @param parser the parser
    */
   protected Chromosome(int id, String shortName) {
     // mSpecies = parser.getSpecies();
@@ -75,7 +74,8 @@ public class Chromosome implements Comparable<Chromosome>, IdProperty, NamePrope
 
     mId = id;
 
-    mChr = "chr" + mShortName.toUpperCase().replaceAll("CHR", TextUtils.EMPTY_STRING);
+    mChr = "chr"
+        + mShortName.toUpperCase().replaceAll("CHR", TextUtils.EMPTY_STRING);
   }
 
   /*
@@ -128,7 +128,8 @@ public class Chromosome implements Comparable<Chromosome>, IdProperty, NamePrope
    */
   @Override
   public int compareTo(Chromosome c) {
-    // System.err.println("compare chr " + mId + " " + c.mId + " " + mChr + " " +
+    // System.err.println("compare chr " + mId + " " + c.mId + " " + mChr + " "
+    // +
     // c.mChr);
 
     if (mId != -1 && c.mId != -1) {
@@ -171,8 +172,7 @@ public class Chromosome implements Comparable<Chromosome>, IdProperty, NamePrope
   /**
    * Returns true if a string starts with chr (case insensitive).
    *
-   * @param value
-   *          the value
+   * @param value the value
    * @return true, if is chr
    */
   public static boolean isChr(String value) {

@@ -64,8 +64,7 @@ public class GenomeAssemblyFS extends GenomeAssembly {
    * Directory containing genome Paths which must be of the form chr.n.txt. Each
    * Path must contain exactly one line consisting of the entire chromosome.
    *
-   * @param directory
-   *          the directory
+   * @param directory the directory
    */
   public GenomeAssemblyFS(Path directory) {
     mDirectory = directory;
@@ -104,26 +103,35 @@ public class GenomeAssemblyFS extends GenomeAssembly {
    * edu.columbia.rdf.lib.bioinformatics.genome.RepeatMaskType)
    */
   @Override
-  public final SequenceRegion getSequence(String genome, GenomicRegion region, boolean displayUpper,
+  public final SequenceRegion getSequence(String genome,
+      GenomicRegion region,
+      boolean displayUpper,
       RepeatMaskType repeatMaskType) throws IOException {
     createGenomeEntry(genome, mDirectory, mMap);
 
-    return mMap.get(genome).getSequence(genome, region, displayUpper, repeatMaskType);
+    return mMap.get(genome)
+        .getSequence(genome, region, displayUpper, repeatMaskType);
   }
 
   @Override
-  public List<SequenceRegion> getSequences(String genome, Collection<GenomicRegion> regions, boolean displayUpper,
+  public List<SequenceRegion> getSequences(String genome,
+      Collection<GenomicRegion> regions,
+      boolean displayUpper,
       RepeatMaskType repeatMaskType) throws IOException {
     createGenomeEntry(genome, mDirectory, mMap);
 
-    return mMap.get(genome).getSequences(genome, regions, displayUpper, repeatMaskType);
+    return mMap.get(genome)
+        .getSequences(genome, regions, displayUpper, repeatMaskType);
   }
 
-  protected void createGenomeEntry(String genome, Path dir, Map<String, GenomeAssembly> map) {
+  protected void createGenomeEntry(String genome,
+      Path dir,
+      Map<String, GenomeAssembly> map) {
     if (!map.containsKey(genome)) {
       Path d = dir.resolve(genome);
 
-      map.put(genome, new GenomeAssemblyExt2BitMem(d)); // new GenomeAssemblyExt2Bit(dir));
+      map.put(genome, new GenomeAssemblyExt2BitMem(d)); // new
+                                                        // GenomeAssemblyExt2Bit(dir));
     }
   }
 }

@@ -61,7 +61,8 @@ public class BedGraph extends UCSCTrack {
   /**
    * The constant HEIGHT_PATTERN.
    */
-  public static final Pattern HEIGHT_PATTERN = Pattern.compile("maxHeightPixels=(\\d+):(\\d+):(\\d+)");
+  public static final Pattern HEIGHT_PATTERN = Pattern
+      .compile("maxHeightPixels=(\\d+):(\\d+):(\\d+)");
 
   /**
    * The constant LOG.
@@ -81,12 +82,9 @@ public class BedGraph extends UCSCTrack {
   /**
    * Instantiates a new bed graph.
    *
-   * @param name
-   *          the name
-   * @param description
-   *          the description
-   * @param color
-   *          the color
+   * @param name the name
+   * @param description the description
+   * @param color the color
    */
   public BedGraph(String name, String description, Color color) {
     this(name, description, color, DEFAULT_HEIGHT);
@@ -95,14 +93,10 @@ public class BedGraph extends UCSCTrack {
   /**
    * Instantiates a new bed graph.
    *
-   * @param name
-   *          the name
-   * @param description
-   *          the description
-   * @param color
-   *          the color
-   * @param height
-   *          the height
+   * @param name the name
+   * @param description the description
+   * @param color the color
+   * @param height the height
    */
   public BedGraph(String name, String description, Color color, int height) {
     super(name, description, color, TRACK_TYPE);
@@ -114,25 +108,24 @@ public class BedGraph extends UCSCTrack {
    * (non-Javadoc)
    * 
    * @see
-   * edu.columbia.rdf.lib.bioinformatics.external.ucsc.UCSCTrack#bufferHeader(int,
-   * java.lang.Appendable)
+   * edu.columbia.rdf.lib.bioinformatics.external.ucsc.UCSCTrack#bufferHeader(
+   * int, java.lang.Appendable)
    */
   @Override
   public void bufferHeader(int priority, Appendable buffer) throws IOException {
     super.bufferHeader(priority, buffer);
 
-    buffer.append(" maxHeightPixels=").append("128:").append(Integer.toString(mHeight)).append(":1");
+    buffer.append(" maxHeightPixels=").append("128:")
+        .append(Integer.toString(mHeight)).append(":1");
     buffer.append(" visibility=full autoScale=on alwaysZero=on");
   }
 
   /**
    * Parses the.
    *
-   * @param file
-   *          the file
+   * @param file the file
    * @return the list
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   public static List<UCSCTrack> parse(Path file) throws IOException {
     LOG.info("Parsing BED file {}...", file);
@@ -187,7 +180,8 @@ public class BedGraph extends UCSCTrack {
 
           tracks.add(bed);
         } else {
-          BedGraphRegion region = BedGraphRegion.parse(GenomeService.getInstance().guess(file), line);
+          BedGraphRegion region = BedGraphRegion
+              .parse(GenomeService.getInstance().guess(file), line);
 
           bed.getRegions().add(region);
         }
@@ -204,11 +198,9 @@ public class BedGraph extends UCSCTrack {
   /**
    * To matrix.
    *
-   * @param file
-   *          the file
+   * @param file the file
    * @return the annotation matrix
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   public static DataFrame toMatrix(Path file) throws IOException {
     String line;

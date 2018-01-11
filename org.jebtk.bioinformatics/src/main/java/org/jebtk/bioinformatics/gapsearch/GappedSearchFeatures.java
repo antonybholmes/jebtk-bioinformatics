@@ -31,10 +31,10 @@ package org.jebtk.bioinformatics.gapsearch;
 /**
  * The class GappedSearchFeatures.
  *
- * @param <T>
- *          the generic type
+ * @param <T> the generic type
  */
-public class GappedSearchFeatures<T> extends SearchResults<T> implements Comparable<GappedSearchFeatures<T>> {
+public class GappedSearchFeatures<T> extends SearchResults<T>
+    implements Comparable<GappedSearchFeatures<T>> {
 
   /**
    * The member p.
@@ -44,8 +44,7 @@ public class GappedSearchFeatures<T> extends SearchResults<T> implements Compara
   /**
    * Instantiates a new gapped search features.
    *
-   * @param p
-   *          the p
+   * @param p the p
    */
   public GappedSearchFeatures(int p) {
     mP = p;

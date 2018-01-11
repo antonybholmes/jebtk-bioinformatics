@@ -83,9 +83,9 @@ public class GenesService implements Iterable<String> {
   }
 
   /**
-   * Get the genes associated with the current database. If there is more than one
-   * database associated with the genome, the first is chosen alphabetically by
-   * name.
+   * Get the genes associated with the current database. If there is more than
+   * one database associated with the genome, the first is chosen alphabetically
+   * by name.
    * 
    * @param genome
    * @return
@@ -97,14 +97,13 @@ public class GenesService implements Iterable<String> {
   /**
    * Return the genes on a particular genome and database.
    *
-   * @param genome
-   *          the genome
-   * @param db
-   *          the db
+   * @param genome the genome
+   * @param db the db
    * @return the genes
    */
   public Genes getGenes(String genome, String db) {
-    if (!mGenesMap.containsKey(genome) || !mGenesMap.get(genome).containsKey(db)) {
+    if (!mGenesMap.containsKey(genome)
+        || !mGenesMap.get(genome).containsKey(db)) {
       return Genes.EMPTY_GENES;
     }
 
@@ -112,7 +111,8 @@ public class GenesService implements Iterable<String> {
   }
 
   public boolean containsGenes(String genome, String db) {
-    return mGenesMap.containsKey(genome) && mGenesMap.get(genome).containsKey(db);
+    return mGenesMap.containsKey(genome)
+        && mGenesMap.get(genome).containsKey(db);
   }
 
   /*
@@ -128,8 +128,7 @@ public class GenesService implements Iterable<String> {
   /**
    * Gets the names.
    *
-   * @param genome
-   *          the genome
+   * @param genome the genome
    * @return the names
    */
   public Iterable<String> getNames(String genome) {
@@ -139,12 +138,9 @@ public class GenesService implements Iterable<String> {
   /**
    * Put.
    *
-   * @param genome
-   *          the genome
-   * @param name
-   *          the name
-   * @param genes
-   *          the genes
+   * @param genome the genome
+   * @param name the name
+   * @param genes the genes
    */
   public void put(String genome, String db, Genes genes) {
     mGenesMap.get(genome).put(db, genes);

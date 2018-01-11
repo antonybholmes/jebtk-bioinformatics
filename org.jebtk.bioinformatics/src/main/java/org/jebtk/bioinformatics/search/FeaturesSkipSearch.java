@@ -48,12 +48,9 @@ public class FeaturesSkipSearch extends FeaturesBinarySearch {
   /**
    * Instantiates a new features skip search.
    *
-   * @param name
-   *          the name
-   * @param description
-   *          the description
-   * @param file
-   *          the file
+   * @param name the name
+   * @param description the description
+   * @param file the file
    */
   public FeaturesSkipSearch(String name, String description, Path file) {
     super(name, description, file);
@@ -62,13 +59,15 @@ public class FeaturesSkipSearch extends FeaturesBinarySearch {
   /*
    * (non-Javadoc)
    * 
-   * @see
-   * edu.columbia.rdf.lib.bioinformatics.search.FeaturesBinarySearch#getFeatures(
-   * int, int, short)
+   * @see edu.columbia.rdf.lib.bioinformatics.search.FeaturesBinarySearch#
+   * getFeatures( int, int, short)
    */
   @Override
-  public final List<Feature> getFeatures(int startLocation, int endLocation, Chromosome chromosome) {
-    // System.out.println(chromosome + ":loc:" + startLocation + " " + endLocation);
+  public final List<Feature> getFeatures(int startLocation,
+      int endLocation,
+      Chromosome chromosome) {
+    // System.out.println(chromosome + ":loc:" + startLocation + " " +
+    // endLocation);
 
     // go through the table
 
@@ -85,27 +84,33 @@ public class FeaturesSkipSearch extends FeaturesBinarySearch {
     }
     // endLocations = allEndLocations.get(chromosome);
 
-    // System.out.println(startLocation + ":" + locations.get(0).getStart() + ":" +
+    // System.out.println(startLocation + ":" + locations.get(0).getStart() +
+    // ":" +
     // endLocation + ":" + locations.get(locations.size() - 1).getEnd());
 
     int last = locations.size() - 1;
 
-    if (startLocation > locations.get(last).getEnd() || endLocation < locations.get(0).getStart()) {
-      // the range is clearly not within the feature set so don't even bother to look
+    if (startLocation > locations.get(last).getEnd()
+        || endLocation < locations.get(0).getStart()) {
+      // the range is clearly not within the feature set so don't even bother to
+      // look
       return features;
-    } else if (startLocation <= locations.get(0).getStart() && endLocation >= locations.get(last).getStart()) {
+    } else if (startLocation <= locations.get(0).getStart()
+        && endLocation >= locations.get(last).getStart()) {
       // the range spans the entire set of features
 
       startIndex = 0;
       endIndex = last;
 
-      // System.out.println("f:" + last + " " + locations.size() + " " + startIndex +
+      // System.out.println("f:" + last + " " + locations.size() + " " +
+      // startIndex +
       // " " + endIndex + " " + locations.get(startIndex).getName() + " " +
       // locations.get(endIndex).getName());
     } else {
       // the range is within some part of the features
 
-      // System.out.println(startLocation + " " + locations.get(0).getStart() + " " +
+      // System.out.println(startLocation + " " + locations.get(0).getStart() +
+      // " " +
       // locations.get(0).getEnd() + " " + endLocation + " " +
       // locations.get(last).getStart() + " " + locations.get(last).getEnd());
 

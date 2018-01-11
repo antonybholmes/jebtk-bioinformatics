@@ -62,14 +62,14 @@ public class GenomeAssembly2Bit extends GenomeAssemblyDir {
                                                                                        // BinarySearch<GenomicRegion>();
 
   /** The m offset map. */
-  private Map<Chromosome, Integer> mOffsetMap = new HashMap<Chromosome, Integer>(100);
+  private Map<Chromosome, Integer> mOffsetMap = new HashMap<Chromosome, Integer>(
+      100);
 
   /**
    * Directory containing genome Paths which must be of the form chr.n.txt. Each
    * Path must contain exactly one line consisting of the entire chromosome.
    *
-   * @param directory
-   *          the directory
+   * @param directory the directory
    */
   public GenomeAssembly2Bit(Path directory) {
     super(directory);
@@ -89,7 +89,9 @@ public class GenomeAssembly2Bit extends GenomeAssemblyDir {
    * edu.columbia.rdf.lib.bioinformatics.genome.RepeatMaskType)
    */
   @Override
-  public final SequenceRegion getSequence(String genome, GenomicRegion region, boolean displayUpper,
+  public final SequenceRegion getSequence(String genome,
+      GenomicRegion region,
+      boolean displayUpper,
       RepeatMaskType repeatMaskType) throws IOException {
     Chromosome chr = region.getChr();
 
@@ -101,19 +103,22 @@ public class GenomeAssembly2Bit extends GenomeAssemblyDir {
       loadMaskData(chr, file);
     }
 
-    return new SequenceRegion(region, getSequence2Bit(mFileMap.get(chr), chr, region.getStart(), region.getEnd(),
-        mOffsetMap.get(chr), displayUpper, repeatMaskType));
+    return new SequenceRegion(region,
+        getSequence2Bit(mFileMap.get(chr),
+            chr,
+            region.getStart(),
+            region.getEnd(),
+            mOffsetMap.get(chr),
+            displayUpper,
+            repeatMaskType));
   }
 
   /**
    * Load mask data.
    *
-   * @param chr
-   *          the chr
-   * @param file
-   *          the file
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @param chr the chr
+   * @param file the file
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   private void loadMaskData(Chromosome chr, Path file) throws IOException {
     // TODO Auto-generated method stub
@@ -130,7 +135,8 @@ public class GenomeAssembly2Bit extends GenomeAssemblyDir {
       int nc = in.readInt();
 
       for (int i = 0; i < nc; ++i) {
-        GenomicRegion region = new GenomicRegion(chr, in.readInt(), in.readInt());
+        GenomicRegion region = new GenomicRegion(chr, in.readInt(),
+            in.readInt());
 
         mNMap.add(region, region);
       }
@@ -138,7 +144,8 @@ public class GenomeAssembly2Bit extends GenomeAssemblyDir {
       int mc = in.readInt();
 
       for (int i = 0; i < mc; ++i) {
-        GenomicRegion region = new GenomicRegion(chr, in.readInt(), in.readInt());
+        GenomicRegion region = new GenomicRegion(chr, in.readInt(),
+            in.readInt());
 
         mMaskMap.add(region, region);
       }
@@ -154,25 +161,22 @@ public class GenomeAssembly2Bit extends GenomeAssemblyDir {
   /**
    * Gets the sequence4 bit.
    *
-   * @param Path
-   *          the Path
-   * @param chr
-   *          the chr
-   * @param start
-   *          the start
-   * @param end
-   *          the end
-   * @param offset
-   *          the offset
-   * @param displayUpper
-   *          the display upper
-   * @param repeatMaskType
-   *          the repeat mask type
+   * @param Path the Path
+   * @param chr the chr
+   * @param start the start
+   * @param end the end
+   * @param offset the offset
+   * @param displayUpper the display upper
+   * @param repeatMaskType the repeat mask type
    * @return the sequence4 bit
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
-  public Sequence getSequence2Bit(Path Path, Chromosome chr, int start, int end, int offset, boolean displayUpper,
+  public Sequence getSequence2Bit(Path Path,
+      Chromosome chr,
+      int start,
+      int end,
+      int offset,
+      boolean displayUpper,
       RepeatMaskType repeatMaskType) throws IOException {
 
     int s = start - 1;
@@ -262,14 +266,14 @@ public class GenomeAssembly2Bit extends GenomeAssemblyDir {
   /**
    * Determine if region overlaps an N or mask region.
    *
-   * @param binSearch
-   *          the bin search
-   * @param testRegion
-   *          the test region
+   * @param binSearch the bin search
+   * @param testRegion the test region
    * @return true, if successful
    */
-  private static boolean overlaps(BinaryGapSearch<GenomicRegion> binSearch, GenomicRegion testRegion) {
-    List<GappedSearchFeatures<GenomicRegion>> allFeatures = binSearch.getFeatures(testRegion);
+  private static boolean overlaps(BinaryGapSearch<GenomicRegion> binSearch,
+      GenomicRegion testRegion) {
+    List<GappedSearchFeatures<GenomicRegion>> allFeatures = binSearch
+        .getFeatures(testRegion);
 
     for (GappedSearchFeatures<GenomicRegion> feature : allFeatures) {
       for (GenomicRegion region : feature) {
@@ -285,19 +289,15 @@ public class GenomeAssembly2Bit extends GenomeAssemblyDir {
   /**
    * Gets the bytes4 bit.
    *
-   * @param file
-   *          the file
-   * @param start
-   *          the start
-   * @param end
-   *          the end
-   * @param offset
-   *          the offset
+   * @param file the file
+   * @param start the start
+   * @param end the end
+   * @param offset the offset
    * @return the bytes4 bit
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static byte[] getBytes2Bit(Path file, int start, int end, int offset) throws IOException {
+  public static byte[] getBytes2Bit(Path file, int start, int end, int offset)
+      throws IOException {
     int sb = start / 4 + offset;
     int eb = end / 4 + offset;
 

@@ -40,8 +40,7 @@ import org.jebtk.core.collections.CollectionUtils;
  * before search
  *
  * @author Antony Holmes Holmes
- * @param <T>
- *          the generic type
+ * @param <T> the generic type
  */
 public class SortedRegions<T extends GenomicRegion> implements Iterable<T> {
   /**
@@ -57,8 +56,7 @@ public class SortedRegions<T extends GenomicRegion> implements Iterable<T> {
   /**
    * Adds the.
    *
-   * @param region
-   *          the region
+   * @param region the region
    */
   public void add(T region) {
     mRegions.add(region);
@@ -104,10 +102,8 @@ public class SortedRegions<T extends GenomicRegion> implements Iterable<T> {
    * Given a range, returns elements within that range (inclusive of start and
    * end).
    *
-   * @param start
-   *          the start
-   * @param end
-   *          the end
+   * @param start the start
+   * @param end the end
    * @return the list
    */
   public List<T> findRegionsInRange(int start, int end) {
@@ -125,8 +121,7 @@ public class SortedRegions<T extends GenomicRegion> implements Iterable<T> {
   /**
    * Find start index.
    *
-   * @param start
-   *          the start
+   * @param start the start
    * @return the int
    */
   private int findStartIndex(int start) {
@@ -165,8 +160,7 @@ public class SortedRegions<T extends GenomicRegion> implements Iterable<T> {
   /**
    * Find end index.
    *
-   * @param end
-   *          the end
+   * @param end the end
    * @return the int
    */
   private int findEndIndex(int end) {

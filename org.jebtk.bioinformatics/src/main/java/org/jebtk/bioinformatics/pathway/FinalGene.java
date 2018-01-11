@@ -36,8 +36,7 @@ public class FinalGene extends GeneConversion<GlobalGene> {
   /**
    * Instantiates a new final gene.
    *
-   * @param name
-   *          the name
+   * @param name the name
    */
   public FinalGene(String name) {
     super(name);

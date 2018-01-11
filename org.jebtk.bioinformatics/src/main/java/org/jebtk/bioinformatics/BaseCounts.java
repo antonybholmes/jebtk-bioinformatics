@@ -47,14 +47,10 @@ public class BaseCounts {
   /**
    * Instantiates a new base counts.
    *
-   * @param a
-   *          the a
-   * @param c
-   *          the c
-   * @param g
-   *          the g
-   * @param t
-   *          the t
+   * @param a the a
+   * @param c the c
+   * @param g the g
+   * @param t the t
    */
   public BaseCounts(double a, double c, double g, double t) {
     this(a, c, g, t, true);
@@ -83,8 +79,7 @@ public class BaseCounts {
   /**
    * Gets the count.
    *
-   * @param base
-   *          the base
+   * @param base the base
    * @return the count
    */
   public double getCount(char base) {
@@ -112,8 +107,7 @@ public class BaseCounts {
   /**
    * Gets the count.
    *
-   * @param base
-   *          the base
+   * @param base the base
    * @return the count
    */
   public double getCount(int base) {

@@ -29,8 +29,7 @@ public class Entity implements IdProperty {
   /**
    * Instantiates a new entity.
    *
-   * @param id
-   *          the id
+   * @param id the id
    */
   public Entity(int id) {
     mId = id;

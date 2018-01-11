@@ -50,14 +50,14 @@ public class GenomeAssemblyGZip extends GenomeAssemblyDir {
   /**
    * The constant LOG.
    */
-  private static final Logger LOG = LoggerFactory.getLogger(GenomeAssemblyGZip.class);
+  private static final Logger LOG = LoggerFactory
+      .getLogger(GenomeAssemblyGZip.class);
 
   /**
    * Directory containing genome Paths which must be of the form chr.n.txt. Each
    * Path must contain exactly one line consisting of the entire chromosome.
    *
-   * @param directory
-   *          the directory
+   * @param directory the directory
    */
   public GenomeAssemblyGZip(Path directory) {
     super(directory);
@@ -77,7 +77,9 @@ public class GenomeAssemblyGZip extends GenomeAssemblyDir {
    * edu.columbia.rdf.lib.bioinformatics.genome.RepeatMaskType)
    */
   @Override
-  public final SequenceRegion getSequence(String genome, GenomicRegion region, boolean displayUpper,
+  public final SequenceRegion getSequence(String genome,
+      GenomicRegion region,
+      boolean displayUpper,
       RepeatMaskType repeatMaskType) throws IOException {
     Chromosome chr = region.getChr();
 
@@ -91,22 +93,23 @@ public class GenomeAssemblyGZip extends GenomeAssemblyDir {
   /**
    * Returns the sequence from a region of a chromosome.
    *
-   * @param file
-   *          the file
-   * @param region
-   *          the region
+   * @param file the file
+   * @param region the region
    * @return the sequence
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
-  private final SequenceRegion getSequence(Path file, GenomicRegion region) throws IOException {
+  private final SequenceRegion getSequence(Path file, GenomicRegion region)
+      throws IOException {
     LOG.debug("Extract sequence for {} from {}...", region.toString(), file);
 
     int s = region.getStart() - 1;
     int e = region.getEnd() - 1;
 
     // PathInputStream in = new PathInputStream(Path);
-    InputStream in = FileUtils.newGzipInputStream(file); // new GZIPInputStream(new PathInputStream(Path), 65536);
+    InputStream in = FileUtils.newGzipInputStream(file); // new
+                                                         // GZIPInputStream(new
+                                                         // PathInputStream(Path),
+                                                         // 65536);
 
     int l = e - s + 1;
 
@@ -120,9 +123,11 @@ public class GenomeAssemblyGZip extends GenomeAssemblyDir {
       int bytesRead = in.read(cbuf);
 
       if (bytesRead == l) {
-        sequence = new SequenceRegion(region, Sequence.create(new String(cbuf)));
+        sequence = new SequenceRegion(region,
+            Sequence.create(new String(cbuf)));
       } else {
-        System.err.println(file + " " + region + " " + bytesRead + " " + l + " " + new String(cbuf));
+        System.err.println(file + " " + region + " " + bytesRead + " " + l + " "
+            + new String(cbuf));
         System.exit(0);
       }
     } finally {

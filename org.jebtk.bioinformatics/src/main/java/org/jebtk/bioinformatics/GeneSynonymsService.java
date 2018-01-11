@@ -56,7 +56,8 @@ public class GeneSynonymsService {
   /**
    * The constant DEFAULT_GENES_FILE.
    */
-  public static final File DEFAULT_GENES_FILE = new File("res/gene_synonyms.txt");
+  public static final File DEFAULT_GENES_FILE = new File(
+      "res/gene_synonyms.txt");
 
   /**
    * Gets the single instance of GeneSynonymsService.
@@ -87,11 +88,11 @@ public class GeneSynonymsService {
   /**
    * Load.
    *
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   public final void load() throws IOException {
-    BufferedReader reader = new BufferedReader(new FileReader(DEFAULT_GENES_FILE));
+    BufferedReader reader = new BufferedReader(
+        new FileReader(DEFAULT_GENES_FILE));
 
     String line;
     List<String> tokens;
@@ -120,8 +121,7 @@ public class GeneSynonymsService {
   /**
    * Gets the synonyms.
    *
-   * @param name
-   *          the name
+   * @param name the name
    * @return the synonyms
    */
   public Set<String> getSynonyms(String name) {

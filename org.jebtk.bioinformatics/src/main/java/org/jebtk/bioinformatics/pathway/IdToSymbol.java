@@ -57,10 +57,8 @@ public class IdToSymbol {
   /**
    * Create a conversion tool. Gene symbols
    *
-   * @param reader
-   *          the reader
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @param reader the reader
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   public IdToSymbol(BufferedReader reader) throws IOException {
 
@@ -95,8 +93,7 @@ public class IdToSymbol {
   /**
    * Convert.
    *
-   * @param id
-   *          the id
+   * @param id the id
    * @return the string
    */
   public String convert(String id) {

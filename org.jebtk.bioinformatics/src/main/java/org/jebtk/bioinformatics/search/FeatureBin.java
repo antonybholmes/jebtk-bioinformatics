@@ -50,8 +50,7 @@ public class FeatureBin implements Iterable<Feature> {
   /**
    * Instantiates a new feature bin.
    *
-   * @param start
-   *          the start
+   * @param start the start
    */
   public FeatureBin(int start) {
     mStart = start;
@@ -69,8 +68,7 @@ public class FeatureBin implements Iterable<Feature> {
   /**
    * Adds the.
    *
-   * @param feature
-   *          the feature
+   * @param feature the feature
    */
   public final void add(Feature feature) {
     features.add(feature);

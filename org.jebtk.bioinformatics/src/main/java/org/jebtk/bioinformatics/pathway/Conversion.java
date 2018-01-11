@@ -111,10 +111,8 @@ public class Conversion {
   /**
    * Create a conversion tool. Gene symbols
    *
-   * @param reader
-   *          the reader
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @param reader the reader
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   public Conversion(BufferedReader reader) throws IOException {
 
@@ -171,12 +169,30 @@ public class Conversion {
         }
 
         if (!ensemblGene.equals(TextUtils.NA)) {
-          addId(ensemblGene, globalIdBase, mEnsemblGeneMap, chr, strand, start, end);
+          addId(ensemblGene,
+              globalIdBase,
+              mEnsemblGeneMap,
+              chr,
+              strand,
+              start,
+              end);
         }
 
         if (!ensemblTranscript.equals(TextUtils.NA)) {
-          addId(ensemblTranscript, globalId, mEnsemblTranscriptMap, chr, strand, start, end);
-          addId(ensemblTranscript, globalIdBase, mEnsemblTranscriptMap, chr, strand, start, end);
+          addId(ensemblTranscript,
+              globalId,
+              mEnsemblTranscriptMap,
+              chr,
+              strand,
+              start,
+              end);
+          addId(ensemblTranscript,
+              globalIdBase,
+              mEnsemblTranscriptMap,
+              chr,
+              strand,
+              start,
+              end);
         }
 
         // We can control which symbols are loaded
@@ -212,8 +228,8 @@ public class Conversion {
    * 
    * mStartMap.get(rdf).add(start);
    * 
-   * if (!mEndMap.containsKey(rdf)) { mEndMap.put(rdf, new ArrayList<Integer>());
-   * }
+   * if (!mEndMap.containsKey(rdf)) { mEndMap.put(rdf, new
+   * ArrayList<Integer>()); }
    * 
    * mEndMap.get(rdf).add(end); }
    */
@@ -221,22 +237,20 @@ public class Conversion {
   /**
    * Adds the id.
    *
-   * @param id
-   *          the id
-   * @param globalId
-   *          the rdf
-   * @param idMap
-   *          the id map
-   * @param chr
-   *          the chr
-   * @param strand
-   *          the strand
-   * @param start
-   *          the start
-   * @param end
-   *          the end
+   * @param id the id
+   * @param globalId the rdf
+   * @param idMap the id map
+   * @param chr the chr
+   * @param strand the strand
+   * @param start the start
+   * @param end the end
    */
-  private void addId(String id, String globalId, Map<String, Set<String>> idMap, String chr, char strand, int start,
+  private void addId(String id,
+      String globalId,
+      Map<String, Set<String>> idMap,
+      String chr,
+      char strand,
+      int start,
       int end) {
     mMap.put(id, globalId);
     mMap.put(id.toUpperCase(), globalId);
@@ -266,10 +280,8 @@ public class Conversion {
   /**
    * Allow old gene symbols to be mapped to current annotation.
    *
-   * @param id
-   *          the id
-   * @param rdf
-   *          the rdf
+   * @param id the id
+   * @param rdf the rdf
    */
   private void addAltId(String id, String rdf) {
 
@@ -289,10 +301,8 @@ public class Conversion {
   /**
    * Adds the syn id.
    *
-   * @param id
-   *          the id
-   * @param rdf
-   *          the rdf
+   * @param id the id
+   * @param rdf the rdf
    */
   private void addSynId(String id, String rdf) {
 
@@ -312,22 +322,20 @@ public class Conversion {
   /**
    * Gets the global ids ids.
    *
-   * @param ids
-   *          the ids
-   * @param splitOnHyphen
-   *          the split on hyphen
-   * @param caseSensitive
-   *          the case sensitive
-   * @param keepMapped
-   *          the keep mapped
-   * @param keepUnmapped
-   *          the keep unmapped
-   * @param geneMap
-   *          the rdf map
+   * @param ids the ids
+   * @param splitOnHyphen the split on hyphen
+   * @param caseSensitive the case sensitive
+   * @param keepMapped the keep mapped
+   * @param keepUnmapped the keep unmapped
+   * @param geneMap the rdf map
    * @return the rdf ids
    */
-  public void getIntermediateGenes(List<String> ids, boolean splitOnHyphen, boolean caseSensitive, boolean keepMapped,
-      boolean keepUnmapped, Map<String, Set<IntermediateGene>> geneMap) {
+  public void getIntermediateGenes(List<String> ids,
+      boolean splitOnHyphen,
+      boolean caseSensitive,
+      boolean keepMapped,
+      boolean keepUnmapped,
+      Map<String, Set<IntermediateGene>> geneMap) {
     // Split dashed versions of genes
 
     // List<String> newIds = new ArrayList<String>();
@@ -406,7 +414,8 @@ public class Conversion {
               String chr = mChrMap.get(subGlobalId);
               char strand = mStrandMap.get(subGlobalId);
 
-              // System.err.println(refRDF + " " + rdf + " " + chr + " " + strand + " " +
+              // System.err.println(refRDF + " " + rdf + " " + chr + " " +
+              // strand + " " +
               // refStrand);
 
               if (chr.equals(refChr) && strand == refStrand) {
@@ -452,7 +461,8 @@ public class Conversion {
                     int start = starts.get(j);
                     int end = ends.get(j);
 
-                    if ((start >= refStart && start <= refEnd) || (end >= refStart && end <= refEnd)) {
+                    if ((start >= refStart && start <= refEnd)
+                        || (end >= refStart && end <= refEnd)) {
                       found = true;
                       break;
                     }
@@ -519,37 +529,35 @@ public class Conversion {
   /**
    * Gets the rdf ids.
    *
-   * @param id
-   *          the id
-   * @param splitOnHyphen
-   *          the split on hyphen
-   * @param caseSensitive
-   *          the case sensitive
-   * @param keepMapped
-   *          the keep mapped
-   * @param keepUnmapped
-   *          the keep unmapped
-   * @param rdfMap
-   *          the rdf map
+   * @param id the id
+   * @param splitOnHyphen the split on hyphen
+   * @param caseSensitive the case sensitive
+   * @param keepMapped the keep mapped
+   * @param keepUnmapped the keep unmapped
+   * @param rdfMap the rdf map
    * @return the rdf ids
    */
-  public void getRdfIds(String id, boolean splitOnHyphen, boolean caseSensitive, boolean keepMapped,
-      boolean keepUnmapped, Map<String, Set<IntermediateGene>> rdfMap) {
-    getIntermediateGenes(CollectionUtils.asList(id), splitOnHyphen, caseSensitive, keepMapped, keepUnmapped, rdfMap);
+  public void getRdfIds(String id,
+      boolean splitOnHyphen,
+      boolean caseSensitive,
+      boolean keepMapped,
+      boolean keepUnmapped,
+      Map<String, Set<IntermediateGene>> rdfMap) {
+    getIntermediateGenes(CollectionUtils.asList(
+        id), splitOnHyphen, caseSensitive, keepMapped, keepUnmapped, rdfMap);
   }
 
   /**
    * Gets the entrez ids.
    *
-   * @param rdfIds
-   *          the rdf ids
-   * @param keepMapped
-   *          the keep mapped
-   * @param keepUnmapped
-   *          the keep unmapped
+   * @param rdfIds the rdf ids
+   * @param keepMapped the keep mapped
+   * @param keepUnmapped the keep unmapped
    * @return the entrez ids
    */
-  public Map<String, Set<FinalGene>> getEntrezIds(final Map<String, Set<IntermediateGene>> rdfIds, boolean keepMapped,
+  public Map<String, Set<FinalGene>> getEntrezIds(
+      final Map<String, Set<IntermediateGene>> rdfIds,
+      boolean keepMapped,
       boolean keepUnmapped) {
     return getIds(rdfIds, mEntrezMap, keepMapped, keepUnmapped);
   }
@@ -557,15 +565,14 @@ public class Conversion {
   /**
    * Gets the ref seq ids.
    *
-   * @param rdfIds
-   *          the rdf ids
-   * @param keepMapped
-   *          the keep mapped
-   * @param keepUnmapped
-   *          the keep unmapped
+   * @param rdfIds the rdf ids
+   * @param keepMapped the keep mapped
+   * @param keepUnmapped the keep unmapped
    * @return the ref seq ids
    */
-  public Map<String, Set<FinalGene>> getRefSeqIds(final Map<String, Set<IntermediateGene>> rdfIds, boolean keepMapped,
+  public Map<String, Set<FinalGene>> getRefSeqIds(
+      final Map<String, Set<IntermediateGene>> rdfIds,
+      boolean keepMapped,
       boolean keepUnmapped) {
     return getIds(rdfIds, mRefSeqMap, keepMapped, keepUnmapped);
   }
@@ -573,15 +580,14 @@ public class Conversion {
   /**
    * Gets the gene symbols.
    *
-   * @param rdfIds
-   *          the rdf ids
-   * @param keepMapped
-   *          the keep mapped
-   * @param keepUnmapped
-   *          the keep unmapped
+   * @param rdfIds the rdf ids
+   * @param keepMapped the keep mapped
+   * @param keepUnmapped the keep unmapped
    * @return the gene symbols
    */
-  public Map<String, Set<FinalGene>> getGeneSymbols(final Map<String, Set<IntermediateGene>> rdfIds, boolean keepMapped,
+  public Map<String, Set<FinalGene>> getGeneSymbols(
+      final Map<String, Set<IntermediateGene>> rdfIds,
+      boolean keepMapped,
       boolean keepUnmapped) {
     return getIds(rdfIds, mSymbolMap, keepMapped, keepUnmapped);
   }
@@ -589,50 +595,47 @@ public class Conversion {
   /**
    * Gets the ensembl transcripts.
    *
-   * @param rdfIds
-   *          the rdf ids
-   * @param keepMapped
-   *          the keep mapped
-   * @param keepUnmapped
-   *          the keep unmapped
+   * @param rdfIds the rdf ids
+   * @param keepMapped the keep mapped
+   * @param keepUnmapped the keep unmapped
    * @return the ensembl transcripts
    */
-  public Map<String, Set<FinalGene>> getEnsemblTranscripts(final Map<String, Set<IntermediateGene>> rdfIds,
-      boolean keepMapped, boolean keepUnmapped) {
+  public Map<String, Set<FinalGene>> getEnsemblTranscripts(
+      final Map<String, Set<IntermediateGene>> rdfIds,
+      boolean keepMapped,
+      boolean keepUnmapped) {
     return getIds(rdfIds, mEnsemblTranscriptMap, keepMapped, keepUnmapped);
   }
 
   /**
    * Gets the ensembl genes.
    *
-   * @param rdfIds
-   *          the rdf ids
-   * @param keepMapped
-   *          the keep mapped
-   * @param keepUnmapped
-   *          the keep unmapped
+   * @param rdfIds the rdf ids
+   * @param keepMapped the keep mapped
+   * @param keepUnmapped the keep unmapped
    * @return the ensembl genes
    */
-  public Map<String, Set<FinalGene>> getEnsemblGenes(final Map<String, Set<IntermediateGene>> rdfIds,
-      boolean keepMapped, boolean keepUnmapped) {
+  public Map<String, Set<FinalGene>> getEnsemblGenes(
+      final Map<String, Set<IntermediateGene>> rdfIds,
+      boolean keepMapped,
+      boolean keepUnmapped) {
     return getIds(rdfIds, mEnsemblGeneMap, keepMapped, keepUnmapped);
   }
 
   /**
    * Gets the ids.
    *
-   * @param globalGeneMap
-   *          the rdf map
-   * @param idMap
-   *          the id map
-   * @param keepMapped
-   *          the keep mapped
-   * @param keepUnmapped
-   *          the keep unmapped
+   * @param globalGeneMap the rdf map
+   * @param idMap the id map
+   * @param keepMapped the keep mapped
+   * @param keepUnmapped the keep unmapped
    * @return the ids
    */
-  private Map<String, Set<FinalGene>> getIds(final Map<String, Set<IntermediateGene>> globalGeneMap,
-      Map<String, Set<String>> idMap, boolean keepMapped, boolean keepUnmapped) {
+  private Map<String, Set<FinalGene>> getIds(
+      final Map<String, Set<IntermediateGene>> globalGeneMap,
+      Map<String, Set<String>> idMap,
+      boolean keepMapped,
+      boolean keepUnmapped) {
     // List<FinalGene> newIds = new ArrayList<FinalGene>();
 
     Map<String, Set<FinalGene>> ret = new HashMap<String, Set<FinalGene>>();
@@ -682,8 +685,7 @@ public class Conversion {
   /**
    * Gets the locations.
    *
-   * @param genes
-   *          the genes
+   * @param genes the genes
    * @return the locations
    */
   public List<String> getLocations(List<FinalGene> genes) {
@@ -699,8 +701,7 @@ public class Conversion {
   /**
    * Gets the locations.
    *
-   * @param gene
-   *          the gene
+   * @param gene the gene
    * @return the locations
    */
   public List<String> getLocations(FinalGene gene) {
@@ -711,7 +712,8 @@ public class Conversion {
 
       // System.err.println("id " + id);
 
-      String location = mChrMap.get(id) + ":" + mStartMap.get(id) + "-" + mEndMap.get(id);
+      String location = mChrMap.get(id) + ":" + mStartMap.get(id) + "-"
+          + mEndMap.get(id);
 
       locations.add(location);
     }
@@ -722,8 +724,7 @@ public class Conversion {
   /**
    * Lookup rdf id.
    *
-   * @param id
-   *          the id
+   * @param id the id
    * @return the sets the
    */
   private Set<String> lookupGlobalId(String id) {
@@ -741,8 +742,7 @@ public class Conversion {
   /**
    * Gets the base id.
    *
-   * @param id
-   *          the id
+   * @param id the id
    * @return the base id
    */
   private String getBaseId(String id) {
@@ -767,14 +767,14 @@ public class Conversion {
   /**
    * Gets the entrez id.
    *
-   * @param symbol
-   *          the symbol
+   * @param symbol the symbol
    * @return the entrez id
    */
   public GeneSymbol getEntrezId(String symbol) {
     HashMap<String, Set<IntermediateGene>> geneMap = new HashMap<String, Set<IntermediateGene>>();
 
-    getIntermediateGenes(CollectionUtils.asList(symbol), false, false, true, false, geneMap);
+    getIntermediateGenes(CollectionUtils
+        .asList(symbol), false, false, true, false, geneMap);
 
     if (geneMap.size() == 0) {
       return null;

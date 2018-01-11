@@ -29,10 +29,8 @@ public class Type extends Entity implements Comparable<Type>, NameProperty {
   /**
    * Instantiates a new type.
    *
-   * @param id
-   *          the id
-   * @param name
-   *          the name
+   * @param id the id
+   * @param name the name
    */
   public Type(int id, String name) {
     super(id);

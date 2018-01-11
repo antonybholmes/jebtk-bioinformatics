@@ -27,21 +27,22 @@ public abstract class ChromosomeParser {
    * Cleans up the chr name and returns the short name variant where the chr
    * prefix is removed to leave just the number or letter.
    *
-   * @param chr
-   *          the chr
+   * @param chr the chr
    * @return the short name
    */
   public String getShortName(String chr) {
-    return chr.toUpperCase().replace("CHROMOSOME", TextUtils.EMPTY_STRING).replace("CHR_", TextUtils.EMPTY_STRING)
-        .replace("CHR-", TextUtils.EMPTY_STRING).replace("CHR", TextUtils.EMPTY_STRING)
-        .replaceFirst("P.*", TextUtils.EMPTY_STRING).replaceFirst("Q.*", TextUtils.EMPTY_STRING);
+    return chr.toUpperCase().replace("CHROMOSOME", TextUtils.EMPTY_STRING)
+        .replace("CHR_", TextUtils.EMPTY_STRING)
+        .replace("CHR-", TextUtils.EMPTY_STRING)
+        .replace("CHR", TextUtils.EMPTY_STRING)
+        .replaceFirst("P.*", TextUtils.EMPTY_STRING)
+        .replaceFirst("Q.*", TextUtils.EMPTY_STRING);
   }
 
   /**
    * Gets the id.
    *
-   * @param chr
-   *          the chr
+   * @param chr the chr
    * @return the id
    */
   public abstract int getId(String chr);

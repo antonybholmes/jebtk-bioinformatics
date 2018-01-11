@@ -83,8 +83,7 @@ public class Bed extends UCSCTrack {
   /**
    * Instantiates a new bed.
    *
-   * @param name
-   *          the name
+   * @param name the name
    */
   public Bed(String name) {
     this(name, name);
@@ -93,10 +92,8 @@ public class Bed extends UCSCTrack {
   /**
    * Instantiates a new bed.
    *
-   * @param name
-   *          the name
-   * @param description
-   *          the description
+   * @param name the name
+   * @param description the description
    */
   public Bed(String name, String description) {
     this(name, description, DEFAULT_BED_COLOR);
@@ -105,12 +102,9 @@ public class Bed extends UCSCTrack {
   /**
    * Instantiates a new bed.
    *
-   * @param name
-   *          the name
-   * @param description
-   *          the description
-   * @param color
-   *          the color
+   * @param name the name
+   * @param description the description
+   * @param color the color
    */
   public Bed(String name, String description, Color color) {
     super(name, description, color, BED_TRACK_TYPE);
@@ -120,8 +114,8 @@ public class Bed extends UCSCTrack {
    * (non-Javadoc)
    * 
    * @see
-   * edu.columbia.rdf.lib.bioinformatics.external.ucsc.UCSCTrack#setColor(java.awt
-   * .Color)
+   * edu.columbia.rdf.lib.bioinformatics.external.ucsc.UCSCTrack#setColor(java.
+   * awt .Color)
    */
   @Override
   public void setColor(Color color) {
@@ -136,48 +130,44 @@ public class Bed extends UCSCTrack {
   /**
    * Parses the track.
    *
-   * @param file
-   *          the file
+   * @param file the file
    * @return the UCSC track
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
-   * @throws ParseException
-   *           the parse exception
+   * @throws IOException Signals that an I/O exception has occurred.
+   * @throws ParseException the parse exception
    */
-  public static UCSCTrack parseTrack(Path file) throws IOException, ParseException {
+  public static UCSCTrack parseTrack(Path file)
+      throws IOException, ParseException {
     return parseTracks(file).get(0);
   }
 
   /**
    * Parses the.
    *
-   * @param file
-   *          the file
+   * @param file the file
    * @return the list
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   public static List<UCSCTrack> parseTracks(Path file) throws IOException {
     LOG.info("Parsing BED file {}...", file);
 
     BufferedReader reader = FileUtils.newBufferedReader(file);
 
-    return parseTracks(GenomeService.getInstance().guess(file), getName(file), reader);
+    return parseTracks(GenomeService.getInstance().guess(file),
+        getName(file),
+        reader);
   }
 
   /**
    * Parses the.
    *
-   * @param defaultName
-   *          the default name
-   * @param reader
-   *          the reader
+   * @param defaultName the default name
+   * @param reader the reader
    * @return the list
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static List<UCSCTrack> parseTracks(String genome, String defaultName, BufferedReader reader)
-      throws IOException {
+  public static List<UCSCTrack> parseTracks(String genome,
+      String defaultName,
+      BufferedReader reader) throws IOException {
     Bed bed = null;
 
     String line;
@@ -241,11 +231,9 @@ public class Bed extends UCSCTrack {
   /**
    * Creates the bed from track line.
    *
-   * @param line
-   *          the line
+   * @param line the line
    * @return the bed
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   public static Bed createBedFromTrackLine(String line) throws IOException {
     String name = null;
@@ -294,11 +282,9 @@ public class Bed extends UCSCTrack {
   /**
    * Parses the bed graph.
    *
-   * @param file
-   *          the file
+   * @param file the file
    * @return the bed
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   public static Bed parseBedGraph(Path file) throws IOException {
     return parseBedGraphs(file).get(0);
@@ -307,16 +293,15 @@ public class Bed extends UCSCTrack {
   /**
    * Parses the bed graphs.
    *
-   * @param file
-   *          the file
+   * @param file the file
    * @return the list
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   public static List<Bed> parseBedGraphs(Path file) throws IOException {
     LOG.info("Parsing Bedgraph as BED file {}...", file);
 
-    BufferedReader reader = Files.newBufferedReader(file, StandardCharsets.UTF_8);
+    BufferedReader reader = Files.newBufferedReader(file,
+        StandardCharsets.UTF_8);
 
     Bed bed = null;
 
@@ -335,7 +320,8 @@ public class Bed extends UCSCTrack {
 
           beds.add(bed);
         } else {
-          BedRegion region = BedRegion.parse(GenomeService.getInstance().guess(file), line);
+          BedRegion region = BedRegion
+              .parse(GenomeService.getInstance().guess(file), line);
           bed.getRegions().add(region);
         }
       }
@@ -349,53 +335,47 @@ public class Bed extends UCSCTrack {
   /**
    * Write.
    *
-   * @param regions
-   *          the regions
-   * @param file
-   *          the file
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @param regions the regions
+   * @param file the file
+   * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static void writeBed(List<GenomicRegion> regions, Path file) throws IOException {
+  public static void writeBed(List<GenomicRegion> regions, Path file)
+      throws IOException {
     writeBed(PathUtils.getName(file), regions, file);
   }
 
   /**
    * Write.
    *
-   * @param name
-   *          the name
-   * @param regions
-   *          the regions
-   * @param file
-   *          the file
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @param name the name
+   * @param regions the regions
+   * @param file the file
+   * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static void writeBed(String name, List<GenomicRegion> regions, Path file) throws IOException {
+  public static void writeBed(String name,
+      List<GenomicRegion> regions,
+      Path file) throws IOException {
     writeBed(name, name, regions, file);
   }
 
   /**
    * Write.
    *
-   * @param name
-   *          the name
-   * @param description
-   *          the description
-   * @param regions
-   *          the regions
-   * @param file
-   *          the file
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @param name the name
+   * @param description the description
+   * @param regions the regions
+   * @param file the file
+   * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static void writeBed(String name, String description, List<GenomicRegion> regions, Path file)
-      throws IOException {
+  public static void writeBed(String name,
+      String description,
+      List<GenomicRegion> regions,
+      Path file) throws IOException {
     BufferedWriter writer = FileUtils.newBufferedWriter(file);
 
     try {
-      writer.write(getHeader(BED_TRACK_TYPE, name, description, DEFAULT_BED_COLOR));
+      writer.write(
+          getHeader(BED_TRACK_TYPE, name, description, DEFAULT_BED_COLOR));
 
       writer.newLine();
 
@@ -417,10 +397,8 @@ public class Bed extends UCSCTrack {
   /**
    * Gets the header.
    *
-   * @param name
-   *          the name
-   * @param description
-   *          the description
+   * @param name the name
+   * @param description the description
    * @return the header
    */
   public static String getHeader(String name, String description) {
@@ -430,12 +408,9 @@ public class Bed extends UCSCTrack {
   /**
    * Gets the header.
    *
-   * @param name
-   *          the name
-   * @param description
-   *          the description
-   * @param color
-   *          the color
+   * @param name the name
+   * @param description the description
+   * @param color the color
    * @return the header
    */
   public static String getHeader(String name, String description, Color color) {
@@ -445,25 +420,23 @@ public class Bed extends UCSCTrack {
   /**
    * Gets the header.
    *
-   * @param name
-   *          the name
-   * @param description
-   *          the description
-   * @param color
-   *          the color
-   * @param priority
-   *          the priority
+   * @param name the name
+   * @param description the description
+   * @param color the color
+   * @param priority the priority
    * @return the header
    */
-  public static String getHeader(String name, String description, Color color, int priority) {
+  public static String getHeader(String name,
+      String description,
+      Color color,
+      int priority) {
     return getHeader(BED_TRACK_TYPE, name, description, color, priority);
   }
 
   /**
    * Create a BED line from a region.
    *
-   * @param region
-   *          the region
+   * @param region the region
    * @return the string
    */
   public static String toString(GenomicRegion region) {
@@ -473,10 +446,8 @@ public class Bed extends UCSCTrack {
   /**
    * Create a BED line from a region with a name.
    *
-   * @param region
-   *          the region
-   * @param name
-   *          the name
+   * @param region the region
+   * @param name the name
    * @return the string
    */
   public static String toString(GenomicRegion region, String name) {
@@ -496,11 +467,9 @@ public class Bed extends UCSCTrack {
   /**
    * To matrix.
    *
-   * @param file
-   *          the file
+   * @param file the file
    * @return the annotation matrix
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   public static DataFrame toMatrix(Path file) throws IOException {
     String line;
@@ -567,10 +536,8 @@ public class Bed extends UCSCTrack {
   /**
    * Creates the.
    *
-   * @param name
-   *          the name
-   * @param regions
-   *          the regions
+   * @param name the name
+   * @param regions the regions
    * @return the bed
    */
   public static Bed create(String name, Collection<GenomicRegion> regions) {

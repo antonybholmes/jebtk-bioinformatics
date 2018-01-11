@@ -48,8 +48,7 @@ public class MotifHeights extends ListModel<BaseHeights> {
   /**
    * Instantiates a new motif heights.
    *
-   * @param name
-   *          the name
+   * @param name the name
    */
   public MotifHeights(String name) {
     mName = name;

@@ -69,10 +69,8 @@ public class ResMatrix extends DataFrame {
   /**
    * Instantiates a new res matrix.
    *
-   * @param rows
-   *          the rows
-   * @param columns
-   *          the columns
+   * @param rows the rows
+   * @param columns the columns
    */
   public ResMatrix(int rows, int columns) {
     this(new MixedMatrix(rows, columns));
@@ -81,8 +79,7 @@ public class ResMatrix extends DataFrame {
   /**
    * Instantiates a new res matrix.
    *
-   * @param matrix
-   *          the matrix
+   * @param matrix the matrix
    */
   private ResMatrix(Matrix matrix) {
     super(matrix);
@@ -91,8 +88,7 @@ public class ResMatrix extends DataFrame {
   /**
    * Sets the description names.
    *
-   * @param names
-   *          the new description names
+   * @param names the new description names
    */
   public void setDescriptionNames(List<String> names) {
     setTextRowAnnotations(DESCRIPTION_COLUMN, names);
@@ -101,8 +97,7 @@ public class ResMatrix extends DataFrame {
   /**
    * Gets the description name.
    *
-   * @param i
-   *          the i
+   * @param i the i
    * @return the description name
    */
   public String getDescriptionName(int i) {
@@ -121,8 +116,7 @@ public class ResMatrix extends DataFrame {
   /**
    * Sets the accession names.
    *
-   * @param names
-   *          the new accession names
+   * @param names the new accession names
    */
   public void setAccessionNames(List<String> names) {
     setTextRowAnnotations(ACCESSION_COLUMN, names);
@@ -131,8 +125,7 @@ public class ResMatrix extends DataFrame {
   /**
    * Gets the accession name.
    *
-   * @param i
-   *          the i
+   * @param i the i
    * @return the accession name
    */
   public String getAccessionName(int i) {
@@ -151,8 +144,7 @@ public class ResMatrix extends DataFrame {
   /**
    * Sets the sample descriptions.
    *
-   * @param names
-   *          the new sample descriptions
+   * @param names the new sample descriptions
    */
   public void setSampleDescriptions(List<String> names) {
     setTextColumnAnnotations(SAMPLE_DESCRIPTIONS, names);
@@ -161,8 +153,7 @@ public class ResMatrix extends DataFrame {
   /**
    * Gets the sample description.
    *
-   * @param i
-   *          the i
+   * @param i the i
    * @return the sample description
    */
   public String getSampleDescription(int i) {
@@ -181,11 +172,9 @@ public class ResMatrix extends DataFrame {
   /**
    * Parses the matrix.
    *
-   * @param file
-   *          the file
+   * @param file the file
    * @return the annotation matrix
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   public static DataFrame parseMatrix(Path file) throws IOException {
     return parseMatrix(file, false);
@@ -194,31 +183,26 @@ public class ResMatrix extends DataFrame {
   /**
    * Parses the matrix.
    *
-   * @param file
-   *          the file
-   * @param keepCallCols
-   *          the keep call cols
+   * @param file the file
+   * @param keepCallCols the keep call cols
    * @return the annotation matrix
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static DataFrame parseMatrix(Path file, boolean keepCallCols) throws IOException {
+  public static DataFrame parseMatrix(Path file, boolean keepCallCols)
+      throws IOException {
     return new ResMatrixParser(keepCallCols).parse(file);
   }
 
   /**
    * Write a simple expression matrix in GCT format.
    *
-   * @param <T>
-   *          the generic type
-   * @param matrix
-   *          the matrix
-   * @param file
-   *          the file
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @param <T> the generic type
+   * @param matrix the matrix
+   * @param file the file
+   * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static <T> void writeResMatrix(DataFrame matrix, Path file) throws IOException {
+  public static <T> void writeResMatrix(DataFrame matrix, Path file)
+      throws IOException {
     BufferedWriter writer = FileUtils.newBufferedWriter(file);
 
     try {
@@ -255,7 +239,8 @@ public class ResMatrix extends DataFrame {
       for (int i = 0; i < matrix.getRows(); ++i) {
         writer.write(matrix.getRowAnnotationText(names.get(0), i));
         writer.write(TextUtils.TAB_DELIMITER);
-        writer.write(matrix.getRowAnnotationText(names.get(names.size() - 1), i));
+        writer
+            .write(matrix.getRowAnnotationText(names.get(names.size() - 1), i));
 
         for (int j = 0; j < matrix.getCols(); ++j) {
           if (i > 0) {
@@ -276,10 +261,8 @@ public class ResMatrix extends DataFrame {
   /**
    * Format text value.
    *
-   * @param <T>
-   *          the generic type
-   * @param value
-   *          the value
+   * @param <T> the generic type
+   * @param value the value
    * @return the string
    */
   public static <T> String formatTextValue(T value) {
@@ -293,10 +276,8 @@ public class ResMatrix extends DataFrame {
   /**
    * Creates the mixed res matrix.
    *
-   * @param rows
-   *          the rows
-   * @param columns
-   *          the columns
+   * @param rows the rows
+   * @param columns the columns
    * @return the res matrix
    */
   public static ResMatrix createMixedResMatrix(int rows, int columns) {
@@ -306,10 +287,8 @@ public class ResMatrix extends DataFrame {
   /**
    * Creates the res matrix.
    *
-   * @param rows
-   *          the rows
-   * @param columns
-   *          the columns
+   * @param rows the rows
+   * @param columns the columns
    * @return the res matrix
    */
   public static ResMatrix createResMatrix(int rows, int columns) {

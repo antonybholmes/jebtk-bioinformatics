@@ -66,12 +66,9 @@ public class GenomeAssemblyExt2BitZip extends GenomeAssemblyDir {
     /**
      * Process a 1 bit mask.
      * 
-     * @param i
-     *          The current index
-     * @param v
-     *          The 1bit value from the corresponding 1bit buffer at index i.
-     * @param charBuf
-     *          The char buffer to be updated.
+     * @param i The current index
+     * @param v The 1bit value from the corresponding 1bit buffer at index i.
+     * @param charBuf The char buffer to be updated.
      */
     public void process(int i, int v, char[] charBuf);
   }
@@ -98,7 +95,8 @@ public class GenomeAssemblyExt2BitZip extends GenomeAssemblyDir {
   private static final Process1Bit N_PROCESSOR = new NProcessor();
   private static final Process1Bit LOWER_PROCESSOR = new LowerProcessor();
 
-  public static final Logger LOG = LoggerFactory.getLogger(GenomeAssemblyExt2BitZip.class);
+  public static final Logger LOG = LoggerFactory
+      .getLogger(GenomeAssemblyExt2BitZip.class);
 
   // Use fixed size arrays to cache chromosome features. Arrays are set
   // to be larger than the amount of data that will be cached.
@@ -110,7 +108,8 @@ public class GenomeAssemblyExt2BitZip extends GenomeAssemblyDir {
   private final byte[] mChrNBuf = new byte[50000000];
 
   /**
-   * Store read bytes. We assume fewer than 2 million bases will be read at once.
+   * Store read bytes. We assume fewer than 2 million bases will be read at
+   * once.
    */
   private final byte[] mBuf = new byte[500000];
 
@@ -128,8 +127,7 @@ public class GenomeAssemblyExt2BitZip extends GenomeAssemblyDir {
    * Directory containing genome Paths which must be of the form chr.n.txt. Each
    * Path must contain exactly one line consisting of the entire chromosome.
    *
-   * @param directory
-   *          the directory
+   * @param directory the directory
    */
   public GenomeAssemblyExt2BitZip(Path zip) {
     super(zip);
@@ -141,10 +139,13 @@ public class GenomeAssemblyExt2BitZip extends GenomeAssemblyDir {
   }
 
   @Override
-  public List<SequenceRegion> getSequences(String genome, Collection<GenomicRegion> regions, boolean displayUpper,
+  public List<SequenceRegion> getSequences(String genome,
+      Collection<GenomicRegion> regions,
+      boolean displayUpper,
       RepeatMaskType repeatMaskType) throws IOException {
 
-    IterMap<Chromosome, List<GenomicRegion>> chrMap = DefaultTreeMap.create(new ArrayListCreator<GenomicRegion>());
+    IterMap<Chromosome, List<GenomicRegion>> chrMap = DefaultTreeMap
+        .create(new ArrayListCreator<GenomicRegion>());
 
     for (GenomicRegion region : regions) {
       chrMap.get(region.getChr()).add(region);
@@ -154,7 +155,10 @@ public class GenomeAssemblyExt2BitZip extends GenomeAssemblyDir {
 
     for (Chromosome chr : chrMap) {
       for (GenomicRegion region : chrMap.get(chr)) {
-        SequenceRegion sequence = getSequence(genome, region, displayUpper, repeatMaskType);
+        SequenceRegion sequence = getSequence(genome,
+            region,
+            displayUpper,
+            repeatMaskType);
 
         mSeqMap.put(region, sequence);
       }
@@ -178,32 +182,29 @@ public class GenomeAssemblyExt2BitZip extends GenomeAssemblyDir {
    * edu.columbia.rdf.lib.bioinformatics.genome.RepeatMaskType)
    */
   @Override
-  public final SequenceRegion getSequence(String genome, GenomicRegion region, boolean displayUpper,
+  public final SequenceRegion getSequence(String genome,
+      GenomicRegion region,
+      boolean displayUpper,
       RepeatMaskType repeatMaskType) throws IOException {
-    return new SequenceRegion(region, getSequence2Bit(region, displayUpper, repeatMaskType));
+    return new SequenceRegion(region,
+        getSequence2Bit(region, displayUpper, repeatMaskType));
   }
 
   /**
    * Gets the sequence4 bit.
    *
-   * @param file
-   *          the Path
-   * @param chr
-   *          the chr
-   * @param start
-   *          the start
-   * @param end
-   *          the end
-   * @param displayUpper
-   *          the display upper
-   * @param repeatMaskType
-   *          the repeat mask type
+   * @param file the Path
+   * @param chr the chr
+   * @param start the start
+   * @param end the end
+   * @param displayUpper the display upper
+   * @param repeatMaskType the repeat mask type
    * @return the sequence4 bit
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
-  public Sequence getSequence2Bit(GenomicRegion region, boolean displayUpper, RepeatMaskType repeatMaskType)
-      throws IOException {
+  public Sequence getSequence2Bit(GenomicRegion region,
+      boolean displayUpper,
+      RepeatMaskType repeatMaskType) throws IOException {
 
     Chromosome chr = region.getChr();
     int start = region.getStart();
@@ -289,7 +290,10 @@ public class GenomeAssemblyExt2BitZip extends GenomeAssemblyDir {
    * @return
    * @throws IOException
    */
-  private static int cacheEncodedBases(Path zip, Chromosome chr, String ext, byte[] buf) throws IOException {
+  private static int cacheEncodedBases(Path zip,
+      Chromosome chr,
+      String ext,
+      byte[] buf) throws IOException {
     int n = -1;
 
     String file = chr + ext;
@@ -319,7 +323,10 @@ public class GenomeAssemblyExt2BitZip extends GenomeAssemblyDir {
    * @param buf
    * @param charBuf
    */
-  private static void process2bit(int s, int l, final byte[] buf, char[] charBuf) {
+  private static void process2bit(int s,
+      int l,
+      final byte[] buf,
+      char[] charBuf) {
     // byte mask;
     int v = 0;
 
@@ -361,17 +368,17 @@ public class GenomeAssemblyExt2BitZip extends GenomeAssemblyDir {
   /**
    * Iterate over 1 bit array, updating the char array.
    * 
-   * @param s
-   *          Start
-   * @param l
-   *          Length
-   * @param buf
-   *          1 bit buffer
-   * @param charBuf
-   *          char buffer
+   * @param s Start
+   * @param l Length
+   * @param buf 1 bit buffer
+   * @param charBuf char buffer
    * @param processor
    */
-  private static void process1bit(int s, int l, byte[] buf, Process1Bit processor, char[] charBuf) {
+  private static void process1bit(int s,
+      int l,
+      byte[] buf,
+      Process1Bit processor,
+      char[] charBuf) {
     int bi = 0;
     int b = s;
     int v;
@@ -426,20 +433,17 @@ public class GenomeAssemblyExt2BitZip extends GenomeAssemblyDir {
   /**
    * Returns the number of Ns in a range.
    *
-   * @param chr
-   *          the chr
-   * @param start
-   *          the start
-   * @param end
-   *          the end
+   * @param chr the chr
+   * @param start the start
+   * @param end the end
    * @return
    * @return the n The number of bytes read or -1 if the N mask file does not
    *         exist.
    * 
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
-  public int getN(Chromosome chr, int start, int end, byte[] ret) throws IOException {
+  public int getN(Chromosome chr, int start, int end, byte[] ret)
+      throws IOException {
     if (mNL == 0) {
       return -1;
     }
@@ -453,18 +457,15 @@ public class GenomeAssemblyExt2BitZip extends GenomeAssemblyDir {
   /**
    * Returns the repeat mask for a range.
    *
-   * @param chr
-   *          the chr
-   * @param start
-   *          the start
-   * @param end
-   *          the end
+   * @param chr the chr
+   * @param start the start
+   * @param end the end
    * @return
    * @return the mask
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
-  private int getMask(Chromosome chr, int start, int end, byte[] ret) throws IOException {
+  private int getMask(Chromosome chr, int start, int end, byte[] ret)
+      throws IOException {
     if (mML == 0) {
       return -1;
     }
@@ -478,18 +479,17 @@ public class GenomeAssemblyExt2BitZip extends GenomeAssemblyDir {
   /**
    * Gets the bytes4 bit.
    *
-   * @param file
-   *          the file
-   * @param start
-   *          the start
-   * @param end
-   *          the end
+   * @param file the file
+   * @param start the start
+   * @param end the end
    * @return
    * @return the bytes4 bit
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static int getBytes2Bit(final byte[] buf, int start, int end, byte[] ret) throws IOException {
+  public static int getBytes2Bit(final byte[] buf,
+      int start,
+      int end,
+      byte[] ret) throws IOException {
     int sb = start / 4;
     int eb = end / 4;
 
@@ -501,18 +501,17 @@ public class GenomeAssemblyExt2BitZip extends GenomeAssemblyDir {
   /**
    * Gets the bytes 1 bit.
    *
-   * @param file
-   *          the file
-   * @param start
-   *          the start
-   * @param end
-   *          the end
+   * @param file the file
+   * @param start the start
+   * @param end the end
    * @return
    * @return the bytes 1 bit
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static int getBytes1Bit(final byte[] buf, int start, int end, byte[] ret) throws IOException {
+  public static int getBytes1Bit(final byte[] buf,
+      int start,
+      int end,
+      byte[] ret) throws IOException {
     int sb = start / 8;
     int eb = end / 8;
 
@@ -521,7 +520,8 @@ public class GenomeAssemblyExt2BitZip extends GenomeAssemblyDir {
     return getBytes(buf, sb, eb, ret);
   }
 
-  public static int getBytes(final byte[] buf, int start, int end, byte[] ret) throws IOException {
+  public static int getBytes(final byte[] buf, int start, int end, byte[] ret)
+      throws IOException {
 
     int l = end - start + 1;
 

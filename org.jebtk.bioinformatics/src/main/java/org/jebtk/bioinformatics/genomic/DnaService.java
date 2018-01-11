@@ -103,12 +103,12 @@ public class DnaService extends ChangeListeners {
   /**
    * Sets the base A color.
    *
-   * @param color
-   *          the new base A color
+   * @param color the new base A color
    */
   public void setBaseAColor(Color color) {
     mBaseAColor = color;
-    SettingsService.getInstance().update("bioinformatics.dna.bases.a.color", color);
+    SettingsService.getInstance().update("bioinformatics.dna.bases.a.color",
+        color);
     fireChanged();
   }
 
@@ -124,12 +124,12 @@ public class DnaService extends ChangeListeners {
   /**
    * Sets the base C color.
    *
-   * @param color
-   *          the new base C color
+   * @param color the new base C color
    */
   public void setBaseCColor(Color color) {
     mBaseCColor = color;
-    SettingsService.getInstance().update("bioinformatics.dna.bases.c.color", color);
+    SettingsService.getInstance().update("bioinformatics.dna.bases.c.color",
+        color);
     fireChanged();
   }
 
@@ -145,12 +145,12 @@ public class DnaService extends ChangeListeners {
   /**
    * Sets the base G color.
    *
-   * @param color
-   *          the new base G color
+   * @param color the new base G color
    */
   public void setBaseGColor(Color color) {
     mBaseGColor = color;
-    SettingsService.getInstance().update("bioinformatics.dna.bases.g.color", color);
+    SettingsService.getInstance().update("bioinformatics.dna.bases.g.color",
+        color);
     fireChanged();
   }
 
@@ -166,12 +166,12 @@ public class DnaService extends ChangeListeners {
   /**
    * Sets the base T color.
    *
-   * @param color
-   *          the new base T color
+   * @param color the new base T color
    */
   public void setBaseTColor(Color color) {
     mBaseTColor = color;
-    SettingsService.getInstance().update("bioinformatics.dna.bases.t.color", color);
+    SettingsService.getInstance().update("bioinformatics.dna.bases.t.color",
+        color);
 
     fireChanged();
   }
@@ -188,12 +188,12 @@ public class DnaService extends ChangeListeners {
   /**
    * Sets the base N color.
    *
-   * @param color
-   *          the new base N color
+   * @param color the new base N color
    */
   public void setBaseNColor(Color color) {
     mBaseNColor = color;
-    SettingsService.getInstance().update("bioinformatics.dna.bases.n.color", color);
+    SettingsService.getInstance().update("bioinformatics.dna.bases.n.color",
+        color);
     fireChanged();
   }
 
@@ -203,11 +203,16 @@ public class DnaService extends ChangeListeners {
   public void resetToDefaults() {
     System.err.println("dna reset");
 
-    SettingsService.getInstance().resetToDefault("bioinformatics.dna.bases.a.color");
-    SettingsService.getInstance().resetToDefault("bioinformatics.dna.bases.c.color");
-    SettingsService.getInstance().resetToDefault("bioinformatics.dna.bases.g.color");
-    SettingsService.getInstance().resetToDefault("bioinformatics.dna.bases.t.color");
-    SettingsService.getInstance().resetToDefault("bioinformatics.dna.bases.n.color");
+    SettingsService.getInstance()
+        .resetToDefault("bioinformatics.dna.bases.a.color");
+    SettingsService.getInstance()
+        .resetToDefault("bioinformatics.dna.bases.c.color");
+    SettingsService.getInstance()
+        .resetToDefault("bioinformatics.dna.bases.g.color");
+    SettingsService.getInstance()
+        .resetToDefault("bioinformatics.dna.bases.t.color");
+    SettingsService.getInstance()
+        .resetToDefault("bioinformatics.dna.bases.n.color");
 
     updateColors();
   }
@@ -216,15 +221,20 @@ public class DnaService extends ChangeListeners {
    * Update colors.
    */
   private void updateColors() {
-    mBaseAColor = SettingsService.getInstance().getAsColor("bioinformatics.dna.bases.a.color");
+    mBaseAColor = SettingsService.getInstance()
+        .getAsColor("bioinformatics.dna.bases.a.color");
 
-    mBaseCColor = SettingsService.getInstance().getAsColor("bioinformatics.dna.bases.c.color");
+    mBaseCColor = SettingsService.getInstance()
+        .getAsColor("bioinformatics.dna.bases.c.color");
 
-    mBaseGColor = SettingsService.getInstance().getAsColor("bioinformatics.dna.bases.g.color");
+    mBaseGColor = SettingsService.getInstance()
+        .getAsColor("bioinformatics.dna.bases.g.color");
 
-    mBaseTColor = SettingsService.getInstance().getAsColor("bioinformatics.dna.bases.t.color");
+    mBaseTColor = SettingsService.getInstance()
+        .getAsColor("bioinformatics.dna.bases.t.color");
 
-    mBaseNColor = SettingsService.getInstance().getAsColor("bioinformatics.dna.bases.n.color");
+    mBaseNColor = SettingsService.getInstance()
+        .getAsColor("bioinformatics.dna.bases.n.color");
 
     fireChanged();
   }

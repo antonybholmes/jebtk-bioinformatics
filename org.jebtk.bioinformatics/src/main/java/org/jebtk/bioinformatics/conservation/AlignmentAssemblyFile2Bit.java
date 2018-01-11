@@ -65,8 +65,7 @@ public class AlignmentAssemblyFile2Bit extends ConservationAssembly {
    * Directory containing genome files which must be of the form chr.n.txt. Each
    * file must contain exactly one line consisting of the entire chromosome.
    *
-   * @param directory
-   *          the directory
+   * @param directory the directory
    */
   public AlignmentAssemblyFile2Bit(Path directory) {
     mDirectory = directory;
@@ -92,17 +91,14 @@ public class AlignmentAssemblyFile2Bit extends ConservationAssembly {
   /**
    * Gets the scores.
    *
-   * @param file
-   *          the file
-   * @param start
-   *          the start
-   * @param end
-   *          the end
+   * @param file the file
+   * @param start the start
+   * @param end the end
    * @return the scores
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static List<Double> getScores(Path file, int start, int end) throws IOException {
+  public static List<Double> getScores(Path file, int start, int end)
+      throws IOException {
 
     int s = start - 1;
     int e = end - 1;
@@ -151,17 +147,14 @@ public class AlignmentAssemblyFile2Bit extends ConservationAssembly {
   /**
    * Gets the bytes2 bit.
    *
-   * @param file
-   *          the file
-   * @param start
-   *          the start
-   * @param end
-   *          the end
+   * @param file the file
+   * @param start the start
+   * @param end the end
    * @return the bytes2 bit
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static byte[] getBytes2Bit(Path file, int start, int end) throws IOException {
+  public static byte[] getBytes2Bit(Path file, int start, int end)
+      throws IOException {
     int sb = start / 4;
     int eb = end / 4;
 
@@ -173,19 +166,18 @@ public class AlignmentAssemblyFile2Bit extends ConservationAssembly {
   /**
    * The main method.
    *
-   * @param args
-   *          the arguments
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
-   * @throws ParseException
-   *           the parse exception
+   * @param args the arguments
+   * @throws IOException Signals that an I/O exception has occurred.
+   * @throws ParseException the parse exception
    */
   public static void main(String[] args) throws IOException, ParseException {
     AlignmentAssemblyFile2Bit a = new AlignmentAssemblyFile2Bit(
-        PathUtils.getPath("/ifs/scratch/cancer/Lab_RDF/abh2138/references/ucsc/alignment/human_mouse_hg19_mm10"));
+        PathUtils.getPath(
+            "/ifs/scratch/cancer/Lab_RDF/abh2138/references/ucsc/alignment/human_mouse_hg19_mm10"));
 
     // System.err.println(a.getScores("chr1:11680-11871"));
 
-    System.err.println(a.getScores("chr10:87575-87801") + " " + Statistics.pNonZero(a.getScores("chr10:87575-87801")));
+    System.err.println(a.getScores("chr10:87575-87801") + " "
+        + Statistics.pNonZero(a.getScores("chr10:87575-87801")));
   }
 }

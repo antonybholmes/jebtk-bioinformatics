@@ -51,14 +51,12 @@ public class UCSCTracksModel extends ListModel<UCSCTrack> {
   /**
    * Write.
    *
-   * @param model
-   *          the model
-   * @param file
-   *          the file
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @param model the model
+   * @param file the file
+   * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static void write(UCSCTracksModel model, File file) throws IOException {
+  public static void write(UCSCTracksModel model, File file)
+      throws IOException {
     BufferedWriter writer = new BufferedWriter(new FileWriter(file));
 
     try {

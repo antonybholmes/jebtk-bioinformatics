@@ -61,10 +61,8 @@ public class GeneSet implements Comparable<GeneSet>, Iterable<String> {
   /**
    * Instantiates a new gene set.
    *
-   * @param name
-   *          the name
-   * @param collectionName
-   *          the collection name
+   * @param name the name
+   * @param collectionName the collection name
    */
   public GeneSet(String name, String collectionName) {
     mName = name;
@@ -75,12 +73,9 @@ public class GeneSet implements Comparable<GeneSet>, Iterable<String> {
   /**
    * Instantiates a new gene set.
    *
-   * @param name
-   *          the name
-   * @param collectionName
-   *          the collection name
-   * @param genes
-   *          the genes
+   * @param name the name
+   * @param collectionName the collection name
+   * @param genes the genes
    */
   public GeneSet(String name, String collectionName, Collection<String> genes) {
     this(name, collectionName);
@@ -100,8 +95,7 @@ public class GeneSet implements Comparable<GeneSet>, Iterable<String> {
   /**
    * Adds the genes.
    *
-   * @param genes
-   *          the genes
+   * @param genes the genes
    */
   public void addGenes(Collection<String> genes) {
     for (String gene : genes) {
@@ -112,8 +106,7 @@ public class GeneSet implements Comparable<GeneSet>, Iterable<String> {
   /**
    * Adds the gene.
    *
-   * @param gene
-   *          the gene
+   * @param gene the gene
    */
   public void addGene(String gene) {
     mGenes.add(gene.toUpperCase());
@@ -122,8 +115,7 @@ public class GeneSet implements Comparable<GeneSet>, Iterable<String> {
   /**
    * Contains.
    *
-   * @param gene
-   *          the gene
+   * @param gene the gene
    * @return true, if successful
    */
   public boolean contains(String gene) {

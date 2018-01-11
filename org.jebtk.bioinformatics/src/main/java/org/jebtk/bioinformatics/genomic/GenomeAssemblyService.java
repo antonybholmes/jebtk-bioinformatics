@@ -68,8 +68,7 @@ public class GenomeAssemblyService extends GenomeAssembly {
   /**
    * Adds the.
    *
-   * @param assembly
-   *          the assembly
+   * @param assembly the assembly
    */
   public void add(GenomeAssembly assembly) {
     mAssemblies.add(assembly);
@@ -78,13 +77,14 @@ public class GenomeAssemblyService extends GenomeAssembly {
   /*
    * (non-Javadoc)
    * 
-   * @see
-   * org.jebtk.bioinformatics.genome.GenomeAssembly#getSequence(java.lang.String,
-   * org.jebtk.bioinformatics.genome.GenomicRegion, boolean,
+   * @see org.jebtk.bioinformatics.genome.GenomeAssembly#getSequence(java.lang.
+   * String, org.jebtk.bioinformatics.genome.GenomicRegion, boolean,
    * org.jebtk.bioinformatics.genome.RepeatMaskType)
    */
   @Override
-  public SequenceRegion getSequence(String genome, GenomicRegion region, boolean displayUpper,
+  public SequenceRegion getSequence(String genome,
+      GenomicRegion region,
+      boolean displayUpper,
       RepeatMaskType repeatMaskType) throws IOException {
     SequenceRegion ret = null;
 

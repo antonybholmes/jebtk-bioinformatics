@@ -40,10 +40,8 @@ public abstract class GenomeAssemblyDNA extends GenomeAssembly {
   /**
    * To char.
    *
-   * @param v
-   *          the v
-   * @param repeatMaskType
-   *          the repeat mask type
+   * @param v the v
+   * @param repeatMaskType the repeat mask type
    * @return the char
    */
   public static char toChar(int v, RepeatMaskType repeatMaskType) {
@@ -84,8 +82,7 @@ public abstract class GenomeAssemblyDNA extends GenomeAssembly {
   /**
    * To char.
    *
-   * @param v
-   *          the v
+   * @param v the v
    * @return the char
    */
   public static char toChar(int v) {
@@ -114,8 +111,7 @@ public abstract class GenomeAssemblyDNA extends GenomeAssembly {
   /**
    * Convert character to lower case.
    *
-   * @param c
-   *          the c
+   * @param c the c
    * @return the char
    */
   public static char toLower(int c) {
@@ -136,8 +132,7 @@ public abstract class GenomeAssemblyDNA extends GenomeAssembly {
   /**
    * To lower.
    *
-   * @param c
-   *          the c
+   * @param c the c
    * @return the char
    */
   public static char toLower(char c) {

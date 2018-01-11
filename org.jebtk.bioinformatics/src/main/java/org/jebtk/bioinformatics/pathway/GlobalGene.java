@@ -46,10 +46,8 @@ public class GlobalGene implements Comparable<GlobalGene> {
   /**
    * Instantiates a new rdf gene.
    *
-   * @param rdfId
-   *          the rdf id
-   * @param name
-   *          the name
+   * @param rdfId the rdf id
+   * @param name the name
    */
   public GlobalGene(String rdfId, String name) {
     mRdfId = rdfId;

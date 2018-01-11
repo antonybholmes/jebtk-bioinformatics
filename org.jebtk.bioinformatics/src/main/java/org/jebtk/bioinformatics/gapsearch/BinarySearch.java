@@ -36,8 +36,7 @@ import org.jebtk.bioinformatics.genomic.GenomicRegion;
  * and returns all objects in the range this spans.
  *
  * @author Antony Holmes Holmes
- * @param <T>
- *          the generic type
+ * @param <T> the generic type
  */
 public class BinarySearch<T> extends BinaryGapSearch<T> {
 
@@ -51,7 +50,8 @@ public class BinarySearch<T> extends BinaryGapSearch<T> {
   /*
    * (non-Javadoc)
    * 
-   * @see edu.columbia.rdf.lib.bioinformatics.gapsearch.GapSearch#addFeature(edu.
+   * @see
+   * edu.columbia.rdf.lib.bioinformatics.gapsearch.GapSearch#addFeature(edu.
    * columbia.rdf.lib.bioinformatics.genome.Chromosome, int, int,
    * java.lang.Object)
    */

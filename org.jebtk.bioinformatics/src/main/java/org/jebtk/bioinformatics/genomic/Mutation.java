@@ -8,7 +8,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Mutation implements Comparable<Mutation> {
-  private static final Pattern MUTATION_REGEX = Pattern.compile("([a-zA-Z]+)(\\d+)([a-zA-Z]+)");
+  private static final Pattern MUTATION_REGEX = Pattern
+      .compile("([a-zA-Z]+)(\\d+)([a-zA-Z]+)");
 
   private final String mFrom;
   private final String mTo;

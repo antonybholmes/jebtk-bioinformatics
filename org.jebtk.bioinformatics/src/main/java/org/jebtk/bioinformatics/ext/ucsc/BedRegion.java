@@ -57,8 +57,7 @@ public class BedRegion extends UCSCTrackRegion implements Iterable<String> {
   /**
    * Instantiates a new bed region.
    *
-   * @param region
-   *          the region
+   * @param region the region
    */
   public BedRegion(GenomicRegion region) {
     this(region.getChr(), region.getStart(), region.getEnd());
@@ -67,12 +66,9 @@ public class BedRegion extends UCSCTrackRegion implements Iterable<String> {
   /**
    * Instantiates a new bed region.
    *
-   * @param chr
-   *          the chr
-   * @param start
-   *          the start
-   * @param end
-   *          the end
+   * @param chr the chr
+   * @param start the start
+   * @param end the end
    */
   public BedRegion(Chromosome chr, int start, int end) {
     this(chr, start, end, GenomicRegion.toLocation(chr, start, end));
@@ -82,14 +78,10 @@ public class BedRegion extends UCSCTrackRegion implements Iterable<String> {
    * Create a BED region with no orientation ('.') so that when visualized, will
    * appear as a solid block.
    *
-   * @param chr
-   *          the chr
-   * @param start
-   *          the start
-   * @param end
-   *          the end
-   * @param name
-   *          the name
+   * @param chr the chr
+   * @param start the start
+   * @param end the end
+   * @param name the name
    */
   public BedRegion(Chromosome chr, int start, int end, String name) {
     this(chr, start, end, name, Strand.NONE, null);
@@ -98,20 +90,15 @@ public class BedRegion extends UCSCTrackRegion implements Iterable<String> {
   /**
    * Instantiates a new bed region.
    *
-   * @param chromosome
-   *          the chromosome
-   * @param start
-   *          the start
-   * @param end
-   *          the end
-   * @param name
-   *          the name
-   * @param strand
-   *          the strand
-   * @param color
-   *          the color
+   * @param chromosome the chromosome
+   * @param start the start
+   * @param end the end
+   * @param name the name
+   * @param strand the strand
+   * @param color the color
    */
-  public BedRegion(Chromosome chromosome, int start, int end, String name, Strand strand, Color color) {
+  public BedRegion(Chromosome chromosome, int start, int end, String name,
+      Strand strand, Color color) {
     super(chromosome, start, end, strand, color);
 
     mNames = TextUtils.scSplit(name);
@@ -161,8 +148,7 @@ public class BedRegion extends UCSCTrackRegion implements Iterable<String> {
   /**
    * Parses the.
    *
-   * @param line
-   *          the line
+   * @param line the line
    * @return the bed region
    */
   public static BedRegion parse(String genome, String line) {
@@ -171,7 +157,8 @@ public class BedRegion extends UCSCTrackRegion implements Iterable<String> {
     List<String> tokens = TextUtils.tabSplit(line);
 
     // convert first part to chromosome (replacing x,y and m) {
-    Chromosome chr = ChromosomeService.getInstance().guess(genome, tokens.get(0));
+    Chromosome chr = ChromosomeService.getInstance().guess(genome,
+        tokens.get(0));
 
     if (chr == null) {
       return null;
@@ -200,11 +187,14 @@ public class BedRegion extends UCSCTrackRegion implements Iterable<String> {
 
         int count = Integer.parseInt(tokens.get(9));
 
-        List<Integer> sizes = TextUtils.toInt(TextUtils.commaSplit(tokens.get(10)));
-        List<Integer> starts = TextUtils.toInt(TextUtils.commaSplit(tokens.get(11)));
+        List<Integer> sizes = TextUtils
+            .toInt(TextUtils.commaSplit(tokens.get(10)));
+        List<Integer> starts = TextUtils
+            .toInt(TextUtils.commaSplit(tokens.get(11)));
 
         for (int i = 0; i < count; ++i) {
-          region.mSubRegions.add(new GenomicRegion(chr, start + starts.get(i), start + starts.get(i) + sizes.get(i)));
+          region.mSubRegions.add(new GenomicRegion(chr, start + starts.get(i),
+              start + starts.get(i) + sizes.get(i)));
         }
       }
 
@@ -221,8 +211,7 @@ public class BedRegion extends UCSCTrackRegion implements Iterable<String> {
   /**
    * Creates the.
    *
-   * @param region
-   *          the region
+   * @param region the region
    * @return the bed region
    */
   public static BedRegion create(GenomicRegion region) {

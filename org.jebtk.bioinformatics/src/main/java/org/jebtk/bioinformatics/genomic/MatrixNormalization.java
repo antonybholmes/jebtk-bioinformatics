@@ -36,7 +36,8 @@ public class MatrixNormalization {
     }
   }
 
-  public static DataFrame tpm(final DataFrame m, final List<GenomicRegion> locations) {
+  public static DataFrame tpm(final DataFrame m,
+      final List<GenomicRegion> locations) {
 
     DataFrame ret = new DataFrame(m);
 
@@ -96,7 +97,8 @@ public class MatrixNormalization {
    * @param locations
    * @return
    */
-  public static DataFrame rpkm(final DataFrame m, final List<GenomicRegion> locations) {
+  public static DataFrame rpkm(final DataFrame m,
+      final List<GenomicRegion> locations) {
     DataFrame ret = rpm(m);
 
     double[] factors = getWidthsKb(locations);
@@ -106,7 +108,9 @@ public class MatrixNormalization {
     return ret;
   }
 
-  public static DataFrame rpkm(final DataFrame m, final List<Integer> counts, final List<GenomicRegion> locations) {
+  public static DataFrame rpkm(final DataFrame m,
+      final List<Integer> counts,
+      final List<GenomicRegion> locations) {
     DataFrame ret = rpm(m, counts);
 
     double[] factors = getWidthsKb(locations);

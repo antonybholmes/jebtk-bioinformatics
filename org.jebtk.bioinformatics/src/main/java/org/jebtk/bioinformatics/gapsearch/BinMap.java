@@ -42,8 +42,7 @@ import org.jebtk.core.collections.IterMap;
  * Use fixed size blocks to find features.
  *
  * @author Antony Holmes Holmes
- * @param <T>
- *          the generic type
+ * @param <T> the generic type
  */
 public class BinMap<T> implements IterMap<Integer, T> {
 
@@ -101,8 +100,7 @@ public class BinMap<T> implements IterMap<Integer, T> {
   /**
    * Instantiates a new fixed gap search.
    *
-   * @param binSize
-   *          the bin size
+   * @param binSize the bin size
    */
   public BinMap(int binSize) {
     mBinSize = Math.max(1, binSize);

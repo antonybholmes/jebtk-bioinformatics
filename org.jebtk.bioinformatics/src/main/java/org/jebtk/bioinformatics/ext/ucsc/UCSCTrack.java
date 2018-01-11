@@ -60,22 +60,26 @@ public class UCSCTrack extends ChangeListeners implements NameProperty {
   /**
    * The constant ATTRIBUTE_PATTERN.
    */
-  public static final Pattern ATTRIBUTE_PATTERN = Pattern.compile("([^ ]+)=([\"'].+?[\"']|[^ ]+)");
+  public static final Pattern ATTRIBUTE_PATTERN = Pattern
+      .compile("([^ ]+)=([\"'].+?[\"']|[^ ]+)");
 
   /**
    * The constant NAME_PATTERN.
    */
-  public static final Pattern NAME_PATTERN = Pattern.compile("name=[\"'](.+?)[\"']");
+  public static final Pattern NAME_PATTERN = Pattern
+      .compile("name=[\"'](.+?)[\"']");
 
   /**
    * The constant DESCRIPTION_PATTERN.
    */
-  public static final Pattern DESCRIPTION_PATTERN = Pattern.compile("description=[\"'](.+?)[\"']");
+  public static final Pattern DESCRIPTION_PATTERN = Pattern
+      .compile("description=[\"'](.+?)[\"']");
 
   /**
    * The constant COLOR_PATTERN.
    */
-  public static final Pattern COLOR_PATTERN = Pattern.compile("(\\d+),(\\d+),(\\d+)");
+  public static final Pattern COLOR_PATTERN = Pattern
+      .compile("(\\d+),(\\d+),(\\d+)");
 
   /**
    * The constant TRACK_PREFIX.
@@ -125,14 +129,10 @@ public class UCSCTrack extends ChangeListeners implements NameProperty {
   /**
    * Instantiates a new UCSC track.
    *
-   * @param name
-   *          the name
-   * @param description
-   *          the description
-   * @param color
-   *          the color
-   * @param type
-   *          the type
+   * @param name the name
+   * @param description the description
+   * @param color the color
+   * @param type the type
    */
   public UCSCTrack(String name, String description, Color color, String type) {
     mName = name;
@@ -144,8 +144,7 @@ public class UCSCTrack extends ChangeListeners implements NameProperty {
   /**
    * Sets the name.
    *
-   * @param name
-   *          the new name
+   * @param name the new name
    */
   public void setName(String name) {
     mName = name;
@@ -156,8 +155,7 @@ public class UCSCTrack extends ChangeListeners implements NameProperty {
   /**
    * Sets the description.
    *
-   * @param description
-   *          the new description
+   * @param description the new description
    */
   public void setDescription(String description) {
     mDescription = description;
@@ -168,8 +166,7 @@ public class UCSCTrack extends ChangeListeners implements NameProperty {
   /**
    * Sets the height.
    *
-   * @param height
-   *          the new height
+   * @param height the new height
    */
   public void setHeight(int height) {
     mHeight = height;
@@ -189,8 +186,7 @@ public class UCSCTrack extends ChangeListeners implements NameProperty {
   /**
    * Sets the display mode.
    *
-   * @param mode
-   *          the new display mode
+   * @param mode the new display mode
    */
   public void setDisplayMode(TrackDisplayMode mode) {
     mDisplayMode = mode;
@@ -208,8 +204,7 @@ public class UCSCTrack extends ChangeListeners implements NameProperty {
   /**
    * Sets the color.
    *
-   * @param color
-   *          the new color
+   * @param color the new color
    */
   public void setColor(Color color) {
     mColor = color;
@@ -275,10 +270,8 @@ public class UCSCTrack extends ChangeListeners implements NameProperty {
   /**
    * Convert track to another type.
    *
-   * @param track
-   *          the track
-   * @param priority
-   *          the priority
+   * @param track the track
+   * @param priority the priority
    * @return the string
    */
   public String toString(UCSCTrack track, int priority) {
@@ -297,16 +290,13 @@ public class UCSCTrack extends ChangeListeners implements NameProperty {
   /**
    * To buffer.
    *
-   * @param track
-   *          the track
-   * @param priority
-   *          the priority
-   * @param buffer
-   *          the buffer
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @param track the track
+   * @param priority the priority
+   * @param buffer the buffer
+   * @throws IOException Signals that an I/O exception has occurred.
    */
-  public void toBuffer(UCSCTrack track, int priority, Appendable buffer) throws IOException {
+  public void toBuffer(UCSCTrack track, int priority, Appendable buffer)
+      throws IOException {
     bufferHeader(priority, buffer);
 
     buffer.append(TextUtils.NEW_LINE);
@@ -320,11 +310,9 @@ public class UCSCTrack extends ChangeListeners implements NameProperty {
   /**
    * Gets the header.
    *
-   * @param priority
-   *          the priority
+   * @param priority the priority
    * @return the header
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   public String getHeader(int priority) throws IOException {
     StringBuilder buffer = new StringBuilder();
@@ -337,12 +325,9 @@ public class UCSCTrack extends ChangeListeners implements NameProperty {
   /**
    * Buffer header.
    *
-   * @param priority
-   *          the priority
-   * @param buffer
-   *          the buffer
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @param priority the priority
+   * @param buffer the buffer
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   public void bufferHeader(int priority, Appendable buffer) throws IOException {
     bufferHeader(mType, mName, mDescription, mColor, priority, buffer);
@@ -351,22 +336,19 @@ public class UCSCTrack extends ChangeListeners implements NameProperty {
   /**
    * Buffer header.
    *
-   * @param type
-   *          the type
-   * @param name
-   *          the name
-   * @param description
-   *          the description
-   * @param color
-   *          the color
-   * @param priority
-   *          the priority
-   * @param buffer
-   *          the buffer
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @param type the type
+   * @param name the name
+   * @param description the description
+   * @param color the color
+   * @param priority the priority
+   * @param buffer the buffer
+   * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static void bufferHeader(String type, String name, String description, Color color, int priority,
+  public static void bufferHeader(String type,
+      String name,
+      String description,
+      Color color,
+      int priority,
       Appendable buffer) throws IOException {
     buffer.append(TRACK_PREFIX);
     buffer.append(" type=").append(type);
@@ -379,14 +361,12 @@ public class UCSCTrack extends ChangeListeners implements NameProperty {
   /**
    * Format color.
    *
-   * @param color
-   *          the color
-   * @param buffer
-   *          the buffer
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @param color the color
+   * @param buffer the buffer
+   * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static void formatColor(Color color, Appendable buffer) throws IOException {
+  public static void formatColor(Color color, Appendable buffer)
+      throws IOException {
     if (color == null) {
       return;
     }
@@ -402,36 +382,34 @@ public class UCSCTrack extends ChangeListeners implements NameProperty {
   /**
    * Gets the header.
    *
-   * @param type
-   *          the type
-   * @param name
-   *          the name
-   * @param description
-   *          the description
-   * @param color
-   *          the color
+   * @param type the type
+   * @param name the name
+   * @param description the description
+   * @param color the color
    * @return the header
    */
-  public static String getHeader(String type, String name, String description, Color color) {
+  public static String getHeader(String type,
+      String name,
+      String description,
+      Color color) {
     return getHeader(type, name, description, color, 1);
   }
 
   /**
    * Gets the header.
    *
-   * @param type
-   *          the type
-   * @param name
-   *          the name
-   * @param description
-   *          the description
-   * @param color
-   *          the color
-   * @param priority
-   *          the priority
+   * @param type the type
+   * @param name the name
+   * @param description the description
+   * @param color the color
+   * @param priority the priority
    * @return the header
    */
-  public static String getHeader(String type, String name, String description, Color color, int priority) {
+  public static String getHeader(String type,
+      String name,
+      String description,
+      Color color,
+      int priority) {
     StringBuilder buffer = new StringBuilder();
 
     try {
@@ -446,11 +424,9 @@ public class UCSCTrack extends ChangeListeners implements NameProperty {
   /**
    * Checks for header.
    *
-   * @param file
-   *          the file
+   * @param file the file
    * @return true, if successful
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   public static boolean hasHeader(Path file) throws IOException {
     BufferedReader reader = FileUtils.newBufferedReader(file);
@@ -469,8 +445,7 @@ public class UCSCTrack extends ChangeListeners implements NameProperty {
   /**
    * Checks if is track line.
    *
-   * @param line
-   *          the line
+   * @param line the line
    * @return true, if is track line
    */
   public static boolean isTrackLine(String line) {
@@ -480,8 +455,7 @@ public class UCSCTrack extends ChangeListeners implements NameProperty {
   /**
    * Gets the name.
    *
-   * @param file
-   *          the file
+   * @param file the file
    * @return the name
    */
   public static String getName(Path file) {
@@ -495,13 +469,12 @@ public class UCSCTrack extends ChangeListeners implements NameProperty {
   /**
    * Parses the color.
    *
-   * @param matcher
-   *          the matcher
+   * @param matcher the matcher
    * @return the color
    */
   public static Color parseColor(Matcher matcher) {
-    Color color = new Color(Integer.parseInt(matcher.group(1)), Integer.parseInt(matcher.group(2)),
-        Integer.parseInt(matcher.group(3)));
+    Color color = new Color(Integer.parseInt(matcher.group(1)),
+        Integer.parseInt(matcher.group(2)), Integer.parseInt(matcher.group(3)));
 
     return color;
   }
@@ -509,12 +482,9 @@ public class UCSCTrack extends ChangeListeners implements NameProperty {
   /**
    * Write.
    *
-   * @param track
-   *          the track
-   * @param file
-   *          the file
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @param track the track
+   * @param file the file
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   public static void write(UCSCTrack track, Path file) throws IOException {
     write(CollectionUtils.asList(track), file);
@@ -523,14 +493,12 @@ public class UCSCTrack extends ChangeListeners implements NameProperty {
   /**
    * Write.
    *
-   * @param tracks
-   *          the tracks
-   * @param file
-   *          the file
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @param tracks the tracks
+   * @param file the file
+   * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static void write(List<UCSCTrack> tracks, Path file) throws IOException {
+  public static void write(List<UCSCTrack> tracks, Path file)
+      throws IOException {
     BufferedWriter writer = FileUtils.newBufferedWriter(file);
 
     int priority = 1;
@@ -555,11 +523,9 @@ public class UCSCTrack extends ChangeListeners implements NameProperty {
   /**
    * Gets the track line.
    *
-   * @param file
-   *          the file
+   * @param file the file
    * @return the track line
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   public static String getTrackLine(Path file) throws IOException {
     BufferedReader reader;
@@ -588,13 +554,12 @@ public class UCSCTrack extends ChangeListeners implements NameProperty {
   /**
    * Returns a map of the track attributes.
    *
-   * @param file
-   *          the file
+   * @param file the file
    * @return the track attributes
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static Map<String, String> getTrackAttributes(Path file) throws IOException {
+  public static Map<String, String> getTrackAttributes(Path file)
+      throws IOException {
     return getTrackAttributes(getTrackLine(file));
 
   }
@@ -602,13 +567,12 @@ public class UCSCTrack extends ChangeListeners implements NameProperty {
   /**
    * Gets the track attributes.
    *
-   * @param line
-   *          the line
+   * @param line the line
    * @return the track attributes
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static Map<String, String> getTrackAttributes(String line) throws IOException {
+  public static Map<String, String> getTrackAttributes(String line)
+      throws IOException {
     if (line == null) {
       return null;
     }
@@ -629,11 +593,9 @@ public class UCSCTrack extends ChangeListeners implements NameProperty {
   /**
    * Gets the name from track.
    *
-   * @param file
-   *          the file
+   * @param file the file
    * @return the name from track
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   public static String getNameFromTrack(Path file) throws IOException {
     return getNameFromTrack(getTrackLine(file));
@@ -642,8 +604,7 @@ public class UCSCTrack extends ChangeListeners implements NameProperty {
   /**
    * Creates the bed from track line.
    *
-   * @param line
-   *          the line
+   * @param line the line
    * @return the bed
    */
   public static String getNameFromTrack(String line) {
@@ -665,11 +626,9 @@ public class UCSCTrack extends ChangeListeners implements NameProperty {
   /**
    * Gets the description from track.
    *
-   * @param file
-   *          the file
+   * @param file the file
    * @return the description from track
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   public static String getDescriptionFromTrack(Path file) throws IOException {
     return getDescriptionFromTrack(getTrackLine(file));
@@ -678,8 +637,7 @@ public class UCSCTrack extends ChangeListeners implements NameProperty {
   /**
    * Gets the description from track.
    *
-   * @param line
-   *          the line
+   * @param line the line
    * @return the description from track
    */
   public static String getDescriptionFromTrack(String line) {
@@ -701,11 +659,9 @@ public class UCSCTrack extends ChangeListeners implements NameProperty {
   /**
    * Gets the color from track.
    *
-   * @param file
-   *          the file
+   * @param file the file
    * @return the color from track
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   public static Color getColorFromTrack(Path file) throws IOException {
     return getColorFromTrack(getTrackLine(file));
@@ -714,8 +670,7 @@ public class UCSCTrack extends ChangeListeners implements NameProperty {
   /**
    * Gets the color from track.
    *
-   * @param line
-   *          the line
+   * @param line the line
    * @return the color from track
    */
   public static Color getColorFromTrack(String line) {

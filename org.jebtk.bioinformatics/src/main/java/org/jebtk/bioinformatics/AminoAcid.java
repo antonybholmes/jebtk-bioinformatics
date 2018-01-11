@@ -65,12 +65,9 @@ public class AminoAcid implements Comparable<AminoAcid>, Iterable<Codon> {
   /**
    * Instantiates a new amino acid.
    *
-   * @param name
-   *          the name
-   * @param abbreviation
-   *          the abbreviation
-   * @param letter
-   *          the letter
+   * @param name the name
+   * @param abbreviation the abbreviation
+   * @param letter the letter
    */
   public AminoAcid(String name, String abbreviation, char letter) {
     this.name = name;
@@ -110,8 +107,7 @@ public class AminoAcid implements Comparable<AminoAcid>, Iterable<Codon> {
   /**
    * Adds the codon.
    *
-   * @param codon
-   *          the codon
+   * @param codon the codon
    */
   public void addCodon(Codon codon) {
     codons.add(codon);

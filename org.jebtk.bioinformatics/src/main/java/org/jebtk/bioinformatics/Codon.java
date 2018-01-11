@@ -45,8 +45,7 @@ public class Codon implements Comparable<Codon> {
   /**
    * Instantiates a new codon.
    *
-   * @param codon
-   *          the codon
+   * @param codon the codon
    */
   public Codon(String codon) {
     this.codon = codon.substring(0, 3);

@@ -45,8 +45,7 @@ import org.jebtk.core.collections.UniqueArrayList;
  * Use fixed size blocks to find features.
  *
  * @author Antony Holmes Holmes
- * @param <T>
- *          the generic type
+ * @param <T> the generic type
  */
 public class FixedGapSearch<T> extends GapSearch<T> {
 
@@ -85,8 +84,7 @@ public class FixedGapSearch<T> extends GapSearch<T> {
   /**
    * Instantiates a new fixed gap search.
    *
-   * @param binSize
-   *          the bin size
+   * @param binSize the bin size
    */
   public FixedGapSearch(int binSize) {
     mBinSize = Math.max(1, binSize);
@@ -103,7 +101,8 @@ public class FixedGapSearch<T> extends GapSearch<T> {
   /*
    * (non-Javadoc)
    * 
-   * @see edu.columbia.rdf.lib.bioinformatics.gapsearch.GapSearch#addFeature(edu.
+   * @see
+   * edu.columbia.rdf.lib.bioinformatics.gapsearch.GapSearch#addFeature(edu.
    * columbia.rdf.lib.bioinformatics.genome.Chromosome, int, int,
    * java.lang.Object)
    */
@@ -132,12 +131,9 @@ public class FixedGapSearch<T> extends GapSearch<T> {
   /**
    * Adds the feature.
    *
-   * @param chr
-   *          the chr
-   * @param bin
-   *          the bin
-   * @param feature
-   *          the feature
+   * @param chr the chr
+   * @param bin the bin
+   * @param feature the feature
    */
   // public void addFeature(Chromosome chr, int bin, T feature) {
   // if (!mFeatures.get(chr).containsKey(bin)) {
@@ -167,7 +163,8 @@ public class FixedGapSearch<T> extends GapSearch<T> {
   /*
    * (non-Javadoc)
    * 
-   * @see edu.columbia.rdf.lib.bioinformatics.gapsearch.GapSearch#getFeatureList()
+   * @see
+   * edu.columbia.rdf.lib.bioinformatics.gapsearch.GapSearch#getFeatureList()
    */
   @Override
   public List<T> getFeatures() {
@@ -211,11 +208,14 @@ public class FixedGapSearch<T> extends GapSearch<T> {
   /*
    * (non-Javadoc)
    * 
-   * @see edu.columbia.rdf.lib.bioinformatics.gapsearch.GapSearch#getFeatures(edu.
+   * @see
+   * edu.columbia.rdf.lib.bioinformatics.gapsearch.GapSearch#getFeatures(edu.
    * columbia.rdf.lib.bioinformatics.genome.Chromosome, int, int)
    */
   @Override
-  public List<GappedSearchFeatures<T>> getFeatures(Chromosome chr, int start, int end) {
+  public List<GappedSearchFeatures<T>> getFeatures(Chromosome chr,
+      int start,
+      int end) {
     int is = getBin(start);
     int ie = getBin(end);
 
@@ -225,15 +225,14 @@ public class FixedGapSearch<T> extends GapSearch<T> {
   /**
    * Gets the features by bin.
    *
-   * @param chr
-   *          the chr
-   * @param sbin
-   *          the sbin
-   * @param ebin
-   *          the ebin
+   * @param chr the chr
+   * @param sbin the sbin
+   * @param ebin the ebin
    * @return the features by bin
    */
-  public List<GappedSearchFeatures<T>> getFeaturesByBin(Chromosome chr, int sbin, int ebin) {
+  public List<GappedSearchFeatures<T>> getFeaturesByBin(Chromosome chr,
+      int sbin,
+      int ebin) {
     Map<Integer, GappedSearchFeatures<T>> features = mFeatures.get(chr);
 
     if (features.size() == 0) {
@@ -266,8 +265,7 @@ public class FixedGapSearch<T> extends GapSearch<T> {
   /**
    * Adds the.
    *
-   * @param gappedSearch
-   *          the gapped search
+   * @param gappedSearch the gapped search
    */
   public void add(FixedGapSearch<T> gappedSearch) {
     for (Chromosome chr : gappedSearch.mFeatures) {

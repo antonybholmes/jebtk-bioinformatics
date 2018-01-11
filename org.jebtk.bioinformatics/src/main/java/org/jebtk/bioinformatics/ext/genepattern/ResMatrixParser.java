@@ -54,8 +54,7 @@ public class ResMatrixParser implements MatrixParser {
   /**
    * Instantiates a new res matrix parser.
    *
-   * @param keepCallCol
-   *          the keep call col
+   * @param keepCallCol the keep call col
    */
   public ResMatrixParser(boolean keepCallCol) {
     mKeepCallCol = keepCallCol;
@@ -64,18 +63,17 @@ public class ResMatrixParser implements MatrixParser {
   /**
    * Sets the.
    *
-   * @param matrix
-   *          the matrix
-   * @param row
-   *          the row
-   * @param column
-   *          the column
-   * @param value
-   *          the value
-   * @param keepCallCol
-   *          the keep call col
+   * @param matrix the matrix
+   * @param row the row
+   * @param column the column
+   * @param value the value
+   * @param keepCallCol the keep call col
    */
-  private static void set(Matrix matrix, int row, int column, String value, boolean keepCallCol) {
+  private static void set(Matrix matrix,
+      int row,
+      int column,
+      String value,
+      boolean keepCallCol) {
     if (keepCallCol) {
       if (column % 2 == 0) {
         matrix.set(row, column, Double.parseDouble(value));
@@ -164,7 +162,8 @@ public class ResMatrixParser implements MatrixParser {
       // add column names
       line = reader.readLine();
 
-      Stream<String> stream = Stream.of(TextUtils.tabSplit(line)).skip(2).jump(2);
+      Stream<String> stream = Stream.of(TextUtils.tabSplit(line)).skip(2)
+          .jump(2);
 
       if (mKeepCallCol) {
         stream = stream.replicate(2).asString().append(" call", 1, 2);

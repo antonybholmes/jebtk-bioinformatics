@@ -68,10 +68,8 @@ public class GenomeAssemblyWeb extends GenomeAssembly {
   /**
    * Instantiates a new genome assembly web.
    *
-   * @param url
-   *          the url
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @param url the url
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   public GenomeAssemblyWeb(URL url) throws IOException {
     mUrl = new UrlBuilder(url);
@@ -96,13 +94,17 @@ public class GenomeAssemblyWeb extends GenomeAssembly {
    * edu.columbia.rdf.lib.bioinformatics.genome.RepeatMaskType)
    */
   @Override
-  public SequenceRegion getSequence(String genome, GenomicRegion region, boolean displayUpper,
+  public SequenceRegion getSequence(String genome,
+      GenomicRegion region,
+      boolean displayUpper,
       RepeatMaskType repeatMaskType) throws IOException {
     URL url;
 
     try {
-      UrlBuilder tmpUrl = mDnaUrl.resolve(genome).resolve(region.getChr().toString()).resolve(region.getStart())
-          .resolve(region.getEnd()).param("strand", "s").param("display", displayUpper ? "u" : "l");
+      UrlBuilder tmpUrl = mDnaUrl.resolve(genome)
+          .resolve(region.getChr().toString()).resolve(region.getStart())
+          .resolve(region.getEnd()).param("strand", "s")
+          .param("display", displayUpper ? "u" : "l");
 
       switch (repeatMaskType) {
       case UPPERCASE:

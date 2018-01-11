@@ -37,8 +37,7 @@ import org.jebtk.core.model.ListModel;
  * Keeps a sorted list of regions.
  *
  * @author Antony Holmes Holmes
- * @param <T>
- *          the generic type
+ * @param <T> the generic type
  */
 public class GenomicRegions<T extends GenomicRegion> extends ListModel<T> {
 
@@ -50,13 +49,12 @@ public class GenomicRegions<T extends GenomicRegion> extends ListModel<T> {
   /**
    * Gets the fixed gap search.
    *
-   * @param <X>
-   *          the generic type
-   * @param regions
-   *          the regions
+   * @param <X> the generic type
+   * @param regions the regions
    * @return the fixed gap search
    */
-  public static <X extends GenomicRegion> GapSearch<X> getFixedGapSearch(GenomicRegions<X> regions) {
+  public static <X extends GenomicRegion> GapSearch<X> getFixedGapSearch(
+      GenomicRegions<X> regions) {
     GapSearch<X> search = new FixedGapSearch<X>();
 
     for (X region : regions) {
@@ -69,13 +67,12 @@ public class GenomicRegions<T extends GenomicRegion> extends ListModel<T> {
   /**
    * Gets the binary search.
    *
-   * @param <X>
-   *          the generic type
-   * @param regions
-   *          the regions
+   * @param <X> the generic type
+   * @param regions the regions
    * @return the binary search
    */
-  public static <X extends GenomicRegion> BinaryGapSearch<X> getBinarySearch(GenomicRegions<X> regions) {
+  public static <X extends GenomicRegion> BinaryGapSearch<X> getBinarySearch(
+      GenomicRegions<X> regions) {
     BinaryGapSearch<X> search = new BinaryGapSearch<X>();
 
     for (X region : regions) {

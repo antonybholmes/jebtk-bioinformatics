@@ -39,18 +39,15 @@ import org.jebtk.core.collections.UniqueArrayList;
  * Generic interface for quickly searching for features by genomic location.
  *
  * @author Antony Holmes Holmes
- * @param <T>
- *          the generic type
+ * @param <T> the generic type
  */
 public abstract class GapSearch<T> implements Iterable<Chromosome> {
 
   /**
    * Adds the feature.
    *
-   * @param region
-   *          the region
-   * @param feature
-   *          the feature
+   * @param region the region
+   * @param feature the feature
    */
   public abstract void add(GenomicRegion region, T feature);
 
@@ -71,8 +68,7 @@ public abstract class GapSearch<T> implements Iterable<Chromosome> {
   /**
    * Gets the feature list.
    *
-   * @param region
-   *          the region
+   * @param region the region
    * @return the feature list
    */
   public List<T> getFeatureSet(GenomicRegion region) {
@@ -98,8 +94,7 @@ public abstract class GapSearch<T> implements Iterable<Chromosome> {
   /**
    * Gets the feature list.
    *
-   * @param chr
-   *          the chr
+   * @param chr the chr
    * @return the feature list
    */
   public abstract List<T> getFeatures(Chromosome chr);
@@ -109,8 +104,7 @@ public abstract class GapSearch<T> implements Iterable<Chromosome> {
   /**
    * Gets the features.
    *
-   * @param region
-   *          the region
+   * @param region the region
    * @return the features
    */
   public List<GappedSearchFeatures<T>> getFeatures(GenomicRegion region) {
@@ -124,17 +118,17 @@ public abstract class GapSearch<T> implements Iterable<Chromosome> {
   /**
    * Gets the features.
    *
-   * @param chr
-   *          the chr
-   * @param start
-   *          the start
-   * @param end
-   *          the end
+   * @param chr the chr
+   * @param start the start
+   * @param end the end
    * @return the features
    */
-  public abstract List<GappedSearchFeatures<T>> getFeatures(Chromosome chr, int start, int end);
+  public abstract List<GappedSearchFeatures<T>> getFeatures(Chromosome chr,
+      int start,
+      int end);
 
-  public SearchResults<T> getOverlappingFeatures(GenomicRegion region, int minBp) {
+  public SearchResults<T> getOverlappingFeatures(GenomicRegion region,
+      int minBp) {
     SearchResults<T> ret = new SearchResults<T>();
 
     getOverlappingFeatures(region, minBp, ret);
@@ -142,7 +136,9 @@ public abstract class GapSearch<T> implements Iterable<Chromosome> {
     return ret;
   }
 
-  public void getOverlappingFeatures(GenomicRegion region, int minBp, SearchResults<T> ret) {
+  public void getOverlappingFeatures(GenomicRegion region,
+      int minBp,
+      SearchResults<T> ret) {
     List<GappedSearchFeatures<T>> allFeatures = getFeatures(region);
 
     if (allFeatures.size() == 0) {
@@ -167,12 +163,9 @@ public abstract class GapSearch<T> implements Iterable<Chromosome> {
   /**
    * Checks for overlapping features.
    *
-   * @param chr
-   *          the chr
-   * @param start
-   *          the start
-   * @param end
-   *          the end
+   * @param chr the chr
+   * @param start the start
+   * @param end the end
    * @return true, if successful
    */
   public boolean hasOverlappingFeatures(GenomicRegion region, int minBp) {

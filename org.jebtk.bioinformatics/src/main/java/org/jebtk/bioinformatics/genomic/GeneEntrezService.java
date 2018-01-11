@@ -81,7 +81,8 @@ public class GeneEntrezService {
   /**
    * The constant LOG.
    */
-  private static final Logger LOG = LoggerFactory.getLogger(GeneEntrezService.class);
+  private static final Logger LOG = LoggerFactory
+      .getLogger(GeneEntrezService.class);
 
   /**
    * The member symbol map.
@@ -103,8 +104,7 @@ public class GeneEntrezService {
   /**
    * Load.
    *
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   public final void load() throws IOException {
     LOG.info("Parsing gene reference {}...", DEFAULT_FILE);
@@ -115,10 +115,8 @@ public class GeneEntrezService {
   /**
    * Load.
    *
-   * @param file
-   *          the file
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @param file the file
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   public final void load(File file) throws IOException {
     LOG.info("Parsing gene reference {}", file);
@@ -129,10 +127,8 @@ public class GeneEntrezService {
   /**
    * Load.
    *
-   * @param reader
-   *          the reader
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @param reader the reader
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   private final void load(BufferedReader reader) throws IOException {
 
@@ -171,8 +167,7 @@ public class GeneEntrezService {
   /**
    * Lookup by symbol.
    *
-   * @param symbol
-   *          the symbol
+   * @param symbol the symbol
    * @return the gene symbol
    */
   public GeneSymbol lookupBySymbol(String symbol) {
@@ -186,8 +181,7 @@ public class GeneEntrezService {
   /**
    * Lookup by entrez.
    *
-   * @param entrez
-   *          the entrez
+   * @param entrez the entrez
    * @return the gene symbol
    */
   public GeneSymbol lookupByEntrez(String entrez) {
@@ -197,8 +191,7 @@ public class GeneEntrezService {
   /**
    * Checks if is valid symbol.
    *
-   * @param symbol
-   *          the symbol
+   * @param symbol the symbol
    * @return true, if is valid symbol
    */
   public boolean isValidSymbol(String symbol) {
@@ -208,8 +201,7 @@ public class GeneEntrezService {
   /**
    * Checks if is valid entrez.
    *
-   * @param entrez
-   *          the entrez
+   * @param entrez the entrez
    * @return true, if is valid entrez
    */
   public boolean isValidEntrez(String entrez) {

@@ -63,10 +63,8 @@ public class Cytobands {
    * 
    * @param genome
    *
-   * @param reader
-   *          the reader
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @param reader the reader
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   public Cytobands(String genome, BufferedReader reader) throws IOException {
 
@@ -102,8 +100,7 @@ public class Cytobands {
   /**
    * Gets the cytobands.
    *
-   * @param chr
-   *          the chr
+   * @param chr the chr
    * @return the cytobands
    */
   public List<Cytoband> getCytobands(Chromosome chr) {

@@ -44,19 +44,16 @@ public abstract class MotifDataSource {
   /**
    * Creates the tree.
    *
-   * @param root
-   *          the root
-   * @param terms
-   *          the terms
-   * @param inList
-   *          the in list
-   * @param exactMatch
-   *          the exact match
-   * @param caseSensitive
-   *          the case sensitive
-   * @throws Exception
-   *           the exception
+   * @param root the root
+   * @param terms the terms
+   * @param inList the in list
+   * @param exactMatch the exact match
+   * @param caseSensitive the case sensitive
+   * @throws Exception the exception
    */
-  public abstract void createTree(TreeNode<Motif> root, List<String> terms, boolean inList, boolean exactMatch,
+  public abstract void createTree(TreeNode<Motif> root,
+      List<String> terms,
+      boolean inList,
+      boolean exactMatch,
       boolean caseSensitive) throws Exception;
 }

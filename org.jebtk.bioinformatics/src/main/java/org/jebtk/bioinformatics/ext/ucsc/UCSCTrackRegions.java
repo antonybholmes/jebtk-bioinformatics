@@ -39,7 +39,8 @@ import org.jebtk.core.text.FormattedTxt;
  * @author Antony Holmes Holmes
  *
  */
-public class UCSCTrackRegions extends GenomicRegions<UCSCTrackRegion> implements FormattedTxt {
+public class UCSCTrackRegions extends GenomicRegions<UCSCTrackRegion>
+    implements FormattedTxt {
 
   /**
    * The constant serialVersionUID.

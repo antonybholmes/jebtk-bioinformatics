@@ -55,14 +55,16 @@ import org.jebtk.core.text.TextUtils;
  * @author Antony Holmes Holmes
  *
  */
-public class Motif implements Comparable<Motif>, Iterable<BaseCounts>, FormattedTxt {
+public class Motif
+    implements Comparable<Motif>, Iterable<BaseCounts>, FormattedTxt {
   // private static final Pattern MOTIF_HEADER_PATTERN =
   // Pattern.compile(">([^\\t]+)\\t([^\\t]+)\\t([^\\t]+)");
 
   /**
    * The constant JASPAR_HEADER_PATTERN.
    */
-  private static final Pattern JASPAR_HEADER_PATTERN = Pattern.compile(">([^\\s]+)\\s(.+)");
+  private static final Pattern JASPAR_HEADER_PATTERN = Pattern
+      .compile(">([^\\s]+)\\s(.+)");
 
   /**
    * The constant USER_DB.
@@ -70,7 +72,8 @@ public class Motif implements Comparable<Motif>, Iterable<BaseCounts>, Formatted
   private static final String USER_DB = "User";
 
   /**
-   * Determine how significant a base must be to be considered part of a triplet.
+   * Determine how significant a base must be to be considered part of a
+   * triplet.
    */
   private static final double TRIPLET_MIN = 0;
 
@@ -116,10 +119,8 @@ public class Motif implements Comparable<Motif>, Iterable<BaseCounts>, Formatted
   /**
    * Construct a new motif with the given name.
    *
-   * @param name
-   *          the name
-   * @param bases
-   *          the bases
+   * @param name the name
+   * @param bases the bases
    */
   public Motif(String name, Collection<BaseCounts> bases) {
     this(name, name, bases);
@@ -128,12 +129,9 @@ public class Motif implements Comparable<Motif>, Iterable<BaseCounts>, Formatted
   /**
    * Instantiates a new motif.
    *
-   * @param id
-   *          the id
-   * @param name
-   *          the name
-   * @param bases
-   *          the bases
+   * @param id the id
+   * @param name the name
+   * @param bases the bases
    */
   public Motif(String id, String name, Collection<BaseCounts> bases) {
     this(id, name, name, bases);
@@ -142,34 +140,27 @@ public class Motif implements Comparable<Motif>, Iterable<BaseCounts>, Formatted
   /**
    * Instantiates a new motif.
    *
-   * @param id
-   *          the id
-   * @param name
-   *          the name
-   * @param gene
-   *          the gene
-   * @param bases
-   *          the bases
+   * @param id the id
+   * @param name the name
+   * @param gene the gene
+   * @param bases the bases
    */
-  public Motif(String id, String name, String gene, Collection<BaseCounts> bases) {
+  public Motif(String id, String name, String gene,
+      Collection<BaseCounts> bases) {
     this(id, name, gene, null, bases);
   }
 
   /**
    * Instantiates a new motif.
    *
-   * @param id
-   *          the id
-   * @param name
-   *          the name
-   * @param gene
-   *          the gene
-   * @param database
-   *          the database
-   * @param bases
-   *          the bases
+   * @param id the id
+   * @param name the name
+   * @param gene the gene
+   * @param database the database
+   * @param bases the bases
    */
-  public Motif(String id, String name, String gene, String database, Collection<BaseCounts> bases) {
+  public Motif(String id, String name, String gene, String database,
+      Collection<BaseCounts> bases) {
     mId = id;
     mName = name;
     mGene = gene;
@@ -192,14 +183,10 @@ public class Motif implements Comparable<Motif>, Iterable<BaseCounts>, Formatted
   /**
    * Instantiates a new motif.
    *
-   * @param id
-   *          the id
-   * @param name
-   *          the name
-   * @param gene
-   *          the gene
-   * @param pwm
-   *          the pwm
+   * @param id the id
+   * @param name the name
+   * @param gene the gene
+   * @param pwm the pwm
    */
   public Motif(String id, String name, String gene, double[][] pwm) {
     mId = id;
@@ -223,8 +210,7 @@ public class Motif implements Comparable<Motif>, Iterable<BaseCounts>, Formatted
   /**
    * Gets the counts.
    *
-   * @param p
-   *          the p
+   * @param p the p
    * @return the counts
    */
   public BaseCounts getCounts(int p) {
@@ -234,10 +220,8 @@ public class Motif implements Comparable<Motif>, Iterable<BaseCounts>, Formatted
   /**
    * Gets the count.
    *
-   * @param base
-   *          the base
-   * @param p
-   *          the p
+   * @param base the base
+   * @param p the p
    * @return the count
    */
   public double getCount(char base, int p) {
@@ -341,7 +325,8 @@ public class Motif implements Comparable<Motif>, Iterable<BaseCounts>, Formatted
       values.add(Double.toString(c.getA()));
     }
 
-    buffer.append(TextUtils.join(values, TextUtils.TAB_DELIMITER)).append(TextUtils.NEW_LINE);
+    buffer.append(TextUtils.join(values, TextUtils.TAB_DELIMITER))
+        .append(TextUtils.NEW_LINE);
 
     values = new ArrayList<String>();
 
@@ -349,7 +334,8 @@ public class Motif implements Comparable<Motif>, Iterable<BaseCounts>, Formatted
       values.add(Double.toString(c.getC()));
     }
 
-    buffer.append(TextUtils.join(values, TextUtils.TAB_DELIMITER)).append(TextUtils.NEW_LINE);
+    buffer.append(TextUtils.join(values, TextUtils.TAB_DELIMITER))
+        .append(TextUtils.NEW_LINE);
 
     values = new ArrayList<String>();
 
@@ -357,7 +343,8 @@ public class Motif implements Comparable<Motif>, Iterable<BaseCounts>, Formatted
       values.add(Double.toString(c.getG()));
     }
 
-    buffer.append(TextUtils.join(values, TextUtils.TAB_DELIMITER)).append(TextUtils.NEW_LINE);
+    buffer.append(TextUtils.join(values, TextUtils.TAB_DELIMITER))
+        .append(TextUtils.NEW_LINE);
 
     values = new ArrayList<String>();
 
@@ -365,17 +352,16 @@ public class Motif implements Comparable<Motif>, Iterable<BaseCounts>, Formatted
       values.add(Double.toString(c.getT()));
     }
 
-    buffer.append(TextUtils.join(values, TextUtils.TAB_DELIMITER)).append(TextUtils.NEW_LINE);
+    buffer.append(TextUtils.join(values, TextUtils.TAB_DELIMITER))
+        .append(TextUtils.NEW_LINE);
   }
 
   /**
    * Parse a matrix file from JASPAR.
    *
-   * @param file
-   *          the file
+   * @param file the file
    * @return the list
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   public static List<Motif> parseJaspar(Path file) throws IOException {
     BufferedReader reader = FileUtils.newBufferedReader(file);
@@ -433,11 +419,9 @@ public class Motif implements Comparable<Motif>, Iterable<BaseCounts>, Formatted
   /**
    * Parses the motif.
    *
-   * @param file
-   *          the file
+   * @param file the file
    * @return the motif
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   public static Motif parseMotif(Path file) throws IOException {
     return parseMotif(file, USER_DB);
@@ -446,30 +430,26 @@ public class Motif implements Comparable<Motif>, Iterable<BaseCounts>, Formatted
   /**
    * Return the first motif from a file.
    *
-   * @param file
-   *          the file
-   * @param database
-   *          the database
+   * @param file the file
+   * @param database the database
    * @return the motif
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static Motif parseMotif(Path file, String database) throws IOException {
+  public static Motif parseMotif(Path file, String database)
+      throws IOException {
     return parseMotifs(file, database).get(0);
   }
 
   /**
    * Parse a matrix file from JASPAR.
    *
-   * @param file
-   *          the file
-   * @param database
-   *          the database
+   * @param file the file
+   * @param database the database
    * @return the list
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static List<Motif> parseMotifs(Path file, String database) throws IOException {
+  public static List<Motif> parseMotifs(Path file, String database)
+      throws IOException {
     BufferedReader reader;
 
     if (PathUtils.getFileExt(file).equals("gz")) {
@@ -484,15 +464,13 @@ public class Motif implements Comparable<Motif>, Iterable<BaseCounts>, Formatted
   /**
    * Parses the motifs.
    *
-   * @param reader
-   *          the reader
-   * @param database
-   *          the database
+   * @param reader the reader
+   * @param database the database
    * @return the list
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static List<Motif> parseMotifs(BufferedReader reader, String database) throws IOException {
+  public static List<Motif> parseMotifs(BufferedReader reader, String database)
+      throws IOException {
     Motif motif = null;
 
     String line;
@@ -523,10 +501,14 @@ public class Motif implements Comparable<Motif>, Iterable<BaseCounts>, Formatted
           gene = tokens.get(2);
         }
 
-        List<String> a = Splitter.onTab().ignoreEmptyStrings().text(reader.readLine());
-        List<String> c = Splitter.onTab().ignoreEmptyStrings().text(reader.readLine());
-        List<String> g = Splitter.onTab().ignoreEmptyStrings().text(reader.readLine());
-        List<String> t = Splitter.onTab().ignoreEmptyStrings().text(reader.readLine());
+        List<String> a = Splitter.onTab().ignoreEmptyStrings()
+            .text(reader.readLine());
+        List<String> c = Splitter.onTab().ignoreEmptyStrings()
+            .text(reader.readLine());
+        List<String> g = Splitter.onTab().ignoreEmptyStrings()
+            .text(reader.readLine());
+        List<String> t = Splitter.onTab().ignoreEmptyStrings()
+            .text(reader.readLine());
 
         int l = a.size();
 
@@ -566,13 +548,12 @@ public class Motif implements Comparable<Motif>, Iterable<BaseCounts>, Formatted
   /**
    * Parses the pwm motifs.
    *
-   * @param reader
-   *          the reader
+   * @param reader the reader
    * @return the list
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static List<Motif> parsePwmMotifs(BufferedReader reader) throws IOException {
+  public static List<Motif> parsePwmMotifs(BufferedReader reader)
+      throws IOException {
     Motif motif = null;
 
     String line;
@@ -589,10 +570,14 @@ public class Motif implements Comparable<Motif>, Iterable<BaseCounts>, Formatted
 
         String id = line.substring(1);
 
-        List<String> a = Splitter.onTab().ignoreEmptyStrings().text(reader.readLine());
-        List<String> c = Splitter.onTab().ignoreEmptyStrings().text(reader.readLine());
-        List<String> g = Splitter.onTab().ignoreEmptyStrings().text(reader.readLine());
-        List<String> t = Splitter.onTab().ignoreEmptyStrings().text(reader.readLine());
+        List<String> a = Splitter.onTab().ignoreEmptyStrings()
+            .text(reader.readLine());
+        List<String> c = Splitter.onTab().ignoreEmptyStrings()
+            .text(reader.readLine());
+        List<String> g = Splitter.onTab().ignoreEmptyStrings()
+            .text(reader.readLine());
+        List<String> t = Splitter.onTab().ignoreEmptyStrings()
+            .text(reader.readLine());
 
         int l = a.size() - 1;
 
@@ -631,11 +616,9 @@ public class Motif implements Comparable<Motif>, Iterable<BaseCounts>, Formatted
   /**
    * Parses the pwm motif.
    *
-   * @param file
-   *          the file
+   * @param file the file
    * @return the motif
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   public static Motif parsePwmMotif(Path file) throws IOException {
     return parsePwmMotifs(file).get(0);
@@ -644,11 +627,9 @@ public class Motif implements Comparable<Motif>, Iterable<BaseCounts>, Formatted
   /**
    * Parse a matrix file from JASPAR.
    *
-   * @param file
-   *          the file
+   * @param file the file
    * @return the list
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   public static List<Motif> parsePwmMotifs(Path file) throws IOException {
     BufferedReader reader;
@@ -689,8 +670,7 @@ public class Motif implements Comparable<Motif>, Iterable<BaseCounts>, Formatted
   /**
    * Reverse complement.
    *
-   * @param motifs
-   *          the motifs
+   * @param motifs the motifs
    * @return the list
    */
   public static List<Motif> reverseComplement(List<Motif> motifs) {
@@ -706,8 +686,7 @@ public class Motif implements Comparable<Motif>, Iterable<BaseCounts>, Formatted
   /**
    * Produces the reverse complement of a motif.
    *
-   * @param motif
-   *          the motif
+   * @param motif the motif
    * @return the motif
    */
   public static Motif reverseComplement(Motif motif) {
@@ -721,7 +700,8 @@ public class Motif implements Comparable<Motif>, Iterable<BaseCounts>, Formatted
       counts.add(new BaseCounts(c.getT(), c.getG(), c.getC(), c.getA()));
     }
 
-    Motif ret = new Motif(motif.mId, motif.mName, motif.mGene, motif.mDatabase, counts);
+    Motif ret = new Motif(motif.mId, motif.mName, motif.mGene, motif.mDatabase,
+        counts);
 
     return ret;
   }
@@ -729,12 +709,12 @@ public class Motif implements Comparable<Motif>, Iterable<BaseCounts>, Formatted
   /**
    * Sanitize.
    *
-   * @param text
-   *          the text
+   * @param text the text
    * @return the string
    */
   public static String sanitize(String text) {
-    return text.replaceAll("\\\\", "_").replaceAll("\\/", "_").replaceAll("\\s+", "_").replaceAll("_+", "_");
+    return text.replaceAll("\\\\", "_").replaceAll("\\/", "_")
+        .replaceAll("\\s+", "_").replaceAll("_+", "_");
   }
 
   /**
@@ -775,8 +755,7 @@ public class Motif implements Comparable<Motif>, Iterable<BaseCounts>, Formatted
   /**
    * Sets the organisms.
    *
-   * @param organisms
-   *          the new organisms
+   * @param organisms the new organisms
    */
   public void setOrganisms(List<Species> organisms) {
     mOrganisms.addAll(organisms);

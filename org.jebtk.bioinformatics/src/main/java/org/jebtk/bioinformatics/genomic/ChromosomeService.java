@@ -109,8 +109,7 @@ public class ChromosomeService {
   /**
    * Parses the.
    *
-   * @param chr
-   *          the chr
+   * @param chr the chr
    * @return the chromosome
    */
   public Chromosome parse(String chr) {
@@ -158,10 +157,8 @@ public class ChromosomeService {
   /**
    * Parses the.
    *
-   * @param chr
-   *          the chr
-   * @param parser
-   *          the parser
+   * @param chr the chr
+   * @param parser the parser
    * @return the chromosome
    */
   public Chromosome parse(String species, String chr) {
@@ -185,20 +182,21 @@ public class ChromosomeService {
   }
 
   /**
-   * Parses a range of numbers containing comma separated lists and ranges of the
-   * form x-y.
+   * Parses a range of numbers containing comma separated lists and ranges of
+   * the form x-y.
    *
-   * @param text
-   *          the text
+   * @param text the text
    * @return the list
    */
   public static final List<Short> parseNumberRanges(String text) {
     List<Short> numbers = new ArrayList<Short>();
 
-    List<String> commas = TextUtils.fastSplitRemoveQuotes(text, TextUtils.COMMA_DELIMITER_CHAR);
+    List<String> commas = TextUtils.fastSplitRemoveQuotes(text,
+        TextUtils.COMMA_DELIMITER_CHAR);
 
     for (String term : commas) {
-      List<String> range = TextUtils.fastSplitRemoveQuotes(term, TextUtils.DASH_DELIMITER_CHAR);
+      List<String> range = TextUtils.fastSplitRemoveQuotes(term,
+          TextUtils.DASH_DELIMITER_CHAR);
 
       int start = Integer.parseInt(range.get(0));
 
@@ -221,12 +219,12 @@ public class ChromosomeService {
   /**
    * Parses a number range specifically of the form x-y.
    *
-   * @param text
-   *          the text
+   * @param text the text
    * @return the list
    */
   public static final List<Integer> parseNumberRange(String text) {
-    List<String> range = TextUtils.fastSplitRemoveQuotes(text, TextUtils.DASH_DELIMITER_CHAR);
+    List<String> range = TextUtils.fastSplitRemoveQuotes(text,
+        TextUtils.DASH_DELIMITER_CHAR);
 
     int start = Integer.parseInt(range.get(0));
 

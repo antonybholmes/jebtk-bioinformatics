@@ -61,48 +61,48 @@ public class Pathway {
   /**
    * Analysis.
    *
-   * @param names
-   *          the names
-   * @param collections
-   *          the collections
-   * @param refseqConversion
-   *          the refseq conversion
-   * @param ensemblConversion
-   *          the ensembl conversion
-   * @param maxFdr
-   *          the max fdr
-   * @param out
-   *          the out
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @param names the names
+   * @param collections the collections
+   * @param refseqConversion the refseq conversion
+   * @param ensemblConversion the ensembl conversion
+   * @param maxFdr the max fdr
+   * @param out the out
+   * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static void analysis(List<String> names, Collection<GeneSet> collections, IdToSymbol refseqConversion,
-      IdToSymbol ensemblConversion, double maxFdr, Path out) throws IOException {
-    analysis(names, collections, refseqConversion, ensemblConversion, maxFdr, out, null);
+  public static void analysis(List<String> names,
+      Collection<GeneSet> collections,
+      IdToSymbol refseqConversion,
+      IdToSymbol ensemblConversion,
+      double maxFdr,
+      Path out) throws IOException {
+    analysis(names,
+        collections,
+        refseqConversion,
+        ensemblConversion,
+        maxFdr,
+        out,
+        null);
   }
 
   /**
    * Analysis.
    *
-   * @param names
-   *          the names
-   * @param collections
-   *          the collections
-   * @param refseqConversion
-   *          the conversion
-   * @param ensemblConversion
-   *          the ensembl conversion
-   * @param maxFdr
-   *          the max fdr
-   * @param out
-   *          the out
-   * @param tableFile
-   *          the table file
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @param names the names
+   * @param collections the collections
+   * @param refseqConversion the conversion
+   * @param ensemblConversion the ensembl conversion
+   * @param maxFdr the max fdr
+   * @param out the out
+   * @param tableFile the table file
+   * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static void analysis(List<String> names, Collection<GeneSet> collections, IdToSymbol refseqConversion,
-      IdToSymbol ensemblConversion, double maxFdr, Path out, Path tableFile) throws IOException {
+  public static void analysis(List<String> names,
+      Collection<GeneSet> collections,
+      IdToSymbol refseqConversion,
+      IdToSymbol ensemblConversion,
+      double maxFdr,
+      Path out,
+      Path tableFile) throws IOException {
 
     LOG.info("Max FDR = {}", maxFdr);
 
@@ -201,7 +201,8 @@ public class Pathway {
       // https://david.ncifcrf.gov/helps/functional_annotation.html
 
       if (overlap > 1) {
-        p = 1 - hyperg.cdf(overlap - 2, validSymbols.size(), geneSet.size(), totalGenes);
+        p = 1 - hyperg
+            .cdf(overlap - 2, validSymbols.size(), geneSet.size(), totalGenes);
       }
 
       if (!pvalues.containsKey(p)) {
@@ -317,7 +318,8 @@ public class Pathway {
           double overlapRatio = overlapRatios.get(geneSet);
 
           // System.err.println(geneSet.getName() + " " + overlap + " " +
-          // validSymbols.size() + " " + geneSet.size() + " " + totalGenes + " " + p);
+          // validSymbols.size() + " " + geneSet.size() + " " + totalGenes + " "
+          // + p);
 
           writer.write(geneSet.getName());
           writer.write(TextUtils.TAB_DELIMITER);

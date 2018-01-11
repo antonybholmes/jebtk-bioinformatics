@@ -55,7 +55,8 @@ public class CytobandsService {
   /**
    * The constant LOG.
    */
-  private static final Logger LOG = LoggerFactory.getLogger(CytobandsService.class);
+  private static final Logger LOG = LoggerFactory
+      .getLogger(CytobandsService.class);
 
   /**
    * The constant DEFAULT_RES.
@@ -101,8 +102,7 @@ public class CytobandsService {
   /**
    * Load internal hg 18.
    *
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   public final void loadInternalHg18() throws IOException {
     LOG.info("Parsing {}...", DEFAULT_HG18_RES);
@@ -113,8 +113,7 @@ public class CytobandsService {
   /**
    * Load the default lib from an external file.
    *
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   public final void loadRefSeqHg18() throws IOException {
     LOG.info("Parsing {}...", DEFAULT_HG18_FILE);
@@ -125,8 +124,7 @@ public class CytobandsService {
   /**
    * Load the default lib from the jar resource.
    *
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   public final void loadInternalHg19() throws IOException {
     LOG.info("Parsing {}...", DEFAULT_HG19_RES);
@@ -137,8 +135,7 @@ public class CytobandsService {
   /**
    * Load the default lib from an external file.
    *
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   public final void loadRefSeqHg19() throws IOException {
     LOG.info("Parsing {}...", DEFAULT_HG19_FILE);
@@ -149,12 +146,9 @@ public class CytobandsService {
   /**
    * Load.
    *
-   * @param genome
-   *          the genome
-   * @param reader
-   *          the reader
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @param genome the genome
+   * @param reader the reader
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   public void load(String genome, BufferedReader reader) throws IOException {
     load(genome, new Cytobands(genome, reader));
@@ -163,10 +157,8 @@ public class CytobandsService {
   /**
    * Load.
    *
-   * @param genome
-   *          the genome
-   * @param cytobands
-   *          the cytobands
+   * @param genome the genome
+   * @param cytobands the cytobands
    */
   public void load(String genome, Cytobands cytobands) {
     mCytobandsMap.put(genome, cytobands);
@@ -175,8 +167,7 @@ public class CytobandsService {
   /**
    * Gets the cytobands.
    *
-   * @param genome
-   *          the genome
+   * @param genome the genome
    * @return the cytobands
    */
   public Cytobands getCytobands(String genome) {

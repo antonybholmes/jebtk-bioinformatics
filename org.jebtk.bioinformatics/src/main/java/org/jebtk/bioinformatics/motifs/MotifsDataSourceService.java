@@ -71,8 +71,7 @@ public class MotifsDataSourceService extends MotifDataSource {
   /**
    * Adds the back end.
    *
-   * @param motifsDb
-   *          the motifs db
+   * @param motifsDb the motifs db
    */
   public void addDataSource(MotifDataSource motifsDb) {
     mDbs.add(motifsDb);
@@ -95,7 +94,10 @@ public class MotifsDataSourceService extends MotifDataSource {
    * tree.TreeRootNode, java.lang.String)
    */
   @Override
-  public void createTree(TreeNode<Motif> root, List<String> terms, boolean inList, boolean exactMatch,
+  public void createTree(TreeNode<Motif> root,
+      List<String> terms,
+      boolean inList,
+      boolean exactMatch,
       boolean caseSensitive) throws Exception {
 
     for (MotifDataSource db : mDbs) {

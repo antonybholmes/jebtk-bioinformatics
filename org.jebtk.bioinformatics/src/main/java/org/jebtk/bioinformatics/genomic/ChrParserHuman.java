@@ -27,7 +27,8 @@ public class ChrParserHuman extends ChromosomeParser {
   /*
    * (non-Javadoc)
    * 
-   * @see org.jebtk.bioinformatics.genome.ChromosomeParser#getShortName(java.lang.
+   * @see
+   * org.jebtk.bioinformatics.genome.ChromosomeParser#getShortName(java.lang.
    * String)
    */
   @Override
@@ -42,7 +43,8 @@ public class ChrParserHuman extends ChromosomeParser {
   /*
    * (non-Javadoc)
    * 
-   * @see org.jebtk.bioinformatics.genome.ChromosomeParser#getId(java.lang.String)
+   * @see
+   * org.jebtk.bioinformatics.genome.ChromosomeParser#getId(java.lang.String)
    */
   @Override
   public int getId(String chr) {

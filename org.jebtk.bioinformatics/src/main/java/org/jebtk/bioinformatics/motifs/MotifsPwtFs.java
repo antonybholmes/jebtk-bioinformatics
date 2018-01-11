@@ -51,8 +51,7 @@ public class MotifsPwtFs extends MotifsFs {
   /**
    * Instantiates a new motifs file.
    *
-   * @param dir
-   *          the dir
+   * @param dir the dir
    */
   public MotifsPwtFs(Path dir) {
     super(dir);
@@ -80,7 +79,10 @@ public class MotifsPwtFs extends MotifsFs {
    * tree.TreeRootNode, java.lang.String)
    */
   @Override
-  public void createTree(TreeNode<Motif> root, List<String> terms, boolean inList, boolean exactMatch,
+  public void createTree(TreeNode<Motif> root,
+      List<String> terms,
+      boolean inList,
+      boolean exactMatch,
       boolean caseSensitive) throws Exception {
     // TreeRootNode<Motif> root = new TreeRootNode<Motif>();
 
@@ -92,24 +94,21 @@ public class MotifsPwtFs extends MotifsFs {
   /**
    * Creates the tree dir.
    *
-   * @param root
-   *          the root
-   * @param rootNode
-   *          the root node
-   * @param terms
-   *          the terms
-   * @param inList
-   *          the in list
-   * @param exactMatch
-   *          the exact match
-   * @param caseSensitive
-   *          the case sensitive
+   * @param root the root
+   * @param rootNode the root node
+   * @param terms the terms
+   * @param inList the in list
+   * @param exactMatch the exact match
+   * @param caseSensitive the case sensitive
    * @return the int
-   * @throws Exception
-   *           the exception
+   * @throws Exception the exception
    */
-  private static void createTreeDir(Path root, TreeNode<Motif> rootNode, List<String> terms, boolean inList,
-      boolean exactMatch, boolean caseSensitive) throws Exception {
+  private static void createTreeDir(Path root,
+      TreeNode<Motif> rootNode,
+      List<String> terms,
+      boolean inList,
+      boolean exactMatch,
+      boolean caseSensitive) throws Exception {
     if (!FileUtils.exists(root)) {
       return;
     }
@@ -130,17 +129,14 @@ public class MotifsPwtFs extends MotifsFs {
   /**
    * Parses the motif xml.
    *
-   * @param file
-   *          the file
+   * @param file the file
    * @return the motifs
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
-   * @throws ParserConfigurationException
-   *           the parser configuration exception
-   * @throws SAXException
-   *           the SAX exception
+   * @throws IOException Signals that an I/O exception has occurred.
+   * @throws ParserConfigurationException the parser configuration exception
+   * @throws SAXException the SAX exception
    */
-  public static Motifs parseMotifPwt(Path file) throws IOException, ParserConfigurationException, SAXException {
+  public static Motifs parseMotifPwt(Path file)
+      throws IOException, ParserConfigurationException, SAXException {
     BufferedReader is = FileUtils.newBufferedReader(file);
 
     List<Motif> motifs = new ArrayList<Motif>();

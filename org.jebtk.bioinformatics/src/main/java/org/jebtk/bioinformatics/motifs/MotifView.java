@@ -46,8 +46,7 @@ public enum MotifView {
   /**
    * Parses the.
    *
-   * @param value
-   *          the value
+   * @param value the value
    * @return the motif view
    */
   public static MotifView parse(String value) {

@@ -24,8 +24,7 @@ public class GenomeGuess {
   /**
    * Guess.
    *
-   * @param id
-   *          the id
+   * @param id the id
    * @return the string
    */
   public String guess(String id) {

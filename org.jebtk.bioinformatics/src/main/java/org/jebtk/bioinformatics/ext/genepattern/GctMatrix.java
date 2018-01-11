@@ -35,7 +35,6 @@ import java.util.List;
 import org.jebtk.core.io.FileUtils;
 import org.jebtk.core.text.TextUtils;
 import org.jebtk.math.matrix.DataFrame;
-import org.jebtk.math.matrix.DataFrame;
 import org.jebtk.math.matrix.DoubleMatrix;
 
 // TODO: Auto-generated Javadoc
@@ -70,10 +69,8 @@ public class GctMatrix extends DataFrame {
   /**
    * Instantiates a new gct matrix.
    *
-   * @param rows
-   *          the rows
-   * @param columns
-   *          the columns
+   * @param rows the rows
+   * @param columns the columns
    */
   public GctMatrix(int rows, int columns) {
     super(DoubleMatrix.createDoubleMatrix(rows, columns));
@@ -82,8 +79,7 @@ public class GctMatrix extends DataFrame {
   /**
    * Sets the description names.
    *
-   * @param names
-   *          the new description names
+   * @param names the new description names
    */
   public void setDescriptionNames(List<String> names) {
     setTextRowAnnotations(DESCRIPTION_COLUMN, names);
@@ -92,8 +88,7 @@ public class GctMatrix extends DataFrame {
   /**
    * Gets the description name.
    *
-   * @param i
-   *          the i
+   * @param i the i
    * @return the description name
    */
   public String getDescriptionName(int i) {
@@ -112,11 +107,9 @@ public class GctMatrix extends DataFrame {
   /**
    * Parses the matrix.
    *
-   * @param file
-   *          the file
+   * @param file the file
    * @return the annotation matrix
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   public static DataFrame parseMatrix(Path file) throws IOException {
     return new GctMatrixParser().parse(file);
@@ -125,16 +118,13 @@ public class GctMatrix extends DataFrame {
   /**
    * Write a simple expression matrix in GCT format.
    *
-   * @param <T>
-   *          the generic type
-   * @param matrix
-   *          the matrix
-   * @param file
-   *          the file
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @param <T> the generic type
+   * @param matrix the matrix
+   * @param file the file
+   * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static <T> void writeGctMatrix(DataFrame matrix, Path file) throws IOException {
+  public static <T> void writeGctMatrix(DataFrame matrix, Path file)
+      throws IOException {
     BufferedWriter writer = FileUtils.newBufferedWriter(file);
 
     try {
@@ -162,7 +152,8 @@ public class GctMatrix extends DataFrame {
         writer.write(matrix.getRowAnnotationText(names.get(0), i));
         writer.write(TextUtils.TAB_DELIMITER);
 
-        writer.write(matrix.getRowAnnotationText(names.get(names.size() - 1), i));
+        writer
+            .write(matrix.getRowAnnotationText(names.get(names.size() - 1), i));
 
         for (int j = 0; j < matrix.getCols(); ++j) {
           writer.write(TextUtils.TAB_DELIMITER);
@@ -180,10 +171,8 @@ public class GctMatrix extends DataFrame {
   /**
    * Creates the gct matrix.
    *
-   * @param rows
-   *          the rows
-   * @param cols
-   *          the cols
+   * @param rows the rows
+   * @param cols the cols
    * @return the annotation matrix
    */
   public static DataFrame createGctMatrix(int rows, int cols) {

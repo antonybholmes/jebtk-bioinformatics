@@ -46,7 +46,8 @@ public class GFF3Parser extends GeneParser {
   }
 
   @Override
-  protected void parse(Path file, BufferedReader reader, Genes genes) throws IOException {
+  protected void parse(Path file, BufferedReader reader, Genes genes)
+      throws IOException {
     String line;
     List<String> tokens;
     GeneType type;
@@ -117,8 +118,12 @@ public class GFF3Parser extends GeneParser {
   }
 
   @Override
-  public Map<String, Set<String>> idMap(Path file, BufferedReader reader, String id1, String id2) throws IOException {
-    Map<String, Set<String>> ret = DefaultTreeMap.create(new TreeSetCreator<String>());
+  public Map<String, Set<String>> idMap(Path file,
+      BufferedReader reader,
+      String id1,
+      String id2) throws IOException {
+    Map<String, Set<String>> ret = DefaultTreeMap
+        .create(new TreeSetCreator<String>());
 
     String line;
     List<String> tokens;
@@ -161,8 +166,7 @@ public class GFF3Parser extends GeneParser {
   /**
    * Parses the attributes.
    *
-   * @param attributes
-   *          the attributes
+   * @param attributes the attributes
    * @return the map
    */
   public static IterMap<String, String> parseAttributes(String attributes) {
@@ -170,7 +174,8 @@ public class GFF3Parser extends GeneParser {
 
     IterMap<String, String> ret = new IterTreeMap<String, String>();
 
-    List<String> tokens = Splitter.on(TextUtils.SEMI_COLON_DELIMITER_CHAR).text(formatAttributes(attributes));
+    List<String> tokens = Splitter.on(TextUtils.SEMI_COLON_DELIMITER_CHAR)
+        .text(formatAttributes(attributes));
 
     for (String token : tokens) {
       // System.err.println("gff3 " + token);
@@ -184,8 +189,10 @@ public class GFF3Parser extends GeneParser {
 
   public static String formatAttributes(String attributes) {
     String ret = attributes.trim().replace("  ", TextUtils.SPACE_DELIMITER)
-        .replace(" ;", TextUtils.SEMI_COLON_DELIMITER).replace("; ", TextUtils.SEMI_COLON_DELIMITER)
-        .replace("\";", TextUtils.SEMI_COLON_DELIMITER).replace(" \"", "=").replace("\"", TextUtils.EMPTY_STRING);
+        .replace(" ;", TextUtils.SEMI_COLON_DELIMITER)
+        .replace("; ", TextUtils.SEMI_COLON_DELIMITER)
+        .replace("\";", TextUtils.SEMI_COLON_DELIMITER).replace(" \"", "=")
+        .replace("\"", TextUtils.EMPTY_STRING);
 
     // Remove last semi-colon if there is one
     if (ret.charAt(ret.length() - 1) == TextUtils.SEMI_COLON_DELIMITER_CHAR) {
@@ -198,8 +205,7 @@ public class GFF3Parser extends GeneParser {
   /**
    * Parses the GFF 3 attributes.
    *
-   * @param tokens
-   *          the tokens
+   * @param tokens the tokens
    * @return the map
    */
   public static Map<String, String> parseGFF3Attributes(List<String> tokens) {
@@ -209,8 +215,7 @@ public class GFF3Parser extends GeneParser {
   /**
    * Parse gff3 formatted attributes, e.g. gene_id="BCL6";exon="2";
    *
-   * @param attributes
-   *          the attributes
+   * @param attributes the attributes
    * @return the map
    */
   public static Map<String, String> parseGFF3Attributes(String attributes) {
@@ -238,12 +243,11 @@ public class GFF3Parser extends GeneParser {
   }
 
   /**
-   * Returns an attribute name where underscores are replaced with spaces and the
-   * name is converted to sentence case to make it more presentable in a table
-   * header etc.
+   * Returns an attribute name where underscores are replaced with spaces and
+   * the name is converted to sentence case to make it more presentable in a
+   * table header etc.
    *
-   * @param attribute
-   *          the attribute
+   * @param attribute the attribute
    * @return the string
    */
   public static String formatAttributeName(String attribute) {

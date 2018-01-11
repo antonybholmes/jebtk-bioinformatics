@@ -53,10 +53,8 @@ public class Motifs implements NameProperty, Iterable<Motif> {
   /**
    * Instantiates a new motifs.
    *
-   * @param name
-   *          the name
-   * @param motifs
-   *          the motifs
+   * @param name the name
+   * @param motifs the motifs
    */
   public Motifs(String name, Collection<Motif> motifs) {
     mName = name;

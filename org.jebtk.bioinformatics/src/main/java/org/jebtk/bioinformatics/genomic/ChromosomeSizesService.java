@@ -70,7 +70,8 @@ public class ChromosomeSizesService implements Iterable<String> {
   /**
    * The constant LOG.
    */
-  private static final Logger LOG = LoggerFactory.getLogger(ChromosomeSizesService.class);
+  private static final Logger LOG = LoggerFactory
+      .getLogger(ChromosomeSizesService.class);
 
   /**
    * The constant DEFAULT_RES.
@@ -107,8 +108,7 @@ public class ChromosomeSizesService implements Iterable<String> {
   /**
    * Load internal hg 18.
    *
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   public final void loadInternalHg18() throws IOException {
     LOG.info("Parsing {}...", DEFAULT_HG18_RES);
@@ -119,8 +119,7 @@ public class ChromosomeSizesService implements Iterable<String> {
   /**
    * Load the default lib from an external file.
    *
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   public final void loadRefSeqHg18() throws IOException {
     LOG.info("Parsing {}...", DEFAULT_HG18_FILE);
@@ -131,8 +130,7 @@ public class ChromosomeSizesService implements Iterable<String> {
   /**
    * Load the default lib from the jar resource.
    *
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   public final void loadInternalHg19() throws IOException {
     LOG.info("Parsing {}...", DEFAULT_HG19_RES);
@@ -143,8 +141,7 @@ public class ChromosomeSizesService implements Iterable<String> {
   /**
    * Load the default lib from an external file.
    *
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   public final void loadRefSeqHg19() throws IOException {
     LOG.info("Parsing {}...", DEFAULT_HG19_FILE);
@@ -155,8 +152,7 @@ public class ChromosomeSizesService implements Iterable<String> {
   /**
    * Gets the cytobands.
    *
-   * @param genome
-   *          the genome
+   * @param genome the genome
    * @return the cytobands
    */
   public ChromosomeSizes getSizes(String genome) {
@@ -166,12 +162,9 @@ public class ChromosomeSizesService implements Iterable<String> {
   /**
    * Load.
    *
-   * @param genome
-   *          the genome
-   * @param file
-   *          the file
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @param genome the genome
+   * @param file the file
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   public void load(String genome, Path file) throws IOException {
     load(genome, FileUtils.newBufferedReader(file));
@@ -180,12 +173,9 @@ public class ChromosomeSizesService implements Iterable<String> {
   /**
    * Load.
    *
-   * @param genome
-   *          the genome
-   * @param reader
-   *          the reader
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @param genome the genome
+   * @param reader the reader
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   public void load(String genome, BufferedReader reader) throws IOException {
     mSizesMap.put(genome, ChromosomeSizes.parse(reader));

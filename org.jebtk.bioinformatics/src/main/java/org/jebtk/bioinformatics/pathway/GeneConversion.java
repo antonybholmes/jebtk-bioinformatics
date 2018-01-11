@@ -39,10 +39,10 @@ import org.jebtk.core.text.TextUtils;
  * Maps an id to a new set of objects (ids, other mappings etc).
  *
  * @author Antony Holmes Holmes
- * @param <T>
- *          the generic type
+ * @param <T> the generic type
  */
-public class GeneConversion<T extends Comparable<? super T>> implements Iterable<T>, Comparable<GeneConversion<T>> {
+public class GeneConversion<T extends Comparable<? super T>>
+    implements Iterable<T>, Comparable<GeneConversion<T>> {
 
   /**
    * The member name.
@@ -57,8 +57,7 @@ public class GeneConversion<T extends Comparable<? super T>> implements Iterable
   /**
    * Instantiates a new gene conversion.
    *
-   * @param name
-   *          the name
+   * @param name the name
    */
   public GeneConversion(String name) {
     mName = name;
@@ -76,8 +75,7 @@ public class GeneConversion<T extends Comparable<? super T>> implements Iterable
   /**
    * Adds the id.
    *
-   * @param name
-   *          the name
+   * @param name the name
    */
   public void addId(T name) {
     mNewIds.add(name);
@@ -90,8 +88,9 @@ public class GeneConversion<T extends Comparable<? super T>> implements Iterable
    */
   @Override
   public String toString() {
-    return new StringBuilder("[").append(mName).append(" -> ").append(TextUtils.scJoin(CollectionUtils.sort(mNewIds)))
-        .append("]").toString();
+    return new StringBuilder("[").append(mName).append(" -> ")
+        .append(TextUtils.scJoin(CollectionUtils.sort(mNewIds))).append("]")
+        .toString();
   }
 
   /*

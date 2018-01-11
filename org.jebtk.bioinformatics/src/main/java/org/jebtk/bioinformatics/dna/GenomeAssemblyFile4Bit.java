@@ -49,8 +49,7 @@ public class GenomeAssemblyFile4Bit extends GenomeAssemblyDir {
    * Directory containing genome Paths which must be of the form chr.n.txt. Each
    * Path must contain exactly one line consisting of the entire chromosome.
    *
-   * @param directory
-   *          the directory
+   * @param directory the directory
    */
   public GenomeAssemblyFile4Bit(Path directory) {
     super(directory);
@@ -70,7 +69,9 @@ public class GenomeAssemblyFile4Bit extends GenomeAssemblyDir {
    * edu.columbia.rdf.lib.bioinformatics.genome.RepeatMaskType)
    */
   @Override
-  public final SequenceRegion getSequence(String genome, GenomicRegion region, boolean displayUpper,
+  public final SequenceRegion getSequence(String genome,
+      GenomicRegion region,
+      boolean displayUpper,
       RepeatMaskType repeatMaskType) throws IOException {
     Chromosome chr = region.getChr();
 
@@ -79,27 +80,28 @@ public class GenomeAssemblyFile4Bit extends GenomeAssemblyDir {
     }
 
     return new SequenceRegion(region,
-        getSequence4Bit(mFileMap.get(chr), region.getStart(), region.getEnd(), displayUpper, repeatMaskType));
+        getSequence4Bit(mFileMap.get(chr),
+            region.getStart(),
+            region.getEnd(),
+            displayUpper,
+            repeatMaskType));
   }
 
   /**
    * Gets the sequence4 bit.
    *
-   * @param Path
-   *          the Path
-   * @param start
-   *          the start
-   * @param end
-   *          the end
-   * @param displayUpper
-   *          the display upper
-   * @param repeatMaskType
-   *          the repeat mask type
+   * @param Path the Path
+   * @param start the start
+   * @param end the end
+   * @param displayUpper the display upper
+   * @param repeatMaskType the repeat mask type
    * @return the sequence4 bit
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static Sequence getSequence4Bit(Path Path, int start, int end, boolean displayUpper,
+  public static Sequence getSequence4Bit(Path Path,
+      int start,
+      int end,
+      boolean displayUpper,
       RepeatMaskType repeatMaskType) throws IOException {
 
     int s = start - 1;
@@ -149,17 +151,14 @@ public class GenomeAssemblyFile4Bit extends GenomeAssemblyDir {
   /**
    * Gets the bytes4 bit.
    *
-   * @param Path
-   *          the Path
-   * @param start
-   *          the start
-   * @param end
-   *          the end
+   * @param Path the Path
+   * @param start the start
+   * @param end the end
    * @return the bytes4 bit
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static byte[] getBytes4Bit(Path Path, int start, int end) throws IOException {
+  public static byte[] getBytes4Bit(Path Path, int start, int end)
+      throws IOException {
     int sb = start / 2;
     int eb = end / 2;
 

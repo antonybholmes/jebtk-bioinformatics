@@ -48,10 +48,8 @@ public class GeneSymbol implements Comparable<GeneSymbol> {
   /**
    * Instantiates a new gene symbol.
    *
-   * @param entrez
-   *          the entrez
-   * @param symbol
-   *          the symbol
+   * @param entrez the entrez
+   * @param symbol the symbol
    */
   public GeneSymbol(String entrez, String symbol) {
     mEntrez = entrez.toLowerCase();

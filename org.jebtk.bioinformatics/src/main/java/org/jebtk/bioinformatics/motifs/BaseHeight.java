@@ -46,10 +46,8 @@ public class BaseHeight {
   /**
    * Instantiates a new base height.
    *
-   * @param base
-   *          the base
-   * @param height
-   *          the height
+   * @param base the base
+   * @param height the height
    */
   public BaseHeight(char base, double height) {
     mBase = Character.toUpperCase(base);

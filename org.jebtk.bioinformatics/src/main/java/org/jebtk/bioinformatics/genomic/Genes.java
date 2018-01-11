@@ -110,9 +110,11 @@ public class Genes extends BinaryGapSearch<Gene> {
    * The member symbol map.
    */
 
-  private IterMap<String, Set<String>> mTypeMap = DefaultHashMap.create(new TreeSetCreator<String>());
+  private IterMap<String, Set<String>> mTypeMap = DefaultHashMap
+      .create(new TreeSetCreator<String>());
 
-  private IterMap<String, List<Gene>> mIdMap = DefaultHashMap.create(new UniqueArrayListCreator<Gene>());
+  private IterMap<String, List<Gene>> mIdMap = DefaultHashMap
+      .create(new UniqueArrayListCreator<Gene>());
 
   /**
    * The member ref seq map.
@@ -192,8 +194,7 @@ public class Genes extends BinaryGapSearch<Gene> {
   /**
    * Lookup a gene by either symbol or refseq.
    *
-   * @param id
-   *          the id
+   * @param id the id
    * @return the gene
    */
   public Gene lookup(String id) {
@@ -225,10 +226,8 @@ public class Genes extends BinaryGapSearch<Gene> {
   /**
    * Lookup.
    *
-   * @param type
-   *          the type
-   * @param symbol
-   *          the symbol
+   * @param type the type
+   * @param symbol the symbol
    * @return the collection
    */
   public Collection<Gene> getGenes(String symbol) {
@@ -238,8 +237,7 @@ public class Genes extends BinaryGapSearch<Gene> {
   /**
    * Find genes.
    *
-   * @param region
-   *          the region
+   * @param region the region
    * @return the list
    */
   public Collection<Gene> findGenes(GenomicRegion region) {
@@ -249,8 +247,7 @@ public class Genes extends BinaryGapSearch<Gene> {
   /**
    * Find closest genes.
    *
-   * @param region
-   *          the region
+   * @param region the region
    * @return the list
    */
   public Collection<Gene> findClosestGenes(GenomicRegion region) {
@@ -260,8 +257,7 @@ public class Genes extends BinaryGapSearch<Gene> {
   /**
    * Find closest genes by tss.
    *
-   * @param region
-   *          the region
+   * @param region the region
    * @return the list
    */
   public Collection<Gene> findClosestGenesByTss(GenomicRegion region) {
@@ -300,8 +296,7 @@ public class Genes extends BinaryGapSearch<Gene> {
    * Find the representative gene by name. Search is case insensitive. Returns
    * null if gene not found.
    *
-   * @param name
-   *          the name
+   * @param name the name
    * @return the gene
    */
   public Gene findMainVariant(String name) {
@@ -322,8 +317,7 @@ public class Genes extends BinaryGapSearch<Gene> {
   /**
    * Return the set of ids (e.g. RefSeq ids) associated with a given id type.
    *
-   * @param type
-   *          the type
+   * @param type the type
    * @return the ids
    */
   public Iterable<String> getIds(String type) {
@@ -337,11 +331,9 @@ public class Genes extends BinaryGapSearch<Gene> {
   /**
    * Load.
    *
-   * @param file
-   *          the file
+   * @param file the file
    * @return the genes
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   public static GapSearch<Gene> load(Path file) throws IOException {
     LOG.info("Parsing {}...", file);
@@ -362,13 +354,12 @@ public class Genes extends BinaryGapSearch<Gene> {
   /**
    * Load.
    *
-   * @param reader
-   *          the reader
+   * @param reader the reader
    * @return the genes
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static GapSearch<Gene> load(final String species, BufferedReader reader) throws IOException {
+  public static GapSearch<Gene> load(final String species,
+      BufferedReader reader) throws IOException {
     final Genes ret = new Genes();
 
     FileUtils.tokenize(reader, new TokenFunction() {
@@ -380,23 +371,29 @@ public class Genes extends BinaryGapSearch<Gene> {
         String refseq = tokens.get(1);
         String entrez = tokens.get(2);
         String symbol = tokens.get(5);
-        Chromosome chr = ChromosomeService.getInstance().parse(species, tokens.get(8));
+        Chromosome chr = ChromosomeService.getInstance().parse(species,
+            tokens.get(8));
         Strand strand = Strand.parse(tokens.get(9)); // .charAt(0);
         // Because of the UCSC using zero based start and one
         // based end, we need to increment the start by 1
         int start = Integer.parseInt(tokens.get(10)) + 1;
         int end = Integer.parseInt(tokens.get(11));
 
-        Gene gene = Gene.create(GeneType.TRANSCRIPT, GenomicRegion.create(chr, start, end, strand)).setSymbol(symbol)
-            .setRefseq(refseq).setEntrez(entrez);
+        Gene gene = Gene
+            .create(GeneType.TRANSCRIPT,
+                GenomicRegion.create(chr, start, end, strand))
+            .setSymbol(symbol).setRefseq(refseq).setEntrez(entrez);
 
-        List<Integer> starts = TextUtils.splitInts(tokens.get(13), TextUtils.COMMA_DELIMITER);
+        List<Integer> starts = TextUtils.splitInts(tokens.get(13),
+            TextUtils.COMMA_DELIMITER);
 
-        List<Integer> ends = TextUtils.splitInts(tokens.get(14), TextUtils.COMMA_DELIMITER);
+        List<Integer> ends = TextUtils.splitInts(tokens.get(14),
+            TextUtils.COMMA_DELIMITER);
 
         for (int i = 0; i < starts.size(); ++i) {
           // Again correct for the ucsc
-          GenomicRegion exon = GenomicRegion.create(chr, starts.get(i) + 1, ends.get(i));
+          GenomicRegion exon = GenomicRegion
+              .create(chr, starts.get(i) + 1, ends.get(i));
 
           gene.addExon(exon);
         }

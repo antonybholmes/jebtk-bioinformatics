@@ -52,7 +52,8 @@ public class ChromosomeSizes {
   /**
    * The constant DEFAULT_FILE.
    */
-  public static final File DEFAULT_HG19_FILE = new File("res/ucsc_chromosome_sizes_hg19.txt.gz");
+  public static final File DEFAULT_HG19_FILE = new File(
+      "res/ucsc_chromosome_sizes_hg19.txt.gz");
 
   // public static final ChromosomeSizes getInstance() {
   // return instance;
@@ -74,8 +75,7 @@ public class ChromosomeSizes {
   /**
    * Returns the number of bases in the chromosome.
    *
-   * @param chromosome
-   *          the chromosome
+   * @param chromosome the chromosome
    * @return the size
    */
   public int getSize(Chromosome chr) {
@@ -89,11 +89,9 @@ public class ChromosomeSizes {
   /**
    * Parses the.
    *
-   * @param file
-   *          the file
+   * @param file the file
    * @return the chromosome sizes
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   public static ChromosomeSizes parse(Path file) throws IOException {
 
@@ -113,13 +111,12 @@ public class ChromosomeSizes {
   /**
    * Parses the.
    *
-   * @param reader
-   *          the reader
+   * @param reader the reader
    * @return the chromosome sizes
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static ChromosomeSizes parse(BufferedReader reader) throws IOException {
+  public static ChromosomeSizes parse(BufferedReader reader)
+      throws IOException {
 
     ChromosomeSizes sizes = new ChromosomeSizes();
 

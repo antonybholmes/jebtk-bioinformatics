@@ -75,7 +75,9 @@ public class GenomeAssemblyZip extends GenomeAssemblyFS {
   }
 
   @Override
-  protected void createGenomeEntry(String genome, Path dir, Map<String, GenomeAssembly> map) {
+  protected void createGenomeEntry(String genome,
+      Path dir,
+      Map<String, GenomeAssembly> map) {
     if (!map.containsKey(genome)) {
       // Path d = dir.resolve(genome);
 

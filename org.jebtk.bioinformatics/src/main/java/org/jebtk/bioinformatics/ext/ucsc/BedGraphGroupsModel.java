@@ -44,7 +44,8 @@ import org.jebtk.core.event.ChangeListeners;
  * @author Antony Holmes Holmes
  *
  */
-public class BedGraphGroupsModel extends ChangeListeners implements ChangeListener, Iterable<BedGraphGroupModel> {
+public class BedGraphGroupsModel extends ChangeListeners
+    implements ChangeListener, Iterable<BedGraphGroupModel> {
 
   /**
    * The constant serialVersionUID.
@@ -69,8 +70,7 @@ public class BedGraphGroupsModel extends ChangeListeners implements ChangeListen
   /**
    * Add a BedGraph file to its own individual group.
    *
-   * @param bedGraph
-   *          the bed graph
+   * @param bedGraph the bed graph
    */
   public void add(UCSCTrack bedGraph) {
     add(DEFAULT_GROUP, bedGraph);
@@ -79,10 +79,8 @@ public class BedGraphGroupsModel extends ChangeListeners implements ChangeListen
   /**
    * Adds the.
    *
-   * @param group
-   *          the group
-   * @param bedGraph
-   *          the bed graph
+   * @param group the group
+   * @param bedGraph the bed graph
    */
   public void add(String group, UCSCTrack bedGraph) {
     createGroup(group);
@@ -93,8 +91,7 @@ public class BedGraphGroupsModel extends ChangeListeners implements ChangeListen
   /**
    * Creates the group.
    *
-   * @param group
-   *          the group
+   * @param group the group
    */
   public void createGroup(String group) {
     if (!mGroupMap.containsKey(group)) {
@@ -110,7 +107,8 @@ public class BedGraphGroupsModel extends ChangeListeners implements ChangeListen
   /*
    * (non-Javadoc)
    * 
-   * @see org.abh.lib.event.ChangeListener#changed(org.abh.lib.event.ChangeEvent)
+   * @see
+   * org.abh.lib.event.ChangeListener#changed(org.abh.lib.event.ChangeEvent)
    */
   @Override
   public void changed(ChangeEvent e) {
@@ -130,8 +128,7 @@ public class BedGraphGroupsModel extends ChangeListeners implements ChangeListen
   /**
    * Gets the.
    *
-   * @param group
-   *          the group
+   * @param group the group
    * @return the bed graph group model
    */
   public BedGraphGroupModel get(String group) {
@@ -160,8 +157,7 @@ public class BedGraphGroupsModel extends ChangeListeners implements ChangeListen
   /**
    * Removes the group.
    *
-   * @param group
-   *          the group
+   * @param group the group
    */
   public void removeGroup(String group) {
     System.err.println("Remove group " + group);
@@ -175,10 +171,8 @@ public class BedGraphGroupsModel extends ChangeListeners implements ChangeListen
   /**
    * Update group.
    *
-   * @param oldGroup
-   *          the old group
-   * @param newGroup
-   *          the new group
+   * @param oldGroup the old group
+   * @param newGroup the new group
    */
   public void updateGroup(String oldGroup, String newGroup) {
     if (mGroupMap.containsKey(oldGroup)) {

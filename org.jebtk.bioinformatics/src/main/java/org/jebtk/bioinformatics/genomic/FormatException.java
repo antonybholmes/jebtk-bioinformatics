@@ -41,8 +41,7 @@ public class FormatException extends Exception {
   /**
    * Instantiates a new format exception.
    *
-   * @param message
-   *          the message
+   * @param message the message
    */
   public FormatException(String message) {
     super(message);

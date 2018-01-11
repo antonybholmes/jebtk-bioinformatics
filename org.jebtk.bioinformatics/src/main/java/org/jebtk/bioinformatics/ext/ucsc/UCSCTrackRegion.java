@@ -62,12 +62,9 @@ public class UCSCTrackRegion extends GenomicRegion {
   /**
    * Instantiates a new UCSC track region.
    *
-   * @param chromosome
-   *          the chromosome
-   * @param start
-   *          the start
-   * @param end
-   *          the end
+   * @param chromosome the chromosome
+   * @param start the start
+   * @param end the end
    */
   public UCSCTrackRegion(Chromosome chromosome, int start, int end) {
     this(chromosome, start, end, Strand.NONE, null);
@@ -76,18 +73,14 @@ public class UCSCTrackRegion extends GenomicRegion {
   /**
    * Instantiates a new UCSC track region.
    *
-   * @param chromosome
-   *          the chromosome
-   * @param start
-   *          the start
-   * @param end
-   *          the end
-   * @param strand
-   *          the strand
-   * @param color
-   *          the color
+   * @param chromosome the chromosome
+   * @param start the start
+   * @param end the end
+   * @param strand the strand
+   * @param color the color
    */
-  public UCSCTrackRegion(Chromosome chromosome, int start, int end, Strand strand, Color color) {
+  public UCSCTrackRegion(Chromosome chromosome, int start, int end,
+      Strand strand, Color color) {
     super(chromosome, start, end);
 
     mStrand = strand;
@@ -116,8 +109,7 @@ public class UCSCTrackRegion extends GenomicRegion {
   /**
    * Sets the color.
    *
-   * @param color
-   *          the new color
+   * @param color the new color
    */
   public void setColor(Color color) {
     mColor = color;

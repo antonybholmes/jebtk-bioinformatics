@@ -55,8 +55,7 @@ public class MotifsFs extends MotifDataSource implements Comparable<MotifsFs> {
   /**
    * Instantiates a new motifs file.
    *
-   * @param dir
-   *          the dir
+   * @param dir the dir
    */
   public MotifsFs(Path dir) {
     mDir = dir;
@@ -104,7 +103,10 @@ public class MotifsFs extends MotifDataSource implements Comparable<MotifsFs> {
    * tree.TreeRootNode, java.lang.String)
    */
   @Override
-  public void createTree(TreeNode<Motif> root, List<String> terms, boolean inList, boolean exactMatch,
+  public void createTree(TreeNode<Motif> root,
+      List<String> terms,
+      boolean inList,
+      boolean exactMatch,
       boolean caseSensitive) throws Exception {
     // TreeRootNode<Motif> root = new TreeRootNode<Motif>();
 
@@ -116,24 +118,21 @@ public class MotifsFs extends MotifDataSource implements Comparable<MotifsFs> {
   /**
    * Creates the tree dir.
    *
-   * @param root
-   *          the root
-   * @param rootNode
-   *          the root node
-   * @param terms
-   *          the terms
-   * @param inList
-   *          the in list
-   * @param exactMatch
-   *          the exact match
-   * @param caseSensitive
-   *          the case sensitive
+   * @param root the root
+   * @param rootNode the root node
+   * @param terms the terms
+   * @param inList the in list
+   * @param exactMatch the exact match
+   * @param caseSensitive the case sensitive
    * @return the int
-   * @throws Exception
-   *           the exception
+   * @throws Exception the exception
    */
-  private static void createTreeDir(Path root, TreeNode<Motif> rootNode, List<String> terms, boolean inList,
-      boolean exactMatch, boolean caseSensitive) throws Exception {
+  private static void createTreeDir(Path root,
+      TreeNode<Motif> rootNode,
+      List<String> terms,
+      boolean inList,
+      boolean exactMatch,
+      boolean caseSensitive) throws Exception {
     if (!FileUtils.exists(root)) {
       return;
     }
@@ -147,12 +146,13 @@ public class MotifsFs extends MotifDataSource implements Comparable<MotifsFs> {
     if (terms != null && terms.size() > 0) {
 
       // For each dir, create a radix db for searching
-      Map<Path, RadixObjectDb<Motif>> motifMap = DefaultHashMap.create(new EntryCreator<RadixObjectDb<Motif>>() {
-        @Override
-        public RadixObjectDb<Motif> newEntry() {
-          return new RadixObjectDb<Motif>();
-        }
-      });
+      Map<Path, RadixObjectDb<Motif>> motifMap = DefaultHashMap
+          .create(new EntryCreator<RadixObjectDb<Motif>>() {
+            @Override
+            public RadixObjectDb<Motif> newEntry() {
+              return new RadixObjectDb<Motif>();
+            }
+          });
 
       Map<Path, TreeNode<Motif>> nodeMap = new HashMap<Path, TreeNode<Motif>>();
 
@@ -165,16 +165,20 @@ public class MotifsFs extends MotifDataSource implements Comparable<MotifsFs> {
           for (Path file : files) {
             if (PathUtils.getName(file).endsWith("motif.gz")) {
               // Extract all the nodes from the file and add them
-              for (Motif motif : Motif.parseMotifs(file, PathUtils.getName(file.getParent()))) {
+              for (Motif motif : Motif.parseMotifs(file,
+                  PathUtils.getName(file.getParent()))) {
 
                 if (caseSensitive) {
                   motifMap.get(dir).addObject(motif.getName(), motif);
                   motifMap.get(dir).addObject(motif.getId(), motif);
                   motifMap.get(dir).addObject(motif.getGene(), motif);
                 } else {
-                  motifMap.get(dir).addObject(motif.getName().toLowerCase(), motif);
-                  motifMap.get(dir).addObject(motif.getId().toLowerCase(), motif);
-                  motifMap.get(dir).addObject(motif.getGene().toLowerCase(), motif);
+                  motifMap.get(dir).addObject(motif.getName().toLowerCase(),
+                      motif);
+                  motifMap.get(dir).addObject(motif.getId().toLowerCase(),
+                      motif);
+                  motifMap.get(dir).addObject(motif.getGene().toLowerCase(),
+                      motif);
                 }
               }
             }
@@ -192,7 +196,8 @@ public class MotifsFs extends MotifDataSource implements Comparable<MotifsFs> {
 
             if (db != null) {
               for (Motif motif : db) {
-                nodeMap.get(dir).addChild(new TreeNode<Motif>(motif.getName() + " (" + motif.getId() + ")", motif));
+                nodeMap.get(dir).addChild(new TreeNode<Motif>(
+                    motif.getName() + " (" + motif.getId() + ")", motif));
               }
             }
           }
@@ -219,8 +224,10 @@ public class MotifsFs extends MotifDataSource implements Comparable<MotifsFs> {
           for (Path file : files) {
             if (PathUtils.getName(file).endsWith("motif.gz")) {
               // Extract all the nodes from the file and add them
-              for (Motif motif : CollectionUtils.sort(Motif.parseMotifs(file, PathUtils.getName(file.getParent())))) {
-                node.addChild(new TreeNode<Motif>(motif.getName() + " (" + motif.getId() + ")", motif));
+              for (Motif motif : CollectionUtils.sort(Motif.parseMotifs(file,
+                  PathUtils.getName(file.getParent())))) {
+                node.addChild(new TreeNode<Motif>(
+                    motif.getName() + " (" + motif.getId() + ")", motif));
               }
             }
           }
@@ -233,8 +240,12 @@ public class MotifsFs extends MotifDataSource implements Comparable<MotifsFs> {
     }
   }
 
-  protected static void filter(Motifs motifs, TreeNode<Motif> rootNode, List<String> terms, boolean inList,
-      boolean exactMatch, boolean caseSensitive) throws Exception {
+  protected static void filter(Motifs motifs,
+      TreeNode<Motif> rootNode,
+      List<String> terms,
+      boolean inList,
+      boolean exactMatch,
+      boolean caseSensitive) throws Exception {
 
     TreeNode<Motif> node = new TreeNode<Motif>(motifs.getName());
 
@@ -242,7 +253,8 @@ public class MotifsFs extends MotifDataSource implements Comparable<MotifsFs> {
 
     for (Motif motif : motifs) {
       if (terms.size() == 0) {
-        node.addChild(new TreeNode<Motif>(motif.getName() + " (" + motif.getId() + ")", motif));
+        node.addChild(new TreeNode<Motif>(
+            motif.getName() + " (" + motif.getId() + ")", motif));
         ++count;
         continue;
       }
@@ -252,12 +264,14 @@ public class MotifsFs extends MotifDataSource implements Comparable<MotifsFs> {
       for (String term : terms) {
         if (caseSensitive) {
           if (exactMatch) {
-            if (motif.getName().equals(term) || motif.getId().equals(term) || motif.getGene().equals(term)) {
+            if (motif.getName().equals(term) || motif.getId().equals(term)
+                || motif.getGene().equals(term)) {
               found = true;
               break;
             }
           } else {
-            if (motif.getName().contains(term) || motif.getId().contains(term) || motif.getGene().contains(term)) {
+            if (motif.getName().contains(term) || motif.getId().contains(term)
+                || motif.getGene().contains(term)) {
               found = true;
               break;
             }
@@ -266,13 +280,15 @@ public class MotifsFs extends MotifDataSource implements Comparable<MotifsFs> {
           String lcs = term.toLowerCase();
 
           if (exactMatch) {
-            if (motif.getName().toLowerCase().equals(lcs) || motif.getId().toLowerCase().equals(lcs)
+            if (motif.getName().toLowerCase().equals(lcs)
+                || motif.getId().toLowerCase().equals(lcs)
                 || motif.getGene().toLowerCase().equals(lcs)) {
               found = true;
               break;
             }
           } else {
-            if (motif.getName().toLowerCase().contains(lcs) || motif.getId().toLowerCase().contains(lcs)
+            if (motif.getName().toLowerCase().contains(lcs)
+                || motif.getId().toLowerCase().contains(lcs)
                 || motif.getGene().toLowerCase().contains(lcs)) {
               found = true;
               break;
@@ -282,7 +298,8 @@ public class MotifsFs extends MotifDataSource implements Comparable<MotifsFs> {
       }
 
       if ((found && inList) || (!found && !inList)) {
-        node.addChild(new TreeNode<Motif>(motif.getName() + " (" + motif.getId() + ")", motif));
+        node.addChild(new TreeNode<Motif>(
+            motif.getName() + " (" + motif.getId() + ")", motif));
         ++count;
       }
     }

@@ -166,11 +166,9 @@ public abstract class GeneParser {
   /**
    * Parses the gene table.
    *
-   * @param file
-   *          the file
+   * @param file the file
    * @return the genes
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   public Genes parse(Path file) throws IOException {
     Genes genes = new Genes();
@@ -193,11 +191,9 @@ public abstract class GeneParser {
   /**
    * Parses the gene table.
    *
-   * @param reader
-   *          the reader
+   * @param reader the reader
    * @return the genes
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   protected Genes parse(Path file, BufferedReader reader) throws IOException {
     Genes genes = new Genes();
@@ -207,7 +203,8 @@ public abstract class GeneParser {
     return genes;
   }
 
-  protected void parse(Path file, BufferedReader reader, Genes genes) throws IOException {
+  protected void parse(Path file, BufferedReader reader, Genes genes)
+      throws IOException {
     // Do nothin
   }
 
@@ -219,7 +216,8 @@ public abstract class GeneParser {
     return genes;
   }
 
-  protected Genes parse(Path file, BufferedReader reader, Chromosome chr) throws IOException {
+  protected Genes parse(Path file, BufferedReader reader, Chromosome chr)
+      throws IOException {
     Genes genes = new Genes();
 
     parse(file, reader, genes, chr);
@@ -237,7 +235,10 @@ public abstract class GeneParser {
     }
   }
 
-  protected void parse(Path file, BufferedReader reader, Genes genes, Chromosome chr) throws IOException {
+  protected void parse(Path file,
+      BufferedReader reader,
+      Genes genes,
+      Chromosome chr) throws IOException {
     parse(file, reader, genes);
   }
 
@@ -249,7 +250,10 @@ public abstract class GeneParser {
     return genes;
   }
 
-  protected Genes parse(Path file, BufferedReader reader, Chromosome chr, int window) throws IOException {
+  protected Genes parse(Path file,
+      BufferedReader reader,
+      Chromosome chr,
+      int window) throws IOException {
     Genes genes = new Genes();
 
     parse(file, reader, genes, chr, window);
@@ -257,7 +261,8 @@ public abstract class GeneParser {
     return genes;
   }
 
-  public void parse(Path file, Genes genes, Chromosome chr, int window) throws IOException {
+  public void parse(Path file, Genes genes, Chromosome chr, int window)
+      throws IOException {
     BufferedReader reader = FileUtils.newBufferedReader(file);
 
     try {
@@ -267,11 +272,16 @@ public abstract class GeneParser {
     }
   }
 
-  protected void parse(Path file, BufferedReader reader, Genes genes, Chromosome chr, int window) throws IOException {
+  protected void parse(Path file,
+      BufferedReader reader,
+      Genes genes,
+      Chromosome chr,
+      int window) throws IOException {
     parse(file, reader, genes, chr);
   }
 
-  public Map<String, Set<String>> idMap(Path file, String id1, String id2) throws IOException {
+  public Map<String, Set<String>> idMap(Path file, String id1, String id2)
+      throws IOException {
     BufferedReader reader = FileUtils.newBufferedReader(file);
 
     Map<String, Set<String>> ret;
@@ -288,14 +298,14 @@ public abstract class GeneParser {
   /**
    * Parses the gene table.
    *
-   * @param reader
-   *          the reader
+   * @param reader the reader
    * @return the genes
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
-  public abstract Map<String, Set<String>> idMap(Path file, BufferedReader reader, String id1, String id2)
-      throws IOException;
+  public abstract Map<String, Set<String>> idMap(Path file,
+      BufferedReader reader,
+      String id1,
+      String id2) throws IOException;
 
   public boolean containsLevel(GeneType level) {
     if (mLevels.size() == 0) {
@@ -305,7 +315,8 @@ public abstract class GeneParser {
     return mLevels.contains(level);
   }
 
-  public static Gene addAttributes(GeneType type, final GenomicRegion region,
+  public static Gene addAttributes(GeneType type,
+      final GenomicRegion region,
       final IterMap<String, String> attributeMap) {
 
     Gene gene = Gene.create(type, region);

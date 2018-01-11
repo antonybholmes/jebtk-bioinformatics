@@ -24,14 +24,14 @@ public class ChrSpeciesGuess {
   /**
    * Guess.
    *
-   * @param id
-   *          the id
+   * @param id the id
    * @return the string
    */
   public String guess(String id) {
     String lid = id.toLowerCase();
 
-    if (lid.contains("mm10") || lid.contains("grcm38") || lid.contains("mouse")) {
+    if (lid.contains("mm10") || lid.contains("grcm38")
+        || lid.contains("mouse")) {
       return "mouse";
     } else {
       return "human";

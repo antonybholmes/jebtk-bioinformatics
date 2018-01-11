@@ -51,18 +51,14 @@ public class Cytoband extends BedRegion {
   /**
    * Instantiates a new cytoband.
    *
-   * @param chromosome
-   *          the chromosome
-   * @param start
-   *          the start
-   * @param end
-   *          the end
-   * @param name
-   *          the name
-   * @param stain
-   *          the stain
+   * @param chromosome the chromosome
+   * @param start the start
+   * @param end the end
+   * @param name the name
+   * @param stain the stain
    */
-  public Cytoband(Chromosome chromosome, int start, int end, String name, String stain) {
+  public Cytoband(Chromosome chromosome, int start, int end, String name,
+      String stain) {
     super(chromosome, start, end, name);
 
     mStain = stain;
@@ -94,15 +90,15 @@ public class Cytoband extends BedRegion {
   /**
    * Parses the.
    *
-   * @param line
-   *          the line
+   * @param line the line
    * @return the cytoband
    */
   public static Cytoband parse(String genome, String line) {
     List<String> tokens = TextUtils.fastSplit(line, TextUtils.TAB_DELIMITER);
 
     // convert first part to chromosome (replacing x,y and m) {
-    Chromosome chromosome = ChromosomeService.getInstance().guess(genome, tokens.get(0));
+    Chromosome chromosome = ChromosomeService.getInstance().guess(genome,
+        tokens.get(0));
 
     // ucsc convention
     int start = Integer.parseInt(tokens.get(1)) + 1;

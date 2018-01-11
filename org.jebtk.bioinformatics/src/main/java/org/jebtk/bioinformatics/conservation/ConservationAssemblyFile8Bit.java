@@ -64,8 +64,7 @@ public class ConservationAssemblyFile8Bit extends ConservationAssembly {
    * Directory containing genome files which must be of the form chr.n.txt. Each
    * file must contain exactly one line consisting of the entire chromosome.
    *
-   * @param directory
-   *          the directory
+   * @param directory the directory
    */
   public ConservationAssemblyFile8Bit(Path directory) {
     mDirectory = directory;
@@ -91,17 +90,14 @@ public class ConservationAssemblyFile8Bit extends ConservationAssembly {
   /**
    * Gets the scores.
    *
-   * @param file
-   *          the file
-   * @param start
-   *          the start
-   * @param end
-   *          the end
+   * @param file the file
+   * @param start the start
+   * @param end the end
    * @return the scores
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static List<Double> getScores(Path file, int start, int end) throws IOException {
+  public static List<Double> getScores(Path file, int start, int end)
+      throws IOException {
 
     int s = start - 1;
     int e = end - 1;
@@ -120,16 +116,14 @@ public class ConservationAssemblyFile8Bit extends ConservationAssembly {
   /**
    * The main method.
    *
-   * @param args
-   *          the arguments
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
-   * @throws ParseException
-   *           the parse exception
+   * @param args the arguments
+   * @throws IOException Signals that an I/O exception has occurred.
+   * @throws ParseException the parse exception
    */
   public static void main(String[] args) throws IOException, ParseException {
     ConservationAssemblyFile8Bit a = new ConservationAssemblyFile8Bit(
-        PathUtils.getPath("/ifs/scratch/cancer/Lab_RDF/abh2138/references/ucsc/phastcons/hg19"));
+        PathUtils.getPath(
+            "/ifs/scratch/cancer/Lab_RDF/abh2138/references/ucsc/phastcons/hg19"));
 
     System.err.println(a.getScores("chr1:90040-90050"));
   }

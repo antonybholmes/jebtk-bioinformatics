@@ -36,8 +36,7 @@ public class IntermediateGene extends GeneConversion<String> {
   /**
    * Instantiates a new intermediate gene.
    *
-   * @param name
-   *          the name
+   * @param name the name
    */
   public IntermediateGene(String name) {
     super(name);

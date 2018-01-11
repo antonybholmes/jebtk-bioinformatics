@@ -61,14 +61,10 @@ public class Feature implements Comparable<Feature> {
   /**
    * Instantiates a new feature.
    *
-   * @param name
-   *          the name
-   * @param chromosome
-   *          the chromosome
-   * @param start
-   *          the start
-   * @param end
-   *          the end
+   * @param name the name
+   * @param chromosome the chromosome
+   * @param start the start
+   * @param end the end
    */
   public Feature(String name, Chromosome chromosome, int start, int end) {
     mName = name;

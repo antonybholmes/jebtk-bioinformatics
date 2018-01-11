@@ -64,10 +64,8 @@ public class ConservationAssemblyWeb extends ConservationAssembly {
   /**
    * Instantiates a new conservation assembly web.
    *
-   * @param url
-   *          the url
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @param url the url
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   public ConservationAssemblyWeb(URL url) throws IOException {
     mUrl = new UrlBuilder(url);
@@ -84,12 +82,13 @@ public class ConservationAssemblyWeb extends ConservationAssembly {
    * getScores(edu.columbia.rdf.lib.bioinformatics.genome.GenomicRegion)
    */
   @Override
-  public List<Double> getScores(GenomicRegion region) throws IOException, ParseException {
+  public List<Double> getScores(GenomicRegion region)
+      throws IOException, ParseException {
     List<Double> scores = new ArrayList<Double>();
 
     try {
-      URL url = new UrlBuilder(mScoreUrl).resolve(region.getChr().toString()).resolve(region.getStart())
-          .resolve(region.getEnd()).toUrl();
+      URL url = new UrlBuilder(mScoreUrl).resolve(region.getChr().toString())
+          .resolve(region.getStart()).resolve(region.getEnd()).toUrl();
 
       // System.err.println(url);
 

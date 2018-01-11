@@ -62,11 +62,9 @@ public class Fasta {
   /**
    * Parses the.
    *
-   * @param file
-   *          the file
+   * @param file the file
    * @return the list
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   public static final List<Sequence> parse(Path file) throws IOException {
     List<Sequence> sequences = new ArrayList<Sequence>();
@@ -115,12 +113,9 @@ public class Fasta {
   /**
    * Write.
    *
-   * @param file
-   *          the file
-   * @param sequence
-   *          the sequence
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @param file the file
+   * @param sequence the sequence
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   public static void write(Path file, Sequence sequence) throws IOException {
     write(file, CollectionUtils.asList(sequence));
@@ -129,14 +124,12 @@ public class Fasta {
   /**
    * Write a series of fasta sequences to a file.
    *
-   * @param file
-   *          the file
-   * @param sequences
-   *          the sequences
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @param file the file
+   * @param sequences the sequences
+   * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static void write(Path file, Collection<Sequence> sequences) throws IOException {
+  public static void write(Path file, Collection<Sequence> sequences)
+      throws IOException {
     BufferedWriter writer = FileUtils.newBufferedWriter(file);
 
     try {
@@ -154,32 +147,26 @@ public class Fasta {
   /**
    * Write.
    *
-   * @param file
-   *          the file
-   * @param sequence
-   *          the sequence
-   * @param width
-   *          the width
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @param file the file
+   * @param sequence the sequence
+   * @param width the width
+   * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static void write(Path file, Sequence sequence, int width) throws IOException {
+  public static void write(Path file, Sequence sequence, int width)
+      throws IOException {
     write(file, CollectionUtils.asList(sequence), width);
   }
 
   /**
    * Write.
    *
-   * @param file
-   *          the file
-   * @param sequences
-   *          the sequences
-   * @param width
-   *          the width
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @param file the file
+   * @param sequences the sequences
+   * @param width the width
+   * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static void write(Path file, Collection<Sequence> sequences, int width) throws IOException {
+  public static void write(Path file, Collection<Sequence> sequences, int width)
+      throws IOException {
     BufferedWriter writer = FileUtils.newBufferedWriter(file);
 
     try {
@@ -202,8 +189,7 @@ public class Fasta {
   /**
    * Gets the header.
    *
-   * @param text
-   *          the text
+   * @param text the text
    * @return the header
    */
   public static String getHeader(String text) {

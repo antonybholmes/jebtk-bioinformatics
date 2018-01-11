@@ -62,8 +62,7 @@ public abstract class GenomeAssemblyDir extends GenomeAssemblyDNA {
    * Directory containing genome files which must be of the form chr.n.txt. Each
    * file must contain exactly one line consisting of the entire chromosome.
    *
-   * @param directory
-   *          the directory
+   * @param directory the directory
    */
   public GenomeAssemblyDir(Path directory) {
     mDirectory = directory;
@@ -72,17 +71,14 @@ public abstract class GenomeAssemblyDir extends GenomeAssemblyDNA {
   /**
    * Gets the sequence.
    *
-   * @param file
-   *          the file
-   * @param start
-   *          the start
-   * @param end
-   *          the end
+   * @param file the file
+   * @param start the start
+   * @param end the end
    * @return the sequence
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static String getSequence(Path file, int start, int end) throws IOException {
+  public static String getSequence(Path file, int start, int end)
+      throws IOException {
 
     byte[] buf = getBytes(file, start - 1, end - 1);
 
@@ -92,17 +88,14 @@ public abstract class GenomeAssemblyDir extends GenomeAssemblyDNA {
   /**
    * Gets the bytes.
    *
-   * @param file
-   *          the file
-   * @param start
-   *          the start
-   * @param end
-   *          the end
+   * @param file the file
+   * @param start the start
+   * @param end the end
    * @return the bytes
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static byte[] getBytes(Path file, int start, int end) throws IOException {
+  public static byte[] getBytes(Path file, int start, int end)
+      throws IOException {
 
     // System.err.println(file + " " + FileUtils.exists(file));
 
@@ -114,7 +107,8 @@ public abstract class GenomeAssemblyDir extends GenomeAssemblyDNA {
 
     InputStream in = FileUtils.newBufferedInputStream(file);
 
-    // GZIPInputStream in = new GZIPInputStream(new FileInputStream(file), 65536);
+    // GZIPInputStream in = new GZIPInputStream(new FileInputStream(file),
+    // 65536);
 
     int l = end - start + 1;
 

@@ -50,11 +50,9 @@ public class GeneSetCollections extends SetModel<GeneSetCollection> {
   /**
    * Parses the.
    *
-   * @param files
-   *          the files
+   * @param files the files
    * @return the gene set collections
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   public static GeneSetCollections parse(Path[] files) throws IOException {
     return parse(Arrays.asList(files));
@@ -63,11 +61,9 @@ public class GeneSetCollections extends SetModel<GeneSetCollection> {
   /**
    * Parses the.
    *
-   * @param files
-   *          the files
+   * @param files the files
    * @return the gene set collections
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   public static GeneSetCollections parse(List<Path> files) throws IOException {
     GeneSetCollections model = new GeneSetCollections();
@@ -84,14 +80,12 @@ public class GeneSetCollections extends SetModel<GeneSetCollection> {
   /**
    * Parses the.
    *
-   * @param files
-   *          the files
-   * @param collections
-   *          the collections
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @param files the files
+   * @param collections the collections
+   * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static void parse(List<Path> files, Set<GeneSet> collections) throws IOException {
+  public static void parse(List<Path> files, Set<GeneSet> collections)
+      throws IOException {
     for (Path file : files) {
       GeneSetCollection collection = GeneSetCollection.parse(file);
 
@@ -105,8 +99,7 @@ public class GeneSetCollections extends SetModel<GeneSetCollection> {
    * Load from resources.
    *
    * @return the gene set collections
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   public static GeneSetCollections loadFromResources() throws IOException {
     GeneSetCollections model = new GeneSetCollections();
@@ -116,9 +109,11 @@ public class GeneSetCollections extends SetModel<GeneSetCollection> {
         continue;
       }
 
-      String name = res.toLowerCase().replaceFirst("^.+\\/", "").replaceFirst("\\.symbols.+", "");
+      String name = res.toLowerCase().replaceFirst("^.+\\/", "")
+          .replaceFirst("\\.symbols.+", "");
 
-      GeneSetCollection collection = GeneSetCollection.parse(Resources.getResInputStream(res), name);
+      GeneSetCollection collection = GeneSetCollection
+          .parse(Resources.getResInputStream(res), name);
 
       model.add(collection);
     }

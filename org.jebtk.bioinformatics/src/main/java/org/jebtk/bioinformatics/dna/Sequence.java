@@ -61,7 +61,8 @@ import org.slf4j.LoggerFactory;
  * @author Antony Holmes Holmes
  *
  */
-public class Sequence implements Comparable<Sequence>, NameProperty, Iterable<Character> {
+public class Sequence
+    implements Comparable<Sequence>, NameProperty, Iterable<Character> {
 
   /**
    * The header pattern.
@@ -89,10 +90,8 @@ public class Sequence implements Comparable<Sequence>, NameProperty, Iterable<Ch
   /**
    * Instantiates a new sequence.
    *
-   * @param name
-   *          the name
-   * @param sequence
-   *          the sequence
+   * @param name the name
+   * @param sequence the sequence
    */
   private Sequence(String sequence) {
     this(DEFAULT_NAME, sequence);
@@ -105,7 +104,8 @@ public class Sequence implements Comparable<Sequence>, NameProperty, Iterable<Ch
 
     mName = name;
     mSequence = sequence.toUpperCase();
-    mType = sequence.contains("U") || sequence.contains("u") ? SequenceType.RNA : SequenceType.DNA;
+    mType = sequence.contains("U") || sequence.contains("u") ? SequenceType.RNA
+        : SequenceType.DNA;
   }
 
   @Override
@@ -142,8 +142,7 @@ public class Sequence implements Comparable<Sequence>, NameProperty, Iterable<Ch
   /**
    * Output a FASTA representation of the sequence.
    * 
-   * @param name
-   *          Alternative name for sequence.
+   * @param name Alternative name for sequence.
    * @return
    */
   public String toFasta(String name) {
@@ -172,19 +171,18 @@ public class Sequence implements Comparable<Sequence>, NameProperty, Iterable<Ch
   /**
    * Reverse complement.
    *
-   * @param sequence
-   *          the sequence
+   * @param sequence the sequence
    * @return the sequence
    */
   public static Sequence reverseComplement(Sequence sequence) {
-    return new Sequence(sequence.mName + " rev comp", reverseComplement(sequence.mSequence, sequence.mType));
+    return new Sequence(sequence.mName + " rev comp",
+        reverseComplement(sequence.mSequence, sequence.mType));
   }
 
   /**
    * Reverse compliment some DNA.
    *
-   * @param sequence
-   *          the sequence
+   * @param sequence the sequence
    * @return the string
    */
   public static String reverseComplement(String sequence) {
@@ -198,12 +196,12 @@ public class Sequence implements Comparable<Sequence>, NameProperty, Iterable<Ch
   /**
    * Complement.
    *
-   * @param sequence
-   *          the sequence
+   * @param sequence the sequence
    * @return the string
    */
   public static Sequence complement(Sequence sequence) {
-    return new Sequence(sequence.mName + " comp", complement(sequence.mSequence, sequence.mType));
+    return new Sequence(sequence.mName + " comp",
+        complement(sequence.mSequence, sequence.mType));
   }
 
   public static String complement(String sequence) {
@@ -213,8 +211,7 @@ public class Sequence implements Comparable<Sequence>, NameProperty, Iterable<Ch
   /**
    * Return the complement of a DNA sequence.
    *
-   * @param sequence
-   *          the sequence
+   * @param sequence the sequence
    * @return the string
    */
   public static String complement(String sequence, SequenceType type) {
@@ -270,8 +267,7 @@ public class Sequence implements Comparable<Sequence>, NameProperty, Iterable<Ch
   /**
    * Return the character at a particular base
    *
-   * @param i
-   *          the i
+   * @param i the i
    * @return the char
    */
   public char charAt(int i) {
@@ -297,8 +293,8 @@ public class Sequence implements Comparable<Sequence>, NameProperty, Iterable<Ch
   }
 
   /**
-   * Return a numerical representation of the sequence where a = 0, c = 1, g = 2,
-   * t = 3.
+   * Return a numerical representation of the sequence where a = 0, c = 1, g =
+   * 2, t = 3.
    *
    * @return the byte[]
    */
@@ -318,8 +314,7 @@ public class Sequence implements Comparable<Sequence>, NameProperty, Iterable<Ch
   /**
    * Convert a sequence to an indexed sequence where a = 0 c = 1 g = 2 t = 3.
    *
-   * @param seq
-   *          the seq
+   * @param seq the seq
    * @return the byte[]
    */
   public static byte[] seqToIndexSeq(final char[] seq) {
@@ -335,8 +330,7 @@ public class Sequence implements Comparable<Sequence>, NameProperty, Iterable<Ch
   /**
    * Converts a dna base to a letter for indexing. a = 0 c = 1 g = 2 t = 3
    *
-   * @param c
-   *          the c
+   * @param c the c
    * @return the byte
    */
   public static byte baseToIndex(char c) {
@@ -358,11 +352,10 @@ public class Sequence implements Comparable<Sequence>, NameProperty, Iterable<Ch
   }
 
   /**
-   * Returns the consensus sequence from a list of sequences i.e the most abundant
-   * base at each position.
+   * Returns the consensus sequence from a list of sequences i.e the most
+   * abundant base at each position.
    *
-   * @param sequences
-   *          the sequences
+   * @param sequences the sequences
    * @return the consensus
    */
   public static Sequence getConsensus(List<Sequence> sequences) {
@@ -398,16 +391,13 @@ public class Sequence implements Comparable<Sequence>, NameProperty, Iterable<Ch
   /**
    * Write fasta.
    *
-   * @param <X>
-   *          the generic type
-   * @param sequences
-   *          the sequences
-   * @param file
-   *          the file
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @param <X> the generic type
+   * @param sequences the sequences
+   * @param file the file
+   * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static <X extends Sequence> void writeFasta(List<X> sequences, Path file) throws IOException {
+  public static <X extends Sequence> void writeFasta(List<X> sequences,
+      Path file) throws IOException {
 
     LOG.debug("Writing {}...", file);
 
@@ -426,7 +416,8 @@ public class Sequence implements Comparable<Sequence>, NameProperty, Iterable<Ch
     }
   }
 
-  public static <X extends Sequence> void writeFormattedFasta(List<X> sequences, Path file) throws IOException {
+  public static <X extends Sequence> void writeFormattedFasta(List<X> sequences,
+      Path file) throws IOException {
 
     LOG.debug("Writing {}...", file);
 
@@ -456,11 +447,9 @@ public class Sequence implements Comparable<Sequence>, NameProperty, Iterable<Ch
   /**
    * Parses the fasta.
    *
-   * @param file
-   *          the file
+   * @param file the file
    * @return the list
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   public static final List<Sequence> parseFasta(Path file) throws IOException {
     List<Sequence> sequences = new ArrayList<Sequence>();
@@ -509,8 +498,7 @@ public class Sequence implements Comparable<Sequence>, NameProperty, Iterable<Ch
   /**
    * Reverse complement a list of sequences.
    *
-   * @param sequences
-   *          the sequences
+   * @param sequences the sequences
    * @return the list
    */
   public static List<Sequence> reverseComplement(List<Sequence> sequences) {
@@ -526,12 +514,9 @@ public class Sequence implements Comparable<Sequence>, NameProperty, Iterable<Ch
   /**
    * To upper.
    *
-   * @param seq
-   *          the seq
-   * @param offset
-   *          the offset
-   * @param length
-   *          the length
+   * @param seq the seq
+   * @param offset the offset
+   * @param length the length
    * @return the sequence
    */
   public static Sequence toUpper(Sequence seq, int offset, int length) {
@@ -550,8 +535,7 @@ public class Sequence implements Comparable<Sequence>, NameProperty, Iterable<Ch
   /**
    * Return the percentage of GC in the sequence.
    *
-   * @param sequence
-   *          the sequence
+   * @param sequence the sequence
    * @return the double
    */
   public static double gcContent(Sequence sequence) {
@@ -561,8 +545,7 @@ public class Sequence implements Comparable<Sequence>, NameProperty, Iterable<Ch
   /**
    * Return the percentage of GC in the sequence.
    *
-   * @param sequence
-   *          the sequence
+   * @param sequence the sequence
    * @return the double
    */
   public static double gcContent(String sequence) {
@@ -572,8 +555,7 @@ public class Sequence implements Comparable<Sequence>, NameProperty, Iterable<Ch
   /**
    * Return the percentage of GC in the sequence.
    *
-   * @param sequence
-   *          the sequence
+   * @param sequence the sequence
    * @return the double
    */
   public static double gcContent(char[] sequence) {
@@ -591,19 +573,16 @@ public class Sequence implements Comparable<Sequence>, NameProperty, Iterable<Ch
   /**
    * Extract a random sequence of a given length from the genome.
    *
-   * @param genome
-   *          the genome
-   * @param mAssembly
-   *          the m assembly
-   * @param mChrSizes
-   *          the m chr sizes
-   * @param length
-   *          the length
+   * @param genome the genome
+   * @param mAssembly the m assembly
+   * @param mChrSizes the m chr sizes
+   * @param length the length
    * @return the random sequence
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static SequenceRegion getRandomSequence(String genome, GenomeAssembly mAssembly, ChromosomeSizes mChrSizes,
+  public static SequenceRegion getRandomSequence(String genome,
+      GenomeAssembly mAssembly,
+      ChromosomeSizes mChrSizes,
       int length) throws IOException {
     Random rand = new Random();
 
@@ -620,10 +599,8 @@ public class Sequence implements Comparable<Sequence>, NameProperty, Iterable<Ch
   /**
    * To index.
    *
-   * @param <X>
-   *          the generic type
-   * @param seqs
-   *          the seqs
+   * @param <X> the generic type
+   * @param seqs the seqs
    * @return the byte[][]
    */
   public static <X extends Sequence> byte[][] toIndex(List<X> seqs) {
@@ -637,7 +614,8 @@ public class Sequence implements Comparable<Sequence>, NameProperty, Iterable<Ch
   }
 
   public static String toFasta(String name, Sequence sequence) {
-    return new StringBuilder(">").append(name).append(TextUtils.NEW_LINE).append(sequence).toString();
+    return new StringBuilder(">").append(name).append(TextUtils.NEW_LINE)
+        .append(sequence).toString();
   }
 
   public static Sequence create(String dna) {

@@ -51,16 +51,13 @@ public class BedGraphRegion extends UCSCTrackRegion {
   /**
    * Create a new region. Coordinates are one based.
    *
-   * @param chromosome
-   *          the chromosome
-   * @param start
-   *          the start
-   * @param end
-   *          the end
-   * @param value
-   *          the value
+   * @param chromosome the chromosome
+   * @param start the start
+   * @param end the end
+   * @param value the value
    */
-  public BedGraphRegion(Chromosome chromosome, int start, int end, double value) {
+  public BedGraphRegion(Chromosome chromosome, int start, int end,
+      double value) {
     super(chromosome, start, end);
 
     mValue = value;
@@ -91,15 +88,15 @@ public class BedGraphRegion extends UCSCTrackRegion {
   /**
    * Parses the.
    *
-   * @param line
-   *          the line
+   * @param line the line
    * @return the bed graph region
    */
   public static BedGraphRegion parse(String genome, String line) {
     List<String> tokens = TextUtils.fastSplit(line, TextUtils.TAB_DELIMITER);
 
     // convert first part to chromosome (replacing x,y and m) {
-    Chromosome chromosome = ChromosomeService.getInstance().guess(genome, tokens.get(0));
+    Chromosome chromosome = ChromosomeService.getInstance().guess(genome,
+        tokens.get(0));
 
     // Per UCSC convention, coordinates are zero based in the file
     // but we shall convert them to one based for consistency

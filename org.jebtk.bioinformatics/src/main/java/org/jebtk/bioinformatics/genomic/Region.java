@@ -66,8 +66,7 @@ public class Region implements Comparable<Region>, FormattedTxt {
   /**
    * Instantiates a new region.
    *
-   * @param region
-   *          the region
+   * @param region the region
    */
   public Region(Region region) {
     this(region.mStart, region.mEnd);
@@ -76,10 +75,8 @@ public class Region implements Comparable<Region>, FormattedTxt {
   /**
    * Instantiates a new region.
    *
-   * @param start
-   *          the start
-   * @param end
-   *          the end
+   * @param start the start
+   * @param end the end
    */
   public Region(int start, int end) {
     // The start must be at least 1
@@ -203,8 +200,7 @@ public class Region implements Comparable<Region>, FormattedTxt {
   /**
    * Returns true if the text matches a region of the form m-n.
    *
-   * @param region
-   *          the region
+   * @param region the region
    * @return true, if is region
    */
   protected static boolean isRegion(String region) {
@@ -245,7 +241,9 @@ public class Region implements Comparable<Region>, FormattedTxt {
       int end;
 
       if (location.indexOf("-") != -1) {
-        List<String> tokens = Splitter.on('-').text(location); // ) .(tokens.get(1), '-');
+        List<String> tokens = Splitter.on('-').text(location); // )
+                                                               // .(tokens.get(1),
+                                                               // '-');
 
         start = TextUtils.parseInt(tokens.get(0));
         end = TextUtils.parseInt(tokens.get(1));
@@ -269,10 +267,8 @@ public class Region implements Comparable<Region>, FormattedTxt {
   /**
    * Shift.
    *
-   * @param region
-   *          the region
-   * @param shift
-   *          the shift
+   * @param region the region
+   * @param shift the shift
    * @return the region
    */
   public static Region shift(Region region, int shift) {

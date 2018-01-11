@@ -51,8 +51,7 @@ public enum RepeatMaskType {
   /**
    * Parses the.
    *
-   * @param mask
-   *          the mask
+   * @param mask the mask
    * @return the repeat mask type
    */
   public static RepeatMaskType parse(String mask) {

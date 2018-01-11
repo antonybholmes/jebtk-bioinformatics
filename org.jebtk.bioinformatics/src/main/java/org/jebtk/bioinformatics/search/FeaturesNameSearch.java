@@ -58,8 +58,7 @@ public class FeaturesNameSearch implements Iterable<Feature> {
   /**
    * Instantiates a new features name search.
    *
-   * @param type
-   *          the type
+   * @param type the type
    */
   public FeaturesNameSearch(String type) {
     this.type = type;
@@ -77,8 +76,7 @@ public class FeaturesNameSearch implements Iterable<Feature> {
   /**
    * Cache features.
    *
-   * @param file
-   *          the file
+   * @param file the file
    */
   public void cacheFeatures(Path file) {
     features.clear();
@@ -102,7 +100,8 @@ public class FeaturesNameSearch implements Iterable<Feature> {
 
           List<String> row = TextUtils.fastSplitRemoveQuotes(line);
 
-          Feature feature = new Feature(row.get(0), ChromosomeService.getInstance().guess(file, row.get(1)),
+          Feature feature = new Feature(row.get(0),
+              ChromosomeService.getInstance().guess(file, row.get(1)),
               Integer.parseInt(row.get(2)), Integer.parseInt(row.get(3)));
 
           features.put(feature.getName(), feature);
@@ -110,8 +109,8 @@ public class FeaturesNameSearch implements Iterable<Feature> {
           ++featureCount;
         }
       } finally {
-        System.out
-            .println("Loaded " + chromosomeCount + " groups with " + featureCount + " features from " + file + ".");
+        System.out.println("Loaded " + chromosomeCount + " groups with "
+            + featureCount + " features from " + file + ".");
 
         reader.close();
       }
@@ -123,8 +122,7 @@ public class FeaturesNameSearch implements Iterable<Feature> {
   /**
    * Gets the feature.
    *
-   * @param name
-   *          the name
+   * @param name the name
    * @return the feature
    */
   public final Feature getFeature(String name) {

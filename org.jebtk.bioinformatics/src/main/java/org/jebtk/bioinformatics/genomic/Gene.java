@@ -58,11 +58,14 @@ public class Gene extends GenomicRegion {
   public static final String TRANSCRIPT_ID_TYPE = "transcript";
 
   /** The m id map. */
-  private IterMap<String, String> mIdMap = DefaultTreeMap.create(TextUtils.NA); // new IterTreeMap<String, String>();
+  private IterMap<String, String> mIdMap = DefaultTreeMap.create(TextUtils.NA); // new
+                                                                                // IterTreeMap<String,
+                                                                                // String>();
 
   private Set<String> mTags = new TreeSet<String>();
 
-  private IterMap<GeneType, List<Gene>> mElemMap = DefaultTreeMap.create(new UniqueArrayListCreator<Gene>());
+  private IterMap<GeneType, List<Gene>> mElemMap = DefaultTreeMap
+      .create(new UniqueArrayListCreator<Gene>());
 
   /** The m utr 5 p. */
   // private List<Exon> mUtr5p = new ArrayList<Exon>();
@@ -103,11 +106,11 @@ public class Gene extends GenomicRegion {
   }
 
   /*
-   * @Override public int compareTo(Region r) { if (r instanceof Gene) { Gene g =
-   * (Gene)r;
+   * @Override public int compareTo(Region r) { if (r instanceof Gene) { Gene g
+   * = (Gene)r;
    * 
-   * for (String id : mIdMap.keySet()) { // Find the first point where they differ
-   * and return that
+   * for (String id : mIdMap.keySet()) { // Find the first point where they
+   * differ and return that
    * 
    * if (g.mIdMap.containsKey(id)) { String id2 = g.mIdMap.get(id);
    * 
@@ -126,10 +129,8 @@ public class Gene extends GenomicRegion {
   /**
    * Assign a gene id to the gene (e.g. a symbol or RefSeq Id).
    *
-   * @param type
-   *          the type
-   * @param name
-   *          the name
+   * @param type the type
+   * @param name the name
    * @return The instance of the gene
    */
   public Gene setId(String type, String name) {
@@ -187,8 +188,7 @@ public class Gene extends GenomicRegion {
   /**
    * Adds the exon.
    *
-   * @param exon
-   *          the exon
+   * @param exon the exon
    */
   public void addExon(GenomicRegion exon) {
     add(Gene.create(GeneType.EXON, exon));
@@ -252,8 +252,7 @@ public class Gene extends GenomicRegion {
   /**
    * Sets the symbol.
    *
-   * @param name
-   *          the name
+   * @param name the name
    * @return the gene
    */
   public Gene setSymbol(String name) {
@@ -263,8 +262,7 @@ public class Gene extends GenomicRegion {
   /**
    * Sets the refseq.
    *
-   * @param name
-   *          the name
+   * @param name the name
    * @return the gene
    */
   public Gene setRefseq(String name) {
@@ -274,8 +272,7 @@ public class Gene extends GenomicRegion {
   /**
    * Sets the entrez.
    *
-   * @param name
-   *          the name
+   * @param name the name
    * @return the gene
    */
   public Gene setEntrez(String name) {
@@ -315,8 +312,7 @@ public class Gene extends GenomicRegion {
   /**
    * Return a gene id. If the id does not exist 'n/a' is returned.
    *
-   * @param type
-   *          the type
+   * @param type the type
    * @return the id
    */
   public String getId(String type) {
@@ -375,13 +371,10 @@ public class Gene extends GenomicRegion {
   /**
    * To symbols.
    *
-   * @param features
-   *          the features
+   * @param features the features
    * @return the sets the
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
-   * @throws ParseException
-   *           the parse exception
+   * @throws IOException Signals that an I/O exception has occurred.
+   * @throws ParseException the parse exception
    */
   public static Set<String> toSymbols(List<Gene> genes) {
     Set<String> ret = new TreeSet<String>();
@@ -396,8 +389,7 @@ public class Gene extends GenomicRegion {
   /**
    * Tss region.
    *
-   * @param gene
-   *          the gene
+   * @param gene the gene
    * @return the genomic region
    */
   public static GenomicRegion tssRegion(Gene gene) {
@@ -415,10 +407,8 @@ public class Gene extends GenomicRegion {
   /**
    * Tss dist.
    *
-   * @param gene
-   *          the gene
-   * @param region
-   *          the region
+   * @param gene the gene
+   * @param region the region
    * @return the int
    */
   public static int tssDist(Gene gene, GenomicRegion region) {
@@ -434,10 +424,8 @@ public class Gene extends GenomicRegion {
   /**
    * Tss dist5p.
    *
-   * @param gene
-   *          the gene
-   * @param region
-   *          the region
+   * @param gene the gene
+   * @param region the region
    * @return the int
    */
   public static int tssDist5p(Gene gene, GenomicRegion region) {

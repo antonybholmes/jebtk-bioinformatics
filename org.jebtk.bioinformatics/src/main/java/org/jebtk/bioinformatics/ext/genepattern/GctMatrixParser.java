@@ -50,14 +50,10 @@ public class GctMatrixParser implements MatrixParser {
   /**
    * Sets the. O
    * 
-   * @param matrix
-   *          the matrix
-   * @param row
-   *          the row
-   * @param column
-   *          the column
-   * @param value
-   *          the value
+   * @param matrix the matrix
+   * @param row the row
+   * @param column the column
+   * @param value the value
    */
   protected void set(Matrix matrix, int row, int column, String value) {
 

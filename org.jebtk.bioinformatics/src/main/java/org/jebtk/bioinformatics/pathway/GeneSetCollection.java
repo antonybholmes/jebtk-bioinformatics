@@ -51,7 +51,8 @@ import org.slf4j.LoggerFactory;
  *
  * @author Antony Holmes Holmes
  */
-public class GeneSetCollection extends ListModel<GeneSet> implements Comparable<GeneSetCollection> {
+public class GeneSetCollection extends ListModel<GeneSet>
+    implements Comparable<GeneSetCollection> {
 
   /**
    * The constant serialVersionUID.
@@ -66,13 +67,13 @@ public class GeneSetCollection extends ListModel<GeneSet> implements Comparable<
   /**
    * The constant LOG.
    */
-  private static final Logger LOG = LoggerFactory.getLogger(GeneSetCollection.class);
+  private static final Logger LOG = LoggerFactory
+      .getLogger(GeneSetCollection.class);
 
   /**
    * Instantiates a new gene set collection.
    *
-   * @param name
-   *          the name
+   * @param name the name
    */
   public GeneSetCollection(String name) {
     mName = name;
@@ -124,8 +125,7 @@ public class GeneSetCollection extends ListModel<GeneSet> implements Comparable<
   /**
    * Gets the gene set name.
    *
-   * @param file
-   *          the file
+   * @param file the file
    * @return the gene set name
    */
   public static String getGeneSetName(Path file) {
@@ -135,11 +135,9 @@ public class GeneSetCollection extends ListModel<GeneSet> implements Comparable<
   /**
    * Parses the.
    *
-   * @param file
-   *          the file
+   * @param file the file
    * @return the gene set collection
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   public static GeneSetCollection parse(Path file) throws IOException {
     LOG.info("Parsing gene set collection in {}...", file);
@@ -158,15 +156,13 @@ public class GeneSetCollection extends ListModel<GeneSet> implements Comparable<
   /**
    * Parses the.
    *
-   * @param is
-   *          the is
-   * @param name
-   *          the name
+   * @param is the is
+   * @param name the name
    * @return the gene set collection
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static GeneSetCollection parse(InputStream is, String name) throws IOException {
+  public static GeneSetCollection parse(InputStream is, String name)
+      throws IOException {
     GeneSetCollection collection = new GeneSetCollection(name);
 
     BufferedReader reader = new BufferedReader(new InputStreamReader(is));
@@ -182,7 +178,8 @@ public class GeneSetCollection extends ListModel<GeneSet> implements Comparable<
 
         tokens = TextUtils.tabSplit(line);
 
-        GeneSet geneSet = new GeneSet(tokens.get(0), name, CollectionUtils.subList(tokens, 2));
+        GeneSet geneSet = new GeneSet(tokens.get(0), name,
+            CollectionUtils.subList(tokens, 2));
 
         collection.add(geneSet);
       }
@@ -196,14 +193,12 @@ public class GeneSetCollection extends ListModel<GeneSet> implements Comparable<
   /**
    * Parses the.
    *
-   * @param file
-   *          the file
-   * @param collection
-   *          the collection
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @param file the file
+   * @param collection the collection
+   * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static void parse(Path file, Set<GeneSet> collection) throws IOException {
+  public static void parse(Path file, Set<GeneSet> collection)
+      throws IOException {
     LOG.info("Parsing gene set collection in {}...", file);
 
     String name = getGeneSetName(file);
@@ -220,16 +215,13 @@ public class GeneSetCollection extends ListModel<GeneSet> implements Comparable<
   /**
    * Parses the.
    *
-   * @param is
-   *          the is
-   * @param name
-   *          the name
-   * @param collection
-   *          the collection
-   * @throws IOException
-   *           Signals that an I/O exception has occurred.
+   * @param is the is
+   * @param name the name
+   * @param collection the collection
+   * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static void parse(InputStream is, String name, Set<GeneSet> collection) throws IOException {
+  public static void parse(InputStream is, String name, Set<GeneSet> collection)
+      throws IOException {
     BufferedReader reader = new BufferedReader(new InputStreamReader(is));
 
     String line;
@@ -243,7 +235,8 @@ public class GeneSetCollection extends ListModel<GeneSet> implements Comparable<
 
         tokens = TextUtils.tabSplit(line);
 
-        GeneSet geneSet = new GeneSet(tokens.get(0), name, CollectionUtils.subList(tokens, 2));
+        GeneSet geneSet = new GeneSet(tokens.get(0), name,
+            CollectionUtils.subList(tokens, 2));
 
         collection.add(geneSet);
       }

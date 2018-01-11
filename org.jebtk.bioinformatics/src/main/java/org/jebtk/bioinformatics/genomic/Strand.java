@@ -51,8 +51,7 @@ public enum Strand {
   /**
    * Instantiates a new strand.
    *
-   * @param value
-   *          the value
+   * @param value the value
    */
   private Strand(int value) {
     mValue = value;
@@ -75,8 +74,7 @@ public enum Strand {
   /**
    * Parses the.
    *
-   * @param strand
-   *          the strand
+   * @param strand the strand
    * @return the strand
    */
   public static Strand parse(char strand) {
@@ -93,8 +91,7 @@ public enum Strand {
   /**
    * Parses the.
    *
-   * @param strand
-   *          the strand
+   * @param strand the strand
    * @return the strand
    */
   public static Strand parse(String strand) {
@@ -102,11 +99,10 @@ public enum Strand {
   }
 
   /**
-   * Convert a strand to its character equivalent: SENSE -> '+' ANTI_SENSE -> '-'
-   * NONE -> '.'
+   * Convert a strand to its character equivalent: SENSE -> '+' ANTI_SENSE ->
+   * '-' NONE -> '.'
    *
-   * @param strand
-   *          the strand
+   * @param strand the strand
    * @return the string
    */
   public static String toString(Strand strand) {
@@ -116,8 +112,7 @@ public enum Strand {
   /**
    * To char.
    *
-   * @param strand
-   *          the strand
+   * @param strand the strand
    * @return the char
    */
   public static char toChar(Strand strand) {
@@ -134,8 +129,7 @@ public enum Strand {
   /**
    * Convert a collection of strands to their character equivalents.
    *
-   * @param strands
-   *          the strands
+   * @param strands the strands
    * @return the list
    */
   public static List<Character> toChar(final Collection<Strand> strands) {
@@ -151,8 +145,7 @@ public enum Strand {
   /**
    * Parse a list of characters as strands.
    *
-   * @param chars
-   *          the chars
+   * @param chars the chars
    * @return the list
    */
   public static List<Strand> parse(final Collection<Character> chars) {
@@ -168,8 +161,7 @@ public enum Strand {
   /**
    * Checks if is sense.
    *
-   * @param strand
-   *          the strand
+   * @param strand the strand
    * @return true, if is sense
    */
   public static boolean isSense(Strand strand) {
