@@ -109,6 +109,7 @@ public class MotifsPwtFs extends MotifsFs {
       boolean inList,
       boolean exactMatch,
       boolean caseSensitive) throws Exception {
+    System.err.println("root " + root);
     if (!FileUtils.exists(root)) {
       return;
     }
@@ -116,13 +117,11 @@ public class MotifsPwtFs extends MotifsFs {
     List<Path> files = FileUtils.ls(root, false, true);
 
     for (Path file : files) {
-      if (!PathUtils.getName(file).endsWith("pwt.gz")) {
-        continue;
+      if (PathUtils.getName(file).endsWith("pwt.gz")) {
+        Motifs motifs = parseMotifPwt(file);
+
+        filter(motifs, rootNode, terms, inList, exactMatch, caseSensitive);
       }
-
-      Motifs motifs = parseMotifPwt(file);
-
-      filter(motifs, rootNode, terms, inList, exactMatch, caseSensitive);
     }
   }
 
