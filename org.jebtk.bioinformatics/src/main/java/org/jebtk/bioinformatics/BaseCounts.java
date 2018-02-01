@@ -27,6 +27,8 @@
  */
 package org.jebtk.bioinformatics;
 
+import java.util.Arrays;
+
 import org.jebtk.core.Mathematics;
 
 // TODO: Auto-generated Javadoc
@@ -41,7 +43,7 @@ public class BaseCounts {
   /**
    * The member counts.
    */
-  private double[] mCounts = new double[4];
+  private double[] mCounts = new double[5];
   private double mMax;
 
   /**
@@ -53,26 +55,38 @@ public class BaseCounts {
    * @param t the t
    */
   public BaseCounts(double a, double c, double g, double t) {
-    this(a, c, g, t, true);
+    this(a, c, g, t, 0);
+  }
+
+  public BaseCounts(double a, double c, double g, double t, double n) {
+    this(a, c, g, t, n, true);
   }
 
   public BaseCounts(double a, double c, double g, double t, boolean norm) {
+    this(a, c, g, t, 0, norm);
+  }
+
+  public BaseCounts(double a, double c, double g, double t, double n,
+      boolean norm) {
 
     mCounts[0] = a;
     mCounts[1] = c;
     mCounts[2] = g;
     mCounts[3] = t;
+    mCounts[4] = n;
 
     if (norm) {
-      double total = a + c + g + t;
+      double total = a + c + g + t + n;
 
       mCounts[0] /= total;
       mCounts[1] /= total;
       mCounts[2] /= total;
       mCounts[3] /= total;
+      mCounts[4] /= total;
     }
 
-    mMax = Mathematics.max(mCounts[0], mCounts[1], mCounts[2], mCounts[3]);
+    mMax = Mathematics
+        .max(mCounts[0], mCounts[1], mCounts[2], mCounts[3], mCounts[4]);
 
   }
 
@@ -100,7 +114,7 @@ public class BaseCounts {
       return getCount(3);
     default:
       // N etc
-      return 0.25; // getCount(0); //0.25;
+      return getCount(4);// getCount(0); //0.25;
     }
   }
 
@@ -154,7 +168,25 @@ public class BaseCounts {
     return getCount(3);
   }
 
+  public double getN() {
+    return getCount(4);
+  }
+
   public double getMaxScore() {
     return mMax;
+  }
+
+  @Override
+  public String toString() {
+    return Arrays.toString(mCounts);
+  }
+
+  /**
+   * Returns the sum of all bases.
+   * 
+   * @return  the sum of all bases.
+   */
+  public double getSum() {
+    return Mathematics.sum(mCounts);
   }
 }

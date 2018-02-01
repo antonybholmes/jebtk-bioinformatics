@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
-	<setting name="bioinformatics.dna.bases.a.color" value="#00d400" />
-	<setting name="bioinformatics.dna.bases.c.color" value="#2a7fff" />
+  <!-- clustal colors a(red) c(blue) g(gold) t(green) -->
+  <setting name="bioinformatics.dna.bases.a.color" value="#00aa44" />
+	<setting name="bioinformatics.dna.bases.c.color" value="#2c5aa0" />
 	<setting name="bioinformatics.dna.bases.g.color" value="#ffcc00" />
-	<setting name="bioinformatics.dna.bases.t.color" value="#ff2a2a" />
-	<setting name="bioinformatics.dna.bases.n.color" value="#000000" />
+	<setting name="bioinformatics.dna.bases.t.color" value="#c83737" />
+	<setting name="bioinformatics.dna.bases.n.color" value="#333333" />
 	
 	<setting name="genome" value="hg19" />
 

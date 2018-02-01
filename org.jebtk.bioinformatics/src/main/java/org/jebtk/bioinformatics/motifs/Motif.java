@@ -39,10 +39,8 @@ import java.util.regex.Pattern;
 
 import org.jebtk.bioinformatics.BaseCounts;
 import org.jebtk.bioinformatics.annotation.Species;
-import org.jebtk.core.Resources;
 import org.jebtk.core.io.FileUtils;
 import org.jebtk.core.io.Io;
-import org.jebtk.core.io.PathUtils;
 import org.jebtk.core.text.FormattedTxt;
 import org.jebtk.core.text.Splitter;
 import org.jebtk.core.text.TextUtils;
@@ -170,13 +168,14 @@ public class Motif
 
     mBgPwm = Math.pow(0.25, mBases.size());
 
-    mPwm = new double[4][bases.size()];
+    mPwm = new double[5][bases.size()];
 
     for (int i = 0; i < bases.size(); ++i) {
       mPwm[0][i] = mBases.get(i).getA();
       mPwm[1][i] = mBases.get(i).getC();
       mPwm[2][i] = mBases.get(i).getG();
       mPwm[3][i] = mBases.get(i).getT();
+      mPwm[4][i] = mBases.get(i).getN();
     }
   }
 
@@ -450,13 +449,7 @@ public class Motif
    */
   public static List<Motif> parseMotifs(Path file, String database)
       throws IOException {
-    BufferedReader reader;
-
-    if (PathUtils.getFileExt(file).equals("gz")) {
-      reader = Resources.getGzipReader(file);
-    } else {
-      reader = FileUtils.newBufferedReader(file);
-    }
+    BufferedReader reader = FileUtils.newBufferedReader(file);
 
     return parseMotifs(reader, database);
   }
@@ -524,13 +517,6 @@ public class Motif
           double gf = Double.parseDouble(g.get(i));
           double tf = Double.parseDouble(t.get(i));
 
-          // double total = af + cf + gf + tf;
-
-          // af /= total;
-          // cf /= total;
-          // gf /= total;
-          // tf /= total;
-
           counts.add(new BaseCounts(af, cf, gf, tf, true));
         }
 
@@ -543,6 +529,30 @@ public class Motif
     }
 
     return motifs;
+  }
+
+  /**
+   * Parses the pwm motif.
+   *
+   * @param file the file
+   * @return the motif
+   * @throws IOException Signals that an I/O exception has occurred.
+   */
+  public static Motif parsePwmMotif(Path file) throws IOException {
+    return parsePwmMotifs(file).get(0);
+  }
+
+  /**
+   * Parse a matrix file from JASPAR.
+   *
+   * @param file the file
+   * @return the list
+   * @throws IOException Signals that an I/O exception has occurred.
+   */
+  public static List<Motif> parsePwmMotifs(Path file) throws IOException {
+    BufferedReader reader = FileUtils.newBufferedReader(file);
+
+    return parsePwmMotifs(reader);
   }
 
   /**
@@ -579,12 +589,12 @@ public class Motif
         List<String> t = Splitter.onTab().ignoreEmptyStrings()
             .text(reader.readLine());
 
-        int l = a.size() - 1;
+        int l = a.size();
 
         List<BaseCounts> counts = new ArrayList<BaseCounts>(l);
 
         // First char is the nucleotide so ignore it
-        for (int i = 1; i < l; ++i) {
+        for (int i = 0; i < l; ++i) {
           // Convert the values of each column to percentages
 
           double af = Double.parseDouble(a.get(i));
@@ -620,8 +630,8 @@ public class Motif
    * @return the motif
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static Motif parsePwmMotif(Path file) throws IOException {
-    return parsePwmMotifs(file).get(0);
+  public static Motif parsePwm2Motif(Path file) throws IOException {
+    return parsePwm2Motifs(file).get(0);
   }
 
   /**
@@ -631,16 +641,81 @@ public class Motif
    * @return the list
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static List<Motif> parsePwmMotifs(Path file) throws IOException {
-    BufferedReader reader;
+  public static List<Motif> parsePwm2Motifs(Path file) throws IOException {
+    BufferedReader reader = FileUtils.newBufferedReader(file);
 
-    if (PathUtils.getFileExt(file).equals("gz")) {
-      reader = Resources.getGzipReader(file);
-    } else {
-      reader = FileUtils.newBufferedReader(file);
+    return parsePwm2Motifs(reader);
+  }
+
+  /**
+   * Parses the pwm motifs.
+   *
+   * @param reader the reader
+   * @return the list
+   * @throws IOException Signals that an I/O exception has occurred.
+   */
+  public static List<Motif> parsePwm2Motifs(BufferedReader reader)
+      throws IOException {
+    Motif motif = null;
+
+    String line;
+
+    List<Motif> motifs = new ArrayList<Motif>();
+
+    try {
+      while ((line = reader.readLine()) != null) {
+        if (Io.isEmptyLine(line)) {
+          continue;
+        }
+
+        line = line.trim();
+
+        String id = line.substring(1);
+
+        List<String> a = Splitter.onTab().ignoreEmptyStrings()
+            .text(reader.readLine());
+        List<String> c = Splitter.onTab().ignoreEmptyStrings()
+            .text(reader.readLine());
+        List<String> g = Splitter.onTab().ignoreEmptyStrings()
+            .text(reader.readLine());
+        List<String> t = Splitter.onTab().ignoreEmptyStrings()
+            .text(reader.readLine());
+        List<String> n = Splitter.onTab().ignoreEmptyStrings()
+            .text(reader.readLine());
+
+        int l = a.size();
+
+        List<BaseCounts> counts = new ArrayList<BaseCounts>(l);
+
+        // First char is the nucleotide so ignore it
+        for (int i = 1; i < l; ++i) {
+          // Convert the values of each column to percentages
+
+          double af = Double.parseDouble(a.get(i));
+          double cf = Double.parseDouble(c.get(i));
+          double gf = Double.parseDouble(g.get(i));
+          double tf = Double.parseDouble(t.get(i));
+          double nf = Double.parseDouble(n.get(i));
+
+          // double total = af + cf + gf + tf;
+
+          // af /= total;
+          // cf /= total;
+          // gf /= total;
+          // tf /= total;
+
+          counts.add(new BaseCounts(af, cf, gf, tf, nf, true));
+        }
+
+        motif = new Motif(id, counts);
+
+        motifs.add(motif);
+      }
+    } finally {
+      reader.close();
     }
 
-    return parsePwmMotifs(reader);
+    return motifs;
   }
 
   /*
@@ -694,10 +769,14 @@ public class Motif
 
     List<BaseCounts> counts = new ArrayList<BaseCounts>(l);
 
-    for (int i = 0; i < l; ++i) {
+    // for (int i = 0; i < l; ++i) {
+    for (int i = l - 1; i >= 0; --i) {
       BaseCounts c = motif.getCounts(i);
 
-      counts.add(new BaseCounts(c.getT(), c.getG(), c.getC(), c.getA()));
+      System.err.println("rev " + i + " " + c);
+
+      counts.add(
+          new BaseCounts(c.getT(), c.getG(), c.getC(), c.getA(), c.getN()));
     }
 
     Motif ret = new Motif(motif.mId, motif.mName, motif.mGene, motif.mDatabase,
