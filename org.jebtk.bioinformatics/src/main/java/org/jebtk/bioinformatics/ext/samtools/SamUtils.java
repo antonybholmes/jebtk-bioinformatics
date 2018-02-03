@@ -216,8 +216,8 @@ public class SamUtils {
     return ret;
   }
 
-  public static GenomicRegion getRegion(SAMRecord r) {
-    return GenomicRegion.create(r.getReferenceName(), r.getStart(), r.getEnd());
+  public static GenomicRegion getRegion(String genome, SAMRecord r) {
+    return GenomicRegion.create(genome, r.getReferenceName(), r.getStart(), r.getEnd());
   }
 
   /**

@@ -177,7 +177,7 @@ public class AlignmentAssemblyFile2Bit extends ConservationAssembly {
 
     // System.err.println(a.getScores("chr1:11680-11871"));
 
-    System.err.println(a.getScores("chr10:87575-87801") + " "
-        + Statistics.pNonZero(a.getScores("chr10:87575-87801")));
+    System.err.println(a.getScores("mm10", "chr10:87575-87801") + " "
+        + Statistics.pNonZero(a.getScores("mm10", "chr10:87575-87801")));
   }
 }

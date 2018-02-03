@@ -51,15 +51,20 @@ import org.jebtk.core.text.TextUtils;
  * @author Antony Holmes Holmes
  */
 public class GenomicRegion extends Region {
-
+  
+  //private static final String CHR_REGEX = "(chr(?:[^:]+))";
+  
+  private static final String CHR_REGEX = "(chr[a-zA-Z0-9\\-\\_]+)";
+  
+  
   /** The Constant GENOMIC_REGEX. */
-  private static final Pattern GENOMIC_REGEX = Pattern
-      .compile("(chr(?:\\d+|[XYM])):(\\d+(?:,\\d+)*)"); // Pattern.compile("chr.+?:(?:\\d+(?:,\\d+)*)(?:-\\d+(?:,\\d+)*)?");
+  private static final Pattern GENOMIC_PATTERN = Pattern
+      .compile(CHR_REGEX + ":(\\d+(?:,\\d+)*)"); // Pattern.compile("chr.+?:(?:\\d+(?:,\\d+)*)(?:-\\d+(?:,\\d+)*)?");
 
-  private static final Pattern CHR_REGEX = Pattern
-      .compile("(chr(?:\\d+|[XYM]))");
+  public static final Pattern CHR_ONLY_PATTERN = Pattern
+      .compile(CHR_REGEX);
 
-  private static final Pattern NUM_REGEX = Pattern
+  private static final Pattern GENOMIC_NUM_PATTERN = Pattern
       .compile("[\\-\\+\\t\\=\\: ](\\d+(?:,\\d+)*)");
 
   // public static final String DEFAULT_TYPE = "genomic";
@@ -220,12 +225,12 @@ public class GenomicRegion extends Region {
    * @return the list
    * @throws ParseException the parse exception
    */
-  public static List<GenomicRegion> parse(List<String> locations)
+  public static List<GenomicRegion> parse(String genome, List<String> locations)
       throws ParseException {
     List<GenomicRegion> ret = new ArrayList<GenomicRegion>();
 
     for (String location : locations) {
-      GenomicRegion region = parse(location);
+      GenomicRegion region = parse(genome, location);
 
       if (region != null) {
         ret.add(region);
@@ -241,7 +246,7 @@ public class GenomicRegion extends Region {
    * @param location the location
    * @return the genomic region
    */
-  public static GenomicRegion parse(String location) {
+  public static GenomicRegion parse(String genome, String location) {
     // System.err.println("location: " + location);
 
     if (Io.isEmptyLine(location)) {
@@ -256,11 +261,11 @@ public class GenomicRegion extends Region {
       return null;
     }
 
-    Matcher matcher = CHR_REGEX.matcher(location);
+    Matcher matcher = CHR_ONLY_PATTERN.matcher(location);
 
     if (matcher.find()) {
-      Chromosome chromosome = ChromosomeService.getInstance()
-          .parse(matcher.group(1));
+      Chromosome chromosome = GenomeService.getInstance()
+          .chr(genome, matcher.group(1));
 
       if (chromosome == null) {
         return null;
@@ -269,12 +274,13 @@ public class GenomicRegion extends Region {
       int start = 1;
       int end = 1;
 
-      matcher = NUM_REGEX.matcher(location);
+      matcher = GENOMIC_NUM_PATTERN.matcher(location);
 
       if (matcher.find()) {
         start = TextUtils.parseInt(matcher.group(1));
       } else {
-        return null;
+        // Just the name, return the full chromosome
+        return new GenomicRegion(chromosome, 1, chromosome.getSize());
       }
 
       if (matcher.find()) {
@@ -320,21 +326,9 @@ public class GenomicRegion extends Region {
    * @return the genomic region
    * @throws ParseException the parse exception
    */
-  public static GenomicRegion parse(String chr, String start, String end) {
-    return new GenomicRegion(ChromosomeService.getInstance().parse(chr),
+  public static GenomicRegion parse(String genome, String chr, String start, String end) {
+    return new GenomicRegion(GenomeService.getInstance().genome(genome).chr(chr),
         TextUtils.parseInt(start), TextUtils.parseInt(end));
-  }
-
-  /**
-   * Parses the.
-   *
-   * @param chr the chr
-   * @param start the start
-   * @return the genomic region
-   * @throws ParseException the parse exception
-   */
-  public static GenomicRegion parse(String chr, String start) {
-    return parse(chr, start, start);
   }
 
   /**
@@ -573,7 +567,7 @@ public class GenomicRegion extends Region {
       return false;
     }
 
-    return GENOMIC_REGEX.matcher(text).find(); // value.matches("chr.+?:\\d+(-\\d+)?.*");
+    return GENOMIC_PATTERN.matcher(text).find(); // value.matches("chr.+?:\\d+(-\\d+)?.*");
   }
 
   public static String genomicRegion(String text) {
@@ -581,7 +575,7 @@ public class GenomicRegion extends Region {
       return TextUtils.EMPTY_STRING;
     }
 
-    Matcher matcher = GENOMIC_REGEX.matcher(text);
+    Matcher matcher = GENOMIC_PATTERN.matcher(text);
 
     if (matcher.find()) {
       return matcher.group(1);
@@ -808,19 +802,17 @@ public class GenomicRegion extends Region {
    * @return the genomic region
    */
   public static GenomicRegion shift(GenomicRegion region,
-      int shift,
-      ChromosomeSizes sizes) {
+      int shift) {
 
-    return shift(region, shift, 0, sizes);
+    return shift(region, shift, 0);
 
   }
 
   public static GenomicRegion shift(GenomicRegion region,
       int shift,
-      int minSep,
-      ChromosomeSizes sizes) {
+      int minSep) {
 
-    int size = sizes.getSize(region.mChr);
+    int size = region.mChr.getSize();
 
     // bound the positions so they dont exceed the chromosome bounds
     int start = Math.min(size, Math.max(1, region.mStart + shift));
@@ -943,8 +935,8 @@ public class GenomicRegion extends Region {
    * @param end the end
    * @return the genomic region
    */
-  public static GenomicRegion create(String chr, int start, int end) {
-    return create(ChromosomeService.getInstance().parse(chr), start, end);
+  public static GenomicRegion create(String genome, String chr, int start, int end) {
+    return create(GenomeService.getInstance().genome(genome).chr(chr), start, end);
   }
 
   /**

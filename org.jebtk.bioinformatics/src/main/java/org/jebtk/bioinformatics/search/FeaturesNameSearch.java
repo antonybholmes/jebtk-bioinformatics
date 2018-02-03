@@ -34,7 +34,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.jebtk.bioinformatics.genomic.ChromosomeService;
+import org.jebtk.bioinformatics.genomic.GenomeService;
 import org.jebtk.core.io.FileUtils;
 import org.jebtk.core.io.Io;
 import org.jebtk.core.text.TextUtils;
@@ -101,7 +101,7 @@ public class FeaturesNameSearch implements Iterable<Feature> {
           List<String> row = TextUtils.fastSplitRemoveQuotes(line);
 
           Feature feature = new Feature(row.get(0),
-              ChromosomeService.getInstance().guess(file, row.get(1)),
+              GenomeService.getInstance().guessChr(file, row.get(1)),
               Integer.parseInt(row.get(2)), Integer.parseInt(row.get(3)));
 
           features.put(feature.getName(), feature);

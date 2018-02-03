@@ -60,14 +60,14 @@ public class GTB2Parser extends GTBParser {
 
         boolean add = true;
 
-        Chromosome chr = ChromosomeService.getInstance().guess(file,
+        Chromosome chr = GenomeService.getInstance().guessChr(file,
             tokens.get(0));
 
         // Skip random and unofficial chromosomes
         if (chr.toString().contains("_")) {
           return;
         }
-
+        
         Strand strand = Strand.parse(tokens.get(1));
         int start = Integer.parseInt(tokens.get(2));
         int end = Integer.parseInt(tokens.get(3));
@@ -218,7 +218,7 @@ public class GTB2Parser extends GTBParser {
 
       tokens = Splitter.onTab().text(line);
 
-      Chromosome chr = ChromosomeService.getInstance().guess(file,
+      Chromosome chr = GenomeService.getInstance().guessChr(file,
           tokens.get(0));
 
       // Skip random and unofficial chromosomes

@@ -89,8 +89,6 @@ public class GTBZParser extends GTB2Parser {
       if (entry != null) {
         BufferedReader reader = FileUtils.newBufferedReader(zipFile, entry);
 
-        System.err.println("parse " + zipFile + " " + file);
-
         try {
           parse(file, reader, genes, chr);
         } finally {

@@ -18,17 +18,18 @@ package org.jebtk.bioinformatics.test;
 import java.io.IOException;
 import java.text.ParseException;
 
+import org.jebtk.bioinformatics.genomic.Genome;
 import org.jebtk.bioinformatics.genomic.GenomicRegion;
 import org.junit.Test;
 
 public class GenomicTest {
   @Test
   public void genomicParseTest() throws IOException, ParseException {
-    System.err.println(GenomicRegion.parse("chrX:200-100"));
+    System.err.println(GenomicRegion.parse(Genome.HG19, "chrX:200-100"));
   }
 
   @Test
   public void genomicParseSingleTest() throws IOException, ParseException {
-    System.err.println(GenomicRegion.parse("chrY:100"));
+    System.err.println(GenomicRegion.parse(Genome.HG19, "chrY:100"));
   }
 }

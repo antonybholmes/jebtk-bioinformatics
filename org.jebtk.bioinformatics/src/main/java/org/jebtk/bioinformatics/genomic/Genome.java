@@ -27,11 +27,16 @@
  */
 package org.jebtk.bioinformatics.genomic;
 
+import java.io.IOException;
+import java.nio.file.Path;
+
+import org.jebtk.core.NameProperty;
+
 // TODO: Auto-generated Javadoc
 /**
  * The enum Genome.
  */
-public class Genome {
+public class Genome implements NameProperty {
 
   /**
    * The H g18.
@@ -40,7 +45,52 @@ public class Genome {
 
   /** The Constant HG19. */
   public static final String HG19 = "hg19";
+  
+  public static final String GRCH38 = "grch38";
 
   /** The Constant MM10. */
   public static final String MM10 = "mm10";
+  
+  public static final String GRCM38 = "grcm38";
+
+  private Chromosomes mChrs;
+  
+  public Genome(Chromosomes chrs) {
+    mChrs = chrs;
+  }
+
+  @Override
+  public String getName() {
+    return getGenome();
+  }
+  
+  public String getGenome() {
+    return mChrs.getGenome();
+  }
+
+  public Chromosomes chrs() {
+    return mChrs;
+  }
+  
+  public Chromosome chr(String chr) {
+    return chrs().chr(chr);
+  }
+  
+  public Chromosome chr(int chr) {
+    return chrs().chr(chr);
+  }
+  
+  public Chromosome chr(Chromosome chr) {
+    return chr(chr.toString());
+  }
+  
+  public Chromosome randChr() {
+    return chrs().randChr();
+  }
+  
+  public static Genome parse(Path file) throws IOException {
+    return new Genome(Chromosomes.parse(file));
+  }
+
+  
 }

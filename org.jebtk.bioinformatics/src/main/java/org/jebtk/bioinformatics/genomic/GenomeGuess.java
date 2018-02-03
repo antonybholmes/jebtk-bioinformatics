@@ -38,6 +38,8 @@ public class GenomeGuess {
       return "grch38";
     } else if (lid.contains("hg18")) {
       return "hg18";
+    } else if (lid.contains("mouse")) {
+      return "mm10";
     } else {
       return "hg19";
     }

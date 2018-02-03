@@ -100,16 +100,16 @@ public class GenesWeb extends GenesDb {
       for (int i = 0; i < json.size(); ++i) {
         Json geneJson = json.get(i);
 
-        Gene gene = new RdfGene(geneJson.get("rdf").getAsString(),
-            geneJson.get("refseq").getAsString(),
-            geneJson.get("entrez").getAsString(),
-            geneJson.get("symbol").getAsString(),
+        Gene gene = new RdfGene(geneJson.getAsString("rdf"),
+            geneJson.getAsString("refseq"),
+            geneJson.getAsString("entrez"),
+            geneJson.getAsString("symbol"),
             GenomicRegion.create(
-                ChromosomeService.getInstance()
-                    .parse(geneJson.get("chr").getAsString()),
-                geneJson.get("start").getAsInt(),
-                geneJson.get("end").getAsInt(),
-                Strand.parse(geneJson.get("strand").getAsChar())));
+                GenomeService.getInstance()
+                    .chr(Genome.HG19, geneJson.getAsString("chr")),
+                geneJson.getAsInt("start"),
+                geneJson.getAsInt("end"),
+                Strand.parse(geneJson.getAsChar("strand"))));
 
         Json exonStartsJson = geneJson.get("exon_starts");
         Json exonEndsJson = geneJson.get("exon_ends");
@@ -150,15 +150,15 @@ public class GenesWeb extends GenesDb {
       Json geneJson = json.get(0);
 
       gene = new RdfGene(geneJson.get("rdf").getAsString(),
-          geneJson.get("refseq").getAsString(),
-          geneJson.get("entrez").getAsString(),
-          geneJson.get("symbol").getAsString(),
+          geneJson.getAsString("refseq"),
+          geneJson.getAsString("entrez"),
+          geneJson.getAsString("symbol"),
           GenomicRegion.create(
-              ChromosomeService.getInstance()
-                  .parse(geneJson.get("chr").getAsString()),
-              geneJson.get("start").getAsInt(),
-              geneJson.get("end").getAsInt(),
-              Strand.parse(geneJson.get("strand").getAsChar())));
+              GenomeService.getInstance()
+                  .chr(Genome.HG19, geneJson.getAsString("chr")),
+              geneJson.getAsInt("start"),
+              geneJson.getAsInt("end"),
+              Strand.parse(geneJson.getAsChar("strand"))));
 
       Json exonStartsJson = geneJson.get("exon_starts");
       Json exonEndsJson = geneJson.get("exon_ends");

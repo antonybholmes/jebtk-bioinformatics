@@ -343,7 +343,7 @@ public class Genes extends BinaryGapSearch<Gene> {
     BufferedReader reader = FileUtils.newBufferedReader(file);
 
     try {
-      ret = load(ChromosomeService.getInstance().guess(file), reader);
+      ret = load(GenomeService.getInstance().guessGenome(file), reader);
     } finally {
       reader.close();
     }
@@ -358,7 +358,7 @@ public class Genes extends BinaryGapSearch<Gene> {
    * @return the genes
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static GapSearch<Gene> load(final String species,
+  public static GapSearch<Gene> load(final String genome,
       BufferedReader reader) throws IOException {
     final Genes ret = new Genes();
 
@@ -371,7 +371,7 @@ public class Genes extends BinaryGapSearch<Gene> {
         String refseq = tokens.get(1);
         String entrez = tokens.get(2);
         String symbol = tokens.get(5);
-        Chromosome chr = ChromosomeService.getInstance().parse(species,
+        Chromosome chr = GenomeService.getInstance().chr(genome,
             tokens.get(8));
         Strand strand = Strand.parse(tokens.get(9)); // .charAt(0);
         // Because of the UCSC using zero based start and one

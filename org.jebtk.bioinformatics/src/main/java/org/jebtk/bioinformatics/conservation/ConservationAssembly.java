@@ -47,9 +47,9 @@ public abstract class ConservationAssembly {
    * @throws IOException Signals that an I/O exception has occurred.
    * @throws ParseException the parse exception
    */
-  public List<Double> getScores(String region)
+  public List<Double> getScores(String genome, String region)
       throws IOException, ParseException {
-    return getScores(GenomicRegion.parse(region));
+    return getScores(GenomicRegion.parse(genome, region));
   }
 
   /**

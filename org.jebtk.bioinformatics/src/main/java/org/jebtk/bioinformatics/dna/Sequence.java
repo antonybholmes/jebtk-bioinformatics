@@ -42,9 +42,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.jebtk.bioinformatics.genomic.Chromosome;
-import org.jebtk.bioinformatics.genomic.ChromosomeService;
-import org.jebtk.bioinformatics.genomic.ChromosomeSizes;
 import org.jebtk.bioinformatics.genomic.GenomeAssembly;
+import org.jebtk.bioinformatics.genomic.GenomeService;
 import org.jebtk.bioinformatics.genomic.GenomicRegion;
 import org.jebtk.bioinformatics.genomic.SequenceRegion;
 import org.jebtk.core.NameProperty;
@@ -335,6 +334,9 @@ public class Sequence
    */
   public static byte baseToIndex(char c) {
     switch (c) {
+    case 'A':
+    case 'a':
+      return 0;
     case 'C':
     case 'c':
       return 1;
@@ -347,7 +349,8 @@ public class Sequence
     case 'u':
       return 3;
     default:
-      return 0;
+      // N or other unidentifiable base
+      return 4;
     }
   }
 
@@ -582,13 +585,12 @@ public class Sequence
    */
   public static SequenceRegion getRandomSequence(String genome,
       GenomeAssembly mAssembly,
-      ChromosomeSizes mChrSizes,
       int length) throws IOException {
     Random rand = new Random();
 
-    Chromosome chr = ChromosomeService.getInstance().randChr("human");
+    Chromosome chr = GenomeService.getInstance().randChr("human");
 
-    int start = rand.nextInt(mChrSizes.getSize(chr) - length);
+    int start = rand.nextInt(chr.getSize() - length);
     int end = start + length - 1;
 
     GenomicRegion region = new GenomicRegion(chr, start, end);

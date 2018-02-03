@@ -181,7 +181,7 @@ public class BedGraph extends UCSCTrack {
           tracks.add(bed);
         } else {
           BedGraphRegion region = BedGraphRegion
-              .parse(GenomeService.getInstance().guess(file), line);
+              .parse(GenomeService.getInstance().guessGenome(file), line);
 
           bed.getRegions().add(region);
         }

@@ -45,7 +45,7 @@ public class GTBZGenes extends Genes {
             @Override
             public void parse(final List<String> tokens) {
               String name = Genes.sanitize(tokens.get(0));
-              Chromosome chr = ChromosomeService.getInstance().guess(mFile,
+              Chromosome chr = GenomeService.getInstance().guessChr(mFile,
                   tokens.get(1));
 
               mGeneMap.put(name, chr);
@@ -74,8 +74,6 @@ public class GTBZGenes extends Genes {
 
   private void autoLoad(Chromosome chr) {
     if (!contains(chr)) {
-      System.err.println("autoload " + chr);
-
       try {
         mParser.parse(mFile, this, chr);
       } catch (IOException e) {

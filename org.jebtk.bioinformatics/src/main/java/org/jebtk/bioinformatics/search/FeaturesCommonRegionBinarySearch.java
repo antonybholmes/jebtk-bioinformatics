@@ -38,7 +38,7 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.jebtk.bioinformatics.genomic.Chromosome;
-import org.jebtk.bioinformatics.genomic.ChromosomeService;
+import org.jebtk.bioinformatics.genomic.GenomeService;
 import org.jebtk.core.io.FileUtils;
 import org.jebtk.core.io.Io;
 import org.jebtk.core.io.PathUtils;
@@ -149,7 +149,7 @@ public class FeaturesCommonRegionBinarySearch extends AbstractFeaturesSearch {
 
           List<String> row = TextUtils.fastSplit(line, TextUtils.TAB_DELIMITER);
 
-          chromosome = ChromosomeService.getInstance().parse(row.get(0));
+          chromosome = GenomeService.getInstance().guessChr(mFeatureFile, row.get(0));
 
           startLocation = Integer.parseInt(row.get(1));
 
@@ -189,7 +189,7 @@ public class FeaturesCommonRegionBinarySearch extends AbstractFeaturesSearch {
           List<String> row = TextUtils.tabSplit(line);
 
           Feature feature = new Feature(row.get(0),
-              ChromosomeService.getInstance().guess(mFeatureFile, row.get(1)),
+              GenomeService.getInstance().guessChr(mFeatureFile, row.get(1)),
               Integer.parseInt(row.get(2)), Integer.parseInt(row.get(3)));
 
           List<String> bins = TextUtils.fastSplit(row.get(4),

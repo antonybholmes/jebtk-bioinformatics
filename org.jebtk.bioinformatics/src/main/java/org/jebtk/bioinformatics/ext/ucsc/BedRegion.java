@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 
 import org.jebtk.bioinformatics.genomic.Chromosome;
-import org.jebtk.bioinformatics.genomic.ChromosomeService;
+import org.jebtk.bioinformatics.genomic.GenomeService;
 import org.jebtk.bioinformatics.genomic.GenomicRegion;
 import org.jebtk.bioinformatics.genomic.Strand;
 import org.jebtk.core.text.TextUtils;
@@ -157,8 +157,7 @@ public class BedRegion extends UCSCTrackRegion implements Iterable<String> {
     List<String> tokens = TextUtils.tabSplit(line);
 
     // convert first part to chromosome (replacing x,y and m) {
-    Chromosome chr = ChromosomeService.getInstance().guess(genome,
-        tokens.get(0));
+    Chromosome chr = GenomeService.getInstance().chr(genome, tokens.get(0));
 
     if (chr == null) {
       return null;

@@ -38,7 +38,7 @@ import org.jebtk.core.text.TextUtils;
  * @author Antony Holmes Holmes
  */
 public class Chromosome
-    implements Comparable<Chromosome>, IdProperty, NameProperty {
+implements Comparable<Chromosome>, IdProperty, NameProperty {
 
   /**
    * Represents an invalid chromosome.
@@ -57,25 +57,40 @@ public class Chromosome
   /** The m id. */
   private int mId;
 
+  private int mSize;
+
+  private String mGenome = null;
+
+  protected Chromosome(int id, String name) {
+    this(id, name, Genome.HG19);
+  }
+
+  protected Chromosome(int id, String name, String genome) {
+    this(id, name, -1, genome);
+  }
+
+  protected Chromosome(int id, String name, int size) {
+    this(id, name, size, Genome.HG19);
+  }
+
   /**
    * Instantiates a new chromosome.
    *
    * @param chr the chr
    * @param parser the parser
    */
-  protected Chromosome(int id, String shortName) {
+  protected Chromosome(int id, String name, int size, String genome) {
     // mSpecies = parser.getSpecies();
 
     // Ensures chromosome always begins with chr prefix and not cHr or
     // some other variant
 
     // The suffix of the chromosome without the chr prefix.
-    mShortName = shortName;
-
+    mShortName = getShortName(name);
     mId = id;
-
-    mChr = "chr"
-        + mShortName.toUpperCase().replaceAll("CHR", TextUtils.EMPTY_STRING);
+    mChr = "chr" + mShortName;
+    mSize = size;
+    mGenome = genome;
   }
 
   /*
@@ -111,6 +126,14 @@ public class Chromosome
     return mShortName;
   }
 
+  public String getGenome() {
+    return mGenome;
+  }
+
+  public int getSize() {
+    return mSize;
+  }
+
   /*
    * (non-Javadoc)
    * 
@@ -132,16 +155,24 @@ public class Chromosome
     // +
     // c.mChr);
 
-    if (mId != -1 && c.mId != -1) {
-      if (mId > c.mId) {
-        return 1;
-      } else if (mId < c.mId) {
-        return -1;
-      } else {
-        return 0;
-      }
+    int ret = mGenome.compareTo(c.mGenome);
+
+    if (ret != 0) {
+      return ret;
     } else {
-      return mChr.compareTo(c.mChr);
+      ret = mChr.compareTo(c.mChr);
+
+      if (ret != 0) {
+        return ret;
+      } else {
+        if (mId > c.mId) {
+          return 1;
+        } else if (mId < c.mId) {
+          return -1;
+        } else {
+          return 0;
+        }
+      }
     }
   }
 
@@ -182,4 +213,22 @@ public class Chromosome
 
     return value.toLowerCase().startsWith("chr");
   }
+
+  /**
+   * Cleans up the chr name and returns the short name variant where the chr
+   * prefix is removed to leave just the number or letter.
+   *
+   * @param chr the chr
+   * @return the short name
+   */
+  public static String getShortName(String chr) {
+    return chr.toUpperCase()
+        .replace("CHROMOSOME", TextUtils.EMPTY_STRING)
+        .replace("CHR_", TextUtils.EMPTY_STRING)
+        .replace("CHR-", TextUtils.EMPTY_STRING)
+        .replace("CHR", TextUtils.EMPTY_STRING);
+        //.replaceFirst("P.*", TextUtils.EMPTY_STRING)
+        //.replaceFirst("Q.*", TextUtils.EMPTY_STRING);
+  }
+
 }

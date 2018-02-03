@@ -73,7 +73,7 @@ public abstract class GenomeAssembly implements NameProperty {
       boolean displayUpper,
       RepeatMaskType repeatMaskType) throws IOException {
     return getSequence(genome,
-        GenomicRegion.parse(position),
+        GenomicRegion.parse(genome, position),
         displayUpper,
         repeatMaskType);
   }
@@ -91,7 +91,7 @@ public abstract class GenomeAssembly implements NameProperty {
       String position,
       RepeatMaskType repeatMaskType) throws IOException {
     return getSequence(genome,
-        GenomicRegion.parse(position),
+        GenomicRegion.parse(genome, position),
         true,
         repeatMaskType);
   }
