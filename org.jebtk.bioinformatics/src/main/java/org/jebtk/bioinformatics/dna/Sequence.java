@@ -45,6 +45,7 @@ import org.jebtk.bioinformatics.genomic.Chromosome;
 import org.jebtk.bioinformatics.genomic.GenomeAssembly;
 import org.jebtk.bioinformatics.genomic.GenomeService;
 import org.jebtk.bioinformatics.genomic.GenomicRegion;
+import org.jebtk.bioinformatics.genomic.RepeatMaskType;
 import org.jebtk.bioinformatics.genomic.SequenceRegion;
 import org.jebtk.core.NameProperty;
 import org.jebtk.core.io.FileUtils;
@@ -584,19 +585,22 @@ public class Sequence
    * @throws IOException Signals that an I/O exception has occurred.
    */
   public static SequenceRegion getRandomSequence(String genome,
-      GenomeAssembly mAssembly,
+      GenomeAssembly assembly,
       int length) throws IOException {
-    Random rand = new Random();
-
-    Chromosome chr = GenomeService.getInstance().randChr("human");
-
-    int start = rand.nextInt(chr.getSize() - length);
-    int end = start + length - 1;
-
-    GenomicRegion region = new GenomicRegion(chr, start, end);
-
-    return mAssembly.getSequence(genome, region);
+    return getRandomSequence(genome, assembly, length, true, RepeatMaskType.LOWERCASE);
   }
+  
+  public static SequenceRegion getRandomSequence(String genome,
+      GenomeAssembly assembly,
+      int length,
+      boolean uppercase,
+      RepeatMaskType repeatMaskType) throws IOException {
+    GenomicRegion region = GenomicRegion.randomRegion(genome, length);
+
+    return assembly.getSequence(genome, region, uppercase, repeatMaskType);
+  }
+  
+  
 
   /**
    * To index.

@@ -34,6 +34,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -993,5 +994,16 @@ public class GenomicRegion extends Region {
     int mid = mid(region);
 
     return new GenomicRegion(region.mChr, mid, mid);
+  }
+  
+  public static GenomicRegion randomRegion(String genome, int length) throws IOException {
+    Random rand = new Random();
+
+    Chromosome chr = GenomeService.getInstance().randChr(genome);
+
+    int start = rand.nextInt(chr.getSize() - length);
+    int end = start + length - 1;
+
+    return new GenomicRegion(chr, start, end);
   }
 }

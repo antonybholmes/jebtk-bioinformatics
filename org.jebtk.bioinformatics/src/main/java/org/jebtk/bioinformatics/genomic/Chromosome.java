@@ -160,19 +160,20 @@ implements Comparable<Chromosome>, IdProperty, NameProperty {
     if (ret != 0) {
       return ret;
     } else {
-      ret = mChr.compareTo(c.mChr);
+      //ret = mChr.compareTo(c.mChr);
 
-      if (ret != 0) {
-        return ret;
+      //if (ret != 0) {
+      //  return ret;
+      //} else {
+      // Sort by id so that chr2 comes before chr10
+      if (mId > c.mId) {
+        return 1;
+      } else if (mId < c.mId) {
+        return -1;
       } else {
-        if (mId > c.mId) {
-          return 1;
-        } else if (mId < c.mId) {
-          return -1;
-        } else {
-          return 0;
-        }
+        return 0;
       }
+      //}
     }
   }
 
@@ -227,8 +228,8 @@ implements Comparable<Chromosome>, IdProperty, NameProperty {
         .replace("CHR_", TextUtils.EMPTY_STRING)
         .replace("CHR-", TextUtils.EMPTY_STRING)
         .replace("CHR", TextUtils.EMPTY_STRING);
-        //.replaceFirst("P.*", TextUtils.EMPTY_STRING)
-        //.replaceFirst("Q.*", TextUtils.EMPTY_STRING);
+    //.replaceFirst("P.*", TextUtils.EMPTY_STRING)
+    //.replaceFirst("Q.*", TextUtils.EMPTY_STRING);
   }
 
 }
