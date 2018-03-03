@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jebtk.bioinformatics.dna.Sequence;
+import org.jebtk.core.text.TextUtils;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -62,6 +63,10 @@ public class SequenceRegion extends GenomicRegion {
    * @param region the region
    * @param sequence the sequence
    */
+  public SequenceRegion(GenomicRegion region, String dna) {
+    this(region, Sequence.create(dna));
+  }
+  
   public SequenceRegion(GenomicRegion region, Sequence sequence) {
     super(region);
 
@@ -138,5 +143,14 @@ public class SequenceRegion extends GenomicRegion {
     }
 
     return ret;
+  }
+
+  /**
+   * Return a fasta representation of the sequence
+   * @return
+   */
+  public String toFasta() {
+    return new StringBuilder(">").append(toString()).append(TextUtils.NEW_LINE)
+        .append(getSequence()).toString();
   }
 }

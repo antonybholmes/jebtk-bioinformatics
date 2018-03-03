@@ -70,7 +70,8 @@ public class GenomeService implements Iterable<String> {
 
   private static final Path RES_DIR = PathUtils.getPath("res/genomes");
 
-  private static final String EXT = "genome.txt.gz";
+  private static final String EXT = "genome.gz";
+  private static final String EXT2 = "genome.txt.gz";
 
   private IterMap<String, Genome> mGenomeMap = 
       new IterTreeMap<String, Genome>();
@@ -78,6 +79,9 @@ public class GenomeService implements Iterable<String> {
   private GenomeGuess mGenomeGuess = new GenomeGuess();
   
   private boolean mAutoLoad = true;
+
+
+  private Path mDir = RES_DIR;
 
   /**
    * Instantiates a new chromosomes.
@@ -90,19 +94,31 @@ public class GenomeService implements Iterable<String> {
   }
 
   private void autoLoad() throws IOException {
-    if (mAutoLoad ) {
-      List<Path> files = FileUtils.ls(RES_DIR, true, false, true);
+    if (mAutoLoad) {
+      List<Path> files = FileUtils.endsWith(mDir, EXT);
 
       for (Path file : files) {
-        if (PathUtils.getName(file).endsWith(EXT)) {
-          LOG.info("Loading genome info from {}", file);
-          
-          load(file);
-        }
+        load(file);
+      }
+      
+      files = FileUtils.endsWith(mDir, EXT2);
+
+      for (Path file : files) {
+        load(file);
       }
       
       mAutoLoad = false;
     }
+  }
+  
+  /**
+   * Set the directory where to search for genomes.
+   * 
+   * @param dir
+   */
+  public void setDir(Path dir) {
+    mDir = dir;
+    mAutoLoad = true;
   }
   
   public void load(Path file) throws IOException {
@@ -112,7 +128,7 @@ public class GenomeService implements Iterable<String> {
   public void add(Chromosomes chrs) {
     LOG.info("Add genome {} {}", chrs.getGenome(), chrs.getSpecies());
     
-     mGenomeMap.put(formatKey(chrs.getGenome()), new Genome(chrs));
+    mGenomeMap.put(formatKey(chrs.getGenome()), new Genome(chrs));
   }
   
   public Genome genome(String genome) {

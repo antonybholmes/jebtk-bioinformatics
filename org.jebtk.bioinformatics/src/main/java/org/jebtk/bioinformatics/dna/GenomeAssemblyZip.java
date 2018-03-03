@@ -61,14 +61,12 @@ public class GenomeAssemblyZip extends GenomeAssemblyFS {
   @Override
   public List<String> getGenomes() throws IOException {
 
-    List<Path> files = FileUtils.ls(mDirectory);
+    List<Path> files = FileUtils.ext(mDirectory, "zip");
 
     List<String> ret = new ArrayList<String>(files.size());
 
     for (Path file : files) {
-      if (PathUtils.getFileExt(file).equals("zip")) {
-        ret.add(PathUtils.getNameNoExt(file));
-      }
+      ret.add(PathUtils.getNameNoExt(file));
     }
 
     return ret;

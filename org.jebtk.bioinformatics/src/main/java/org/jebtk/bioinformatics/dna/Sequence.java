@@ -255,6 +255,8 @@ public class Sequence
       case 'u':
         buffer.append('a');
         break;
+      case 'n':
+      case 'N':
       default:
         buffer.append('N');
         break;

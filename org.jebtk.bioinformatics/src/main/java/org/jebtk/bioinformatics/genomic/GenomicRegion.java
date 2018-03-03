@@ -68,7 +68,8 @@ public class GenomicRegion extends Region {
   private static final Pattern GENOMIC_NUM_PATTERN = Pattern
       .compile("[\\-\\+\\t\\=\\: ](\\d+(?:,\\d+)*)");
 
-  // public static final String DEFAULT_TYPE = "genomic";
+  //private static final Pattern GENOMIC_REGEX = 
+  //    Pattern.compile("(chr[0-9a-zA-Z\\-\\_]+):(\\d+)(\\d+)");
 
   /**
    * The member chr.
@@ -79,6 +80,8 @@ public class GenomicRegion extends Region {
    * The member strand.
    */
   public final Strand mStrand;
+  
+  private final String mGenome;
 
   // protected final String mType;
 
@@ -110,14 +113,23 @@ public class GenomicRegion extends Region {
    * @param end the end
    */
   public GenomicRegion(Chromosome chr, int start, int end) {
-    this(chr, start, end, Strand.NONE);
+    this(chr, start, end, Strand.SENSE);
   }
 
   public GenomicRegion(Chromosome chr, int start, int end, Strand strand) {
+    this(Genome.GRCH38, chr, start, end, strand);
+  }
+  
+  public GenomicRegion(String genome, Chromosome chr, int start, int end) {
+    this(genome, chr, start, end, Strand.SENSE);
+  }
+  
+  public GenomicRegion(String genome, Chromosome chr, int start, int end, Strand strand) {
     super(start, end);
 
     mChr = chr;
     mStrand = strand;
+    mGenome = genome;
   }
 
   /**
@@ -174,6 +186,10 @@ public class GenomicRegion extends Region {
   public String toString() {
     return getLocation();
   }
+  
+  public String getGenome() {
+    return mGenome;
+  }
 
   /*
    * (non-Javadoc)
@@ -185,7 +201,13 @@ public class GenomicRegion extends Region {
     if (r instanceof GenomicRegion) {
       GenomicRegion gr = (GenomicRegion) r;
 
-      int c = mChr.compareTo(gr.mChr);
+      int c = mGenome.compareTo(gr.mGenome);
+      
+      if (c != 0) {
+        return c;
+      }
+      
+      c = mChr.compareTo(gr.mChr);
 
       if (c != 0) {
         return c;
@@ -291,7 +313,7 @@ public class GenomicRegion extends Region {
         end = start;
       }
 
-      return new GenomicRegion(chromosome, start, end);
+      return new GenomicRegion(genome, chromosome, start, end);
     } else if (isRegion(location)) {
       location = region(location);
 
@@ -926,6 +948,41 @@ public class GenomicRegion extends Region {
    */
   public static GenomicRegion create(int start, int end) {
     return create(Chromosome.NO_CHR, start, end);
+  }
+  
+  /*
+  public static GenomicRegion create(String genome, String region) {
+    int s = 0;
+    int e = region.indexOf(':');
+    
+    String chr = region.substring(0, e);
+    
+    s = e + 1;
+    
+    e = region.lastIndexOf('-');
+    
+    String start;
+    String end;
+    
+    if (e != -1) {
+      start = region.substring(s, e);
+      
+      s = e + 1;
+      
+      end = region.substring(s);
+      
+    } else {
+      start = region.substring(s);
+      end = start;
+    }
+    
+    
+    return create(genome, chr, start, end);
+  }
+  */
+  
+  public static GenomicRegion create(String genome, String chr, String start, String end) {
+    return create(genome, chr, TextUtils.parseInt(start), TextUtils.parseInt(end));
   }
 
   /**

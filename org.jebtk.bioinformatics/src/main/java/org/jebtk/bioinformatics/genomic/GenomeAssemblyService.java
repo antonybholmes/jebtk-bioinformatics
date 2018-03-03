@@ -28,8 +28,13 @@
 package org.jebtk.bioinformatics.genomic;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+
+import org.jebtk.bioinformatics.dna.InvalidDnaException;
+import org.jebtk.core.collections.IterMap;
+import org.jebtk.core.collections.IterTreeMap;
+import org.jebtk.core.collections.UniqueArrayList;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -37,7 +42,7 @@ import java.util.List;
  *
  * @author Antony Holmes Holmes
  */
-public class GenomeAssemblyService extends GenomeAssembly {
+public class GenomeAssemblyService extends GenomeAssembly implements Iterable<String> {
 
   /**
    * The Class GenomeAssemblyServiceLoader.
@@ -53,25 +58,40 @@ public class GenomeAssemblyService extends GenomeAssembly {
    *
    * @return single instance of GenomeAssemblyService
    */
-  public static GenomeAssemblyService getInstance() {
+  public static GenomeAssemblyService instance() {
     return GenomeAssemblyServiceLoader.INSTANCE;
   }
 
-  /** The m assemblies. */
-  private List<GenomeAssembly> mAssemblies = new ArrayList<GenomeAssembly>();
+  private List<GenomeAssembly> mAssemblies = 
+      new UniqueArrayList<GenomeAssembly>();
+  
+  private IterMap<String, GenomeAssembly> mGenomeMap =
+      new IterTreeMap<String, GenomeAssembly>();
 
+  public void add(GenomeAssembly assembly) {
+    mAssemblies.add(assembly);
+    
+    try {
+      for (String genome : assembly.getGenomes()) {
+        mGenomeMap.put(genome, assembly);
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+  
+  public GenomeAssembly get(String genome) {
+    return mGenomeMap.get(genome);
+  }
+  
   @Override
   public String getName() {
     return "genome-service";
   }
-
-  /**
-   * Adds the.
-   *
-   * @param assembly the assembly
-   */
-  public void add(GenomeAssembly assembly) {
-    mAssemblies.add(assembly);
+  
+  @Override
+  public Iterator<String> iterator() {
+    return mGenomeMap.iterator();
   }
 
   /*
@@ -85,25 +105,25 @@ public class GenomeAssemblyService extends GenomeAssembly {
   public SequenceRegion getSequence(String genome,
       GenomicRegion region,
       boolean displayUpper,
-      RepeatMaskType repeatMaskType) throws IOException {
-    SequenceRegion ret = null;
+      RepeatMaskType repeatMaskType){
+   
 
     // Iterate over all assemblies until one works.
 
-    for (GenomeAssembly a : mAssemblies) {
-      try {
-        // System.err.println(a);
-
-        ret = a.getSequence(genome, region, displayUpper, repeatMaskType);
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-
-      if (ret != null) {
-        break;
-      }
+    GenomeAssembly a = get(genome);
+    
+    if (a == null) {
+      return null;
     }
-
+    
+    SequenceRegion ret = null;
+    
+    try {
+      ret = a.getSequence(genome, region, displayUpper, repeatMaskType);
+    } catch (InvalidDnaException | IOException e) {
+      e.printStackTrace();
+    }
+    
     return ret;
   }
 
