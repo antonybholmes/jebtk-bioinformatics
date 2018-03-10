@@ -33,6 +33,7 @@ import java.nio.file.Path;
 import org.jebtk.bioinformatics.genomic.Chromosome;
 import org.jebtk.bioinformatics.genomic.GenomicRegion;
 import org.jebtk.bioinformatics.genomic.RepeatMaskType;
+import org.jebtk.bioinformatics.genomic.Sequence;
 import org.jebtk.bioinformatics.genomic.SequenceRegion;
 
 // TODO: Auto-generated Javadoc

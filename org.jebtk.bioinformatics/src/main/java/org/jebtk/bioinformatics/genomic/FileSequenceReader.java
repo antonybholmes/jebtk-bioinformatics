@@ -25,34 +25,37 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package org.jebtk.bioinformatics.dna;
+package org.jebtk.bioinformatics.genomic;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import org.jebtk.bioinformatics.genomic.Chromosome;
-import org.jebtk.bioinformatics.genomic.GenomicRegion;
-import org.jebtk.bioinformatics.genomic.RepeatMaskType;
-import org.jebtk.bioinformatics.genomic.Sequence;
-import org.jebtk.bioinformatics.genomic.SequenceRegion;
+import org.jebtk.bioinformatics.dna.GenomeAssemblyExt2BitMem;
 import org.jebtk.core.io.FileUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.jebtk.core.io.PathUtils;
 
 // TODO: Auto-generated Javadoc
 /**
- * Fast search of genome sequence Paths to get get actual genomic data.
+ * Encodes DNA in a 2 bit file representing ACGT. All other characters such as N
+ * map to A. Bases are encoded in two bits, so 4 bases per byte. A = 0, C = 1, G
+ * = 2, T = 3. Files can be accompanied by a corresponding n
+ * 
  *
  * @author Antony Holmes Holmes
+ *
  */
-public class GenomeAssemblyGZip extends GenomeAssemblyDir {
+public class FileSequenceReader extends SequenceReader {
 
-  /**
-   * The constant LOG.
-   */
-  private static final Logger LOG = LoggerFactory
-      .getLogger(GenomeAssemblyGZip.class);
+  /** The m map. */
+  protected Map<String, SequenceReader> mMap = new HashMap<String, SequenceReader>();
+
+  /** The m directory. */
+  protected final List<Path> mDirs = new ArrayList<Path>();
 
   /**
    * Directory containing genome Paths which must be of the form chr.n.txt. Each
@@ -60,13 +63,51 @@ public class GenomeAssemblyGZip extends GenomeAssemblyDir {
    *
    * @param directory the directory
    */
-  public GenomeAssemblyGZip(Path directory) {
-    super(directory);
+  public FileSequenceReader(Path dir, Path... dirs) {
+    mDirs.add(dir);
+
+    for (Path d : dirs) {
+      mDirs.add(d);
+    }
   }
 
   @Override
   public String getName() {
-    return "txt-gz";
+    return "fs";
+  }
+
+  public Path getDir() {
+    return mDirs.get(0);
+  }
+
+  /**
+   * Return the directories to search for assembly files.
+   * 
+   * @return
+   */
+  public Iterable<Path> getDirs() {
+    return mDirs;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.jebtk.bioinformatics.genome.GenomeAssembly#getGenomes()
+   */
+  @Override
+  public List<String> getGenomes() throws IOException {
+
+    List<String> ret = new ArrayList<String>();
+
+    for (Path dir : mDirs) {
+      List<Path> subDirs = FileUtils.lsdir(dir);
+
+      for (Path sd : subDirs) {
+        ret.add(PathUtils.getName(sd));
+      }
+    }
+
+    return ret;
   }
 
   /*
@@ -82,59 +123,37 @@ public class GenomeAssemblyGZip extends GenomeAssemblyDir {
       GenomicRegion region,
       boolean displayUpper,
       RepeatMaskType repeatMaskType) throws IOException {
-    Chromosome chr = region.getChr();
+    createGenomeEntry(genome, mMap);
 
-    if (!mFileMap.containsKey(region.getChr())) {
-      mFileMap.put(chr, mDirectory.resolve(chr + ".txt.gz"));
-    }
-
-    return getSequence(mFileMap.get(chr), region);
+    return mMap.get(genome)
+        .getSequence(genome, region, displayUpper, repeatMaskType);
   }
 
-  /**
-   * Returns the sequence from a region of a chromosome.
-   *
-   * @param file the file
-   * @param region the region
-   * @return the sequence
-   * @throws IOException Signals that an I/O exception has occurred.
-   */
-  private final SequenceRegion getSequence(Path file, GenomicRegion region)
-      throws IOException {
-    LOG.debug("Extract sequence for {} from {}...", region.toString(), file);
+  @Override
+  public List<SequenceRegion> getSequences(String genome,
+      Collection<GenomicRegion> regions,
+      boolean displayUpper,
+      RepeatMaskType repeatMaskType) throws IOException {
+    createGenomeEntry(genome, mMap);
 
-    int s = region.getStart() - 1;
-    int e = region.getEnd() - 1;
+    return mMap.get(genome)
+        .getSequences(genome, regions, displayUpper, repeatMaskType);
+  }
 
-    // PathInputStream in = new PathInputStream(Path);
-    InputStream in = FileUtils.newGzipInputStream(file); // new
-                                                         // GZIPInputStream(new
-                                                         // PathInputStream(Path),
-                                                         // 65536);
+  protected void createGenomeEntry(String genome,
+      Map<String, SequenceReader> map) {
+    if (!map.containsKey(genome)) {
 
-    int l = e - s + 1;
+      for (Path dir : mDirs) {
+        if (FileUtils.isDirectory(dir)) {
+          Path d = dir.resolve(genome);
 
-    byte[] cbuf = new byte[l];
-
-    SequenceRegion sequence = null;
-
-    try {
-      in.skip(s);
-
-      int bytesRead = in.read(cbuf);
-
-      if (bytesRead == l) {
-        sequence = new SequenceRegion(region,
-            Sequence.create(new String(cbuf)));
-      } else {
-        System.err.println(file + " " + region + " " + bytesRead + " " + l + " "
-            + new String(cbuf));
-        System.exit(0);
+          if (FileUtils.isDirectory(d)) {
+            map.put(genome, new GenomeAssemblyExt2BitMem(d)); // new
+            // GenomeAssemblyExt2Bit(dir));
+          }
+        }
       }
-    } finally {
-      in.close();
     }
-
-    return sequence;
   }
 }

@@ -18,6 +18,7 @@ package org.jebtk.bioinformatics.genomic;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.jebtk.core.Mathematics;
@@ -38,22 +39,65 @@ import org.slf4j.LoggerFactory;
 public class Chromosomes {
 
   private static final Logger LOG = LoggerFactory.getLogger(Chromosomes.class);
-  
+
   private String mGenome;
-  
+
   private IterMap<Integer, Chromosome> mChrIdMap = 
       new IterHashMap<Integer, Chromosome>();
-  
+
   private IterMap<String, Chromosome> mChrMap = 
       new IterHashMap<String, Chromosome>();
 
   private String mSpecies;
-  
-  public static final ChromosomesHg19 HG19 = new ChromosomesHg19();
 
-  protected Chromosomes(String species, String genome) {
+  private boolean mAutoLoad = true;
+
+
+  /**
+   * Directories to search.
+   */
+  private List<Path> mDirs = new ArrayList<Path>();
+
+  public static final String EXT = "chrs.gz";
+
+  public Chromosomes(String genome) {
+    this(genome, genome);
+  }
+
+  public Chromosomes(String species, String genome) {
     mSpecies = species;
     mGenome = genome;
+
+    mDirs.add(Genome.GENOME_HOME);
+    mDirs.add(Genome.GENOME_DIR);
+  }
+
+  private void autoLoad() throws IOException {
+    if (mAutoLoad) {
+      for (Path dir : mDirs) {
+        Path genomeDir = dir.resolve(mGenome);
+
+        if (FileUtils.isDirectory(genomeDir)) {
+          List<Path> files = FileUtils.endsWith(genomeDir, EXT);
+
+          for (Path file : files) {
+            load(file);
+          }
+        }
+      }
+
+      mAutoLoad = false;
+    }
+  }
+
+  private void load(Path file) throws IOException {
+    LOG.info("Discovered chromosome info in {}.", file);
+    
+    load(file, this);
+  }
+  
+  public void cache() {
+    mAutoLoad = true;
   }
 
   /**
@@ -64,24 +108,42 @@ public class Chromosomes {
    */
   public int getId(String chr) {
     Chromosome c = chr(chr);
-    
+
     if (c != null) {
       return c.getId();
     } else {
       return -1;
     }
   }
-  
+
   public Chromosome chr(String chr) {
     //LOG.info("Request {} {}", chr, getMapId(chr));
+
+    try {
+      autoLoad();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
     
-    return mChrMap.get(formatKey(chr));
+    String fc = formatKey(chr);
+
+    if (!mChrMap.containsKey(fc)) {
+      add(new Chromosome(-1, chr, mGenome));
+    }
+
+    return mChrMap.get(fc);
   }
-  
+
   public Chromosome chr(int id) {
+    try {
+      autoLoad();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    
     return mChrIdMap.get(id);
   }
-  
+
   protected void add(Chromosome chr) {
     mChrIdMap.put(chr.getId(), chr);
     mChrMap.put(Integer.toString(chr.getId()), chr);
@@ -96,7 +158,7 @@ public class Chromosomes {
   public String getSpecies() {
     return mSpecies;
   }
-  
+
   /**
    * Returns the genome reference, for example hg19.
    * 
@@ -107,59 +169,65 @@ public class Chromosomes {
   }
 
 
-  
+
   public Chromosome randChr() {
-    List<String> ids = CollectionUtils.toList(mChrMap.keySet());
+    try {
+      autoLoad();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
     
+    List<String> ids = CollectionUtils.toList(mChrMap.keySet());
+
     return mChrMap.get(ids.get(Mathematics.rand(ids.size())));
   }
 
   public static Chromosomes parse(Path file) throws IOException {
+    LOG.info("Reading chromosome info from {}", file);
+
 
     BufferedReader reader = FileUtils.newBufferedReader(file);
-    
+
     Chromosomes ret = null;
-    
+
     try {
       ret = parse(reader);
     } finally {
       reader.close();
     } 
-    
+
     return ret;
   }
-  
+
   private static Chromosomes parse(BufferedReader reader) throws IOException {
-    
+
     // The first token contains the names etc, ignore the rest of the line
     String species = TextUtils.tabSplit(reader.readLine()).get(0);
     String genome = TextUtils.tabSplit(reader.readLine()).get(0);
-    
-   
-    
+
     Chromosomes ret = new Chromosomes(species, genome);
 
     // Skip header
     reader.readLine();
-    
+
     String line;
     List<String> tokens;
-    
+
     while ((line = reader.readLine()) != null) {
       tokens = TextUtils.tabSplit(line);
-      
+
       int id = Integer.parseInt(tokens.get(0));
       String name = tokens.get(1);
       int size = Integer.parseInt(tokens.get(2));
-      
+
       Chromosome chr = new Chromosome(id, name, size, genome);
-      
+
       ret.add(chr);
     }
-    
+
     return ret;
   }
-  
+
   /**
    * Parses the.
    *
@@ -170,32 +238,63 @@ public class Chromosomes {
   public static Chromosomes parseJson(Path file) throws IOException {
 
     Json json = new JsonParser().parse(file);
-    
+
     Chromosomes ret = new Chromosomes(json.getAsString("species"), 
         json.getAsString("genome"));
 
     Json chrsJson = json.get("chromosomes");
-    
+
     for (int i = 0; i < chrsJson.size(); ++i) {
       Json chrJson = chrsJson.get(i);
-      
+
       int id = chrJson.getAsInt("id");
       String name = chrJson.getAsString("name");
       int size = chrJson.getAsInt("size");
-      
+
       Chromosome chr = new Chromosome(id, name, size);
-      
+
       ret.mChrIdMap.put(id, chr);
       ret.mChrMap.put(Integer.toString(id), chr);
       ret.mChrMap.put(chr.getShortName().toUpperCase(), chr);
     }
-    
+
     return ret;
   }
-  
+
+  private static void load(Path file, Chromosomes ret) throws IOException {
+
+    BufferedReader reader = FileUtils.newBufferedReader(file);
+
+    try {
+      // Skip header
+      reader.readLine();
+      reader.readLine();
+      reader.readLine();
+
+      String line;
+      List<String> tokens;
+
+      while ((line = reader.readLine()) != null) {
+        tokens = TextUtils.tabSplit(line);
+
+        int id = Integer.parseInt(tokens.get(0));
+        String name = tokens.get(1);
+        int size = Integer.parseInt(tokens.get(2));
+
+        Chromosome chr = new Chromosome(id, name, size, ret.getGenome());
+
+        ret.add(chr);
+      }
+    } finally {
+      reader.close();
+    }
+  }
+
   private static final String formatKey(String chr) {
     return Chromosome.getShortName(chr).toUpperCase();
   }
 
- 
+  
+
+
 }

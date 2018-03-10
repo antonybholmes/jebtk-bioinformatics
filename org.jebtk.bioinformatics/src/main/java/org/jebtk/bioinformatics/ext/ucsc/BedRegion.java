@@ -157,7 +157,7 @@ public class BedRegion extends UCSCTrackRegion implements Iterable<String> {
     List<String> tokens = TextUtils.tabSplit(line);
 
     // convert first part to chromosome (replacing x,y and m) {
-    Chromosome chr = GenomeService.getInstance().chr(genome, tokens.get(0));
+    Chromosome chr = GenomeService.instance().chr(genome, tokens.get(0));
 
     if (chr == null) {
       return null;

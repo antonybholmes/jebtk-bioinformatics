@@ -49,7 +49,7 @@ public abstract class GenesDb {
    * @throws ParseException the parse exception
    */
   public abstract List<Gene> getGenes(String id)
-      throws IOException, ParseException;
+      throws IOException;
 
   /**
    * Should return the main gene transcript associated with a gene.
@@ -60,5 +60,5 @@ public abstract class GenesDb {
    * @throws ParseException the parse exception
    */
   public abstract Gene getMainGene(String id)
-      throws IOException, ParseException;
+      throws IOException;
 }

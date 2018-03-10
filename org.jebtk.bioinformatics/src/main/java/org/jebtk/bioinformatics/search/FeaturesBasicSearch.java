@@ -106,7 +106,7 @@ public class FeaturesBasicSearch extends AbstractFeaturesSearch {
           List<String> row = TextUtils.fastSplit(line, TextUtils.TAB_DELIMITER);
 
           Feature feature = new Feature(row.get(0),
-              GenomeService.getInstance().guessChr(mFile, row.get(1)),
+              GenomeService.instance().guessChr(mFile, row.get(1)),
               Integer.parseInt(row.get(2)), Integer.parseInt(row.get(3)));
           // feature.type = type;
 

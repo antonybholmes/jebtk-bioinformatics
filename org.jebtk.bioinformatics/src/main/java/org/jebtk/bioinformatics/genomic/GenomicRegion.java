@@ -287,7 +287,7 @@ public class GenomicRegion extends Region {
     Matcher matcher = CHR_ONLY_PATTERN.matcher(location);
 
     if (matcher.find()) {
-      Chromosome chromosome = GenomeService.getInstance()
+      Chromosome chromosome = GenomeService.instance()
           .chr(genome, matcher.group(1));
 
       if (chromosome == null) {
@@ -350,7 +350,7 @@ public class GenomicRegion extends Region {
    * @throws ParseException the parse exception
    */
   public static GenomicRegion parse(String genome, String chr, String start, String end) {
-    return new GenomicRegion(GenomeService.getInstance().genome(genome).chr(chr),
+    return new GenomicRegion(GenomeService.instance().genome(genome).chr(chr),
         TextUtils.parseInt(start), TextUtils.parseInt(end));
   }
 
@@ -696,7 +696,7 @@ public class GenomicRegion extends Region {
    */
   public static List<SequenceRegion> getSequences(String genome,
       List<GenomicRegion> regions,
-      GenomeAssembly genomeAssembly) throws IOException, ParseException {
+      SequenceReader genomeAssembly) throws IOException, ParseException {
     return getSequences(genome,
         regions,
         true,
@@ -720,7 +720,7 @@ public class GenomicRegion extends Region {
       Collection<GenomicRegion> regions,
       boolean displayUpper,
       RepeatMaskType repeatMaskType,
-      GenomeAssembly genomeAssembly) throws IOException, ParseException {
+      SequenceReader genomeAssembly) throws IOException, ParseException {
     List<SequenceRegion> sequences = new ArrayList<SequenceRegion>();
 
     for (GenomicRegion region : regions) {
@@ -994,7 +994,7 @@ public class GenomicRegion extends Region {
    * @return the genomic region
    */
   public static GenomicRegion create(String genome, String chr, int start, int end) {
-    return create(GenomeService.getInstance().genome(genome).chr(chr), start, end);
+    return create(GenomeService.instance().genome(genome).chr(chr), start, end);
   }
 
   /**
@@ -1056,7 +1056,7 @@ public class GenomicRegion extends Region {
   public static GenomicRegion randomRegion(String genome, int length) throws IOException {
     Random rand = new Random();
 
-    Chromosome chr = GenomeService.getInstance().randChr(genome);
+    Chromosome chr = GenomeService.instance().randChr(genome);
 
     int start = rand.nextInt(chr.getSize() - length);
     int end = start + length - 1;

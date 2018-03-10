@@ -30,7 +30,6 @@ package org.jebtk.bioinformatics.genomic;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,7 +43,7 @@ import org.jebtk.core.network.UrlBuilder;
  *
  * @author Antony Holmes Holmes
  */
-public class GenesWeb extends GenesDb {
+public class URLGenes extends GenesDb {
 
   /**
    * The member url.
@@ -72,7 +71,7 @@ public class GenesWeb extends GenesDb {
    * @param url the url
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public GenesWeb(URL url) throws IOException {
+  public URLGenes(URL url) throws IOException {
     mUrl = new UrlBuilder(url);
 
     mGeneUrl = new UrlBuilder(mUrl).resolve("gene");
@@ -89,7 +88,7 @@ public class GenesWeb extends GenesDb {
    * String)
    */
   @Override
-  public List<Gene> getGenes(String id) throws IOException, ParseException {
+  public List<Gene> getGenes(String id) throws IOException {
     List<Gene> genes = new ArrayList<Gene>();
 
     try {
@@ -105,7 +104,7 @@ public class GenesWeb extends GenesDb {
             geneJson.getAsString("entrez"),
             geneJson.getAsString("symbol"),
             GenomicRegion.create(
-                GenomeService.getInstance()
+                GenomeService.instance()
                     .chr(Genome.HG19, geneJson.getAsString("chr")),
                 geneJson.getAsInt("start"),
                 geneJson.getAsInt("end"),
@@ -139,7 +138,7 @@ public class GenesWeb extends GenesDb {
    * String)
    */
   @Override
-  public Gene getMainGene(String id) throws IOException, ParseException {
+  public Gene getMainGene(String id) throws IOException {
     Gene gene = null;
 
     try {
@@ -154,7 +153,7 @@ public class GenesWeb extends GenesDb {
           geneJson.getAsString("entrez"),
           geneJson.getAsString("symbol"),
           GenomicRegion.create(
-              GenomeService.getInstance()
+              GenomeService.instance()
                   .chr(Genome.HG19, geneJson.getAsString("chr")),
               geneJson.getAsInt("start"),
               geneJson.getAsInt("end"),

@@ -30,7 +30,6 @@ package org.jebtk.bioinformatics.genomic;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jebtk.bioinformatics.dna.Sequence;
 import org.jebtk.core.text.TextUtils;
 
 // TODO: Auto-generated Javadoc

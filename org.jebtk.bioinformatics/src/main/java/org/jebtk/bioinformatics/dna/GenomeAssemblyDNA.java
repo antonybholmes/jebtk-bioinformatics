@@ -27,7 +27,7 @@
  */
 package org.jebtk.bioinformatics.dna;
 
-import org.jebtk.bioinformatics.genomic.GenomeAssembly;
+import org.jebtk.bioinformatics.genomic.SequenceReader;
 import org.jebtk.bioinformatics.genomic.RepeatMaskType;
 
 // TODO: Auto-generated Javadoc
@@ -36,7 +36,7 @@ import org.jebtk.bioinformatics.genomic.RepeatMaskType;
  *
  * @author Antony Holmes Holmes
  */
-public abstract class GenomeAssemblyDNA extends GenomeAssembly {
+public abstract class GenomeAssemblyDNA extends SequenceReader {
   /**
    * To char.
    *

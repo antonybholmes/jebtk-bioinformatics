@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.jebtk.bioinformatics.dna.Sequence;
+import org.jebtk.bioinformatics.genomic.Sequence;
 import org.jebtk.core.collections.CollectionUtils;
 import org.jebtk.core.io.FileUtils;
 import org.jebtk.core.io.Io;

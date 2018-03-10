@@ -25,7 +25,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package org.jebtk.bioinformatics.dna;
+package org.jebtk.bioinformatics.genomic;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -37,16 +37,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.jebtk.bioinformatics.genomic.Chromosome;
-import org.jebtk.bioinformatics.genomic.GenomeAssembly;
-import org.jebtk.bioinformatics.genomic.GenomeService;
-import org.jebtk.bioinformatics.genomic.GenomicRegion;
-import org.jebtk.bioinformatics.genomic.RepeatMaskType;
-import org.jebtk.bioinformatics.genomic.SequenceRegion;
 import org.jebtk.core.NameProperty;
 import org.jebtk.core.io.FileUtils;
 import org.jebtk.core.io.Io;
@@ -81,11 +74,14 @@ public class Sequence
   private SequenceType mType;
 
   public static final Pattern DNA_REGEX = Pattern.compile("[ACGTUacgtuNn]+");
+  
+  public static final Pattern ILLEGAL_REGEX = Pattern.compile("[^ACGTUacgtuNn]");
 
   /**
    * The constant LOG.
    */
   private static final Logger LOG = LoggerFactory.getLogger(Sequence.class);
+
 
   /**
    * Instantiates a new sequence.
@@ -98,13 +94,11 @@ public class Sequence
   }
 
   public Sequence(String name, String sequence) {
-    if (!DNA_REGEX.matcher(sequence).matches()) {
-      throw new InvalidDnaException("Sequence contains invalid bases.");
-    }
-
     mName = name;
-    mSequence = sequence.toUpperCase();
-    mType = sequence.contains("U") || sequence.contains("u") ? SequenceType.RNA
+    
+    // Replace all illegal characters with N
+    mSequence = ILLEGAL_REGEX.matcher(sequence).replaceAll(DNA.N); //.toUpperCase();
+    mType = sequence.contains(DNA.U) || sequence.contains(DNA.LU) ? SequenceType.RNA
         : SequenceType.DNA;
   }
 
@@ -221,9 +215,9 @@ public class Sequence
       switch (c) {
       case 'A':
         if (type == SequenceType.RNA) {
-          buffer.append('U');
+          buffer.append(DNA.U);
         } else {
-          buffer.append('T');
+          buffer.append(DNA.T);
         }
 
         break;
@@ -258,7 +252,7 @@ public class Sequence
       case 'n':
       case 'N':
       default:
-        buffer.append('N');
+        buffer.append(DNA.N);
         break;
       }
     }
@@ -587,13 +581,13 @@ public class Sequence
    * @throws IOException Signals that an I/O exception has occurred.
    */
   public static SequenceRegion getRandomSequence(String genome,
-      GenomeAssembly assembly,
+      SequenceReader assembly,
       int length) throws IOException {
     return getRandomSequence(genome, assembly, length, true, RepeatMaskType.LOWERCASE);
   }
   
   public static SequenceRegion getRandomSequence(String genome,
-      GenomeAssembly assembly,
+      SequenceReader assembly,
       int length,
       boolean uppercase,
       RepeatMaskType repeatMaskType) throws IOException {

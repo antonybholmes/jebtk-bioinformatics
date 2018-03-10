@@ -91,7 +91,7 @@ public class GTB1Parser extends GTBParser {
 
       tokens = Splitter.onTab().text(line);
 
-      Chromosome chr = GenomeService.getInstance().guessChr(file,
+      Chromosome chr = GenomeService.instance().guessChr(file,
           tokens.get(0));
 
       // Skip random and unofficial chromosomes
@@ -209,7 +209,7 @@ public class GTB1Parser extends GTBParser {
 
       tokens = Splitter.onTab().text(line);
 
-      Chromosome chr = GenomeService.getInstance().guessChr(file,
+      Chromosome chr = GenomeService.instance().guessChr(file,
           tokens.get(0));
 
       // Skip random and unofficial chromosomes

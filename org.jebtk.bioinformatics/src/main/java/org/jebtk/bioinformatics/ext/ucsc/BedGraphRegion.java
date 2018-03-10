@@ -95,7 +95,7 @@ public class BedGraphRegion extends UCSCTrackRegion {
     List<String> tokens = TextUtils.fastSplit(line, TextUtils.TAB_DELIMITER);
 
     // convert first part to chromosome (replacing x,y and m) {
-    Chromosome chromosome = GenomeService.getInstance().chr(genome,
+    Chromosome chromosome = GenomeService.instance().chr(genome,
         tokens.get(0));
 
     // Per UCSC convention, coordinates are zero based in the file

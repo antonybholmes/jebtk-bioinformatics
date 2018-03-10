@@ -27,9 +27,9 @@
  */
 package org.jebtk.bioinformatics.genomic;
 
-import java.io.IOException;
 import java.nio.file.Path;
 
+import org.jebtk.core.AppService;
 import org.jebtk.core.NameProperty;
 
 // TODO: Auto-generated Javadoc
@@ -52,24 +52,43 @@ public class Genome implements NameProperty {
   public static final String MM10 = "mm10";
   
   public static final String GRCM38 = "grcm38";
+  
+  public static final Path GENOME_HOME = AppService.RES_HOME.resolve("genomes");
+  
+  /** Local genome dir of app */
+  public static final Path GENOME_DIR = AppService.RES_DIR.resolve("genomes");
 
   private Chromosomes mChrs;
+
+  private String mName;
   
-  public Genome(Chromosomes chrs) {
-    mChrs = chrs;
+  public Genome(String name) {
+    mName = name;
   }
 
   @Override
   public String getName() {
-    return getGenome();
+    return mName;
   }
   
   public String getGenome() {
-    return mChrs.getGenome();
+    return getName();
   }
 
   public Chromosomes chrs() {
+    if (mChrs == null) {
+      mChrs = new Chromosomes(mName);
+    }
+    
     return mChrs;
+  }
+  
+  /**
+   * Invalidate the cache so it is rebuilt.
+   */
+  public void cache() {
+    //mChrs.cache();
+    mChrs = null;
   }
   
   public Chromosome chr(String chr) {
@@ -87,10 +106,4 @@ public class Genome implements NameProperty {
   public Chromosome randChr() {
     return chrs().randChr();
   }
-  
-  public static Genome parse(Path file) throws IOException {
-    return new Genome(Chromosomes.parse(file));
-  }
-
-  
 }

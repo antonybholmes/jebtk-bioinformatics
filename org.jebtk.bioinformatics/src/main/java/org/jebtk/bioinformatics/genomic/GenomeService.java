@@ -29,6 +29,7 @@ package org.jebtk.bioinformatics.genomic;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -57,90 +58,108 @@ public class GenomeService implements Iterable<String> {
   }
 
   /**
-   * Gets the single instance of SettingsService.
+   * Gets the single instance of GenomeService.
    *
-   * @return single instance of SettingsService
+   * @return single instance of GenomeService.
    */
-  public static GenomeService getInstance() {
+  public static GenomeService instance() {
     return GenomeLoader.INSTANCE;
   }
-  
+
   private static final Logger LOG = LoggerFactory.getLogger(GenomeService.class);
 
 
-  private static final Path RES_DIR = PathUtils.getPath("res/genomes");
 
-  private static final String EXT = "genome.gz";
-  private static final String EXT2 = "genome.txt.gz";
+  //private static final String EXT2 = "genome.txt.gz";
 
   private IterMap<String, Genome> mGenomeMap = 
       new IterTreeMap<String, Genome>();
 
   private GenomeGuess mGenomeGuess = new GenomeGuess();
-  
+
+
+  /**
+   * Directories to search.
+   */
+  private List<Path> mDirs = new ArrayList<Path>();
+
+
+
   private boolean mAutoLoad = true;
-
-
-  private Path mDir = RES_DIR;
 
   /**
    * Instantiates a new chromosomes.
    */
   private GenomeService() {
     // Do nothing
-    
-    // Load a default, which can be replaced if desired.
-    add(Chromosomes.HG19);
+
+    mDirs.add(Genome.GENOME_HOME);
+    mDirs.add(Genome.GENOME_DIR);
   }
 
-  private void autoLoad() throws IOException {
-    if (mAutoLoad) {
-      List<Path> files = FileUtils.endsWith(mDir, EXT);
-
-      for (Path file : files) {
-        load(file);
-      }
-      
-      files = FileUtils.endsWith(mDir, EXT2);
-
-      for (Path file : files) {
-        load(file);
-      }
-      
-      mAutoLoad = false;
-    }
-  }
-  
   /**
    * Set the directory where to search for genomes.
    * 
    * @param dir
    */
   public void setDir(Path dir) {
-    mDir = dir;
-    mAutoLoad = true;
+    mDirs.add(dir);
   }
-  
-  public void load(Path file) throws IOException {
-    add(Chromosomes.parse(file));
-  }
-  
-  public void add(Chromosomes chrs) {
-    LOG.info("Add genome {} {}", chrs.getGenome(), chrs.getSpecies());
-    
-    mGenomeMap.put(formatKey(chrs.getGenome()), new Genome(chrs));
-  }
-  
+
+  /**
+   * Get a genome. Service will attempt to auto discover genome data and
+   * populate the genome object. If no data exists, an empty genome will be
+   * created.
+   * 
+   * @param genome
+   * @return
+   */
   public Genome genome(String genome) {
     try {
       autoLoad();
     } catch (IOException e) {
       e.printStackTrace();
     }
-    
-    return mGenomeMap.get(formatKey(genome));
+
+    //String fg = formatKey(genome);
+
+    if (!mGenomeMap.containsKey(genome)) {
+      // If the genome does not exist, create one
+      mGenomeMap.put(genome, new Genome(genome));
+    }
+
+    return mGenomeMap.get(genome);
   }
-  
+
+  private void autoLoad() throws IOException {
+    if (mAutoLoad) {
+      for (Path dir : mDirs) {
+        if (FileUtils.isDirectory(dir)) {
+          for (Path subDir : FileUtils.lsdir(dir)) {
+            if (FileUtils.isDirectory(subDir)) {
+              String genome = PathUtils.getName(subDir);
+
+              if (!mGenomeMap.containsKey(genome)) {
+                LOG.info("Discovered genome {} in {}.", genome, subDir);
+
+                mGenomeMap.put(genome, new Genome(genome));
+              }
+            }
+          }
+        }
+      }
+
+      mAutoLoad = false;
+    }
+  }
+
+  /**
+   * Invalidate the cache so it will be rebuilt.
+   */
+  public void cache() {
+    mAutoLoad = true;
+  }
+
   /**
    * Returns the chr from a given genome reference.
    * 
@@ -151,24 +170,31 @@ public class GenomeService implements Iterable<String> {
    */
   public Chromosome chr(String genome, String chr) {
     //LOG.info("chr {} {}", genome, chr);
-    
+
     return genome(genome).chr(chr);
   }
-  
+
+  /**
+   * Remap a chromosome to another genome by name.
+   * 
+   * @param genome
+   * @param chr
+   * @return
+   */
   public Chromosome chr(String genome, Chromosome chr) {
     //LOG.info("chr {} {}", genome, chr);
-    
+
     return chr(genome, chr.toString());
   }
-  
+
   public Chromosome hg19(String chr) {
     return chr(Genome.HG19, chr);
   }
-  
+
   public Chromosome guessChr(String genome, String chr) {
     return chr(guessGenome(genome), chr);
   }
-  
+
   public Chromosome guessChr(Path file, String chr) {
     return guessChr(PathUtils.getName(file), chr);
   }
@@ -181,11 +207,11 @@ public class GenomeService implements Iterable<String> {
   public void setGenomeGuess(GenomeGuess guess) {
     mGenomeGuess = guess;
   }
-  
+
   public String guessGenome(String name) {
     return mGenomeGuess.guess(name);
   }
-  
+
   public String guessGenome(Path file) {
     return guessGenome(PathUtils.getName(file));
   }
@@ -196,10 +222,12 @@ public class GenomeService implements Iterable<String> {
 
   @Override
   public Iterator<String> iterator() {
-    return mGenomeMap.keySet().iterator();
+    return mGenomeMap.iterator();
   }
 
-  private String formatKey(String key) {
+  private static String formatKey(String key) {
     return key.toLowerCase();
   }
+
+
 }

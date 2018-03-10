@@ -34,9 +34,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jebtk.bioinformatics.DataSource;
-import org.jebtk.bioinformatics.genomic.GenomeAssembly;
+import org.jebtk.bioinformatics.genomic.SequenceReader;
 import org.jebtk.bioinformatics.genomic.GenomicRegion;
 import org.jebtk.bioinformatics.genomic.RepeatMaskType;
+import org.jebtk.bioinformatics.genomic.Sequence;
 import org.jebtk.bioinformatics.genomic.SequenceRegion;
 import org.jebtk.core.json.Json;
 import org.jebtk.core.json.JsonParser;
@@ -48,7 +49,7 @@ import org.jebtk.core.network.UrlBuilder;
  *
  * @author Antony Holmes Holmes
  */
-public class GenomeAssemblyWeb extends GenomeAssembly {
+public class URLSequenceReader extends SequenceReader {
   /**
    * The member url.
    */
@@ -71,7 +72,7 @@ public class GenomeAssemblyWeb extends GenomeAssembly {
    * @param url the url
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public GenomeAssemblyWeb(URL url) throws IOException {
+  public URLSequenceReader(URL url) throws IOException {
     mUrl = new UrlBuilder(url);
 
     mDnaUrl = mUrl.resolve("dna");

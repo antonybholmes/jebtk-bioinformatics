@@ -171,7 +171,9 @@ implements Comparable<Chromosome>, IdProperty, NameProperty {
       } else if (mId < c.mId) {
         return -1;
       } else {
-        return 0;
+        // If chrs cannot be compared via their id, resort to string
+        // comparison on the chr name
+        return mChr.compareTo(c.mChr);
       }
       //}
     }

@@ -45,7 +45,7 @@ public class GTBZGenes extends Genes {
             @Override
             public void parse(final List<String> tokens) {
               String name = Genes.sanitize(tokens.get(0));
-              Chromosome chr = GenomeService.getInstance().guessChr(mFile,
+              Chromosome chr = GenomeService.instance().guessChr(mFile,
                   tokens.get(1));
 
               mGeneMap.put(name, chr);

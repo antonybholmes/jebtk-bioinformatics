@@ -136,7 +136,7 @@ public class Bed extends UCSCTrack {
    * @throws ParseException the parse exception
    */
   public static UCSCTrack parseTrack(Path file)
-      throws IOException, ParseException {
+      throws IOException {
     return parseTracks(file).get(0);
   }
 
@@ -152,7 +152,7 @@ public class Bed extends UCSCTrack {
 
     BufferedReader reader = FileUtils.newBufferedReader(file);
 
-    return parseTracks(GenomeService.getInstance().guessGenome(file),
+    return parseTracks(GenomeService.instance().guessGenome(file),
         getName(file),
         reader);
   }
@@ -321,7 +321,7 @@ public class Bed extends UCSCTrack {
           beds.add(bed);
         } else {
           BedRegion region = BedRegion
-              .parse(GenomeService.getInstance().guessGenome(file), line);
+              .parse(GenomeService.instance().guessGenome(file), line);
           bed.getRegions().add(region);
         }
       }

@@ -34,30 +34,16 @@ import java.util.Collections;
 import java.util.List;
 
 import org.jebtk.bioinformatics.DataSource;
-import org.jebtk.bioinformatics.dna.InvalidDnaException;
 import org.jebtk.core.NameProperty;
 
 // TODO: Auto-generated Javadoc
 /**
- * Fast search of genome sequence files to get get actual genomic data.
+ * Read sequence data from a data source (such as a file) an extract sequences
+ * using genomic coordinates.
  *
  * @author Antony Holmes Holmes
  */
-public abstract class GenomeAssembly implements NameProperty {
-
-  /** The Constant HG18. */
-  public static final String HG18 = "hg18";
-
-  /**
-   * The constant HG19.
-   */
-  public static final String HG19 = "hg19";
-
-  /**
-   * The constant MM10.
-   */
-  public static final String MM10 = "mm10";
-
+public abstract class SequenceReader implements NameProperty {
   /**
    * Process a sequence of the form chrN:X-Y.
    *
@@ -202,12 +188,11 @@ public abstract class GenomeAssembly implements NameProperty {
    * @param repeatMaskType the repeat mask type
    * @return the sequence
    * @throws IOException Signals that an I/O exception has occurred.
-   * @throws InvalidDnaException
    */
   public abstract SequenceRegion getSequence(String genome,
       GenomicRegion region,
       boolean displayUpper,
-      RepeatMaskType repeatMaskType) throws IOException, InvalidDnaException;
+      RepeatMaskType repeatMaskType) throws IOException;
 
   public List<SequenceRegion> getSequences(String genome,
       Collection<GenomicRegion> regions,
@@ -239,5 +224,9 @@ public abstract class GenomeAssembly implements NameProperty {
    */
   public DataSource getDataSource() {
     return DataSource.LOCAL;
+  }
+  
+  public SequenceType getSequenceType() {
+    return SequenceType.DNA;
   }
 }

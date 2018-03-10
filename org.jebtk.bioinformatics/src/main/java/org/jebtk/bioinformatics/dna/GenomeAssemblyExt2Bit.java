@@ -35,6 +35,7 @@ import java.util.Map;
 import org.jebtk.bioinformatics.genomic.Chromosome;
 import org.jebtk.bioinformatics.genomic.GenomicRegion;
 import org.jebtk.bioinformatics.genomic.RepeatMaskType;
+import org.jebtk.bioinformatics.genomic.Sequence;
 import org.jebtk.bioinformatics.genomic.SequenceRegion;
 import org.jebtk.core.io.FileUtils;
 
