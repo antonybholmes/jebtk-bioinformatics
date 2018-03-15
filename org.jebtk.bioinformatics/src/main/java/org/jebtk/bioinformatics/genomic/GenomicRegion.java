@@ -203,6 +203,8 @@ public class GenomicRegion extends Region {
 
       int c = mGenome.compareTo(gr.mGenome);
       
+      System.err.println("genome comp " + c);
+      
       if (c != 0) {
         return c;
       }
@@ -270,7 +272,7 @@ public class GenomicRegion extends Region {
    * @return the genomic region
    */
   public static GenomicRegion parse(String genome, String location) {
-    // System.err.println("location: " + location);
+    //System.err.println("location: " + location);
 
     if (Io.isEmptyLine(location)) {
       return null;
