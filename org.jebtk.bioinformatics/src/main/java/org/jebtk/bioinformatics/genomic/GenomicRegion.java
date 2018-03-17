@@ -45,7 +45,6 @@ import org.jebtk.core.text.Formatter.NumberFormatter;
 import org.jebtk.core.text.Splitter;
 import org.jebtk.core.text.TextUtils;
 
-// TODO: Auto-generated Javadoc
 /**
  * Describes a region of a genome.
  *
@@ -62,8 +61,7 @@ public class GenomicRegion extends Region {
   private static final Pattern GENOMIC_PATTERN = Pattern
       .compile(CHR_REGEX + ":(\\d+(?:,\\d+)*)"); // Pattern.compile("chr.+?:(?:\\d+(?:,\\d+)*)(?:-\\d+(?:,\\d+)*)?");
 
-  public static final Pattern CHR_ONLY_PATTERN = Pattern
-      .compile(CHR_REGEX);
+  public static final Pattern CHR_ONLY_PATTERN = Pattern.compile(CHR_REGEX);
 
   private static final Pattern GENOMIC_NUM_PATTERN = Pattern
       .compile("[\\-\\+\\t\\=\\: ](\\d+(?:,\\d+)*)");
@@ -81,8 +79,6 @@ public class GenomicRegion extends Region {
    */
   public final Strand mStrand;
   
-  private final String mGenome;
-
   // protected final String mType;
 
   /**
@@ -104,32 +100,16 @@ public class GenomicRegion extends Region {
   public GenomicRegion(GenomicRegion region, Strand strand) {
     this(region.mChr, region.mStart, region.mEnd, strand);
   }
-
-  /**
-   * Instantiates a new genomic region.
-   *
-   * @param chr the chr
-   * @param start the start
-   * @param end the end
-   */
+  
   public GenomicRegion(Chromosome chr, int start, int end) {
     this(chr, start, end, Strand.SENSE);
   }
-
+  
   public GenomicRegion(Chromosome chr, int start, int end, Strand strand) {
-    this(Genome.GRCH38, chr, start, end, strand);
-  }
-  
-  public GenomicRegion(String genome, Chromosome chr, int start, int end) {
-    this(genome, chr, start, end, Strand.SENSE);
-  }
-  
-  public GenomicRegion(String genome, Chromosome chr, int start, int end, Strand strand) {
     super(start, end);
 
     mChr = chr;
     mStrand = strand;
-    mGenome = genome;
   }
 
   /**
@@ -187,8 +167,14 @@ public class GenomicRegion extends Region {
     return getLocation();
   }
   
+  /**
+   * Returns the genome associated with this region. Equivalent to calling
+   * <code>getChr().getGenome()</code>.
+   * 
+   * @return    the genome.
+   */
   public String getGenome() {
-    return mGenome;
+    return mChr.getGenome();
   }
 
   /*
@@ -201,9 +187,7 @@ public class GenomicRegion extends Region {
     if (r instanceof GenomicRegion) {
       GenomicRegion gr = (GenomicRegion) r;
 
-      int c = mGenome.compareTo(gr.mGenome);
-      
-      System.err.println("genome comp " + c);
+      int c = getGenome().compareTo(gr.getGenome());
       
       if (c != 0) {
         return c;
@@ -250,8 +234,7 @@ public class GenomicRegion extends Region {
    * @return the list
    * @throws ParseException the parse exception
    */
-  public static List<GenomicRegion> parse(String genome, List<String> locations)
-      throws ParseException {
+  public static List<GenomicRegion> parse(String genome, List<String> locations) {
     List<GenomicRegion> ret = new ArrayList<GenomicRegion>();
 
     for (String location : locations) {
@@ -315,7 +298,7 @@ public class GenomicRegion extends Region {
         end = start;
       }
 
-      return new GenomicRegion(genome, chromosome, start, end);
+      return new GenomicRegion(chromosome, start, end);
     } else if (isRegion(location)) {
       location = region(location);
 
@@ -665,7 +648,8 @@ public class GenomicRegion extends Region {
   public static GenomicRegion extend(GenomicRegion region,
       int startOffset,
       int endOffset) {
-    return new GenomicRegion(region.mChr, region.mStart - Math.abs(startOffset),
+    return new GenomicRegion(region.mChr, 
+        region.mStart - Math.abs(startOffset),
         region.mEnd + Math.abs(endOffset));
   }
 
@@ -730,7 +714,7 @@ public class GenomicRegion extends Region {
           "Getting sequence for region " + region.getLocation() + "...");
 
       sequences.add(genomeAssembly
-          .getSequence(genome, region, displayUpper, repeatMaskType));
+          .getSequence(region, displayUpper, repeatMaskType));
     }
 
     return sequences;

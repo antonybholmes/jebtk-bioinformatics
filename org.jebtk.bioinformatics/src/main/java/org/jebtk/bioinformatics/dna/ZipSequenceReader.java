@@ -94,7 +94,7 @@ public class ZipSequenceReader extends FileSequenceReader {
             Path zip = d.resolve(genome + ".dna.zip");
 
             if (FileUtils.isFile(zip)) {
-              map.put(genome, new GenomeAssemblyExt2BitZip(zip));
+              map.put(genome, new Ext2BitZipSequenceReader(zip));
             }
           }
         }

@@ -58,8 +58,7 @@ public abstract class SequenceReader implements NameProperty {
       String position,
       boolean displayUpper,
       RepeatMaskType repeatMaskType) throws IOException {
-    return getSequence(genome,
-        GenomicRegion.parse(genome, position),
+    return getSequence(GenomicRegion.parse(genome, position),
         displayUpper,
         repeatMaskType);
   }
@@ -76,8 +75,7 @@ public abstract class SequenceReader implements NameProperty {
   public SequenceRegion getSequence(String genome,
       String position,
       RepeatMaskType repeatMaskType) throws IOException {
-    return getSequence(genome,
-        GenomicRegion.parse(genome, position),
+    return getSequence(GenomicRegion.parse(genome, position),
         true,
         repeatMaskType);
   }
@@ -92,11 +90,10 @@ public abstract class SequenceReader implements NameProperty {
    * @return the sequence
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public SequenceRegion getSequence(String genome,
-      Chromosome chr,
+  public SequenceRegion getSequence(Chromosome chr,
       int start,
       int end) throws IOException {
-    return getSequence(genome, chr, start, end, true, RepeatMaskType.UPPERCASE);
+    return getSequence(chr, start, end, true, RepeatMaskType.UPPERCASE);
   }
 
   /**
@@ -111,14 +108,12 @@ public abstract class SequenceReader implements NameProperty {
    * @return the sequence
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public SequenceRegion getSequence(String genome,
-      Chromosome chr,
+  public SequenceRegion getSequence(Chromosome chr,
       int start,
       int end,
       boolean displayUpper,
       RepeatMaskType repeatMaskType) throws IOException {
-    return getSequence(genome,
-        new GenomicRegion(chr, start, end),
+    return getSequence(new GenomicRegion(chr, start, end),
         displayUpper,
         repeatMaskType);
   }
@@ -131,9 +126,9 @@ public abstract class SequenceReader implements NameProperty {
    * @return the sequence
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public SequenceRegion getSequence(String genome, GenomicRegion region)
+  public SequenceRegion getSequence(GenomicRegion region)
       throws IOException {
-    return getSequence(genome, region, true, RepeatMaskType.UPPERCASE);
+    return getSequence(region, true, RepeatMaskType.UPPERCASE);
   }
 
   /**
@@ -158,10 +153,9 @@ public abstract class SequenceReader implements NameProperty {
    * @return the sequence
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public SequenceRegion getSequence(String genome,
-      GenomicRegion region,
+  public SequenceRegion getSequence(GenomicRegion region,
       boolean displayUpper) throws IOException {
-    return getSequence(genome, region, displayUpper, RepeatMaskType.UPPERCASE);
+    return getSequence(region, displayUpper, RepeatMaskType.UPPERCASE);
   }
 
   /**
@@ -173,10 +167,9 @@ public abstract class SequenceReader implements NameProperty {
    * @return the sequence
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public SequenceRegion getSequence(String genome,
-      GenomicRegion region,
+  public SequenceRegion getSequence(GenomicRegion region,
       RepeatMaskType repeatMaskType) throws IOException {
-    return getSequence(genome, region, true, repeatMaskType);
+    return getSequence(region, true, repeatMaskType);
   }
 
   /**
@@ -189,19 +182,17 @@ public abstract class SequenceReader implements NameProperty {
    * @return the sequence
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public abstract SequenceRegion getSequence(String genome,
-      GenomicRegion region,
+  public abstract SequenceRegion getSequence(GenomicRegion region,
       boolean displayUpper,
       RepeatMaskType repeatMaskType) throws IOException;
 
-  public List<SequenceRegion> getSequences(String genome,
-      Collection<GenomicRegion> regions,
+  public List<SequenceRegion> getSequences(Collection<GenomicRegion> regions,
       boolean displayUpper,
       RepeatMaskType repeatMaskType) throws IOException {
     List<SequenceRegion> sequences = new ArrayList<SequenceRegion>();
 
     for (GenomicRegion region : regions) {
-      sequences.add(getSequence(genome, region, displayUpper, repeatMaskType));
+      sequences.add(getSequence(region, displayUpper, repeatMaskType));
     }
 
     return sequences;

@@ -52,7 +52,7 @@ import org.jebtk.core.io.FileUtils;
  * @author Antony Holmes Holmes
  *
  */
-public class GenomeAssembly2Bit extends GenomeAssemblyDir {
+public class SequenceReader2Bit extends GenomeAssemblyDir {
 
   /** The m N map. */
   private BinaryGapSearch<GenomicRegion> mNMap = new BinarySearch<GenomicRegion>(); // new
@@ -72,7 +72,7 @@ public class GenomeAssembly2Bit extends GenomeAssemblyDir {
    *
    * @param directory the directory
    */
-  public GenomeAssembly2Bit(Path directory) {
+  public SequenceReader2Bit(Path directory) {
     super(directory);
   }
 
@@ -90,8 +90,7 @@ public class GenomeAssembly2Bit extends GenomeAssemblyDir {
    * edu.columbia.rdf.lib.bioinformatics.genome.RepeatMaskType)
    */
   @Override
-  public final SequenceRegion getSequence(String genome,
-      GenomicRegion region,
+  public final SequenceRegion getSequence(GenomicRegion region,
       boolean displayUpper,
       RepeatMaskType repeatMaskType) throws IOException {
     Chromosome chr = region.getChr();
@@ -150,9 +149,6 @@ public class GenomeAssembly2Bit extends GenomeAssemblyDir {
 
         mMaskMap.add(region, region);
       }
-
-      // System.err.println(file + " " + check + " " + version + " " + offset);
-
     } finally {
       in.close();
     }
@@ -160,7 +156,8 @@ public class GenomeAssembly2Bit extends GenomeAssemblyDir {
   }
 
   /**
-   * Gets the sequence4 bit.
+   * Read a sequence from a file assuming each base is encoded in 2 bits (4
+   * bases per byte).
    *
    * @param Path the Path
    * @param chr the chr

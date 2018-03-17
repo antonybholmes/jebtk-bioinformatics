@@ -35,7 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jebtk.bioinformatics.dna.GenomeAssemblyExt2BitMem;
+import org.jebtk.bioinformatics.dna.Ext2BitMemSequenceReader;
 import org.jebtk.core.io.FileUtils;
 import org.jebtk.core.io.PathUtils;
 
@@ -119,25 +119,27 @@ public class FileSequenceReader extends SequenceReader {
    * edu.columbia.rdf.lib.bioinformatics.genome.RepeatMaskType)
    */
   @Override
-  public final SequenceRegion getSequence(String genome,
-      GenomicRegion region,
+  public final SequenceRegion getSequence(GenomicRegion region,
       boolean displayUpper,
       RepeatMaskType repeatMaskType) throws IOException {
+    String genome = region.getGenome();
+    
     createGenomeEntry(genome, mMap);
 
     return mMap.get(genome)
-        .getSequence(genome, region, displayUpper, repeatMaskType);
+        .getSequence(region, displayUpper, repeatMaskType);
   }
 
   @Override
-  public List<SequenceRegion> getSequences(String genome,
-      Collection<GenomicRegion> regions,
+  public List<SequenceRegion> getSequences(Collection<GenomicRegion> regions,
       boolean displayUpper,
       RepeatMaskType repeatMaskType) throws IOException {
+    String genome = regions.iterator().next().getGenome();
+    
     createGenomeEntry(genome, mMap);
 
     return mMap.get(genome)
-        .getSequences(genome, regions, displayUpper, repeatMaskType);
+        .getSequences(regions, displayUpper, repeatMaskType);
   }
 
   protected void createGenomeEntry(String genome,
@@ -149,7 +151,7 @@ public class FileSequenceReader extends SequenceReader {
           Path d = dir.resolve(genome);
 
           if (FileUtils.isDirectory(d)) {
-            map.put(genome, new GenomeAssemblyExt2BitMem(d)); // new
+            map.put(genome, new Ext2BitMemSequenceReader(d)); // new
             // GenomeAssemblyExt2Bit(dir));
           }
         }

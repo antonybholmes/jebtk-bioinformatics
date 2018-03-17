@@ -126,11 +126,11 @@ public class SequenceReaderService extends SequenceReader implements Iterable<St
    * org.jebtk.bioinformatics.genome.RepeatMaskType)
    */
   @Override
-  public SequenceRegion getSequence(String genome,
-      GenomicRegion region,
+  public SequenceRegion getSequence(GenomicRegion region,
       boolean displayUpper,
       RepeatMaskType repeatMaskType){
 
+    String genome = region.getGenome();
 
     // Iterate over all assemblies until one works.
 
@@ -143,7 +143,7 @@ public class SequenceReaderService extends SequenceReader implements Iterable<St
     SequenceRegion ret = null;
 
     try {
-      ret = a.getSequence(genome, region, displayUpper, repeatMaskType);
+      ret = a.getSequence(region, displayUpper, repeatMaskType);
     } catch (IOException e) {
       e.printStackTrace();
     }

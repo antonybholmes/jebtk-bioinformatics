@@ -70,8 +70,7 @@ public class GenomeAssemblyFile4Bit extends GenomeAssemblyDir {
    * edu.columbia.rdf.lib.bioinformatics.genome.RepeatMaskType)
    */
   @Override
-  public final SequenceRegion getSequence(String genome,
-      GenomicRegion region,
+  public final SequenceRegion getSequence(GenomicRegion region,
       boolean displayUpper,
       RepeatMaskType repeatMaskType) throws IOException {
     Chromosome chr = region.getChr();

@@ -46,13 +46,13 @@ import org.slf4j.LoggerFactory;
  *
  * @author Antony Holmes Holmes
  */
-public class GenomeAssemblyGZip extends GenomeAssemblyDir {
+public class GZipSequenceReader extends GenomeAssemblyDir {
 
   /**
    * The constant LOG.
    */
   private static final Logger LOG = LoggerFactory
-      .getLogger(GenomeAssemblyGZip.class);
+      .getLogger(GZipSequenceReader.class);
 
   /**
    * Directory containing genome Paths which must be of the form chr.n.txt. Each
@@ -60,7 +60,7 @@ public class GenomeAssemblyGZip extends GenomeAssemblyDir {
    *
    * @param directory the directory
    */
-  public GenomeAssemblyGZip(Path directory) {
+  public GZipSequenceReader(Path directory) {
     super(directory);
   }
 
@@ -78,8 +78,7 @@ public class GenomeAssemblyGZip extends GenomeAssemblyDir {
    * edu.columbia.rdf.lib.bioinformatics.genome.RepeatMaskType)
    */
   @Override
-  public final SequenceRegion getSequence(String genome,
-      GenomicRegion region,
+  public final SequenceRegion getSequence(GenomicRegion region,
       boolean displayUpper,
       RepeatMaskType repeatMaskType) throws IOException {
     Chromosome chr = region.getChr();

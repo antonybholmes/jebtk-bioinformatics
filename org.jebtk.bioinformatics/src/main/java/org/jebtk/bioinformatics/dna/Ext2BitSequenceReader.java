@@ -49,7 +49,7 @@ import org.jebtk.core.io.FileUtils;
  * @author Antony Holmes Holmes
  *
  */
-public class GenomeAssemblyExt2Bit extends GenomeAssemblyDir {
+public class Ext2BitSequenceReader extends GenomeAssemblyDir {
 
   /** The m N file map. */
   protected Map<Chromosome, Path> mNFileMap = new HashMap<Chromosome, Path>();
@@ -63,7 +63,7 @@ public class GenomeAssemblyExt2Bit extends GenomeAssemblyDir {
    *
    * @param directory the directory
    */
-  public GenomeAssemblyExt2Bit(Path directory) {
+  public Ext2BitSequenceReader(Path directory) {
     super(directory);
   }
 
@@ -81,8 +81,7 @@ public class GenomeAssemblyExt2Bit extends GenomeAssemblyDir {
    * edu.columbia.rdf.lib.bioinformatics.genome.RepeatMaskType)
    */
   @Override
-  public final SequenceRegion getSequence(String genome,
-      GenomicRegion region,
+  public final SequenceRegion getSequence(GenomicRegion region,
       boolean displayUpper,
       RepeatMaskType repeatMaskType) throws IOException {
     Chromosome chr = region.getChr();
