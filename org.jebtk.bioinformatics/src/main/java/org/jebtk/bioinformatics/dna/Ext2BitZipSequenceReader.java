@@ -88,7 +88,7 @@ public class Ext2BitZipSequenceReader extends GenomeAssemblyDir {
     @Override
     public void process(int i, int v, char[] charBuf) {
       if (v == 1) {
-        charBuf[i] = toLower(charBuf[i]);
+        charBuf[i] = GenomeAssemblyDNA.toLower(charBuf[i]);
       }
     }
   }
