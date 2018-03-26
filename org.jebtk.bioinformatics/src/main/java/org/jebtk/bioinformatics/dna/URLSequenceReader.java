@@ -118,7 +118,7 @@ public class URLSequenceReader extends SequenceReader {
         break;
       }
 
-      url = tmpUrl.toUrl();
+      url = tmpUrl.toURL();
 
       // System.err.println(url);
 
@@ -149,7 +149,7 @@ public class URLSequenceReader extends SequenceReader {
     URL url;
 
     try {
-      url = mGenomesUrl.toUrl();
+      url = mGenomesUrl.toURL();
 
       // System.err.println(url);
 

@@ -88,7 +88,7 @@ public class ConservationAssemblyWeb extends ConservationAssembly {
 
     try {
       URL url = new UrlBuilder(mScoreUrl).resolve(region.getChr().toString())
-          .resolve(region.getStart()).resolve(region.getEnd()).toUrl();
+          .resolve(region.getStart()).resolve(region.getEnd()).toURL();
 
       // System.err.println(url);
 

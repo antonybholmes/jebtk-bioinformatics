@@ -92,7 +92,7 @@ public class URLGenes extends GenesDb {
     List<Gene> genes = new ArrayList<Gene>();
 
     try {
-      URL url = new UrlBuilder(mGeneUrl).resolve(id).toUrl();
+      URL url = new UrlBuilder(mGeneUrl).resolve(id).toURL();
 
       Json json = mParser.parse(url);
 
@@ -142,7 +142,7 @@ public class URLGenes extends GenesDb {
     Gene gene = null;
 
     try {
-      URL url = new UrlBuilder(mMainUrl).resolve(id).toUrl();
+      URL url = new UrlBuilder(mMainUrl).resolve(id).toURL();
 
       Json json = mParser.parse(url);
 
