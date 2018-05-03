@@ -30,7 +30,6 @@ package org.jebtk.bioinformatics.gapsearch;
 import org.jebtk.bioinformatics.genomic.Chromosome;
 import org.jebtk.bioinformatics.genomic.GenomicRegion;
 
-// TODO: Auto-generated Javadoc
 /**
  * Uses a binary search to identify the closest points to a genomic coordinate
  * and returns all objects in the range this spans.

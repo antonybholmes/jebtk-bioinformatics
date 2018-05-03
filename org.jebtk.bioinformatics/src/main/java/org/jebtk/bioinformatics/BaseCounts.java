@@ -31,7 +31,6 @@ import java.util.Arrays;
 
 import org.jebtk.core.Mathematics;
 
-// TODO: Auto-generated Javadoc
 /**
  * Stores the counts of each base (a,c,g,t).
  * 
@@ -184,7 +183,7 @@ public class BaseCounts {
   /**
    * Returns the sum of all bases.
    * 
-   * @return  the sum of all bases.
+   * @return the sum of all bases.
    */
   public double getSum() {
     return Mathematics.sum(mCounts);

@@ -29,7 +29,6 @@ package org.jebtk.bioinformatics.filters;
 
 import org.jebtk.core.io.FileEndingFilter;
 
-// TODO: Auto-generated Javadoc
 /**
  * The class ChpFileFilter.
  */

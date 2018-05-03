@@ -33,7 +33,6 @@ import java.nio.file.Path;
 import org.jebtk.core.AppService;
 import org.jebtk.core.settings.SettingsService;
 
-// TODO: Auto-generated Javadoc
 /**
  * Functions related to DNA.
  * 
@@ -42,7 +41,7 @@ import org.jebtk.core.settings.SettingsService;
  */
 public class DNA {
 
-  //public static final Path DNA_HOME = AppService.MOD_HOME.resolve("dna");
+  // public static final Path DNA_HOME = AppService.MOD_HOME.resolve("dna");
 
   /**
    * The constant BASE_A_COLOR.
@@ -67,7 +66,7 @@ public class DNA {
    */
   public static final Color BASE_T_COLOR = SettingsService.getInstance()
       .getAsColor("bioinformatics.dna.bases.t.color");
-  
+
   public static final Color BASE_U_COLOR = BASE_T_COLOR;
 
   /**
@@ -86,11 +85,11 @@ public class DNA {
   public static final double KILOBASE = 1000;
 
   public static final String N = "N";
-  
+
   public static final String LN = "n";
-  
+
   public static final String U = "U";
-  
+
   public static final String LU = "u";
 
   public static final String T = "T";

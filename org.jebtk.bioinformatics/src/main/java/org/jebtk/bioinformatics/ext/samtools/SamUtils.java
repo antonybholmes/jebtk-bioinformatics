@@ -36,7 +36,6 @@ import htsjdk.samtools.SAMRecordIterator;
 import htsjdk.samtools.SamReader;
 import htsjdk.samtools.SamReaderFactory;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class SamUtils.
  */
@@ -217,7 +216,8 @@ public class SamUtils {
   }
 
   public static GenomicRegion getRegion(String genome, SAMRecord r) {
-    return GenomicRegion.create(genome, r.getReferenceName(), r.getStart(), r.getEnd());
+    return GenomicRegion
+        .create(genome, r.getReferenceName(), r.getStart(), r.getEnd());
   }
 
   /**

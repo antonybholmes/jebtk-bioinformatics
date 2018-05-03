@@ -35,7 +35,6 @@ import java.util.Map;
 import org.jebtk.bioinformatics.search.Feature;
 import org.jebtk.core.TableData;
 
-// TODO: Auto-generated Javadoc
 /**
  * The class Search.
  */

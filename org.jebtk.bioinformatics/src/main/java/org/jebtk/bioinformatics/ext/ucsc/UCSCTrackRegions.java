@@ -32,7 +32,6 @@ import java.io.IOException;
 import org.jebtk.bioinformatics.genomic.GenomicRegions;
 import org.jebtk.core.text.FormattedTxt;
 
-// TODO: Auto-generated Javadoc
 /**
  * Keeps a sorted list of regions.
  * 

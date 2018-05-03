@@ -28,15 +28,16 @@
 package org.jebtk.bioinformatics.genomic;
 
 import java.nio.file.Path;
+import java.util.Collection;
 
 import org.jebtk.core.AppService;
 import org.jebtk.core.NameProperty;
+import org.jebtk.core.text.TextUtils;
 
-// TODO: Auto-generated Javadoc
 /**
  * The enum Genome.
  */
-public class Genome implements NameProperty {
+public class Genome extends GenomeDirs implements NameProperty {
 
   /**
    * The H g18.
@@ -45,24 +46,41 @@ public class Genome implements NameProperty {
 
   /** The Constant HG19. */
   public static final String HG19 = "hg19";
-  
+
   public static final String GRCH38 = "grch38";
 
   /** The Constant MM10. */
   public static final String MM10 = "mm10";
-  
+
   public static final String GRCM38 = "grcm38";
-  
+
   public static final Path GENOME_HOME = AppService.RES_HOME.resolve("genomes");
-  
+
   /** Local genome dir of app */
   public static final Path GENOME_DIR = AppService.RES_DIR.resolve("genomes");
+
+  /**
+   * Represents an unknown genome.
+   */
+  public static final String NA = TextUtils.NA;
 
   private Chromosomes mChrs;
 
   private String mName;
   
   public Genome(String name) {
+    this(name, Genome.GENOME_HOME, Genome.GENOME_DIR);
+  }
+  
+  public Genome(String name, Path dir, Path... dirs) {
+    super(dir, dirs);
+    
+    mName = name;
+  }
+
+  public Genome(String name, Collection<Path> dirs) {
+    super(dirs);
+    
     mName = name;
   }
 
@@ -70,39 +88,39 @@ public class Genome implements NameProperty {
   public String getName() {
     return mName;
   }
-  
+
   public String getGenome() {
     return getName();
   }
 
   public Chromosomes chrs() {
     if (mChrs == null) {
-      mChrs = new Chromosomes(mName);
+      mChrs = new Chromosomes(mName, mDirs);
     }
-    
+
     return mChrs;
   }
-  
+
   /**
    * Invalidate the cache so it is rebuilt.
    */
   public void cache() {
-    //mChrs.cache();
+    // mChrs.cache();
     mChrs = null;
   }
-  
+
   public Chromosome chr(String chr) {
     return chrs().chr(chr);
   }
-  
+
   public Chromosome chr(int chr) {
     return chrs().chr(chr);
   }
-  
+
   public Chromosome chr(Chromosome chr) {
     return chr(chr.toString());
   }
-  
+
   public Chromosome randChr() {
     return chrs().randChr();
   }

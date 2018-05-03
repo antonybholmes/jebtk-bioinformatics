@@ -34,7 +34,6 @@ import java.io.IOException;
 
 import org.jebtk.core.model.ListModel;
 
-// TODO: Auto-generated Javadoc
 /**
  * A model for shared bed graphs.
  * 

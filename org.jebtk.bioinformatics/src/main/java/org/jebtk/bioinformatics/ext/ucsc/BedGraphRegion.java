@@ -34,7 +34,6 @@ import org.jebtk.bioinformatics.genomic.Chromosome;
 import org.jebtk.bioinformatics.genomic.GenomeService;
 import org.jebtk.core.text.TextUtils;
 
-// TODO: Auto-generated Javadoc
 /**
  * Genomic region plus value.
  * 
@@ -95,8 +94,7 @@ public class BedGraphRegion extends UCSCTrackRegion {
     List<String> tokens = TextUtils.fastSplit(line, TextUtils.TAB_DELIMITER);
 
     // convert first part to chromosome (replacing x,y and m) {
-    Chromosome chromosome = GenomeService.instance().chr(genome,
-        tokens.get(0));
+    Chromosome chromosome = GenomeService.instance().chr(genome, tokens.get(0));
 
     // Per UCSC convention, coordinates are zero based in the file
     // but we shall convert them to one based for consistency

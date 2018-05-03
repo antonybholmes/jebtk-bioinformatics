@@ -29,7 +29,6 @@ package org.jebtk.bioinformatics.motifs;
 
 import org.jebtk.core.model.ListModel;
 
-// TODO: Auto-generated Javadoc
 /**
  * The class MotifHeights.
  */

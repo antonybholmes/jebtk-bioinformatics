@@ -27,7 +27,6 @@
  */
 package org.jebtk.bioinformatics.gapsearch;
 
-// TODO: Auto-generated Javadoc
 /**
  * The class GappedSearchFeatures.
  *

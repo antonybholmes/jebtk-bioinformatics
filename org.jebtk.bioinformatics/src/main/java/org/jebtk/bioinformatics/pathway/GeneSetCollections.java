@@ -36,7 +36,6 @@ import java.util.Set;
 import org.jebtk.core.Resources;
 import org.jebtk.core.model.SetModel;
 
-// TODO: Auto-generated Javadoc
 /**
  * The class GeneSetCollections.
  */

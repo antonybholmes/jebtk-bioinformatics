@@ -45,7 +45,6 @@ import org.jebtk.core.text.FormattedTxt;
 import org.jebtk.core.text.Splitter;
 import org.jebtk.core.text.TextUtils;
 
-// TODO: Auto-generated Javadoc
 /**
  * Represents a motif sequence. Each position consists of the counts for each
  * base (a,c,g,t).

@@ -29,7 +29,6 @@ package org.jebtk.bioinformatics.search;
 
 import org.jebtk.bioinformatics.genomic.Chromosome;
 
-// TODO: Auto-generated Javadoc
 /**
  * Represents a named genomic feature on a chromosome.
  *

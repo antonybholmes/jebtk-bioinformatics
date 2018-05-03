@@ -41,7 +41,6 @@ import org.jebtk.core.io.Io;
 import org.jebtk.core.text.Splitter;
 import org.jebtk.core.text.TextUtils;
 
-// TODO: Auto-generated Javadoc
 /**
  * Genes lookup to m.
  *
@@ -91,8 +90,7 @@ public class GTB1Parser extends GTBParser {
 
       tokens = Splitter.onTab().text(line);
 
-      Chromosome chr = GenomeService.instance().guessChr(file,
-          tokens.get(0));
+      Chromosome chr = GenomeService.instance().guessChr(file, tokens.get(0));
 
       // Skip random and unofficial chromosomes
       if (chr.toString().contains("_")) {
@@ -209,8 +207,7 @@ public class GTB1Parser extends GTBParser {
 
       tokens = Splitter.onTab().text(line);
 
-      Chromosome chr = GenomeService.instance().guessChr(file,
-          tokens.get(0));
+      Chromosome chr = GenomeService.instance().guessChr(file, tokens.get(0));
 
       // Skip random and unofficial chromosomes
       if (chr.toString().contains("_")) {

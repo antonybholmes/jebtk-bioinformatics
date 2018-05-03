@@ -17,7 +17,6 @@ package org.jebtk.bioinformatics.annotation;
 
 import org.jebtk.core.NameProperty;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class Type.
  */

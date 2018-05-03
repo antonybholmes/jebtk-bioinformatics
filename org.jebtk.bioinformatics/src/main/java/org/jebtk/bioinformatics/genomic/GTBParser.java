@@ -33,7 +33,6 @@ import org.jebtk.core.collections.IterMap;
 import org.jebtk.core.text.Splitter;
 import org.jebtk.core.text.TextUtils;
 
-// TODO: Auto-generated Javadoc
 /**
  * Genes lookup to m.
  *

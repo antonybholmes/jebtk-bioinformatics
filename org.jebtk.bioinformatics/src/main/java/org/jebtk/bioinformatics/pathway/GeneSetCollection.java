@@ -45,7 +45,6 @@ import org.jebtk.core.text.TextUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-// TODO: Auto-generated Javadoc
 /**
  * Represents a gene along with a description of the gene,.
  *

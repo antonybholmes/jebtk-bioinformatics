@@ -35,7 +35,6 @@ import java.util.List;
 import org.jebtk.bioinformatics.Search;
 import org.jebtk.bioinformatics.genomic.Chromosome;
 
-// TODO: Auto-generated Javadoc
 /**
  * Provides binary search within an ordered list of features with the proviso
  * that none of the features have starting or stopping overlaps.

@@ -37,7 +37,6 @@ import java.util.Map;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-// TODO: Auto-generated Javadoc
 /**
  * Server for genome feature annotations.
  *

@@ -15,7 +15,6 @@
  */
 package org.jebtk.bioinformatics.genomic;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class ChrSpeciesGuess guess the species from a name.
  */

@@ -42,7 +42,6 @@ import org.jebtk.core.collections.CollectionUtils;
 import org.jebtk.core.io.Io;
 import org.jebtk.core.text.TextUtils;
 
-// TODO: Auto-generated Javadoc
 /**
  * Convert between gene ids/symbols.
  */

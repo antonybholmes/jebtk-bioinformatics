@@ -39,7 +39,6 @@ import org.jebtk.bioinformatics.genomic.Sequence;
 import org.jebtk.bioinformatics.genomic.SequenceRegion;
 import org.jebtk.core.io.FileUtils;
 
-// TODO: Auto-generated Javadoc
 /**
  * Encodes DNA in a 2 bit file representing ACGT. All other characters such as N
  * map to A. Bases are encoded in two bits, so 4 bases per byte. A = 0, C = 1, G
@@ -49,7 +48,7 @@ import org.jebtk.core.io.FileUtils;
  * @author Antony Holmes Holmes
  *
  */
-public class Ext2BitSequenceReader extends GenomeAssemblyDir {
+public class Ext2BitSequenceReader extends ChrSequenceReader {
 
   /** The m N file map. */
   protected Map<Chromosome, Path> mNFileMap = new HashMap<Chromosome, Path>();
@@ -87,17 +86,17 @@ public class Ext2BitSequenceReader extends GenomeAssemblyDir {
     Chromosome chr = region.getChr();
 
     if (!mFileMap.containsKey(chr)) {
-      Path file = mDirectory.resolve(chr + ".dna.2bit");
+      Path file = mFile.resolve(chr + ".dna.2bit");
 
       mFileMap.put(chr, file);
 
-      file = mDirectory.resolve(chr + ".n.1bit");
+      file = mFile.resolve(chr + ".n.1bit");
 
       if (FileUtils.exists(file)) {
         mNFileMap.put(chr, file);
       }
 
-      file = mDirectory.resolve(chr + ".mask.1bit");
+      file = mFile.resolve(chr + ".mask.1bit");
 
       if (FileUtils.exists(file)) {
         mMaskFileMap.put(chr, file);

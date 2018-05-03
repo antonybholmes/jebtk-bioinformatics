@@ -27,7 +27,6 @@
  */
 package org.jebtk.bioinformatics.motifs;
 
-// TODO: Auto-generated Javadoc
 /**
  * The class BaseHeight.
  */

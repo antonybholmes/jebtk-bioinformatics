@@ -28,134 +28,94 @@
 package org.jebtk.bioinformatics.genomic;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
-import org.jebtk.bioinformatics.dna.Ext2BitMemSequenceReader;
 import org.jebtk.core.io.FileUtils;
-import org.jebtk.core.io.PathUtils;
+import org.jebtk.core.io.Io;
 
-// TODO: Auto-generated Javadoc
 /**
- * Encodes DNA in a 2 bit file representing ACGT. All other characters such as N
- * map to A. Bases are encoded in two bits, so 4 bases per byte. A = 0, C = 1, G
- * = 2, T = 3. Files can be accompanied by a corresponding n
- * 
+ * Fast search of genome sequence files to get get actual genomic data.
  *
  * @author Antony Holmes Holmes
- *
  */
-public class FileSequenceReader extends SequenceReader {
+public abstract class FileSequenceReader extends SequenceReader {
 
-  /** The m map. */
-  protected Map<String, SequenceReader> mMap = new HashMap<String, SequenceReader>();
-
-  /** The m directory. */
-  protected final List<Path> mDirs = new ArrayList<Path>();
+  /** The Constant EMPTY_BYTES. */
+  protected static final byte[] EMPTY_BYTES = new byte[0];
 
   /**
-   * Directory containing genome Paths which must be of the form chr.n.txt. Each
-   * Path must contain exactly one line consisting of the entire chromosome.
+   * The member directory.
+   */
+  protected Path mFile;
+
+  /**
+   * Directory containing genome files which must be of the form chr.n.txt. Each
+   * file must contain exactly one line consisting of the entire chromosome.
    *
-   * @param directory the directory
+   * @param file the directory
    */
-  public FileSequenceReader(Path dir, Path... dirs) {
-    mDirs.add(dir);
-
-    for (Path d : dirs) {
-      mDirs.add(d);
-    }
+  public FileSequenceReader(Path file) {
+    mFile = file;
   }
 
-  @Override
-  public String getName() {
-    return "fs";
-  }
-
-  public Path getDir() {
-    return mDirs.get(0);
+  public Path getFile() {
+    return mFile;
   }
 
   /**
-   * Return the directories to search for assembly files.
-   * 
-   * @return
+   * Gets the sequence.
+   *
+   * @param file the file
+   * @param start the start
+   * @param end the end
+   * @return the sequence
+   * @throws IOException Signals that an I/O exception has occurred.
    */
-  public Iterable<Path> getDirs() {
-    return mDirs;
+  public static String getSequence(Path file, int start, int end)
+      throws IOException {
+
+    byte[] buf = getBytes(file, start - 1, end - 1);
+
+    return String.valueOf(Io.intToChar(buf)).toUpperCase();
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.jebtk.bioinformatics.genome.GenomeAssembly#getGenomes()
+  /**
+   * Gets the bytes.
+   *
+   * @param file the file
+   * @param start the start
+   * @param end the end
+   * @return the bytes
+   * @throws IOException Signals that an I/O exception has occurred.
    */
-  @Override
-  public List<String> getGenomes() throws IOException {
+  public static byte[] getBytes(Path file, int start, int end)
+      throws IOException {
 
-    List<String> ret = new ArrayList<String>();
+    // System.err.println(file + " " + FileUtils.exists(file));
 
-    for (Path dir : mDirs) {
-      List<Path> subDirs = FileUtils.lsdir(dir);
-
-      for (Path sd : subDirs) {
-        ret.add(PathUtils.getName(sd));
-      }
+    if (!FileUtils.exists(file)) {
+      return EMPTY_BYTES;
     }
 
-    return ret;
-  }
+    // ("Extract sequence for {} from {}...", start, end);
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * edu.columbia.rdf.lib.bioinformatics.genome.GenomeAssembly#getSequence(edu.
-   * columbia.rdf.lib.bioinformatics.genome.GenomicRegion, boolean,
-   * edu.columbia.rdf.lib.bioinformatics.genome.RepeatMaskType)
-   */
-  @Override
-  public final SequenceRegion getSequence(GenomicRegion region,
-      boolean displayUpper,
-      RepeatMaskType repeatMaskType) throws IOException {
-    String genome = region.getGenome();
-    
-    createGenomeEntry(genome, mMap);
+    InputStream in = FileUtils.newBufferedInputStream(file);
 
-    return mMap.get(genome)
-        .getSequence(region, displayUpper, repeatMaskType);
-  }
+    // GZIPInputStream in = new GZIPInputStream(new FileInputStream(file),
+    // 65536);
 
-  @Override
-  public List<SequenceRegion> getSequences(Collection<GenomicRegion> regions,
-      boolean displayUpper,
-      RepeatMaskType repeatMaskType) throws IOException {
-    String genome = regions.iterator().next().getGenome();
-    
-    createGenomeEntry(genome, mMap);
+    int l = end - start + 1;
 
-    return mMap.get(genome)
-        .getSequences(regions, displayUpper, repeatMaskType);
-  }
+    byte[] buf = new byte[l];
 
-  protected void createGenomeEntry(String genome,
-      Map<String, SequenceReader> map) {
-    if (!map.containsKey(genome)) {
-
-      for (Path dir : mDirs) {
-        if (FileUtils.isDirectory(dir)) {
-          Path d = dir.resolve(genome);
-
-          if (FileUtils.isDirectory(d)) {
-            map.put(genome, new Ext2BitMemSequenceReader(d)); // new
-            // GenomeAssemblyExt2Bit(dir));
-          }
-        }
-      }
+    try {
+      in.skip(start);
+      in.read(buf);
+    } finally {
+      in.close();
     }
+
+    return buf; // Io.unsignedToSigned(buf);
   }
 }

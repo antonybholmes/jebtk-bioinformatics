@@ -17,7 +17,6 @@ package org.jebtk.bioinformatics.genomic;
 
 import org.jebtk.bioinformatics.gapsearch.FixedGapSearch;
 
-// TODO: Auto-generated Javadoc
 /**
  * Improved fixed gap search for dealing with genomic coordinates.
  *

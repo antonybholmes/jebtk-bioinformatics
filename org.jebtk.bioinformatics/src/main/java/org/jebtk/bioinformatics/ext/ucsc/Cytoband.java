@@ -34,7 +34,6 @@ import org.jebtk.bioinformatics.genomic.Chromosome;
 import org.jebtk.bioinformatics.genomic.GenomeService;
 import org.jebtk.core.text.TextUtils;
 
-// TODO: Auto-generated Javadoc
 /**
  * Genomic region plus value.
  * 
@@ -97,8 +96,7 @@ public class Cytoband extends BedRegion {
     List<String> tokens = TextUtils.fastSplit(line, TextUtils.TAB_DELIMITER);
 
     // convert first part to chromosome (replacing x,y and m) {
-    Chromosome chromosome = GenomeService.instance().chr(genome,
-        tokens.get(0));
+    Chromosome chromosome = GenomeService.instance().chr(genome, tokens.get(0));
 
     // ucsc convention
     int start = Integer.parseInt(tokens.get(1)) + 1;

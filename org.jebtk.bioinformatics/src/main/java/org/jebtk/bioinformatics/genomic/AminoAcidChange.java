@@ -27,7 +27,6 @@
  */
 package org.jebtk.bioinformatics.genomic;
 
-// TODO: Auto-generated Javadoc
 /**
  * Representation of an amino acid change.
  * 

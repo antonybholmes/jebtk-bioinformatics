@@ -45,7 +45,6 @@ import org.jebtk.core.io.PathUtils;
 import org.jebtk.core.settings.SettingsService;
 import org.jebtk.core.text.TextUtils;
 
-// TODO: Auto-generated Javadoc
 /**
  * The class FeaturesCommonRegionBinarySearch.
  */
@@ -149,7 +148,8 @@ public class FeaturesCommonRegionBinarySearch extends AbstractFeaturesSearch {
 
           List<String> row = TextUtils.fastSplit(line, TextUtils.TAB_DELIMITER);
 
-          chromosome = GenomeService.instance().guessChr(mFeatureFile, row.get(0));
+          chromosome = GenomeService.instance().guessChr(mFeatureFile,
+              row.get(0));
 
           startLocation = Integer.parseInt(row.get(1));
 

@@ -33,7 +33,6 @@ import java.util.List;
 
 import org.jebtk.bioinformatics.genomic.GenomicRegion;
 
-// TODO: Auto-generated Javadoc
 /**
  * The class ConservationAssembly.
  */

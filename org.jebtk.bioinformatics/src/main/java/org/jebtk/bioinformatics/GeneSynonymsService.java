@@ -40,7 +40,6 @@ import java.util.Set;
 import org.jebtk.core.io.Io;
 import org.jebtk.core.text.TextUtils;
 
-// TODO: Auto-generated Javadoc
 /**
  * Server for gene synonyms.
  *

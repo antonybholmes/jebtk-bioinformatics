@@ -34,7 +34,6 @@ import org.jebtk.bioinformatics.genomic.Chromosome;
 import org.jebtk.bioinformatics.genomic.GenomicRegion;
 import org.jebtk.core.collections.UniqueArrayList;
 
-// TODO: Auto-generated Javadoc
 /**
  * Generic interface for quickly searching for features by genomic location.
  *

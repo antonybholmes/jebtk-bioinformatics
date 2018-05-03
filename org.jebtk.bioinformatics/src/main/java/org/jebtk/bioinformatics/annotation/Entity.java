@@ -17,7 +17,6 @@ package org.jebtk.bioinformatics.annotation;
 
 import org.jebtk.core.IdProperty;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class Entity.
  */

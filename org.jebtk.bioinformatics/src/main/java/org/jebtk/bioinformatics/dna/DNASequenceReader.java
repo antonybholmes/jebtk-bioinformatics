@@ -27,16 +27,27 @@
  */
 package org.jebtk.bioinformatics.dna;
 
-import org.jebtk.bioinformatics.genomic.SequenceReader;
+import java.nio.file.Path;
+
+import org.jebtk.bioinformatics.genomic.FileSequenceReader;
 import org.jebtk.bioinformatics.genomic.RepeatMaskType;
 
-// TODO: Auto-generated Javadoc
 /**
  * Fast search of genome sequence files to get get actual genomic data.
  *
  * @author Antony Holmes Holmes
  */
-public abstract class GenomeAssemblyDNA extends SequenceReader {
+public abstract class DNASequenceReader extends FileSequenceReader {
+  /**
+   * Directory containing genome files which must be of the form chr.n.txt. Each
+   * file must contain exactly one line consisting of the entire chromosome.
+   *
+   * @param file the directory
+   */
+  public DNASequenceReader(Path file) {
+    super(file);
+  }
+
   /**
    * To char.
    *
@@ -124,6 +135,8 @@ public abstract class GenomeAssemblyDNA extends SequenceReader {
       return 'g';
     case 'T':
       return 't';
+    case 'U':
+      return 'u';
     default:
       return 'n';
     }
@@ -145,6 +158,8 @@ public abstract class GenomeAssemblyDNA extends SequenceReader {
       return 'g';
     case 'T':
       return 't';
+    case 'U':
+      return 'u';
     default:
       return 'n';
     }

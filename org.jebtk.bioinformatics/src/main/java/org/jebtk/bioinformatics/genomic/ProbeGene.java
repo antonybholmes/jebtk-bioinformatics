@@ -27,7 +27,6 @@
  */
 package org.jebtk.bioinformatics.genomic;
 
-// TODO: Auto-generated Javadoc
 /**
  * Represents a gene along with a description of the gene.
  * 

@@ -37,7 +37,6 @@ import java.util.Set;
 import org.jebtk.core.Range;
 import org.jebtk.core.collections.IterMap;
 
-// TODO: Auto-generated Javadoc
 /**
  * Use fixed size blocks to find features.
  *

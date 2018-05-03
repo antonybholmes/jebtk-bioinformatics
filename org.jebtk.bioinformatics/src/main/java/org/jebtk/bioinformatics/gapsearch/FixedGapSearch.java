@@ -40,7 +40,6 @@ import org.jebtk.core.collections.IterMap;
 import org.jebtk.core.collections.TreeMapCreator;
 import org.jebtk.core.collections.UniqueArrayList;
 
-// TODO: Auto-generated Javadoc
 /**
  * Use fixed size blocks to find features.
  *

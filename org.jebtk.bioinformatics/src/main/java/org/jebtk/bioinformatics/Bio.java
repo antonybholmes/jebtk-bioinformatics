@@ -15,8 +15,7 @@ public class Bio {
   public static final String ASSET_LEN_BP = "Length (bp)";
   public static final String ASSET_MOTIFS = "Motifs";
   public static final String ASSET_MOTIF = "Motif";
-  
-  
+
   private Bio() {
     // Do nothing
   }

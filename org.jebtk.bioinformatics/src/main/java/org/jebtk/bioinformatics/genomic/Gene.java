@@ -40,7 +40,6 @@ import org.jebtk.core.collections.IterMap;
 import org.jebtk.core.collections.UniqueArrayListCreator;
 import org.jebtk.core.text.TextUtils;
 
-// TODO: Auto-generated Javadoc
 /**
  * The class Gene.
  */

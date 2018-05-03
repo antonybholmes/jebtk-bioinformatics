@@ -31,7 +31,6 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
 
-// TODO: Auto-generated Javadoc
 /**
  * A genes database stores genes for search and retrieval.
  * 
@@ -48,8 +47,7 @@ public abstract class GenesDb {
    * @throws IOException Signals that an I/O exception has occurred.
    * @throws ParseException the parse exception
    */
-  public abstract List<Gene> getGenes(String id)
-      throws IOException;
+  public abstract List<Gene> getGenes(String id) throws IOException;
 
   /**
    * Should return the main gene transcript associated with a gene.
@@ -59,6 +57,5 @@ public abstract class GenesDb {
    * @throws IOException Signals that an I/O exception has occurred.
    * @throws ParseException the parse exception
    */
-  public abstract Gene getMainGene(String id)
-      throws IOException;
+  public abstract Gene getMainGene(String id) throws IOException;
 }

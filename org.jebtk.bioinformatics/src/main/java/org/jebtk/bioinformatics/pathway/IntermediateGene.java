@@ -27,7 +27,6 @@
  */
 package org.jebtk.bioinformatics.pathway;
 
-// TODO: Auto-generated Javadoc
 /**
  * The class IntermediateGene.
  */

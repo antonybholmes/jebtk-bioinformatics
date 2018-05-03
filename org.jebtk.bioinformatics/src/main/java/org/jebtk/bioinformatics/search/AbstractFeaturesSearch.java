@@ -40,7 +40,6 @@ import org.jebtk.bioinformatics.Bounds;
 import org.jebtk.bioinformatics.genomic.Chromosome;
 import org.jebtk.bioinformatics.genomic.GenomicRegion;
 
-// TODO: Auto-generated Javadoc
 /**
  * The class AbstractFeaturesSearch.
  */

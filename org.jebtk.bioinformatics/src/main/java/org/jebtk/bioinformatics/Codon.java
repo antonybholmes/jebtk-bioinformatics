@@ -27,7 +27,6 @@
  */
 package org.jebtk.bioinformatics;
 
-// TODO: Auto-generated Javadoc
 /**
  * Represents a three letter amino acid codon. It enforces only 3 letters per
  * codon.

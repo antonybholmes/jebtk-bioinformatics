@@ -15,7 +15,6 @@
  */
 package org.jebtk.bioinformatics.annotation;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class Species.
  */

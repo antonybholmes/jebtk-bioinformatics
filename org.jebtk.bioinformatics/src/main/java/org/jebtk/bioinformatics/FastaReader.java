@@ -44,7 +44,6 @@ import org.jebtk.core.io.Io;
 import org.jebtk.core.sys.SysUtils;
 import org.jebtk.core.text.TextUtils;
 
-// TODO: Auto-generated Javadoc
 /**
  * The class Fasta.
  */
@@ -65,7 +64,7 @@ public class FastaReader {
   private String mCurrentName = null;
 
   private StringBuilder mBuffer = new StringBuilder();
-  
+
   /**
    * Parses the.
    *
@@ -106,36 +105,36 @@ public class FastaReader {
           return ret;
         }
       }
-      
+
       // Cache the lines
       mBuffer.append(line);
     }
 
     // Close the reader since we have run out of lines
-    //mReader.close();
-    
+    // mReader.close();
+
     if (mBuffer.length() > 0) {
       return Sequence.create(mCurrentName, mBuffer.toString());
     } else {
       return null;
     }
   }
-  
+
   /**
    * Find the next sequence in the fasta file and put the sequence into the
    * buffer.
    * 
    * @param buffer
-   * @return          The number of bases read.
+   * @return The number of bases read.
    * @throws IOException
    */
   public int next(char[] buffer) throws IOException {
     String line;
 
     int n = 0;
-    
+
     char[] buf;
-    
+
     while ((line = mReader.readLine()) != null) {
       if (Io.isEmptyLine(line)) {
         continue;
@@ -150,23 +149,23 @@ public class FastaReader {
           return n;
         }
       }
-      
+
       buf = line.toCharArray();
-      
+
       SysUtils.arraycopy(buf, buffer, n, buf.length);
-      
+
       n += buf.length;
     }
 
     // Close the reader since we have run out of lines
-    //mReader.close();
-    
+    // mReader.close();
+
     return n;
   }
-  
+
   /**
-   * Returns the current name of the sequence after <code>next()</code> has
-   * been called.
+   * Returns the current name of the sequence after <code>next()</code> has been
+   * called.
    * 
    * @return
    */
@@ -187,6 +186,5 @@ public class FastaReader {
   public static String getHeader(String text) {
     return FASTA_START + text;
   }
-
 
 }

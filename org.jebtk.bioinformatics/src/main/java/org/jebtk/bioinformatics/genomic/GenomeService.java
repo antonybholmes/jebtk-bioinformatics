@@ -29,9 +29,7 @@ package org.jebtk.bioinformatics.genomic;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 import org.jebtk.core.collections.IterMap;
 import org.jebtk.core.collections.IterTreeMap;
@@ -40,14 +38,13 @@ import org.jebtk.core.io.PathUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-// TODO: Auto-generated Javadoc
 /**
  * Deals with functions related to chromosomes.
  *
  * @author Antony Holmes Holmes
  *
  */
-public class GenomeService implements Iterable<String> {
+public class GenomeService extends GenomeDirs implements Iterable<String> {
   /**
    * The Class ChromosomesLoader.
    */
@@ -66,44 +63,28 @@ public class GenomeService implements Iterable<String> {
     return GenomeLoader.INSTANCE;
   }
 
-  private static final Logger LOG = LoggerFactory.getLogger(GenomeService.class);
+  private static final Logger LOG = LoggerFactory
+      .getLogger(GenomeService.class);
 
+  // private static final String EXT2 = "genome.txt.gz";
 
-
-  //private static final String EXT2 = "genome.txt.gz";
-
-  private IterMap<String, Genome> mGenomeMap = 
-      new IterTreeMap<String, Genome>();
+  private IterMap<String, Genome> mGenomeMap = new IterTreeMap<String, Genome>();
 
   private GenomeGuess mGenomeGuess = new GenomeGuess();
-
-
-  /**
-   * Directories to search.
-   */
-  private List<Path> mDirs = new ArrayList<Path>();
-
-
 
   private boolean mAutoLoad = true;
 
   /**
    * Instantiates a new chromosomes.
    */
-  private GenomeService() {
+  public GenomeService() {
     // Do nothing
 
-    mDirs.add(Genome.GENOME_HOME);
-    mDirs.add(Genome.GENOME_DIR);
+    this(Genome.GENOME_HOME, Genome.GENOME_DIR);
   }
-
-  /**
-   * Set the directory where to search for genomes.
-   * 
-   * @param dir
-   */
-  public void setDir(Path dir) {
-    mDirs.add(dir);
+  
+  public GenomeService(Path dir, Path... dirs) {
+    super(dir, dirs);
   }
 
   /**
@@ -121,11 +102,11 @@ public class GenomeService implements Iterable<String> {
       e.printStackTrace();
     }
 
-    //String fg = formatKey(genome);
+    // String fg = formatKey(genome);
 
     if (!mGenomeMap.containsKey(genome)) {
       // If the genome does not exist, create one
-      mGenomeMap.put(genome, new Genome(genome));
+      mGenomeMap.put(genome, new Genome(genome, mDirs));
     }
 
     return mGenomeMap.get(genome);
@@ -135,6 +116,8 @@ public class GenomeService implements Iterable<String> {
     if (mAutoLoad) {
       for (Path dir : mDirs) {
         if (FileUtils.isDirectory(dir)) {
+          LOG.info("Checking {} for genome info.", dir);
+          
           for (Path subDir : FileUtils.lsdir(dir)) {
             if (FileUtils.isDirectory(subDir)) {
               String genome = PathUtils.getName(subDir);
@@ -142,7 +125,7 @@ public class GenomeService implements Iterable<String> {
               if (!mGenomeMap.containsKey(genome)) {
                 LOG.info("Discovered genome {} in {}.", genome, subDir);
 
-                mGenomeMap.put(genome, new Genome(genome));
+                mGenomeMap.put(genome, new Genome(genome, dir));
               }
             }
           }
@@ -163,13 +146,13 @@ public class GenomeService implements Iterable<String> {
   /**
    * Returns the chr from a given genome reference.
    * 
-   * @param genome    The genome, e.g. 'Human'
-   * @param chr       The chromosome, e.g. 'chr1'
+   * @param genome The genome, e.g. 'Human'
+   * @param chr The chromosome, e.g. 'chr1'
    * 
-   * @return          The chromosome object from the desired genome.
+   * @return The chromosome object from the desired genome.
    */
   public Chromosome chr(String genome, String chr) {
-    //LOG.info("chr {} {}", genome, chr);
+    // LOG.info("chr {} {}", genome, chr);
 
     return genome(genome).chr(chr);
   }
@@ -182,7 +165,7 @@ public class GenomeService implements Iterable<String> {
    * @return
    */
   public Chromosome chr(String genome, Chromosome chr) {
-    //LOG.info("chr {} {}", genome, chr);
+    // LOG.info("chr {} {}", genome, chr);
 
     return chr(genome, chr.toString());
   }
@@ -201,7 +184,7 @@ public class GenomeService implements Iterable<String> {
 
   /**
    * Set the object for guessing the genome from an id.
-   *  
+   * 
    * @param guess
    */
   public void setGenomeGuess(GenomeGuess guess) {
@@ -228,6 +211,5 @@ public class GenomeService implements Iterable<String> {
   private static String formatKey(String key) {
     return key.toLowerCase();
   }
-
 
 }

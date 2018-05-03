@@ -36,7 +36,6 @@ import java.util.List;
 import org.jebtk.bioinformatics.DataSource;
 import org.jebtk.core.NameProperty;
 
-// TODO: Auto-generated Javadoc
 /**
  * Read sequence data from a data source (such as a file) an extract sequences
  * using genomic coordinates.
@@ -90,9 +89,8 @@ public abstract class SequenceReader implements NameProperty {
    * @return the sequence
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public SequenceRegion getSequence(Chromosome chr,
-      int start,
-      int end) throws IOException {
+  public SequenceRegion getSequence(Chromosome chr, int start, int end)
+      throws IOException {
     return getSequence(chr, start, end, true, RepeatMaskType.UPPERCASE);
   }
 
@@ -126,8 +124,7 @@ public abstract class SequenceReader implements NameProperty {
    * @return the sequence
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public SequenceRegion getSequence(GenomicRegion region)
-      throws IOException {
+  public SequenceRegion getSequence(GenomicRegion region) throws IOException {
     return getSequence(region, true, RepeatMaskType.UPPERCASE);
   }
 
@@ -153,8 +150,8 @@ public abstract class SequenceReader implements NameProperty {
    * @return the sequence
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public SequenceRegion getSequence(GenomicRegion region,
-      boolean displayUpper) throws IOException {
+  public SequenceRegion getSequence(GenomicRegion region, boolean displayUpper)
+      throws IOException {
     return getSequence(region, displayUpper, RepeatMaskType.UPPERCASE);
   }
 
@@ -216,7 +213,7 @@ public abstract class SequenceReader implements NameProperty {
   public DataSource getDataSource() {
     return DataSource.LOCAL;
   }
-  
+
   public SequenceType getSequenceType() {
     return SequenceType.DNA;
   }

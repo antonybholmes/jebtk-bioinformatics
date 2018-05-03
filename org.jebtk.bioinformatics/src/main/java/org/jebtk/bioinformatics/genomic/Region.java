@@ -37,7 +37,6 @@ import org.jebtk.core.text.FormattedTxt;
 import org.jebtk.core.text.Splitter;
 import org.jebtk.core.text.TextUtils;
 
-// TODO: Auto-generated Javadoc
 /**
  * Describes a region of a genome.
  *

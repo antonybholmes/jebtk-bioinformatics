@@ -27,23 +27,30 @@
  */
 package org.jebtk.bioinformatics.genomic;
 
+import java.util.regex.Pattern;
+
 import org.jebtk.core.IdProperty;
 import org.jebtk.core.NameProperty;
 import org.jebtk.core.text.TextUtils;
 
-// TODO: Auto-generated Javadoc
 /**
  * Represents a chromosome that can be sorted.
  *
  * @author Antony Holmes Holmes
  */
 public class Chromosome
-implements Comparable<Chromosome>, IdProperty, NameProperty {
+    implements Comparable<Chromosome>, IdProperty, NameProperty {
 
+  private static int DEFAULT_CHR_ID = -1;
+  
+  public static Pattern CHR_REGEX = Pattern.compile("(chr([1-9][0-9]?|[XYM]))");
+  
   /**
    * Represents an invalid chromosome.
    */
-  public static final Chromosome NO_CHR = new Chromosome(-1, "U");
+  public static final Chromosome NO_CHR = new Chromosome(DEFAULT_CHR_ID, "U");
+
+  
 
   /**
    * The member chr.
@@ -61,6 +68,10 @@ implements Comparable<Chromosome>, IdProperty, NameProperty {
 
   private String mGenome = null;
 
+  protected Chromosome(String name) {
+    this(DEFAULT_CHR_ID , name, Genome.HG19);
+  }
+  
   protected Chromosome(int id, String name) {
     this(id, name, Genome.HG19);
   }
@@ -160,11 +171,11 @@ implements Comparable<Chromosome>, IdProperty, NameProperty {
     if (ret != 0) {
       return ret;
     } else {
-      //ret = mChr.compareTo(c.mChr);
+      // ret = mChr.compareTo(c.mChr);
 
-      //if (ret != 0) {
-      //  return ret;
-      //} else {
+      // if (ret != 0) {
+      // return ret;
+      // } else {
       // Sort by id so that chr2 comes before chr10
       if (mId > c.mId) {
         return 1;
@@ -175,7 +186,7 @@ implements Comparable<Chromosome>, IdProperty, NameProperty {
         // comparison on the chr name
         return mChr.compareTo(c.mChr);
       }
-      //}
+      // }
     }
   }
 
@@ -225,13 +236,12 @@ implements Comparable<Chromosome>, IdProperty, NameProperty {
    * @return the short name
    */
   public static String getShortName(String chr) {
-    return chr.toUpperCase()
-        .replace("CHROMOSOME", TextUtils.EMPTY_STRING)
+    return chr.toUpperCase().replace("CHROMOSOME", TextUtils.EMPTY_STRING)
         .replace("CHR_", TextUtils.EMPTY_STRING)
         .replace("CHR-", TextUtils.EMPTY_STRING)
         .replace("CHR", TextUtils.EMPTY_STRING);
-    //.replaceFirst("P.*", TextUtils.EMPTY_STRING)
-    //.replaceFirst("Q.*", TextUtils.EMPTY_STRING);
+    // .replaceFirst("P.*", TextUtils.EMPTY_STRING)
+    // .replaceFirst("Q.*", TextUtils.EMPTY_STRING);
   }
 
 }

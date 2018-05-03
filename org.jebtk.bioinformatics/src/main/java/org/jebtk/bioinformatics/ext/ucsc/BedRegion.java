@@ -40,7 +40,6 @@ import org.jebtk.bioinformatics.genomic.GenomicRegion;
 import org.jebtk.bioinformatics.genomic.Strand;
 import org.jebtk.core.text.TextUtils;
 
-// TODO: Auto-generated Javadoc
 /**
  * Genomic region plus value.
  * 
@@ -84,7 +83,7 @@ public class BedRegion extends UCSCTrackRegion implements Iterable<String> {
    * @param name the name
    */
   public BedRegion(Chromosome chr, int start, int end, String name) {
-    this(chr, start, end, name, Strand.NONE, null);
+    this(chr, start, end, name, Strand.SENSE, null);
   }
 
   /**

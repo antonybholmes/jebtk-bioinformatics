@@ -34,7 +34,6 @@ import java.util.Set;
 import org.jebtk.core.collections.CollectionUtils;
 import org.jebtk.core.text.TextUtils;
 
-// TODO: Auto-generated Javadoc
 /**
  * Maps an id to a new set of objects (ids, other mappings etc).
  *

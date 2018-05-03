@@ -35,13 +35,13 @@ import org.jebtk.core.collections.IterMap;
 import org.jebtk.core.collections.IterTreeMap;
 import org.jebtk.core.collections.UniqueArrayList;
 
-// TODO: Auto-generated Javadoc
 /**
  * Service for extracting DNA/RNA from sequences.
  *
  * @author Antony Holmes Holmes
  */
-public class SequenceReaderService extends SequenceReader implements Iterable<String> {
+public class SequenceReaderService extends SequenceReader
+    implements Iterable<String> {
 
   /**
    * The Class GenomeAssemblyServiceLoader.
@@ -61,23 +61,20 @@ public class SequenceReaderService extends SequenceReader implements Iterable<St
     return GenomeAssemblyServiceLoader.INSTANCE;
   }
 
-  private List<SequenceReader> mAssemblies = 
-      new UniqueArrayList<SequenceReader>();
+  private List<SequenceReader> mAssemblies = new UniqueArrayList<SequenceReader>();
 
-  private IterMap<String, SequenceReader> mGenomeMap =
-      new IterTreeMap<String, SequenceReader>();
+  private IterMap<String, SequenceReader> mGenomeMap = new IterTreeMap<String, SequenceReader>();
 
   private boolean mAutoLoad = true;
 
   public void add(SequenceReader assembly) {
     mAssemblies.add(assembly);
 
-
   }
 
   /**
-   * Indicate that the genome references have changed so it they may need to
-   * be cached again.
+   * Indicate that the genome references have changed so it they may need to be
+   * cached again.
    */
   private void autoLoad() {
     if (mAutoLoad) {
@@ -98,7 +95,7 @@ public class SequenceReaderService extends SequenceReader implements Iterable<St
 
   public SequenceReader get(String genome) {
     autoLoad();
-    
+
     return mGenomeMap.get(genome);
   }
 
@@ -110,10 +107,10 @@ public class SequenceReaderService extends SequenceReader implements Iterable<St
   @Override
   public Iterator<String> iterator() {
     autoLoad();
-    
+
     return mGenomeMap.iterator();
   }
-  
+
   public void cache() {
     mAutoLoad = true;
   }
@@ -128,7 +125,7 @@ public class SequenceReaderService extends SequenceReader implements Iterable<St
   @Override
   public SequenceRegion getSequence(GenomicRegion region,
       boolean displayUpper,
-      RepeatMaskType repeatMaskType){
+      RepeatMaskType repeatMaskType) {
 
     String genome = region.getGenome();
 

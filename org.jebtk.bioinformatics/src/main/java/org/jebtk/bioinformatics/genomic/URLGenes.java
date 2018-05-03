@@ -100,12 +100,11 @@ public class URLGenes extends GenesDb {
         Json geneJson = json.get(i);
 
         Gene gene = new RdfGene(geneJson.getAsString("rdf"),
-            geneJson.getAsString("refseq"),
-            geneJson.getAsString("entrez"),
+            geneJson.getAsString("refseq"), geneJson.getAsString("entrez"),
             geneJson.getAsString("symbol"),
             GenomicRegion.create(
-                GenomeService.instance()
-                    .chr(Genome.HG19, geneJson.getAsString("chr")),
+                GenomeService.instance().chr(Genome.HG19,
+                    geneJson.getAsString("chr")),
                 geneJson.getAsInt("start"),
                 geneJson.getAsInt("end"),
                 Strand.parse(geneJson.getAsChar("strand"))));
@@ -149,12 +148,11 @@ public class URLGenes extends GenesDb {
       Json geneJson = json.get(0);
 
       gene = new RdfGene(geneJson.get("rdf").getAsString(),
-          geneJson.getAsString("refseq"),
-          geneJson.getAsString("entrez"),
+          geneJson.getAsString("refseq"), geneJson.getAsString("entrez"),
           geneJson.getAsString("symbol"),
           GenomicRegion.create(
-              GenomeService.instance()
-                  .chr(Genome.HG19, geneJson.getAsString("chr")),
+              GenomeService.instance().chr(Genome.HG19,
+                  geneJson.getAsString("chr")),
               geneJson.getAsInt("start"),
               geneJson.getAsInt("end"),
               Strand.parse(geneJson.getAsChar("strand"))));

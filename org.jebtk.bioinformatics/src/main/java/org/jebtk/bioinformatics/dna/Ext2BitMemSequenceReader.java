@@ -47,7 +47,6 @@ import org.jebtk.core.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-// TODO: Auto-generated Javadoc
 /**
  * Encodes DNA in a 2 bit file representing ACGT. All other characters such as N
  * map to A. Bases are encoded in two bits, so 4 bases per byte. A = 0, C = 1, G
@@ -58,7 +57,7 @@ import org.slf4j.LoggerFactory;
  * @author Antony Holmes Holmes
  *
  */
-public class Ext2BitMemSequenceReader extends GenomeAssemblyDir {
+public class Ext2BitMemSequenceReader extends ChrSequenceReader {
 
   private static interface Process1Bit {
     /**
@@ -187,11 +186,11 @@ public class Ext2BitMemSequenceReader extends GenomeAssemblyDir {
 
     // Cache file names
     if (!mFileMap.containsKey(chr)) {
-      addFile(chr, ".dna.2bit", mDirectory, mFileMap);
+      addFile(chr, ".dna.2bit", mFile, mFileMap);
 
-      addFile(chr, ".n.1bit", mDirectory, mNFileMap);
+      addFile(chr, ".n.1bit", mFile, mNFileMap);
 
-      addFile(chr, ".mask.1bit", mDirectory, mMaskFileMap);
+      addFile(chr, ".mask.1bit", mFile, mMaskFileMap);
     }
 
     return new SequenceRegion(region,

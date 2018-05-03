@@ -31,7 +31,6 @@ import org.jebtk.core.collections.TreeSetCreator;
 import org.jebtk.core.text.Splitter;
 import org.jebtk.core.text.TextUtils;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class GFF.
  */

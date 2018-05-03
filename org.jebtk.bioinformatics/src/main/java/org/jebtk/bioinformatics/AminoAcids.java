@@ -39,7 +39,6 @@ import java.util.Map;
 import org.jebtk.core.io.Io;
 import org.jebtk.core.text.TextUtils;
 
-// TODO: Auto-generated Javadoc
 /**
  * Allows multiple logs to be agglomerated so a message can be fire to multiple
  * logs.

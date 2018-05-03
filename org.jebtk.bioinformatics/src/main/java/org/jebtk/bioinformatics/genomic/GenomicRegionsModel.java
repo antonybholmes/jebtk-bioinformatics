@@ -29,7 +29,6 @@ package org.jebtk.bioinformatics.genomic;
 
 import org.jebtk.core.model.ListModel;
 
-// TODO: Auto-generated Javadoc
 /**
  * A model for shared genomic regions.
  * 

@@ -34,7 +34,6 @@ import java.util.List;
 import org.jebtk.bioinformatics.Search;
 import org.jebtk.bioinformatics.genomic.Chromosome;
 
-// TODO: Auto-generated Javadoc
 /**
  * The class FeaturesSkipSearch.
  */

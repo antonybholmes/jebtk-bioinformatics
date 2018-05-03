@@ -44,7 +44,6 @@ import org.jebtk.bioinformatics.genomic.Sequence;
 import org.jebtk.bioinformatics.genomic.SequenceRegion;
 import org.jebtk.core.io.FileUtils;
 
-// TODO: Auto-generated Javadoc
 /**
  * Fast search of genome sequence Paths to get get actual genomic data. This
  * Path reads 4bit encoded genomes (i.e. 2 bases per byte).
@@ -52,7 +51,7 @@ import org.jebtk.core.io.FileUtils;
  * @author Antony Holmes Holmes
  *
  */
-public class SequenceReader2Bit extends GenomeAssemblyDir {
+public class SequenceReader2Bit extends ChrSequenceReader {
 
   /** The m N map. */
   private BinaryGapSearch<GenomicRegion> mNMap = new BinarySearch<GenomicRegion>(); // new
@@ -96,7 +95,7 @@ public class SequenceReader2Bit extends GenomeAssemblyDir {
     Chromosome chr = region.getChr();
 
     if (!mFileMap.containsKey(chr)) {
-      Path file = mDirectory.resolve(chr + ".2bit.gz");
+      Path file = mFile.resolve(chr + ".2bit.gz");
 
       mFileMap.put(chr, file);
 

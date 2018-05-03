@@ -40,7 +40,6 @@ import org.jebtk.math.matrix.DoubleMatrix;
 import org.jebtk.math.matrix.Matrix;
 import org.jebtk.math.matrix.MixedMatrix;
 
-// TODO: Auto-generated Javadoc
 /**
  * The class ResMatrix.
  */

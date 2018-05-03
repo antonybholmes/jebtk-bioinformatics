@@ -32,7 +32,6 @@ import org.jebtk.bioinformatics.gapsearch.FixedGapSearch;
 import org.jebtk.bioinformatics.gapsearch.GapSearch;
 import org.jebtk.core.model.ListModel;
 
-// TODO: Auto-generated Javadoc
 /**
  * Keeps a sorted list of regions.
  *

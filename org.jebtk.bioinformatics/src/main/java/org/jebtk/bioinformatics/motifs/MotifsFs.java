@@ -41,7 +41,6 @@ import org.jebtk.core.objectdb.RadixObjectDb;
 import org.jebtk.core.objectdb.RadixObjectNode;
 import org.jebtk.core.tree.TreeNode;
 
-// TODO: Auto-generated Javadoc
 /**
  * The class MotifsFile.
  */

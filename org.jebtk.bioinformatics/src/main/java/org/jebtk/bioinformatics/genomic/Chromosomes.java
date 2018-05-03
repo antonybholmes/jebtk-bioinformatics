@@ -19,6 +19,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import org.jebtk.core.Mathematics;
@@ -32,31 +35,24 @@ import org.jebtk.core.text.TextUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class ChromosomeParser.
  */
-public class Chromosomes {
+public class Chromosomes extends GenomeDirs implements Iterable<Chromosome> {
 
   private static final Logger LOG = LoggerFactory.getLogger(Chromosomes.class);
 
   private String mGenome;
 
-  private IterMap<Integer, Chromosome> mChrIdMap = 
-      new IterHashMap<Integer, Chromosome>();
+  private IterMap<Integer, Chromosome> mChrIdMap = new IterHashMap<Integer, Chromosome>();
 
-  private IterMap<String, Chromosome> mChrMap = 
-      new IterHashMap<String, Chromosome>();
+  private IterMap<String, Chromosome> mChrMap = new IterHashMap<String, Chromosome>();
+
+  private List<Chromosome> mChrs = new ArrayList<Chromosome>();
 
   private String mSpecies;
 
   private boolean mAutoLoad = true;
-
-
-  /**
-   * Directories to search.
-   */
-  private List<Path> mDirs = new ArrayList<Path>();
 
   public static final String EXT = "chrs.gz";
 
@@ -65,17 +61,35 @@ public class Chromosomes {
   }
 
   public Chromosomes(String species, String genome) {
+    this(species, genome, Genome.GENOME_HOME, Genome.GENOME_DIR);
+  }
+
+  public Chromosomes(String genome, Collection<Path> dirs) {
+    this(genome, genome, dirs);
+  }
+  
+  public Chromosomes(String species, String genome, Collection<Path> dirs) {
+    super(dirs);
+    
     mSpecies = species;
     mGenome = genome;
-
-    mDirs.add(Genome.GENOME_HOME);
-    mDirs.add(Genome.GENOME_DIR);
+    
+    LOG.info("chromosomes {}", dirs);
+  }
+  
+  public Chromosomes(String species, String genome, Path dir, Path... dirs) {
+    super(dir, dirs);
+    
+    mSpecies = species;
+    mGenome = genome;
   }
 
   private void autoLoad() throws IOException {
     if (mAutoLoad) {
       for (Path dir : mDirs) {
         Path genomeDir = dir.resolve(mGenome);
+        
+        LOG.info("Looking for chromosomes in {}", genomeDir);
 
         if (FileUtils.isDirectory(genomeDir)) {
           List<Path> files = FileUtils.endsWith(genomeDir, EXT);
@@ -86,16 +100,18 @@ public class Chromosomes {
         }
       }
 
+      Collections.sort(mChrs);
+
       mAutoLoad = false;
     }
   }
 
   private void load(Path file) throws IOException {
     LOG.info("Discovered chromosome info in {}.", file);
-    
+
     load(file, this);
   }
-  
+
   public void cache() {
     mAutoLoad = true;
   }
@@ -116,15 +132,26 @@ public class Chromosomes {
     }
   }
 
-  public Chromosome chr(String chr) {
-    //LOG.info("Request {} {}", chr, getMapId(chr));
-
+  @Override
+  public Iterator<Chromosome> iterator() {
     try {
       autoLoad();
     } catch (IOException e) {
       e.printStackTrace();
     }
     
+    return mChrs.iterator();
+  }
+
+  public Chromosome chr(String chr) {
+    // LOG.info("Request {} {}", chr, getMapId(chr));
+
+    try {
+      autoLoad();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
     String fc = formatKey(chr);
 
     if (!mChrMap.containsKey(fc)) {
@@ -140,7 +167,7 @@ public class Chromosomes {
     } catch (IOException e) {
       e.printStackTrace();
     }
-    
+
     return mChrIdMap.get(id);
   }
 
@@ -148,6 +175,9 @@ public class Chromosomes {
     mChrIdMap.put(chr.getId(), chr);
     mChrMap.put(Integer.toString(chr.getId()), chr);
     mChrMap.put(chr.getShortName().toUpperCase(), chr);
+    mChrs.add(chr);
+
+    mAutoLoad = true;
   }
 
   /**
@@ -168,15 +198,13 @@ public class Chromosomes {
     return mGenome;
   }
 
-
-
   public Chromosome randChr() {
     try {
       autoLoad();
     } catch (IOException e) {
       e.printStackTrace();
     }
-    
+
     List<String> ids = CollectionUtils.toList(mChrMap.keySet());
 
     return mChrMap.get(ids.get(Mathematics.rand(ids.size())));
@@ -184,7 +212,6 @@ public class Chromosomes {
 
   public static Chromosomes parse(Path file) throws IOException {
     LOG.info("Reading chromosome info from {}", file);
-
 
     BufferedReader reader = FileUtils.newBufferedReader(file);
 
@@ -194,7 +221,7 @@ public class Chromosomes {
       ret = parse(reader);
     } finally {
       reader.close();
-    } 
+    }
 
     return ret;
   }
@@ -239,7 +266,7 @@ public class Chromosomes {
 
     Json json = new JsonParser().parse(file);
 
-    Chromosomes ret = new Chromosomes(json.getAsString("species"), 
+    Chromosomes ret = new Chromosomes(json.getAsString("species"),
         json.getAsString("genome"));
 
     Json chrsJson = json.get("chromosomes");
@@ -293,8 +320,5 @@ public class Chromosomes {
   private static final String formatKey(String chr) {
     return Chromosome.getShortName(chr).toUpperCase();
   }
-
-  
-
 
 }

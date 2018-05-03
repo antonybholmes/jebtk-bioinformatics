@@ -31,7 +31,6 @@ import java.util.List;
 
 import org.jebtk.core.tree.TreeNode;
 
-// TODO: Auto-generated Javadoc
 /**
  * The class MotifsDB provides an interface to load motifs from a data source.
  */

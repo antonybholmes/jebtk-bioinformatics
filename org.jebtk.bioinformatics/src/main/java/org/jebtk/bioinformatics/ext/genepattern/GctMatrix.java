@@ -37,7 +37,6 @@ import org.jebtk.core.text.TextUtils;
 import org.jebtk.math.matrix.DataFrame;
 import org.jebtk.math.matrix.DoubleMatrix;
 
-// TODO: Auto-generated Javadoc
 /**
  * Represents a UCSC GCT file in matrix form.
  * 

@@ -41,7 +41,6 @@ import org.jebtk.core.collections.IterHashMap;
 import org.jebtk.core.collections.IterMap;
 import org.jebtk.core.collections.UniqueArrayList;
 
-// TODO: Auto-generated Javadoc
 /**
  * An extension of the fixed gap search that can perform a binary search on to
  * look for the closest items to a genomic location. This

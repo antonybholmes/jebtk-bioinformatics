@@ -44,7 +44,6 @@ import org.jebtk.math.matrix.DataFrame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-// TODO: Auto-generated Javadoc
 /**
  * Describes a BED file.
  * 

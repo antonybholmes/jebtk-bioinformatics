@@ -18,7 +18,6 @@ package org.jebtk.bioinformatics.file;
 import org.jebtk.core.io.ExtTest;
 import org.jebtk.core.io.PathUtils.Ext;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class BioPathUtils.
  */

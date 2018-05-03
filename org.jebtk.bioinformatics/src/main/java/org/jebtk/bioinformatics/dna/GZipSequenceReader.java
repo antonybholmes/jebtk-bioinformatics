@@ -40,13 +40,12 @@ import org.jebtk.core.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-// TODO: Auto-generated Javadoc
 /**
  * Fast search of genome sequence Paths to get get actual genomic data.
  *
  * @author Antony Holmes Holmes
  */
-public class GZipSequenceReader extends GenomeAssemblyDir {
+public class GZipSequenceReader extends ChrSequenceReader {
 
   /**
    * The constant LOG.
@@ -84,7 +83,7 @@ public class GZipSequenceReader extends GenomeAssemblyDir {
     Chromosome chr = region.getChr();
 
     if (!mFileMap.containsKey(region.getChr())) {
-      mFileMap.put(chr, mDirectory.resolve(chr + ".txt.gz"));
+      mFileMap.put(chr, mFile.resolve(chr + ".txt.gz"));
     }
 
     return getSequence(mFileMap.get(chr), region);

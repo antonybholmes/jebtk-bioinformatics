@@ -32,7 +32,6 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
-// TODO: Auto-generated Javadoc
 /**
  * The class GeneSet.
  */

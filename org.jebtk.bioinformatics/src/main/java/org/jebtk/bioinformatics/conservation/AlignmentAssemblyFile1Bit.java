@@ -35,12 +35,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jebtk.bioinformatics.dna.GenomeAssemblyDir;
 import org.jebtk.bioinformatics.genomic.Chromosome;
+import org.jebtk.bioinformatics.genomic.FileSequenceReader;
 import org.jebtk.bioinformatics.genomic.GenomicRegion;
 import org.jebtk.core.io.PathUtils;
 
-// TODO: Auto-generated Javadoc
 /**
  * Stores 1 bit per genome base ergo this is only suitable for binary
  * representations of the genome e.g. base matches other species, true or false.
@@ -169,7 +168,7 @@ public class AlignmentAssemblyFile1Bit extends ConservationAssembly {
     int sb = start / 8;
     int eb = end / 8;
 
-    return GenomeAssemblyDir.getBytes(file, sb, eb);
+    return FileSequenceReader.getBytes(file, sb, eb);
   }
 
   /**

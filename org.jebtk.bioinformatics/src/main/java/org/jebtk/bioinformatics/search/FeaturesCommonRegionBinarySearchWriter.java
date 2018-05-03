@@ -39,7 +39,6 @@ import java.util.Set;
 import org.jebtk.core.io.FileUtils;
 import org.jebtk.core.text.TextUtils;
 
-// TODO: Auto-generated Javadoc
 /**
  * The class FeaturesCommonRegionBinarySearchWriter.
  */

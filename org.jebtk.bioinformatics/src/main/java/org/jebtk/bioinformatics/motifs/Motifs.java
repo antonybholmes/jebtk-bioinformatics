@@ -34,7 +34,6 @@ import java.util.List;
 import org.jebtk.core.NameProperty;
 import org.jebtk.core.collections.CollectionUtils;
 
-// TODO: Auto-generated Javadoc
 /**
  * Represents a motif sequence. Each position consists of the counts for each
  * base (a,c,g,t).

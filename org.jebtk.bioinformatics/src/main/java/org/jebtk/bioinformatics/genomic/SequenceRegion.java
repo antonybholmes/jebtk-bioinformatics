@@ -32,7 +32,6 @@ import java.util.List;
 
 import org.jebtk.core.text.TextUtils;
 
-// TODO: Auto-generated Javadoc
 /**
  * Describes a region of a genome and its sequence.
  *
@@ -65,7 +64,7 @@ public class SequenceRegion extends GenomicRegion {
   public SequenceRegion(GenomicRegion region, String dna) {
     this(region, Sequence.create(dna));
   }
-  
+
   public SequenceRegion(GenomicRegion region, Sequence sequence) {
     super(region);
 
@@ -105,7 +104,7 @@ public class SequenceRegion extends GenomicRegion {
    * @return the sequence region
    */
   public static SequenceRegion reverseComplement(SequenceRegion sequence) {
-    return new SequenceRegion(sequence,
+    return new SequenceRegion(GenomicRegion.oppositeStrand(sequence),
         Sequence.reverseComplement(sequence.mSequence));
   }
 
@@ -146,6 +145,7 @@ public class SequenceRegion extends GenomicRegion {
 
   /**
    * Return a fasta representation of the sequence
+   * 
    * @return
    */
   public String toFasta() {

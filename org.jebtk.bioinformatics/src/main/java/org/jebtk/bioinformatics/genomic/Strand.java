@@ -31,19 +31,18 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-// TODO: Auto-generated Javadoc
 /**
  * Describes a genomic locations strand.
  */
 public enum Strand {
-  /** Unspecified */
-  NONE(0),
+  /// ** Unspecified */
+  // NONE(0),
 
   /** The sense. */
-  SENSE(1),
+  SENSE(0),
 
   /** The antisense. */
-  ANTISENSE(2);
+  ANTISENSE(1);
 
   /** The strand's value. */
   private int mValue;
@@ -79,12 +78,10 @@ public enum Strand {
    */
   public static Strand parse(char strand) {
     switch (strand) {
-    case '+':
-      return SENSE;
     case '-':
       return ANTISENSE;
     default:
-      return NONE;
+      return SENSE;
     }
   }
 
@@ -117,12 +114,10 @@ public enum Strand {
    */
   public static char toChar(Strand strand) {
     switch (strand) {
-    case SENSE:
-      return '+';
     case ANTISENSE:
       return '-';
     default:
-      return '.';
+      return '+';
     }
   }
 
@@ -166,5 +161,20 @@ public enum Strand {
    */
   public static boolean isSense(Strand strand) {
     return strand == SENSE;
+  }
+
+  /**
+   * Return the opposite strand.
+   * 
+   * @param s
+   * @return
+   */
+  public static Strand oppositeStrand(Strand s) {
+    switch (s) {
+    case ANTISENSE:
+      return SENSE;
+    default:
+      return ANTISENSE;
+    }
   }
 }

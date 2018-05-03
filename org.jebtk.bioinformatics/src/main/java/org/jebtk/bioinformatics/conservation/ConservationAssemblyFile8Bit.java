@@ -35,12 +35,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jebtk.bioinformatics.dna.GenomeAssemblyDir;
 import org.jebtk.bioinformatics.genomic.Chromosome;
+import org.jebtk.bioinformatics.genomic.FileSequenceReader;
 import org.jebtk.bioinformatics.genomic.GenomicRegion;
 import org.jebtk.core.io.PathUtils;
 
-// TODO: Auto-generated Javadoc
 /**
  * Fast search of genome sequence files to get get actual genomic data. This
  * file reads 4bit encoded genomes (i.e. 2 bases per byte).
@@ -102,7 +101,7 @@ public class ConservationAssemblyFile8Bit extends ConservationAssembly {
     int s = start - 1;
     int e = end - 1;
 
-    byte[] buf = GenomeAssemblyDir.getBytes(file, s, e);
+    byte[] buf = FileSequenceReader.getBytes(file, s, e);
 
     List<Double> scores = new ArrayList<Double>(buf.length);
 

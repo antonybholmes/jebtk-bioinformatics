@@ -40,7 +40,6 @@ import org.jebtk.math.matrix.DataFrame;
 import org.jebtk.math.matrix.Matrix;
 import org.jebtk.math.matrix.MatrixParser;
 
-// TODO: Auto-generated Javadoc
 /**
  * Parses a simple txt matrix.
  *

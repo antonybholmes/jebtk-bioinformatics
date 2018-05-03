@@ -32,7 +32,6 @@ import java.util.List;
 import org.jebtk.core.collections.UniqueArrayList;
 import org.jebtk.core.tree.TreeNode;
 
-// TODO: Auto-generated Javadoc
 /**
  * The class MotifsDBService.
  */

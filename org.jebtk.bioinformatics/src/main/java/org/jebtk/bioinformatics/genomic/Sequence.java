@@ -74,14 +74,14 @@ public class Sequence
   private SequenceType mType;
 
   public static final Pattern DNA_REGEX = Pattern.compile("[ACGTUacgtuNn]+");
-  
-  public static final Pattern ILLEGAL_REGEX = Pattern.compile("[^ACGTUacgtuNn]");
+
+  public static final Pattern ILLEGAL_REGEX = Pattern
+      .compile("[^ACGTUacgtuNn]");
 
   /**
    * The constant LOG.
    */
   private static final Logger LOG = LoggerFactory.getLogger(Sequence.class);
-
 
   /**
    * Instantiates a new sequence.
@@ -95,10 +95,11 @@ public class Sequence
 
   public Sequence(String name, String sequence) {
     mName = name;
-    
+
     // Replace all illegal characters with N
-    mSequence = ILLEGAL_REGEX.matcher(sequence).replaceAll(DNA.N); //.toUpperCase();
-    mType = sequence.contains(DNA.U) || sequence.contains(DNA.LU) ? SequenceType.RNA
+    mSequence = ILLEGAL_REGEX.matcher(sequence).replaceAll(DNA.N); // .toUpperCase();
+    mType = sequence.contains(DNA.U) || sequence.contains(DNA.LU)
+        ? SequenceType.RNA
         : SequenceType.DNA;
   }
 
@@ -583,9 +584,13 @@ public class Sequence
   public static SequenceRegion getRandomSequence(String genome,
       SequenceReader assembly,
       int length) throws IOException {
-    return getRandomSequence(genome, assembly, length, true, RepeatMaskType.LOWERCASE);
+    return getRandomSequence(genome,
+        assembly,
+        length,
+        true,
+        RepeatMaskType.LOWERCASE);
   }
-  
+
   public static SequenceRegion getRandomSequence(String genome,
       SequenceReader assembly,
       int length,
@@ -595,8 +600,6 @@ public class Sequence
 
     return assembly.getSequence(region, uppercase, repeatMaskType);
   }
-  
-  
 
   /**
    * To index.

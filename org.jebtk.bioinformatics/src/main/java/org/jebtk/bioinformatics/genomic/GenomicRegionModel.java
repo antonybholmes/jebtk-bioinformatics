@@ -29,7 +29,6 @@ package org.jebtk.bioinformatics.genomic;
 
 import org.jebtk.core.model.ItemModel;
 
-// TODO: Auto-generated Javadoc
 /**
  * A model for shared genomic regions.
  * 
@@ -42,13 +41,13 @@ public class GenomicRegionModel extends ItemModel<GenomicRegion> {
    * The constant serialVersionUID.
    */
   private static final long serialVersionUID = 1L;
-  
+
   public void set(Chromosome chr, int start, int end) {
     update(new GenomicRegion(chr, start, end));
-    
+
     fireChanged();
   }
-  
+
   public void update(Chromosome chr, int start, int end) {
     update(new GenomicRegion(chr, start, end));
   }

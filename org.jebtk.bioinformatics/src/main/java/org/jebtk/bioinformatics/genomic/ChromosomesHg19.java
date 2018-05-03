@@ -19,13 +19,13 @@ package org.jebtk.bioinformatics.genomic;
  * Represents the chromosomes in hg19, compiled for use.
  */
 public class ChromosomesHg19 extends Chromosomes {
-  
+
   /**
    * Instantiates a new chromosomes hg 19.
    */
   public ChromosomesHg19() {
     super("Human", Genome.HG19);
-    
+
     add(new Chromosome(1, "chr1", 249250621, Genome.HG19));
     add(new Chromosome(2, "chr2", 243199373, Genome.HG19));
     add(new Chromosome(3, "chr3", 198022430, Genome.HG19));

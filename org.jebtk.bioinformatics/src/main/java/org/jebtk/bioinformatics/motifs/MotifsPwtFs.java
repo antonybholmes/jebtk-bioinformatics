@@ -42,7 +42,6 @@ import org.jebtk.core.text.TextUtils;
 import org.jebtk.core.tree.TreeNode;
 import org.xml.sax.SAXException;
 
-// TODO: Auto-generated Javadoc
 /**
  * The class MotifsFile.
  */

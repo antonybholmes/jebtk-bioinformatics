@@ -15,7 +15,6 @@
  */
 package org.jebtk.bioinformatics;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Enum DataSource.
  */

@@ -35,13 +35,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jebtk.bioinformatics.dna.GenomeAssemblyDir;
 import org.jebtk.bioinformatics.genomic.Chromosome;
+import org.jebtk.bioinformatics.genomic.FileSequenceReader;
 import org.jebtk.bioinformatics.genomic.GenomicRegion;
 import org.jebtk.core.io.PathUtils;
 import org.jebtk.math.statistics.Statistics;
 
-// TODO: Auto-generated Javadoc
 /**
  * Fast search of genome sequence files to get get actual genomic data. This
  * file reads 4bit encoded genomes (i.e. 2 bases per byte).
@@ -160,7 +159,7 @@ public class AlignmentAssemblyFile2Bit extends ConservationAssembly {
 
     System.err.println(sb + " " + eb);
 
-    return GenomeAssemblyDir.getBytes(file, sb, eb);
+    return FileSequenceReader.getBytes(file, sb, eb);
   }
 
   /**

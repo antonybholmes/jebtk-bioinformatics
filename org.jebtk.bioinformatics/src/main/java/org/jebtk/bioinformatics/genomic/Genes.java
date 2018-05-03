@@ -50,7 +50,6 @@ import org.jebtk.core.text.TextUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-// TODO: Auto-generated Javadoc
 /**
  * Genes lookup to m.
  *
@@ -358,8 +357,8 @@ public class Genes extends BinaryGapSearch<Gene> {
    * @return the genes
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static GapSearch<Gene> load(final String genome,
-      BufferedReader reader) throws IOException {
+  public static GapSearch<Gene> load(final String genome, BufferedReader reader)
+      throws IOException {
     final Genes ret = new Genes();
 
     FileUtils.tokenize(reader, new TokenFunction() {
@@ -371,8 +370,7 @@ public class Genes extends BinaryGapSearch<Gene> {
         String refseq = tokens.get(1);
         String entrez = tokens.get(2);
         String symbol = tokens.get(5);
-        Chromosome chr = GenomeService.instance().chr(genome,
-            tokens.get(8));
+        Chromosome chr = GenomeService.instance().chr(genome, tokens.get(8));
         Strand strand = Strand.parse(tokens.get(9)); // .charAt(0);
         // Because of the UCSC using zero based start and one
         // based end, we need to increment the start by 1

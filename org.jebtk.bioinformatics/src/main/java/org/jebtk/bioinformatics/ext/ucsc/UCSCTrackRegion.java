@@ -37,7 +37,6 @@ import org.jebtk.bioinformatics.genomic.GenomicRegion;
 import org.jebtk.bioinformatics.genomic.Strand;
 import org.jebtk.core.text.TextUtils;
 
-// TODO: Auto-generated Javadoc
 /**
  * A track consists of regions.
  *
@@ -52,7 +51,7 @@ public class UCSCTrackRegion extends GenomicRegion {
   /**
    * The member strand.
    */
-  protected Strand mStrand = Strand.NONE;
+  protected Strand mStrand = Strand.SENSE;
 
   /**
    * The member color.
@@ -67,7 +66,7 @@ public class UCSCTrackRegion extends GenomicRegion {
    * @param end the end
    */
   public UCSCTrackRegion(Chromosome chromosome, int start, int end) {
-    this(chromosome, start, end, Strand.NONE, null);
+    this(chromosome, start, end, Strand.SENSE, null);
   }
 
   /**

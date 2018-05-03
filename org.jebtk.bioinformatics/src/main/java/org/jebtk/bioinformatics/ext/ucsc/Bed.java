@@ -51,7 +51,6 @@ import org.jebtk.math.matrix.MixedMatrix;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-// TODO: Auto-generated Javadoc
 /**
  * Describes a BED file (a list of genomic positions with a track).
  * 
@@ -135,8 +134,7 @@ public class Bed extends UCSCTrack {
    * @throws IOException Signals that an I/O exception has occurred.
    * @throws ParseException the parse exception
    */
-  public static UCSCTrack parseTrack(Path file)
-      throws IOException {
+  public static UCSCTrack parseTrack(Path file) throws IOException {
     return parseTracks(file).get(0);
   }
 

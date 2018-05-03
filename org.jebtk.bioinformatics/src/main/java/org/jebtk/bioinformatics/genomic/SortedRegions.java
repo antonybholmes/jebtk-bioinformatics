@@ -34,7 +34,6 @@ import java.util.List;
 import org.jebtk.core.Mathematics;
 import org.jebtk.core.collections.CollectionUtils;
 
-// TODO: Auto-generated Javadoc
 /**
  * Keeps together sorted regions on the same chromosome. Regions are auto-sorted
  * before search

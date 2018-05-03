@@ -27,7 +27,6 @@
  */
 package org.jebtk.bioinformatics.ext.ucsc;
 
-// TODO: Auto-generated Javadoc
 /**
  * Control how tracks are shown. Compact mode shows everything on one row.
  * 

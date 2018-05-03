@@ -32,7 +32,6 @@ import java.util.regex.Pattern;
 
 import org.jebtk.core.text.TextUtils;
 
-// TODO: Auto-generated Javadoc
 /**
  * Describes a base change at a position.
  *

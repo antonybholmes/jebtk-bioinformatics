@@ -36,7 +36,6 @@ import java.util.zip.ZipFile;
 
 import org.jebtk.core.io.FileUtils;
 
-// TODO: Auto-generated Javadoc
 /**
  * Genes lookup to m.
  *

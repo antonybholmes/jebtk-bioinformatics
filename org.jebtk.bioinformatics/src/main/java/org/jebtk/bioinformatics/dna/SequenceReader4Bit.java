@@ -36,7 +36,6 @@ import org.jebtk.bioinformatics.genomic.RepeatMaskType;
 import org.jebtk.bioinformatics.genomic.Sequence;
 import org.jebtk.bioinformatics.genomic.SequenceRegion;
 
-// TODO: Auto-generated Javadoc
 /**
  * Fast search of genome sequence Paths to get get actual genomic data. This
  * Path reads 4bit encoded genomes (i.e. 2 bases per byte).
@@ -44,7 +43,7 @@ import org.jebtk.bioinformatics.genomic.SequenceRegion;
  * @author Antony Holmes Holmes
  *
  */
-public class GenomeAssemblyFile4Bit extends GenomeAssemblyDir {
+public class SequenceReader4Bit extends ChrSequenceReader {
 
   /**
    * Directory containing genome Paths which must be of the form chr.n.txt. Each
@@ -52,7 +51,7 @@ public class GenomeAssemblyFile4Bit extends GenomeAssemblyDir {
    *
    * @param directory the directory
    */
-  public GenomeAssemblyFile4Bit(Path directory) {
+  public SequenceReader4Bit(Path directory) {
     super(directory);
   }
 
@@ -76,7 +75,7 @@ public class GenomeAssemblyFile4Bit extends GenomeAssemblyDir {
     Chromosome chr = region.getChr();
 
     if (!mFileMap.containsKey(chr)) {
-      mFileMap.put(chr, mDirectory.resolve(chr + ".4bit"));
+      mFileMap.put(chr, mFile.resolve(chr + ".4bit"));
     }
 
     return new SequenceRegion(region,
