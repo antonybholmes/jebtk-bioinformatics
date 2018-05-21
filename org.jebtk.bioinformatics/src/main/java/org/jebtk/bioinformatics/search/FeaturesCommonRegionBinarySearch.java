@@ -148,7 +148,7 @@ public class FeaturesCommonRegionBinarySearch extends AbstractFeaturesSearch {
 
           List<String> row = TextUtils.fastSplit(line, TextUtils.TAB_DELIMITER);
 
-          chromosome = GenomeService.instance().guessChr(mFeatureFile,
+          chromosome = GenomeService.getInstance().guessChr(mFeatureFile,
               row.get(0));
 
           startLocation = Integer.parseInt(row.get(1));
@@ -189,7 +189,7 @@ public class FeaturesCommonRegionBinarySearch extends AbstractFeaturesSearch {
           List<String> row = TextUtils.tabSplit(line);
 
           Feature feature = new Feature(row.get(0),
-              GenomeService.instance().guessChr(mFeatureFile, row.get(1)),
+              GenomeService.getInstance().guessChr(mFeatureFile, row.get(1)),
               Integer.parseInt(row.get(2)), Integer.parseInt(row.get(3)));
 
           List<String> bins = TextUtils.fastSplit(row.get(4),
@@ -485,7 +485,7 @@ public class FeaturesCommonRegionBinarySearch extends AbstractFeaturesSearch {
    */
   public static final File getFeaturesFile(String group, String name) {
     return new File(
-        SettingsService.getInstance().getAsString(group + "." + name)
+        SettingsService.getInstance().getString(group + "." + name)
             + BIN_FEATURE_FILE_ENDING);
   }
 
@@ -498,7 +498,7 @@ public class FeaturesCommonRegionBinarySearch extends AbstractFeaturesSearch {
    */
   public static final File getLocationsFile(String group, String name) {
     return new File(
-        SettingsService.getInstance().getAsString(group + "." + name)
+        SettingsService.getInstance().getString(group + "." + name)
             + BIN_LOCATION_FILE_ENDING);
   }
 

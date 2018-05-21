@@ -75,7 +75,7 @@ public class DnaService extends ChangeListeners {
 
   private IterMap<Character, Color> mColorMap = DefaultHashMap
       .create(SettingsService.getInstance()
-          .getAsColor("bioinformatics.dna.bases.n.color"));
+          .getColor("bioinformatics.dna.bases.n.color"));
 
   private IterMap<Character, ChangeListeners> mListenerMap = DefaultHashMap
       .create(new EntryCreator<ChangeListeners>() {
@@ -244,23 +244,23 @@ public class DnaService extends ChangeListeners {
   private void updateColors() {
     mColorMap.put('A',
         SettingsService.getInstance()
-            .getAsColor("bioinformatics.dna.bases.a.color"));
+            .getColor("bioinformatics.dna.bases.a.color"));
 
     mColorMap.put('C',
         SettingsService.getInstance()
-            .getAsColor("bioinformatics.dna.bases.c.color"));
+            .getColor("bioinformatics.dna.bases.c.color"));
 
     mColorMap.put('G',
         SettingsService.getInstance()
-            .getAsColor("bioinformatics.dna.bases.g.color"));
+            .getColor("bioinformatics.dna.bases.g.color"));
 
     mColorMap.put('T',
         SettingsService.getInstance()
-            .getAsColor("bioinformatics.dna.bases.t.color"));
+            .getColor("bioinformatics.dna.bases.t.color"));
 
     mColorMap.put('N',
         SettingsService.getInstance()
-            .getAsColor("bioinformatics.dna.bases.n.color"));
+            .getColor("bioinformatics.dna.bases.n.color"));
 
     fireAllChanged();
   }

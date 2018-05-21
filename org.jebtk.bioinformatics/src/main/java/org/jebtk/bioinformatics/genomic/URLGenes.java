@@ -99,23 +99,23 @@ public class URLGenes extends GenesDb {
       for (int i = 0; i < json.size(); ++i) {
         Json geneJson = json.get(i);
 
-        Gene gene = new RdfGene(geneJson.getAsString("rdf"),
-            geneJson.getAsString("refseq"), geneJson.getAsString("entrez"),
-            geneJson.getAsString("symbol"),
+        Gene gene = new RdfGene(geneJson.getString("rdf"),
+            geneJson.getString("refseq"), geneJson.getString("entrez"),
+            geneJson.getString("symbol"),
             GenomicRegion.create(
-                GenomeService.instance().chr(Genome.HG19,
-                    geneJson.getAsString("chr")),
-                geneJson.getAsInt("start"),
-                geneJson.getAsInt("end"),
-                Strand.parse(geneJson.getAsChar("strand"))));
+                GenomeService.getInstance().chr(Genome.HG19,
+                    geneJson.getString("chr")),
+                geneJson.getInt("start"),
+                geneJson.getInt("end"),
+                Strand.parse(geneJson.getChar("strand"))));
 
         Json exonStartsJson = geneJson.get("exon_starts");
         Json exonEndsJson = geneJson.get("exon_ends");
 
         for (int j = 0; j < exonStartsJson.size(); ++j) {
           GenomicRegion exon = GenomicRegion.create(gene.mChr,
-              exonStartsJson.get(j).getAsInt(),
-              exonEndsJson.get(j).getAsInt());
+              exonStartsJson.get(j).getInt(),
+              exonEndsJson.get(j).getInt());
 
           gene.addExon(exon);
         }
@@ -147,23 +147,23 @@ public class URLGenes extends GenesDb {
 
       Json geneJson = json.get(0);
 
-      gene = new RdfGene(geneJson.get("rdf").getAsString(),
-          geneJson.getAsString("refseq"), geneJson.getAsString("entrez"),
-          geneJson.getAsString("symbol"),
+      gene = new RdfGene(geneJson.get("rdf").getString(),
+          geneJson.getString("refseq"), geneJson.getString("entrez"),
+          geneJson.getString("symbol"),
           GenomicRegion.create(
-              GenomeService.instance().chr(Genome.HG19,
-                  geneJson.getAsString("chr")),
-              geneJson.getAsInt("start"),
-              geneJson.getAsInt("end"),
-              Strand.parse(geneJson.getAsChar("strand"))));
+              GenomeService.getInstance().chr(Genome.HG19,
+                  geneJson.getString("chr")),
+              geneJson.getInt("start"),
+              geneJson.getInt("end"),
+              Strand.parse(geneJson.getChar("strand"))));
 
       Json exonStartsJson = geneJson.get("exon_starts");
       Json exonEndsJson = geneJson.get("exon_ends");
 
       for (int j = 0; j < exonStartsJson.size(); ++j) {
         GenomicRegion exon = GenomicRegion.create(gene.mChr,
-            exonStartsJson.get(j).getAsInt(),
-            exonEndsJson.get(j).getAsInt());
+            exonStartsJson.get(j).getInt(),
+            exonEndsJson.get(j).getInt());
 
         gene.addExon(exon);
       }

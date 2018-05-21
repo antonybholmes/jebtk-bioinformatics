@@ -61,7 +61,7 @@ public class ChromosomeHttpReader implements ChromosomeReader {
       for (int i = 0; i < json.size(); ++i) {
         chrJson = json.get(i);
         
-        Chromosome chr = new Chromosome(chrJson.getAsInt("id"), chrJson.getAsString("chr"), chrJson.getAsInt("bp"), mGenome);
+        Chromosome chr = new Chromosome(chrJson.getInt("id"), chrJson.getString("chr"), chrJson.getInt("bp"), mGenome);
 
         mChrs.add(chr);
       }

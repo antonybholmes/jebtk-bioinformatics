@@ -266,17 +266,17 @@ public class Chromosomes extends GenomeDirs implements Iterable<Chromosome> {
 
     Json json = new JsonParser().parse(file);
 
-    Chromosomes ret = new Chromosomes(json.getAsString("species"),
-        json.getAsString("genome"));
+    Chromosomes ret = new Chromosomes(json.getString("species"),
+        json.getString("genome"));
 
     Json chrsJson = json.get("chromosomes");
 
     for (int i = 0; i < chrsJson.size(); ++i) {
       Json chrJson = chrsJson.get(i);
 
-      int id = chrJson.getAsInt("id");
-      String name = chrJson.getAsString("name");
-      int size = chrJson.getAsInt("size");
+      int id = chrJson.getInt("id");
+      String name = chrJson.getString("name");
+      int size = chrJson.getInt("size");
 
       Chromosome chr = new Chromosome(id, name, size);
 

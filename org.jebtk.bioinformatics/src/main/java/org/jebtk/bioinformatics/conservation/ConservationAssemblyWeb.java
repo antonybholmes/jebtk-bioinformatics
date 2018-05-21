@@ -97,7 +97,7 @@ public class ConservationAssemblyWeb extends ConservationAssembly {
       Json scoresJson = json.get(0).get("scores");
 
       for (int i = 0; i < scoresJson.size(); ++i) {
-        scores.add(scoresJson.get(i).getAsDouble());
+        scores.add(scoresJson.get(i).getDouble());
       }
 
     } catch (MalformedURLException e) {

@@ -272,7 +272,7 @@ public class GenomicRegion extends Region {
     Matcher matcher = CHR_ONLY_PATTERN.matcher(location);
 
     if (matcher.find()) {
-      Chromosome chromosome = GenomeService.instance().chr(genome,
+      Chromosome chromosome = GenomeService.getInstance().chr(genome,
           matcher.group(1));
 
       if (chromosome == null) {
@@ -338,7 +338,7 @@ public class GenomicRegion extends Region {
       String chr,
       String start,
       String end) {
-    return new GenomicRegion(GenomeService.instance().genome(genome).chr(chr),
+    return new GenomicRegion(GenomeService.getInstance().genome(genome).chr(chr),
         TextUtils.parseInt(start), TextUtils.parseInt(end));
   }
 
@@ -983,7 +983,7 @@ public class GenomicRegion extends Region {
       String chr,
       int start,
       int end) {
-    return create(GenomeService.instance().genome(genome).chr(chr), start, end);
+    return create(GenomeService.getInstance().genome(genome).chr(chr), start, end);
   }
 
   /**
@@ -1046,7 +1046,7 @@ public class GenomicRegion extends Region {
       throws IOException {
     Random rand = new Random();
 
-    Chromosome chr = GenomeService.instance().randChr(genome);
+    Chromosome chr = GenomeService.getInstance().randChr(genome);
 
     int start = rand.nextInt(chr.getSize() - length);
     int end = start + length - 1;

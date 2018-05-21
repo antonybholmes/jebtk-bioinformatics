@@ -124,7 +124,7 @@ public class HttpSequenceReader extends SequenceReader {
 
       Json json = mParser.parse(url);
 
-      String dna = json.get("seq").getAsString();
+      String dna = json.get("seq").getString();
 
       SequenceRegion ret = new SequenceRegion(region, Sequence.create(dna));
 
@@ -156,7 +156,7 @@ public class HttpSequenceReader extends SequenceReader {
       Json json = mParser.parse(url);
 
       for (int i = 0; i < json.size(); ++i) {
-        ret.add(json.get(i).getAsString());
+        ret.add(json.get(i).getString());
       }
     } catch (MalformedURLException e) {
       e.printStackTrace();

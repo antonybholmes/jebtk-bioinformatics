@@ -150,7 +150,7 @@ public class Bed extends UCSCTrack {
 
     BufferedReader reader = FileUtils.newBufferedReader(file);
 
-    return parseTracks(GenomeService.instance().guessGenome(file),
+    return parseTracks(GenomeService.getInstance().guessGenome(file),
         getName(file),
         reader);
   }
@@ -319,7 +319,7 @@ public class Bed extends UCSCTrack {
           beds.add(bed);
         } else {
           BedRegion region = BedRegion
-              .parse(GenomeService.instance().guessGenome(file), line);
+              .parse(GenomeService.getInstance().guessGenome(file), line);
           bed.getRegions().add(region);
         }
       }

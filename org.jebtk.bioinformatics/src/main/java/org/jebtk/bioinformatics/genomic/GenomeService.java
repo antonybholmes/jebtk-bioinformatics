@@ -59,7 +59,7 @@ public class GenomeService extends GenomeDirs implements Iterable<String> {
    *
    * @return single instance of GenomeService.
    */
-  public static GenomeService instance() {
+  public static GenomeService getInstance() {
     return GenomeLoader.INSTANCE;
   }
 

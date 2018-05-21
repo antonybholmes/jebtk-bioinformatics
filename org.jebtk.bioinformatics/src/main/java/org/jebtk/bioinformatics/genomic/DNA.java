@@ -47,25 +47,25 @@ public class DNA {
    * The constant BASE_A_COLOR.
    */
   public static final Color BASE_A_COLOR = SettingsService.getInstance()
-      .getAsColor("bioinformatics.dna.bases.a.color");
+      .getColor("bioinformatics.dna.bases.a.color");
 
   /**
    * The constant BASE_C_COLOR.
    */
   public static final Color BASE_C_COLOR = SettingsService.getInstance()
-      .getAsColor("bioinformatics.dna.bases.c.color");
+      .getColor("bioinformatics.dna.bases.c.color");
 
   /**
    * The constant BASE_G_COLOR.
    */
   public static final Color BASE_G_COLOR = SettingsService.getInstance()
-      .getAsColor("bioinformatics.dna.bases.g.color");
+      .getColor("bioinformatics.dna.bases.g.color");
 
   /**
    * The constant BASE_T_COLOR.
    */
   public static final Color BASE_T_COLOR = SettingsService.getInstance()
-      .getAsColor("bioinformatics.dna.bases.t.color");
+      .getColor("bioinformatics.dna.bases.t.color");
 
   public static final Color BASE_U_COLOR = BASE_T_COLOR;
 

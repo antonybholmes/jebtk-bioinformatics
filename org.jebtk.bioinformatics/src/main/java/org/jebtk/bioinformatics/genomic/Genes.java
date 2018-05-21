@@ -342,7 +342,7 @@ public class Genes extends BinaryGapSearch<Gene> {
     BufferedReader reader = FileUtils.newBufferedReader(file);
 
     try {
-      ret = load(GenomeService.instance().guessGenome(file), reader);
+      ret = load(GenomeService.getInstance().guessGenome(file), reader);
     } finally {
       reader.close();
     }
@@ -370,7 +370,7 @@ public class Genes extends BinaryGapSearch<Gene> {
         String refseq = tokens.get(1);
         String entrez = tokens.get(2);
         String symbol = tokens.get(5);
-        Chromosome chr = GenomeService.instance().chr(genome, tokens.get(8));
+        Chromosome chr = GenomeService.getInstance().chr(genome, tokens.get(8));
         Strand strand = Strand.parse(tokens.get(9)); // .charAt(0);
         // Because of the UCSC using zero based start and one
         // based end, we need to increment the start by 1

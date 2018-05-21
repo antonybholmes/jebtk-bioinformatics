@@ -57,7 +57,7 @@ public class SequenceReaderService extends SequenceReader
    *
    * @return single instance of GenomeAssemblyService
    */
-  public static SequenceReaderService instance() {
+  public static SequenceReaderService getInstance() {
     return GenomeAssemblyServiceLoader.INSTANCE;
   }
 
