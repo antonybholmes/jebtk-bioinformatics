@@ -45,11 +45,14 @@ public class GFF3Parser extends GeneParser {
   }
 
   @Override
-  protected void parse(Path file, BufferedReader reader, Genes genes)
+  protected void parse(Path file, 
+      BufferedReader reader, 
+      final String genome,
+      Genes genes)
       throws IOException {
     String line;
     List<String> tokens;
-    GeneType type;
+    GenomicType type;
     int start;
     int end;
     Strand strand;
@@ -57,7 +60,7 @@ public class GFF3Parser extends GeneParser {
 
     Splitter splitter = Splitter.onTab();
 
-    Gene gene = null;
+    GenomicEntity gene = null;
 
     try {
       while ((line = reader.readLine()) != null) {
@@ -65,8 +68,9 @@ public class GFF3Parser extends GeneParser {
 
         tokens = splitter.text(line);
 
-        Chromosome chr = GenomeService.getInstance().guessChr(file, tokens.get(0));
-        type = GeneType.parse(tokens.get(2));
+        Chromosome chr = GenomeService.getInstance().chr(genome, tokens.get(0));
+        
+        type = GenomicType.parse(tokens.get(2));
         start = Integer.parseInt(tokens.get(3));
         end = Integer.parseInt(tokens.get(4));
         strand = Strand.parse(tokens.get(6));
@@ -86,13 +90,13 @@ public class GFF3Parser extends GeneParser {
           // Gene
           // gene = new Gene(region).setSymbol(name);
 
-          gene = addAttributes(GeneType.TRANSCRIPT, region, attributeMap);
+          gene = addAttributes(GenomicType.TRANSCRIPT, region, attributeMap);
 
           genes.add(gene);
 
           break;
         case EXON:
-          Gene exon = addAttributes(GeneType.EXON, region, attributeMap);
+          GenomicEntity exon = addAttributes(GenomicType.EXON, region, attributeMap);
 
           if (gene != null) {
             // Add to the current gene
@@ -127,7 +131,7 @@ public class GFF3Parser extends GeneParser {
     String line;
     List<String> tokens;
 
-    GeneType type;
+    GenomicType type;
 
     Map<String, String> attributeMap;
 
@@ -139,7 +143,7 @@ public class GFF3Parser extends GeneParser {
 
         tokens = splitter.text(line);
 
-        type = GeneType.parse(tokens.get(2));
+        type = GenomicType.parse(tokens.get(2));
 
         // Must be at least the current level or lower
         if (!containsLevel(type)) {

@@ -64,14 +64,16 @@ public class GTB1Parser extends GTBParser {
    * @throws IOException Signals that an I/O exception has occurred.
    */
   @Override
-  protected void parse(Path file, BufferedReader reader, Genes genes)
+  protected void parse(Path file, BufferedReader reader, 
+      final String genome,
+      Genes genes)
       throws IOException {
     LOG.info("Parsing GTB file {}, levels: {}...", file, mLevels);
 
     String line;
     List<String> tokens;
 
-    Gene gene = null;
+    GenomicEntity gene = null;
 
     // Skip header
     reader.readLine();
@@ -79,7 +81,7 @@ public class GTB1Parser extends GTBParser {
     Splitter splitter = Splitter.on(';');
 
     // Add the exons
-    boolean hasExonLevel = containsLevel(GeneType.EXON);
+    boolean hasExonLevel = containsLevel(GenomicType.EXON);
 
     while ((line = reader.readLine()) != null) {
       if (Io.isEmptyLine(line)) {
@@ -90,7 +92,7 @@ public class GTB1Parser extends GTBParser {
 
       tokens = Splitter.onTab().text(line);
 
-      Chromosome chr = GenomeService.getInstance().guessChr(file, tokens.get(0));
+      Chromosome chr = GenomeService.getInstance().chr(genome, tokens.get(0));
 
       // Skip random and unofficial chromosomes
       if (chr.toString().contains("_")) {
@@ -147,11 +149,11 @@ public class GTB1Parser extends GTBParser {
 
       // Create the gene
 
-      gene = addAttributes(GeneType.TRANSCRIPT,
+      gene = addAttributes(GenomicType.TRANSCRIPT,
           GenomicRegion.create(chr, start, end, strand),
           attributeMap);
 
-      if (containsLevel(GeneType.TRANSCRIPT)) {
+      if (containsLevel(GenomicType.TRANSCRIPT)) {
         genes.add(gene);
       }
 
@@ -161,7 +163,7 @@ public class GTB1Parser extends GTBParser {
           GenomicRegion region = GenomicRegion
               .create(chr, starts.get(i) + 1, ends.get(i), strand);
 
-          Gene exon = addAttributes(GeneType.EXON, region, attributeMap);
+          GenomicEntity exon = addAttributes(GenomicType.EXON, region, attributeMap);
 
           if (mKeepExons) {
             if (gene != null) {

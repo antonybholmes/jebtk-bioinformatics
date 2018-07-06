@@ -2,7 +2,7 @@ package org.jebtk.bioinformatics.genomic;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Collection;
+import java.util.List;
 
 /**
  * Only load genes when requested.
@@ -14,16 +14,18 @@ public class LazyGenes extends Genes {
   private GeneParser mParser;
   private boolean mAutoLoad = true;
   private Path mFile;
+  private String mGenome;
 
-  public LazyGenes(Path file, GeneParser parser) {
+  public LazyGenes(Path file, String genome, GeneParser parser) {
     mFile = file;
+    mGenome = genome;
     mParser = parser;
   }
 
   private void autoLoad() {
     if (mAutoLoad) {
       try {
-        mParser.parse(mFile, this);
+        mParser.parse(mFile, mGenome, this);
       } catch (IOException e) {
         e.printStackTrace();
       }
@@ -40,28 +42,28 @@ public class LazyGenes extends Genes {
   }
 
   @Override
-  public Collection<Gene> getGenes(String symbol) {
+  public List<GenomicEntity> getGenes(String symbol) {
     autoLoad();
 
     return super.getGenes(symbol);
   }
 
   @Override
-  public Collection<Gene> findGenes(GenomicRegion region) {
+  public List<GenomicEntity> findGenes(GenomicRegion region) {
     autoLoad();
 
     return super.findGenes(region);
   }
 
   @Override
-  public Collection<Gene> findClosestGenes(GenomicRegion region) {
+  public List<GenomicEntity> findClosestGenes(GenomicRegion region) {
     autoLoad();
 
     return super.findClosestGenes(region);
   }
 
   @Override
-  public Collection<Gene> findClosestGenesByTss(GenomicRegion region) {
+  public List<GenomicEntity> findClosestGenesByTss(GenomicRegion region) {
     autoLoad();
 
     return super.findClosestGenesByTss(region);

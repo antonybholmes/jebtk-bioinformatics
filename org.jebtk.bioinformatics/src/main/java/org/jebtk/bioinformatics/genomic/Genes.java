@@ -27,8 +27,6 @@
  */
 package org.jebtk.bioinformatics.genomic;
 
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -37,16 +35,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.jebtk.bioinformatics.gapsearch.BinaryGapSearch;
-import org.jebtk.bioinformatics.gapsearch.GapSearch;
+import org.jebtk.bioinformatics.gapsearch.FixedGapSearch;
 import org.jebtk.core.collections.DefaultHashMap;
 import org.jebtk.core.collections.IterMap;
 import org.jebtk.core.collections.TreeSetCreator;
 import org.jebtk.core.collections.UniqueArrayListCreator;
-import org.jebtk.core.io.FileUtils;
 import org.jebtk.core.io.PathUtils;
-import org.jebtk.core.io.TokenFunction;
-import org.jebtk.core.text.TextUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,7 +49,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Antony Holmes Holmes
  */
-public class Genes extends BinaryGapSearch<Gene> {
+public class Genes extends FixedGapSearch<GenomicEntity> {
   // private static final GeneService INSTANCE = new GeneService();
 
   /**
@@ -76,7 +70,7 @@ public class Genes extends BinaryGapSearch<Gene> {
   /** Empty gene set that can be used as a placeholder */
   public static final Genes EMPTY_GENES = new Genes() {
     @Override
-    public void add(GenomicRegion region, Gene gene) {
+    public void add(GenomicRegion region, GenomicEntity gene) {
       // Do nothing
     }
   };
@@ -97,7 +91,8 @@ public class Genes extends BinaryGapSearch<Gene> {
   /**
    * The member symbol main variant.
    */
-  private Map<String, Gene> mSymbolMainVariant = new HashMap<String, Gene>();
+  private Map<String, GenomicEntity> mSymbolMainVariant = 
+      new HashMap<String, GenomicEntity>();
 
   /**
    * The member entrez map.
@@ -112,8 +107,8 @@ public class Genes extends BinaryGapSearch<Gene> {
   private IterMap<String, Set<String>> mTypeMap = DefaultHashMap
       .create(new TreeSetCreator<String>());
 
-  private IterMap<String, List<Gene>> mIdMap = DefaultHashMap
-      .create(new UniqueArrayListCreator<Gene>());
+  private IterMap<String, List<GenomicEntity>> mIdMap = DefaultHashMap
+      .create(new UniqueArrayListCreator<GenomicEntity>());
 
   /**
    * The member ref seq map.
@@ -123,19 +118,13 @@ public class Genes extends BinaryGapSearch<Gene> {
 
   private boolean mFindMainVariants = true;
 
-  /**
-   * Instantiates a new gene service.
-   */
-  public Genes() {
-    // do nothing
-  }
 
-  public void add(Gene gene) {
+  public void add(GenomicEntity gene) {
     add(gene, gene);
   }
 
   @Override
-  public void add(GenomicRegion region, Gene gene) {
+  public void add(GenomicRegion region, GenomicEntity gene) {
     super.add(region, gene);
 
     // Map to exons
@@ -165,13 +154,13 @@ public class Genes extends BinaryGapSearch<Gene> {
       Set<String> symbols = mTypeMap.get(Gene.SYMBOL_TYPE);
 
       for (String name : symbols) {
-        List<Gene> genes = mIdMap.get(sanitize(name));
+        List<GenomicEntity> genes = mIdMap.get(sanitize(name));
 
         // try and find variant 1
 
         int maxWidth = 0;
 
-        for (Gene gene : genes) {
+        for (GenomicEntity gene : genes) {
           int width = gene.mLength;
 
           if (width > maxWidth) {
@@ -196,8 +185,8 @@ public class Genes extends BinaryGapSearch<Gene> {
    * @param id the id
    * @return the gene
    */
-  public Gene lookup(String id) {
-    Gene gene = getGene(id);
+  public GenomicEntity lookup(String id) {
+    GenomicEntity gene = getGene(id);
 
     if (gene != null) {
       return gene;
@@ -212,8 +201,8 @@ public class Genes extends BinaryGapSearch<Gene> {
     return null;
   }
 
-  public Gene getGene(String symbol) {
-    Collection<Gene> genes = getGenes(symbol);
+  public GenomicEntity getGene(String symbol) {
+    Collection<GenomicEntity> genes = getGenes(symbol);
 
     if (genes.size() > 0) {
       return genes.iterator().next();
@@ -229,7 +218,7 @@ public class Genes extends BinaryGapSearch<Gene> {
    * @param symbol the symbol
    * @return the collection
    */
-  public Collection<Gene> getGenes(String symbol) {
+  public List<GenomicEntity> getGenes(String symbol) {
     return mIdMap.get(sanitize(symbol));
   }
 
@@ -239,7 +228,7 @@ public class Genes extends BinaryGapSearch<Gene> {
    * @param region the region
    * @return the list
    */
-  public Collection<Gene> findGenes(GenomicRegion region) {
+  public List<GenomicEntity> findGenes(GenomicRegion region) {
     return getOverlappingFeatures(region, 10).toList();
   }
 
@@ -249,7 +238,7 @@ public class Genes extends BinaryGapSearch<Gene> {
    * @param region the region
    * @return the list
    */
-  public Collection<Gene> findClosestGenes(GenomicRegion region) {
+  public List<GenomicEntity> findClosestGenes(GenomicRegion region) {
     return getClosestFeatures(region);
   }
 
@@ -259,20 +248,20 @@ public class Genes extends BinaryGapSearch<Gene> {
    * @param region the region
    * @return the list
    */
-  public Collection<Gene> findClosestGenesByTss(GenomicRegion region) {
-    Collection<Gene> genes = findClosestGenes(region); // findGenes(region);
+  public List<GenomicEntity> findClosestGenesByTss(GenomicRegion region) {
+    Collection<GenomicEntity> genes = findClosestGenes(region); // findGenes(region);
 
-    List<Gene> ret = new ArrayList<Gene>();
+    List<GenomicEntity> ret = new ArrayList<GenomicEntity>();
 
     int minD = Integer.MAX_VALUE;
 
-    for (Gene gene : genes) {
+    for (GenomicEntity gene : genes) {
       GenomicRegion tss = Gene.tssRegion(gene);
 
       minD = Math.min(minD, GenomicRegion.midAbsDist(region, tss));
     }
 
-    for (Gene gene : genes) {
+    for (GenomicEntity gene : genes) {
       GenomicRegion tss = Gene.tssRegion(gene);
 
       int d = GenomicRegion.midAbsDist(region, tss);
@@ -298,7 +287,7 @@ public class Genes extends BinaryGapSearch<Gene> {
    * @param name the name
    * @return the gene
    */
-  public Gene findMainVariant(String name) {
+  public GenomicEntity findMainVariant(String name) {
     autoFindMainVariants();
 
     return mSymbolMainVariant.get(name.toUpperCase());
@@ -327,17 +316,11 @@ public class Genes extends BinaryGapSearch<Gene> {
     return getIds(Gene.SYMBOL_TYPE);
   }
 
-  /**
-   * Load.
-   *
-   * @param file the file
-   * @return the genes
-   * @throws IOException Signals that an I/O exception has occurred.
-   */
-  public static GapSearch<Gene> load(Path file) throws IOException {
+  /*
+  public static GapSearch<GenomicEntity> load(Path file) throws IOException {
     LOG.info("Parsing {}...", file);
 
-    GapSearch<Gene> ret = null;
+    GapSearch<GenomicEntity> ret = null;
 
     BufferedReader reader = FileUtils.newBufferedReader(file);
 
@@ -350,14 +333,8 @@ public class Genes extends BinaryGapSearch<Gene> {
     return ret;
   }
 
-  /**
-   * Load.
-   *
-   * @param reader the reader
-   * @return the genes
-   * @throws IOException Signals that an I/O exception has occurred.
-   */
-  public static GapSearch<Gene> load(final String genome, BufferedReader reader)
+  public static GapSearch<GenomicEntity> load(final String genome, 
+      BufferedReader reader)
       throws IOException {
     final Genes ret = new Genes();
 
@@ -365,8 +342,6 @@ public class Genes extends BinaryGapSearch<Gene> {
 
       @Override
       public void parse(List<String> tokens) {
-        // TODO Auto-generated method stub
-
         String refseq = tokens.get(1);
         String entrez = tokens.get(2);
         String symbol = tokens.get(5);
@@ -377,9 +352,8 @@ public class Genes extends BinaryGapSearch<Gene> {
         int start = Integer.parseInt(tokens.get(10)) + 1;
         int end = Integer.parseInt(tokens.get(11));
 
-        Gene gene = Gene
-            .create(GeneType.TRANSCRIPT,
-                GenomicRegion.create(chr, start, end, strand))
+        GenomicEntity gene = new Transcript(
+                new GenomicRegion(chr, start, end, strand))
             .setSymbol(symbol).setRefseq(refseq).setEntrez(entrez);
 
         List<Integer> starts = TextUtils.splitInts(tokens.get(13),
@@ -393,13 +367,8 @@ public class Genes extends BinaryGapSearch<Gene> {
           GenomicRegion exon = GenomicRegion
               .create(chr, starts.get(i) + 1, ends.get(i));
 
-          gene.addExon(exon);
+          gene.add(new Exon(exon));
         }
-
-        // mRefSeqMap.put(refseq.toUpperCase(), gene);
-        // mEntrezMap.get(entrez.toUpperCase()).add(gene);
-        /// mSymbolMap.get(symbol.toUpperCase()).add(gene);
-        // mapGene(gene, ret.mSymbolMap);
 
         // add the start and end to the positionMap
         ret.add(gene, gene);
@@ -408,6 +377,7 @@ public class Genes extends BinaryGapSearch<Gene> {
 
     return ret;
   }
+  */
 
   protected static String sanitize(String name) {
     return name.toUpperCase();

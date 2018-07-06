@@ -38,8 +38,7 @@ import org.jebtk.core.text.TextUtils;
  *
  * @author Antony Holmes Holmes
  */
-public class Chromosome
-    implements Comparable<Chromosome>, IdProperty, NameProperty {
+public class Chromosome implements Comparable<Chromosome>, IdProperty, NameProperty {
 
   private static int DEFAULT_CHR_ID = -1;
   
@@ -68,19 +67,19 @@ public class Chromosome
 
   private String mGenome = null;
 
-  protected Chromosome(String name) {
-    this(DEFAULT_CHR_ID , name, Genome.HG19);
+  public Chromosome(String name) {
+    this(DEFAULT_CHR_ID, name);
   }
   
-  protected Chromosome(int id, String name) {
+  public Chromosome(int id, String name) {
     this(id, name, Genome.HG19);
   }
 
-  protected Chromosome(int id, String name, String genome) {
+  public Chromosome(int id, String name, String genome) {
     this(id, name, -1, genome);
   }
 
-  protected Chromosome(int id, String name, int size) {
+  public Chromosome(int id, String name, int size) {
     this(id, name, size, Genome.HG19);
   }
 
@@ -90,7 +89,7 @@ public class Chromosome
    * @param chr the chr
    * @param parser the parser
    */
-  protected Chromosome(int id, String name, int size, String genome) {
+  public Chromosome(int id, String name, int size, String genome) {
     // mSpecies = parser.getSpecies();
 
     // Ensures chromosome always begins with chr prefix and not cHr or

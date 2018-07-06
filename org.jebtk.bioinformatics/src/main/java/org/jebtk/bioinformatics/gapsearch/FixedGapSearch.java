@@ -262,7 +262,7 @@ public class FixedGapSearch<T> extends GapSearch<T> {
   }
 
   /**
-   * Adds the.
+   * Adds a search object to this one.
    *
    * @param gappedSearch the gapped search
    */
@@ -277,4 +277,52 @@ public class FixedGapSearch<T> extends GapSearch<T> {
       }
     }
   }
+  
+  /**
+   * Return the closest set of features to the mid-point of a region.
+   *
+   * @param region the region
+   * @return the closest features
+   */
+  @Override
+  public List<T> getClosestFeatures(GenomicRegion region) {
+    if (region == null) {
+      return Collections.emptyList();
+    }
+
+    //organize();
+
+    List<GappedSearchFeatures<T>> allFeatures = getFeatures(region);
+
+    if (allFeatures.size() == 0) {
+      return Collections.emptyList();
+    }
+
+    int minD = Integer.MAX_VALUE;
+
+    GappedSearchFeatures<T> minF = null;
+
+    int mid = GenomicRegion.mid(region);
+    
+    for (GappedSearchFeatures<T> features : allFeatures) {
+      int d = Math.abs(mid - features.getPosition());
+
+      if (d < minD) {
+        minF = features;
+        minD = d;
+      }
+    }
+
+    List<T> ret = new UniqueArrayList<T>();
+
+    for (GenomicRegion r : minF) {
+      for (T item : minF.getValues(r)) {
+        ret.add(item);
+      }
+    }
+
+    return ret;
+  }
+
+  
 }

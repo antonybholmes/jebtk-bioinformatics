@@ -89,9 +89,6 @@ public class Genome extends GenomeDirs implements NameProperty {
     return mName;
   }
 
-  public String getGenome() {
-    return getName();
-  }
 
   public Chromosomes chrs() {
     if (mChrs == null) {

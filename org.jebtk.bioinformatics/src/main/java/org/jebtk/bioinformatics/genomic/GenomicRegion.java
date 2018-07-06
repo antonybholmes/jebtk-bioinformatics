@@ -45,6 +45,9 @@ import org.jebtk.core.text.Formatter.NumberFormatter;
 import org.jebtk.core.text.Splitter;
 import org.jebtk.core.text.TextUtils;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * Describes a region of a genome.
  *
@@ -71,11 +74,13 @@ public class GenomicRegion extends Region {
   /**
    * The member chr.
    */
+  @JsonIgnore
   public final Chromosome mChr;
 
   /**
    * The member strand.
    */
+  @JsonIgnore
   public final Strand mStrand;
 
   // protected final String mType;
@@ -116,8 +121,19 @@ public class GenomicRegion extends Region {
    *
    * @return the strand
    */
+  @JsonIgnore
   public Strand getStrand() {
     return mStrand;
+  }
+  
+  /**
+   * Return '+' for sense and '-' for anti-sense.
+   * 
+   * @return
+   */
+  @JsonGetter("s")
+  public char getFormattedStrand() {
+    return Strand.toChar(mStrand);
   }
 
   /**
@@ -125,6 +141,7 @@ public class GenomicRegion extends Region {
    *
    * @return the location
    */
+  @JsonGetter("l")
   public String getLocation() {
     return toLocation(mChr, mStart, mEnd);
   }
@@ -134,6 +151,7 @@ public class GenomicRegion extends Region {
    * 
    * @return
    */
+  @JsonIgnore
   public String getRange() {
     return toRange(mStart, mEnd);
   }
@@ -143,6 +161,7 @@ public class GenomicRegion extends Region {
    *
    * @return the formatted location
    */
+  @JsonIgnore
   public String getFormattedLocation() {
     return formattedLocation(mChr, mStart, mEnd);
   }
@@ -152,6 +171,7 @@ public class GenomicRegion extends Region {
    *
    * @return the chr
    */
+  @JsonIgnore
   public Chromosome getChr() {
     return mChr;
   }
@@ -162,6 +182,7 @@ public class GenomicRegion extends Region {
    * @see java.lang.Object#toString()
    */
   @Override
+  @JsonIgnore
   public String toString() {
     return getLocation();
   }
@@ -172,6 +193,7 @@ public class GenomicRegion extends Region {
    * 
    * @return the genome.
    */
+  @JsonIgnore
   public String getGenome() {
     return mChr.getGenome();
   }

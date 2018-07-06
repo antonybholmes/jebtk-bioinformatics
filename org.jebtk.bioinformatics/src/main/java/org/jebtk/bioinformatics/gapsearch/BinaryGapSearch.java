@@ -156,295 +156,7 @@ public class BinaryGapSearch<T> extends FixedGapSearch<T> {
     return range;
   }
 
-  /**
-   * Return the closest set of features to the mid-point of a region.
-   *
-   * @param region the region
-   * @return the closest features
-   */
-  public List<T> getClosestFeatures(GenomicRegion region) {
-    if (region == null) {
-      return Collections.emptyList();
-    }
-
-    organize();
-
-    List<GappedSearchFeatures<T>> allFeatures = getFeatures(region);
-
-    if (allFeatures.size() == 0) {
-      return Collections.emptyList();
-    }
-
-    int minD = Integer.MAX_VALUE;
-
-    GappedSearchFeatures<T> minF = null;
-
-    for (GappedSearchFeatures<T> features : allFeatures) {
-      int d = Math.abs(GenomicRegion.mid(region) - features.getPosition());
-
-      if (d < minD) {
-        minF = features;
-        minD = d;
-      }
-    }
-
-    List<T> ret = new UniqueArrayList<T>();
-
-    for (GenomicRegion r : minF) {
-      for (T item : minF.getValues(r)) {
-        ret.add(item);
-      }
-    }
-
-    return ret;
-  }
-
-  /**
-   * Get the closest features distance n from location. For example if n = 0,
-   * return the closest, n = 1, return the second closest, n = 3 the third
-   * closest etc.
-   *
-   * @param region the region
-   * @param n the n
-   * @return the closest features
-   */
-  public List<List<T>> getClosestFeatures(GenomicRegion region, int n) {
-    return getClosestFeatures(region.getChr(),
-        region.getStart(),
-        region.getEnd(),
-        n);
-  }
-
-  /**
-   * Return the nth closest features by bin.
-   *
-   * @param chr the chr
-   * @param start the start
-   * @param end the end
-   * @param n the n
-   * @return the closest features
-   */
-  public List<List<T>> getClosestFeatures(Chromosome chr,
-      int start,
-      int end,
-      int n) {
-    // Make sure everything is sorted before doing anything
-    organize();
-
-    Map<Integer, GappedSearchFeatures<T>> features = mFeatures.get(chr);
-
-    List<Integer> bins = mBins.get(chr);
-
-    int bs = start;
-    int be = end;
-
-    if (mBinSize > 1) {
-      bs /= mBinSize;
-      be /= mBinSize;
-    }
-
-    // The closest indices
-    int is = getStartIndex(bins, bs);
-    int ie = getEndIndex(bins, be);
-
-    // find the index of the features closest to our point
-
-    int minD = Integer.MAX_VALUE;
-    int closestIndex = Integer.MAX_VALUE;
-
-    // System.err.println("is " + is + " " + ie);
-    // System.err.println("huh " + features.keySet());
-
-    for (int i = is; i <= ie; ++i) {
-      int bin = bins.get(i);
-
-      int d = Math.abs(GenomicRegion.mid(start, end) - bin);
-
-      if (d < minD) {
-        closestIndex = i;
-        minD = d;
-      }
-    }
-
-    List<List<T>> ret = new ArrayList<List<T>>(n);
-    Set<T> used = new HashSet<T>();
-
-    int closestBin = addFeatures(closestIndex, features, bins, used, ret);
-
-    // SysUtils.err().println(chr, start, end, closestIndex);
-
-    // int i = 0;
-    int c = 0;
-
-    int s = bins.size() - 1;
-
-    int i1 = Math.min(s, closestIndex + 1);
-    int i2 = Math.max(0, closestIndex - 1);
-
-    int nthClosestIndex = closestIndex;
-
-    while (c <= n) {
-      int b1 = bins.get(i1);
-      int b2 = bins.get(i2);
-
-      // First we keep expanding the indices until we find genes
-      // we haven't used before
-      while (i1 < s) {
-        boolean add = false;
-
-        for (GenomicRegion region : features.get(b1)) {
-          for (T item : features.get(b1).getValues(region)) {
-            if (!used.contains(item)) {
-              add = true;
-              break;
-            }
-          }
-        }
-
-        if (add) {
-          break;
-        }
-
-        i1 = Math.min(s, i1 + 1);
-        b1 = bins.get(i1);
-      }
-
-      while (i2 > 0) {
-        boolean add = false;
-
-        for (GenomicRegion region : features.get(b2)) {
-          for (T item : features.get(b2).getValues(region)) {
-            if (!used.contains(item)) {
-              add = true;
-              break;
-            }
-          }
-        }
-
-        if (add) {
-          break;
-        }
-
-        i2 = Math.max(0, i2 - 1);
-        b2 = bins.get(i2);
-      }
-
-      // Once we have some bins to check, pick the closest on each
-      // iteration.
-
-      int d1 = Math.abs(b1 - closestBin);
-      int d2 = Math.abs(b2 - closestBin);
-
-      if (d1 <= d2) {
-        nthClosestIndex = i1;
-
-        // If the bin to the right of the current is closest then on
-        // the next iteration, we need to check the bin to the left
-        // with the next bin to the right. On the next iteration, the
-        // bin on the left is probably the next closest, but we need
-        // to check with the next closest on the right. We repeat
-        // either incrementing i1 or decrementing i2 to find the
-        // closest features and order them by absolute distance from
-        // the current point.
-        i1 = Math.min(s, i1 + 1);
-      } else {
-        nthClosestIndex = i2;
-        i2 = Math.max(0, i2 - 1);
-      }
-
-      addFeatures(nthClosestIndex, features, bins, used, ret);
-
-      ++c;
-    }
-
-    return ret;
-
-    /*
-     * int nthClosestBin = bins.get(nthClosestIndex);
-     * 
-     * GappedSearchFeatures<T> nthClosestFeatures = features.get(nthClosestBin);
-     * 
-     * List<T> ret = new UniqueArrayList<T>();
-     * 
-     * for (T item : nthClosestFeatures) { ret.add(item); }
-     * 
-     * return ret;
-     */
-
-    //
-    // Look at at the closest items with a smaller start than the current
-    // start.
-    //
-
-    /*
-     * while (c <= n) { int it = closestIndex - i;
-     * 
-     * if (it < 0) { break; }
-     * 
-     * boolean add = true;
-     * 
-     * int bin = bins.get(it);
-     * 
-     * for (T item : features.get(bin)) { if (used.contains(item)) { add =
-     * false; break; } }
-     * 
-     * // Essentially look for the closest unique genes ranked by distance // We
-     * do not want the same gene listed x times because it // occupies multiple
-     * bins if (add) { // Log the absolute position
-     * dMap.put(Math.abs(features.get(bin).getPosition() - closestP), it);
-     * 
-     * for (T item : features.get(bin)) { used.add(item); }
-     * 
-     * ++c; }
-     * 
-     * ++i; }
-     * 
-     * // // Repeat looking at positions greater than the start //
-     * 
-     * i = 0; c = 0;
-     * 
-     * while (c <= n) { //System.err.println("c " + closestIndex + " " + i + " "
-     * + n);
-     * 
-     * int it = closestIndex + i;
-     * 
-     * if (it >= features.size()) { break; }
-     * 
-     * boolean add = true;
-     * 
-     * int bin = bins.get(it);
-     * 
-     * for (T item : features.get(bin)) { if (used.contains(item)) { add =
-     * false; break; } }
-     * 
-     * if (add) { dMap.put(Math.abs(features.get(bin).getPosition() - closestP),
-     * it);
-     * 
-     * for (T item : features.get(bin)) { used.add(item); }
-     * 
-     * ++c; }
-     * 
-     * ++i; }
-     * 
-     * // Sort the distances from the position so we now have an ordering // of
-     * positions from 0 - (n - 1)th closest List<Integer> sortedDistances =
-     * CollectionUtils.sortKeys(dMap);
-     * 
-     * // If n = 0, thats the closest, n = 1, is the second closest etc int
-     * closestIndexN = sortedDistances.get(Mathematics.bound(n, 0, dMap.size() -
-     * 1));
-     * 
-     * int bin = bins.get(closestIndexN);
-     * 
-     * GappedSearchFeatures<T> closestFeaturesN = features.get(bin);
-     * 
-     * List<T> ret = new UniqueArrayList<T>();
-     * 
-     * for (T item : closestFeaturesN) { ret.add(item); }
-     * 
-     * return ret;
-     */
-  }
+  
 
   /**
    * public List<T> getClosestFeatures(GenomicRegion region, int n) { // Make
@@ -711,4 +423,253 @@ public class BinaryGapSearch<T> extends FixedGapSearch<T> {
   public List<Integer> getBins(Chromosome chr) {
     return mBins.get(chr);
   }
+  
+  /**
+   * Return the nth closest features by bin.
+   *
+   * @param chr the chr
+   * @param start the start
+   * @param end the end
+   * @param n the n
+   * @return the closest features
+   */
+  public List<List<T>> getClosestFeatures(Chromosome chr,
+      int start,
+      int end,
+      int n) {
+    // Make sure everything is sorted before doing anything
+    organize();
+
+    Map<Integer, GappedSearchFeatures<T>> features = mFeatures.get(chr);
+
+    List<Integer> bins = mBins.get(chr);
+
+    int bs = start;
+    int be = end;
+
+    if (mBinSize > 1) {
+      bs /= mBinSize;
+      be /= mBinSize;
+    }
+
+    // The closest indices
+    int is = getStartIndex(bins, bs);
+    int ie = getEndIndex(bins, be);
+
+    // find the index of the features closest to our point
+
+    int minD = Integer.MAX_VALUE;
+    int closestIndex = Integer.MAX_VALUE;
+
+    // System.err.println("is " + is + " " + ie);
+    // System.err.println("huh " + features.keySet());
+
+    for (int i = is; i <= ie; ++i) {
+      int bin = bins.get(i);
+
+      int d = Math.abs(GenomicRegion.mid(start, end) - bin);
+
+      if (d < minD) {
+        closestIndex = i;
+        minD = d;
+      }
+    }
+
+    List<List<T>> ret = new ArrayList<List<T>>(n);
+    Set<T> used = new HashSet<T>();
+
+    int closestBin = addFeatures(closestIndex, features, bins, used, ret);
+
+    // SysUtils.err().println(chr, start, end, closestIndex);
+
+    // int i = 0;
+    int c = 0;
+
+    int s = bins.size() - 1;
+
+    int i1 = Math.min(s, closestIndex + 1);
+    int i2 = Math.max(0, closestIndex - 1);
+
+    int nthClosestIndex = closestIndex;
+
+    while (c <= n) {
+      int b1 = bins.get(i1);
+      int b2 = bins.get(i2);
+
+      // First we keep expanding the indices until we find genes
+      // we haven't used before
+      while (i1 < s) {
+        boolean add = false;
+
+        for (GenomicRegion region : features.get(b1)) {
+          for (T item : features.get(b1).getValues(region)) {
+            if (!used.contains(item)) {
+              add = true;
+              break;
+            }
+          }
+        }
+
+        if (add) {
+          break;
+        }
+
+        i1 = Math.min(s, i1 + 1);
+        b1 = bins.get(i1);
+      }
+
+      while (i2 > 0) {
+        boolean add = false;
+
+        for (GenomicRegion region : features.get(b2)) {
+          for (T item : features.get(b2).getValues(region)) {
+            if (!used.contains(item)) {
+              add = true;
+              break;
+            }
+          }
+        }
+
+        if (add) {
+          break;
+        }
+
+        i2 = Math.max(0, i2 - 1);
+        b2 = bins.get(i2);
+      }
+
+      // Once we have some bins to check, pick the closest on each
+      // iteration.
+
+      int d1 = Math.abs(b1 - closestBin);
+      int d2 = Math.abs(b2 - closestBin);
+
+      if (d1 <= d2) {
+        nthClosestIndex = i1;
+
+        // If the bin to the right of the current is closest then on
+        // the next iteration, we need to check the bin to the left
+        // with the next bin to the right. On the next iteration, the
+        // bin on the left is probably the next closest, but we need
+        // to check with the next closest on the right. We repeat
+        // either incrementing i1 or decrementing i2 to find the
+        // closest features and order them by absolute distance from
+        // the current point.
+        i1 = Math.min(s, i1 + 1);
+      } else {
+        nthClosestIndex = i2;
+        i2 = Math.max(0, i2 - 1);
+      }
+
+      addFeatures(nthClosestIndex, features, bins, used, ret);
+
+      ++c;
+    }
+
+    return ret;
+
+    /*
+     * int nthClosestBin = bins.get(nthClosestIndex);
+     * 
+     * GappedSearchFeatures<T> nthClosestFeatures = features.get(nthClosestBin);
+     * 
+     * List<T> ret = new UniqueArrayList<T>();
+     * 
+     * for (T item : nthClosestFeatures) { ret.add(item); }
+     * 
+     * return ret;
+     */
+
+    //
+    // Look at at the closest items with a smaller start than the current
+    // start.
+    //
+
+    /*
+     * while (c <= n) { int it = closestIndex - i;
+     * 
+     * if (it < 0) { break; }
+     * 
+     * boolean add = true;
+     * 
+     * int bin = bins.get(it);
+     * 
+     * for (T item : features.get(bin)) { if (used.contains(item)) { add =
+     * false; break; } }
+     * 
+     * // Essentially look for the closest unique genes ranked by distance // We
+     * do not want the same gene listed x times because it // occupies multiple
+     * bins if (add) { // Log the absolute position
+     * dMap.put(Math.abs(features.get(bin).getPosition() - closestP), it);
+     * 
+     * for (T item : features.get(bin)) { used.add(item); }
+     * 
+     * ++c; }
+     * 
+     * ++i; }
+     * 
+     * // // Repeat looking at positions greater than the start //
+     * 
+     * i = 0; c = 0;
+     * 
+     * while (c <= n) { //System.err.println("c " + closestIndex + " " + i + " "
+     * + n);
+     * 
+     * int it = closestIndex + i;
+     * 
+     * if (it >= features.size()) { break; }
+     * 
+     * boolean add = true;
+     * 
+     * int bin = bins.get(it);
+     * 
+     * for (T item : features.get(bin)) { if (used.contains(item)) { add =
+     * false; break; } }
+     * 
+     * if (add) { dMap.put(Math.abs(features.get(bin).getPosition() - closestP),
+     * it);
+     * 
+     * for (T item : features.get(bin)) { used.add(item); }
+     * 
+     * ++c; }
+     * 
+     * ++i; }
+     * 
+     * // Sort the distances from the position so we now have an ordering // of
+     * positions from 0 - (n - 1)th closest List<Integer> sortedDistances =
+     * CollectionUtils.sortKeys(dMap);
+     * 
+     * // If n = 0, thats the closest, n = 1, is the second closest etc int
+     * closestIndexN = sortedDistances.get(Mathematics.bound(n, 0, dMap.size() -
+     * 1));
+     * 
+     * int bin = bins.get(closestIndexN);
+     * 
+     * GappedSearchFeatures<T> closestFeaturesN = features.get(bin);
+     * 
+     * List<T> ret = new UniqueArrayList<T>();
+     * 
+     * for (T item : closestFeaturesN) { ret.add(item); }
+     * 
+     * return ret;
+     */
+  }
+  
+  /**
+   * Get the closest features distance n from location. For example if n = 0,
+   * return the closest, n = 1, return the second closest, n = 3 the third
+   * closest etc.
+   *
+   * @param region the region
+   * @param n the n
+   * @return the closest features
+   */
+  public List<List<T>> getClosestFeatures(GenomicRegion region, int n) {
+    return getClosestFeatures(region.getChr(),
+        region.getStart(),
+        region.getEnd(),
+        n);
+  }
+
+  
 }

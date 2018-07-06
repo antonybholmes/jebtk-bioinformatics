@@ -125,6 +125,13 @@ public abstract class GapSearch<T> implements Iterable<Chromosome> {
   public abstract List<GappedSearchFeatures<T>> getFeatures(Chromosome chr,
       int start,
       int end);
+  
+  /**
+   * Returns the features closest to the region.
+   * @param region
+   * @return
+   */
+  public abstract List<T> getClosestFeatures(GenomicRegion region);
 
   public SearchResults<T> getOverlappingFeatures(GenomicRegion region,
       int minBp) {

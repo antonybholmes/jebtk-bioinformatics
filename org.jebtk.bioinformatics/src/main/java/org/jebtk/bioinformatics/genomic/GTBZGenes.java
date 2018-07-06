@@ -20,14 +20,14 @@ import org.jebtk.core.io.TokenFunction;
  *
  */
 public class GTBZGenes extends Genes {
-  private GeneParser mParser;
-  private boolean mAutoLoad = true;
+  private GeneParser mParser = new GTB2Parser();
   private Path mFile;
   private Map<String, Chromosome> mGeneMap = new HashMap<String, Chromosome>();
+  private String mGenome;
 
-  public GTBZGenes(Path file, GeneParser parser) {
+  public GTBZGenes(Path file, String genome) {
     mFile = file;
-    mParser = parser;
+    mGenome = genome;
   }
 
   private void geneChrMap() throws IOException {
@@ -60,22 +60,19 @@ public class GTBZGenes extends Genes {
     }
   }
 
-  private void autoLoad() {
-    if (mAutoLoad) {
-      try {
-        mParser.parse(mFile, this);
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
 
-      mAutoLoad = false;
+  private void autoLoad() {
+    try {
+      mParser.parse(mFile, mGenome, this);
+    } catch (IOException e) {
+      e.printStackTrace();
     }
   }
 
   private void autoLoad(Chromosome chr) {
     if (!contains(chr)) {
       try {
-        mParser.parse(mFile, this, chr);
+        mParser.parse(mFile, mGenome, chr, this);
       } catch (IOException e) {
         e.printStackTrace();
       }
@@ -107,37 +104,39 @@ public class GTBZGenes extends Genes {
   }
 
   @Override
-  public Collection<Gene> getGenes(String symbol) {
+  public List<GenomicEntity> getGenes(String symbol) {
     autoLoad(symbol);
 
     return super.getGenes(symbol);
   }
 
   @Override
-  public Collection<Gene> findGenes(GenomicRegion region) {
+  public List<GenomicEntity> findGenes(GenomicRegion region) {
     autoLoad(region.mChr);
 
     return super.findGenes(region);
   }
 
   @Override
-  public Collection<Gene> findClosestGenes(GenomicRegion region) {
+  public List<GenomicEntity> findClosestGenes(GenomicRegion region) {
     autoLoad(region.mChr);
 
     return super.findClosestGenes(region);
   }
 
   @Override
-  public Collection<Gene> findClosestGenesByTss(GenomicRegion region) {
+  public List<GenomicEntity> findClosestGenesByTss(GenomicRegion region) {
     autoLoad(region.mChr);
 
     return super.findClosestGenesByTss(region);
   }
 
+  /*
   @Override
   public Iterable<String> getIds(String type) {
     autoLoad();
 
     return super.getIds(type);
   }
+   */
 }

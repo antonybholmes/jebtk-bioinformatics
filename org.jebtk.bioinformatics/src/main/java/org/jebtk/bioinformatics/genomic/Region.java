@@ -37,6 +37,8 @@ import org.jebtk.core.text.FormattedTxt;
 import org.jebtk.core.text.Splitter;
 import org.jebtk.core.text.TextUtils;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * Describes a region of a genome.
  *
@@ -50,16 +52,19 @@ public class Region implements Comparable<Region>, FormattedTxt {
   /**
    * The member start.
    */
+  @JsonIgnore
   public final int mStart;
 
   /**
    * The member end.
    */
+  @JsonIgnore
   public final int mEnd;
 
   /**
    * The member length.
    */
+  @JsonIgnore
   public final int mLength;
 
   /**
@@ -108,6 +113,7 @@ public class Region implements Comparable<Region>, FormattedTxt {
    *
    * @return the start
    */
+  @JsonIgnore
   public int getStart() {
     return mStart;
   }
@@ -117,6 +123,7 @@ public class Region implements Comparable<Region>, FormattedTxt {
    *
    * @return the end
    */
+  @JsonIgnore
   public int getEnd() {
     return mEnd;
   }
@@ -126,6 +133,7 @@ public class Region implements Comparable<Region>, FormattedTxt {
    *
    * @return the length
    */
+  @JsonIgnore
   public int getLength() {
     return mLength;
   }
@@ -136,6 +144,7 @@ public class Region implements Comparable<Region>, FormattedTxt {
    * @see java.lang.Object#toString()
    */
   @Override
+  @JsonIgnore
   public String toString() {
     return toRange(mStart, mEnd);
   }

@@ -28,9 +28,7 @@
 package org.jebtk.bioinformatics.genomic;
 
 import java.awt.Color;
-import java.nio.file.Path;
 
-import org.jebtk.core.AppService;
 import org.jebtk.core.settings.SettingsService;
 
 /**

@@ -48,12 +48,13 @@ import org.slf4j.LoggerFactory;
 public abstract class GeneParser {
   public static final Logger LOG = LoggerFactory.getLogger(GeneParser.class);
 
-  protected Set<GeneType> mLevels = new HashSet<GeneType>();
+  protected Set<GenomicType> mLevels = new HashSet<GenomicType>();
 
   /** Whether to add exons to gene structure */
   protected boolean mKeepExons = true;
   protected Set<String> mMatchTags = new HashSet<String>();
   protected Set<String> mExcludeTags = new HashSet<String>();
+  protected Set<String> mExcludeIds = new HashSet<String>();
 
   public GeneParser() {
     // setLevels(GeneType.GENE);
@@ -78,6 +79,18 @@ public abstract class GeneParser {
     mKeepExons = keep;
   }
 
+  public GeneParser excludeIds(String id, String... ids) {
+    GeneParser parser = create(this);
+
+    parser.mExcludeIds.add(id);
+
+    for (String i : ids) {
+      parser.mExcludeIds.add(i);
+    }
+
+    return parser;
+  }
+  
   /**
    * Exclude entries matching given tags.
    * 
@@ -117,7 +130,7 @@ public abstract class GeneParser {
     return parser;
   }
 
-  public GeneParser setLevels(GeneType level, GeneType... levels) {
+  public GeneParser setLevels(GenomicType level, GenomicType... levels) {
     GeneParser parser = create(this);
 
     parser._setLevels(level, levels);
@@ -125,16 +138,16 @@ public abstract class GeneParser {
     return parser;
   }
 
-  protected void _setLevels(GeneType level, GeneType... levels) {
+  protected void _setLevels(GenomicType level, GenomicType... levels) {
     mLevels.clear();
     mLevels.add(level);
 
-    for (GeneType l : levels) {
+    for (GenomicType l : levels) {
       mLevels.add(l);
     }
   }
 
-  public GeneParser setLevels(Collection<GeneType> levels) {
+  public GeneParser setLevels(Collection<GenomicType> levels) {
     GeneParser parser = create(this);
 
     parser._setLevels(levels);
@@ -142,13 +155,13 @@ public abstract class GeneParser {
     return parser;
   }
 
-  protected void _setLevels(Collection<GeneType> levels) {
+  protected void _setLevels(Collection<GenomicType> levels) {
     mLevels.clear();
 
     _addLevels(levels);
   }
 
-  public GeneParser addLevels(Collection<GeneType> levels) {
+  public GeneParser addLevels(Collection<GenomicType> levels) {
     GeneParser parser = create(this);
 
     parser._addLevels(levels);
@@ -156,79 +169,35 @@ public abstract class GeneParser {
     return parser;
   }
 
-  protected void _addLevels(Collection<GeneType> levels) {
+  protected void _addLevels(Collection<GenomicType> levels) {
     mLevels.addAll(levels);
   }
 
   public abstract GeneParser create(GeneParser parser);
 
-  /**
-   * Parses the gene table.
-   *
-   * @param file the file
-   * @return the genes
-   * @throws IOException Signals that an I/O exception has occurred.
-   */
-  public Genes parse(Path file) throws IOException {
+
+  public Genes parse(Path file, final String genome) throws IOException {
     Genes genes = new Genes();
 
-    parse(file, genes);
+    parse(file, genome, genes);
 
     return genes;
   }
 
-  public void parse(Path file, Genes genes) throws IOException {
-    BufferedReader reader = FileUtils.newBufferedReader(file);
-
-    try {
-      parse(file, reader, genes);
-    } finally {
-      reader.close();
-    }
-  }
-
-  /**
-   * Parses the gene table.
-   *
-   * @param reader the reader
-   * @return the genes
-   * @throws IOException Signals that an I/O exception has occurred.
-   */
-  protected Genes parse(Path file, BufferedReader reader) throws IOException {
-    Genes genes = new Genes();
-
-    parse(file, reader, genes);
-
-    return genes;
-  }
-
-  protected void parse(Path file, BufferedReader reader, Genes genes)
-      throws IOException {
-    // Do nothin
-  }
-
-  public Genes parse(Path file, Chromosome chr) throws IOException {
-    Genes genes = new Genes();
-
-    parse(file, genes, chr);
-
-    return genes;
-  }
-
-  protected Genes parse(Path file, BufferedReader reader, Chromosome chr)
+  protected Genes parse(Path file, BufferedReader reader, final String genome)
       throws IOException {
     Genes genes = new Genes();
 
-    parse(file, reader, genes, chr);
+    parse(file, reader, genome, genes);
 
     return genes;
   }
 
-  public void parse(Path file, Genes genes, Chromosome chr) throws IOException {
+  public void parse(Path file, final String genome, Genes genes) throws IOException {
     BufferedReader reader = FileUtils.newBufferedReader(file);
 
     try {
-      parse(file, reader, genes, chr);
+      parse(file, reader, genome, genes);
     } finally {
       reader.close();
     }
@@ -236,36 +205,45 @@ public abstract class GeneParser {
 
   protected void parse(Path file,
       BufferedReader reader,
-      Genes genes,
-      Chromosome chr) throws IOException {
-    parse(file, reader, genes);
+      final String genome,
+      Genes genes) throws IOException {
+    // Do nothing
+  }
+  
+  public void parse(Path file, String genome, Chromosome chr, Genes genes) throws IOException {
+    parse(file, genome, genes);
   }
 
-  public Genes parse(Path file, Chromosome chr, int window) throws IOException {
+  public Genes parse(Path file, 
+      final String genome,
+      int window) throws IOException {
     Genes genes = new Genes();
 
-    parse(file, genes, chr, window);
+    parse(file, genes, genome, window);
 
     return genes;
   }
 
   protected Genes parse(Path file,
       BufferedReader reader,
-      Chromosome chr,
+      final String genome,
       int window) throws IOException {
     Genes genes = new Genes();
 
-    parse(file, reader, genes, chr, window);
+    parse(file, reader, genes, genome, window);
 
     return genes;
   }
 
-  public void parse(Path file, Genes genes, Chromosome chr, int window)
+  public void parse(Path file, 
+      Genes genes, 
+      final String genome,
+      int window)
       throws IOException {
     BufferedReader reader = FileUtils.newBufferedReader(file);
 
     try {
-      parse(file, reader, genes, chr, window);
+      parse(file, reader, genes, genome, window);
     } finally {
       reader.close();
     }
@@ -274,9 +252,9 @@ public abstract class GeneParser {
   protected void parse(Path file,
       BufferedReader reader,
       Genes genes,
-      Chromosome chr,
+      final String genome,
       int window) throws IOException {
-    parse(file, reader, genes, chr);
+    parse(file, reader, genome, genes);
   }
 
   public Map<String, Set<String>> idMap(Path file, String id1, String id2)
@@ -306,7 +284,7 @@ public abstract class GeneParser {
       String id1,
       String id2) throws IOException;
 
-  public boolean containsLevel(GeneType level) {
+  public boolean containsLevel(GenomicType level) {
     if (mLevels.size() == 0) {
       return true;
     }
@@ -314,11 +292,11 @@ public abstract class GeneParser {
     return mLevels.contains(level);
   }
 
-  public static Gene addAttributes(GeneType type,
+  public static GenomicEntity addAttributes(GenomicType type,
       final GenomicRegion region,
       final IterMap<String, String> attributeMap) {
 
-    Gene gene = Gene.create(type, region);
+    GenomicEntity gene = new GenomicEntity(type, region);
 
     // Add the ids
     for (String id : attributeMap) {

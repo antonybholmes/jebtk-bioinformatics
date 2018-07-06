@@ -58,7 +58,7 @@ public abstract class GTBParser extends GeneParser {
     if (attributeMap.containsKey("gene_name")) {
       attributeMap.put("symbol", attributeMap.get("gene_name"));
     }
-
+    
     return attributeMap;
   }
 }

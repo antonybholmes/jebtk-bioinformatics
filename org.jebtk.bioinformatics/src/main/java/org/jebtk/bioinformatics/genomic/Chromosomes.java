@@ -318,7 +318,7 @@ public class Chromosomes extends GenomeDirs implements Iterable<Chromosome> {
   }
 
   private static final String formatKey(String chr) {
-    return Chromosome.getShortName(chr).toUpperCase();
+    return Chromosome.getShortName(chr); //.toUpperCase();
   }
 
 }
