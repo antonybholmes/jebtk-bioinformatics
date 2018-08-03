@@ -127,6 +127,7 @@ public class GeneConversion<T extends Comparable<? super T>>
    * 
    * @see java.lang.Object#equals(java.lang.Object)
    */
+  @SuppressWarnings("unchecked")
   @Override
   public boolean equals(Object o) {
     if (!(o instanceof GeneConversion)) {

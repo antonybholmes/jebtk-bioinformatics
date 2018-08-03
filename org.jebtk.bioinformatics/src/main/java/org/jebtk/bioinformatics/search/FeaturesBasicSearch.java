@@ -111,7 +111,7 @@ public class FeaturesBasicSearch extends AbstractFeaturesSearch {
 
           // System.err.println(line + " chr:" + feature.getChromosome());
 
-          allLocations.get(feature.getChromosome().getId()).add(feature);
+          allLocations.get(feature.getChr().getId()).add(feature);
           featureByName.put(feature.getName(), feature);
 
           ++size;

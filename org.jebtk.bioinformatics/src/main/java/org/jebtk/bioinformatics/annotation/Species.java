@@ -15,6 +15,8 @@
  */
 package org.jebtk.bioinformatics.annotation;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+
 /**
  * The Class Species.
  */
@@ -70,6 +72,7 @@ public class Species extends Type {
    *
    * @return the scientific name
    */
+  @JsonGetter("sn")
   public String getScientificName() {
     return mScientificName;
   }

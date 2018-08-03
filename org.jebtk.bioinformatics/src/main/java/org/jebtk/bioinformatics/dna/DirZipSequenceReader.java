@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jebtk.bioinformatics.genomic.Genome;
-import org.jebtk.bioinformatics.genomic.GenomesSequenceReader;
+import org.jebtk.bioinformatics.genomic.GenomeSequenceReader;
 import org.jebtk.bioinformatics.genomic.SequenceReader;
 import org.jebtk.core.io.FileUtils;
 import org.jebtk.core.io.PathUtils;
@@ -47,7 +47,7 @@ import org.jebtk.core.io.PathUtils;
  * @author Antony Holmes Holmes
  *
  */
-public class DirZipSequenceReader extends GenomesSequenceReader {
+public class DirZipSequenceReader extends GenomeSequenceReader {
 
   public DirZipSequenceReader() {
     this(Genome.GENOME_HOME, Genome.GENOME_DIR);

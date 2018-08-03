@@ -80,8 +80,8 @@ public class GctMatrix extends DataFrame {
    *
    * @param names the new description names
    */
-  public void setDescriptionNames(List<String> names) {
-    setTextRowAnnotations(DESCRIPTION_COLUMN, names);
+  public void setDescriptionNames(String[] names) {
+    setRowAnnotations(DESCRIPTION_COLUMN, names);
   }
 
   /**

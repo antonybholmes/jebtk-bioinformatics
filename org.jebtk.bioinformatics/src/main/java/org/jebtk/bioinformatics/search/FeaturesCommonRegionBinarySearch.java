@@ -205,8 +205,8 @@ public class FeaturesCommonRegionBinarySearch extends AbstractFeaturesSearch {
             // - 1).getStart());
 
             // add the feature to each of the bins it belongs to
-            mFeaturesAtLocationByIndex.get(feature.getChromosome().getId())
-                .get(b).add(feature);
+            mFeaturesAtLocationByIndex.get(feature.getChr().getId()).get(b)
+                .add(feature);
 
             ++size;
           }
@@ -484,9 +484,8 @@ public class FeaturesCommonRegionBinarySearch extends AbstractFeaturesSearch {
    * @return the features file
    */
   public static final File getFeaturesFile(String group, String name) {
-    return new File(
-        SettingsService.getInstance().getString(group + "." + name)
-            + BIN_FEATURE_FILE_ENDING);
+    return new File(SettingsService.getInstance().getString(group + "." + name)
+        + BIN_FEATURE_FILE_ENDING);
   }
 
   /**
@@ -497,9 +496,8 @@ public class FeaturesCommonRegionBinarySearch extends AbstractFeaturesSearch {
    * @return the locations file
    */
   public static final File getLocationsFile(String group, String name) {
-    return new File(
-        SettingsService.getInstance().getString(group + "." + name)
-            + BIN_LOCATION_FILE_ENDING);
+    return new File(SettingsService.getInstance().getString(group + "." + name)
+        + BIN_LOCATION_FILE_ENDING);
   }
 
   /**

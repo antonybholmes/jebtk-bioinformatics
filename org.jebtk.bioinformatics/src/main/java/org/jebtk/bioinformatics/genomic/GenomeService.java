@@ -30,6 +30,7 @@ package org.jebtk.bioinformatics.genomic;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Iterator;
+import java.util.Map.Entry;
 
 import org.jebtk.core.collections.IterMap;
 import org.jebtk.core.collections.IterTreeMap;
@@ -44,7 +45,8 @@ import org.slf4j.LoggerFactory;
  * @author Antony Holmes Holmes
  *
  */
-public class GenomeService extends GenomeDirs implements Iterable<String> {
+public class GenomeService extends GenomeDirs
+    implements Iterable<Entry<String, Genome>> {
   /**
    * The Class ChromosomesLoader.
    */
@@ -68,6 +70,10 @@ public class GenomeService extends GenomeDirs implements Iterable<String> {
 
   // private static final String EXT2 = "genome.txt.gz";
 
+  // private IterMap<String, IterMap<String, Genome>> mGenomeMap =
+  // DefaultTreeMap
+  // .create(new TreeMapCreator<String, Genome>());
+
   private IterMap<String, Genome> mGenomeMap = new IterTreeMap<String, Genome>();
 
   private GenomeGuess mGenomeGuess = new GenomeGuess();
@@ -82,7 +88,7 @@ public class GenomeService extends GenomeDirs implements Iterable<String> {
 
     this(Genome.GENOME_HOME, Genome.GENOME_DIR);
   }
-  
+
   public GenomeService(Path dir, Path... dirs) {
     super(dir, dirs);
   }
@@ -117,13 +123,15 @@ public class GenomeService extends GenomeDirs implements Iterable<String> {
       for (Path dir : mDirs) {
         if (FileUtils.isDirectory(dir)) {
           LOG.info("Checking {} for genome info.", dir);
-          
-          for (Path subDir : FileUtils.lsdir(dir)) {
-            if (FileUtils.isDirectory(subDir)) {
-              String genome = PathUtils.getName(subDir);
+
+          // String db = PathUtils.getName(dir);
+
+          for (Path genoneSubDir : FileUtils.lsdir(dir)) {
+            if (FileUtils.isDirectory(genoneSubDir)) {
+              String genome = PathUtils.getName(genoneSubDir);
 
               if (!mGenomeMap.containsKey(genome)) {
-                LOG.info("Discovered genome {} in {}.", genome, subDir);
+                LOG.info("Discovered genome {} in {}.", genome, genoneSubDir);
 
                 mGenomeMap.put(genome, new Genome(genome, dir));
               }
@@ -174,12 +182,8 @@ public class GenomeService extends GenomeDirs implements Iterable<String> {
     return chr(Genome.HG19, chr);
   }
 
-  public Chromosome guessChr(String genome, String chr) {
-    return chr(guessGenome(genome), chr);
-  }
-
   public Chromosome guessChr(Path file, String chr) {
-    return guessChr(PathUtils.getName(file), chr);
+    return chr(guessGenome(file), chr);
   }
 
   /**
@@ -204,7 +208,7 @@ public class GenomeService extends GenomeDirs implements Iterable<String> {
   }
 
   @Override
-  public Iterator<String> iterator() {
+  public Iterator<Entry<String, Genome>> iterator() {
     return mGenomeMap.iterator();
   }
 

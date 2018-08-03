@@ -67,7 +67,7 @@ public class BinMap<T> implements IterMap<Integer, T> {
 
   private Object[] mData;
 
-  private class BinMapIter implements Iterator<Integer> {
+  private class BinMapIter implements Iterator<Entry<Integer, T>> {
 
     private int mC = 0;
 
@@ -77,8 +77,12 @@ public class BinMap<T> implements IterMap<Integer, T> {
     }
 
     @Override
-    public Integer next() {
-      return mC++;
+    public Entry<Integer, T> next() {
+      Entry<Integer, T> e = new org.jebtk.core.collections.Entry<Integer, T>(mC,
+          (T) mData[mC]);
+      ++mC;
+
+      return e;
     }
 
     @Override
@@ -213,12 +217,12 @@ public class BinMap<T> implements IterMap<Integer, T> {
   }
 
   @Override
-  public Iterator<Integer> iterator() {
+  public Iterator<Entry<Integer, T>> iterator() {
     return new BinMapIter();
   }
 
   @Override
-  public Integer first() {
+  public Entry<Integer, T> first() {
     return iterator().next();
   }
 }

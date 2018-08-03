@@ -32,6 +32,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.jebtk.bioinformatics.genomic.Chromosome;
 import org.jebtk.bioinformatics.genomic.GenomicRegion;
@@ -169,14 +170,24 @@ public class FixedGapSearch<T> extends GapSearch<T> {
   public List<T> getFeatures() {
     List<T> ret = new UniqueArrayList<T>();
 
-    for (Chromosome chr : mFeatures) {
-      for (int start : mFeatures.get(chr)) {
-        for (GenomicRegion region : mFeatures.get(chr).get(start)) {
-          for (T item : mFeatures.get(chr).get(start).getValues(region)) {
+    for (Entry<Chromosome, IterMap<Integer, GappedSearchFeatures<T>>> f : mFeatures) {
+      IterMap<Integer, GappedSearchFeatures<T>> starts = f.getValue();
+
+      for (Entry<Integer, GappedSearchFeatures<T>> e : starts) {
+        GappedSearchFeatures<T> r = e.getValue();
+
+        for (GenomicRegion region : r) {
+          for (T item : r.getValues(region)) {
             ret.add(item);
           }
         }
       }
+
+      /*
+       * for (int start : mFeatures.get(chr)) { for (GenomicRegion region :
+       * mFeatures.get(chr).get(start)) { for (T item :
+       * mFeatures.get(chr).get(start).getValues(region)) { ret.add(item); } } }
+       */
     }
 
     return ret;
@@ -193,9 +204,9 @@ public class FixedGapSearch<T> extends GapSearch<T> {
   public List<T> getFeatures(Chromosome chr) {
     List<T> ret = new UniqueArrayList<T>();
 
-    for (int start : mFeatures.get(chr)) {
-      for (GenomicRegion region : mFeatures.get(chr).get(start)) {
-        for (T item : mFeatures.get(chr).get(start).getValues(region)) {
+    for (Entry<Integer, GappedSearchFeatures<T>> f : mFeatures.get(chr)) {
+      for (GenomicRegion region : f.getValue()) {
+        for (T item : f.getValue().getValues(region)) {
           ret.add(item);
         }
       }
@@ -258,7 +269,7 @@ public class FixedGapSearch<T> extends GapSearch<T> {
    */
   @Override
   public Iterator<Chromosome> iterator() {
-    return mFeatures.iterator();
+    return mFeatures.keySet().iterator();
   }
 
   /**
@@ -267,17 +278,28 @@ public class FixedGapSearch<T> extends GapSearch<T> {
    * @param gappedSearch the gapped search
    */
   public void add(FixedGapSearch<T> gappedSearch) {
-    for (Chromosome chr : gappedSearch.mFeatures) {
-      for (int bin : gappedSearch.mFeatures.get(chr)) {
-        for (GenomicRegion region : gappedSearch.mFeatures.get(chr).get(bin)) {
-          for (T item : mFeatures.get(chr).get(bin).getValues(region)) {
+    for (Entry<Chromosome, IterMap<Integer, GappedSearchFeatures<T>>> f1 : gappedSearch.mFeatures) {
+      for (Entry<Integer, GappedSearchFeatures<T>> f2 : f1.getValue()) {
+        GappedSearchFeatures<T> search = f2.getValue();
+
+        for (GenomicRegion region : search) {
+          for (T item : search.getValues(region)) {
             add(region, item);
           }
         }
       }
+
+      /*
+       * for (int bin : gappedSearch.mFeatures.get(chr)) {
+       * 
+       * 
+       * for (GenomicRegion region : gappedSearch.mFeatures.get(chr).get(bin)) {
+       * for (T item : mFeatures.get(chr).get(bin).getValues(region)) {
+       * add(region, item); } } }
+       */
     }
   }
-  
+
   /**
    * Return the closest set of features to the mid-point of a region.
    *
@@ -290,7 +312,7 @@ public class FixedGapSearch<T> extends GapSearch<T> {
       return Collections.emptyList();
     }
 
-    //organize();
+    // organize();
 
     List<GappedSearchFeatures<T>> allFeatures = getFeatures(region);
 
@@ -303,7 +325,7 @@ public class FixedGapSearch<T> extends GapSearch<T> {
     GappedSearchFeatures<T> minF = null;
 
     int mid = GenomicRegion.mid(region);
-    
+
     for (GappedSearchFeatures<T> features : allFeatures) {
       int d = Math.abs(mid - features.getPosition());
 
@@ -323,6 +345,4 @@ public class FixedGapSearch<T> extends GapSearch<T> {
 
     return ret;
   }
-
-  
 }

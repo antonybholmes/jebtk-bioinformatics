@@ -33,6 +33,7 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.jebtk.core.collections.IterMap;
@@ -90,7 +91,7 @@ public abstract class GeneParser {
 
     return parser;
   }
-  
+
   /**
    * Exclude entries matching given tags.
    * 
@@ -175,29 +176,34 @@ public abstract class GeneParser {
 
   public abstract GeneParser create(GeneParser parser);
 
-
-  public Genes parse(Path file, final String genome) throws IOException {
-    Genes genes = new Genes();
-
-    parse(file, genome, genes);
-
-    return genes;
-  }
-
-  protected Genes parse(Path file, BufferedReader reader, final String genome)
+  public Genes parse(Path file, final String db, final String genome)
       throws IOException {
-    Genes genes = new Genes();
+    Genes genes = new FixedGapGenes(db, genome);
 
-    parse(file, reader, genome, genes);
+    parse(file, db, genome, genes);
 
     return genes;
   }
 
-  public void parse(Path file, final String genome, Genes genes) throws IOException {
+  protected Genes parse(Path file,
+      final String db,
+      BufferedReader reader,
+      final String genome) throws IOException {
+    Genes genes = new FixedGapGenes(db, genome);
+
+    parse(file, reader, db, genome, genes);
+
+    return genes;
+  }
+
+  public void parse(Path file,
+      final String db,
+      final String genome,
+      Genes genes) throws IOException {
     BufferedReader reader = FileUtils.newBufferedReader(file);
 
     try {
-      parse(file, reader, genome, genes);
+      parse(file, reader, db, genome, genes);
     } finally {
       reader.close();
     }
@@ -205,45 +211,52 @@ public abstract class GeneParser {
 
   protected void parse(Path file,
       BufferedReader reader,
+      String db,
       final String genome,
       Genes genes) throws IOException {
     // Do nothing
   }
-  
-  public void parse(Path file, String genome, Chromosome chr, Genes genes) throws IOException {
-    parse(file, genome, genes);
+
+  public void parse(Path file,
+      final String db,
+      String genome,
+      Chromosome chr,
+      Genes genes) throws IOException {
+    parse(file, db, genome, genes);
   }
 
-  public Genes parse(Path file, 
+  public Genes parse(Path file,
+      final String db,
       final String genome,
       int window) throws IOException {
-    Genes genes = new Genes();
+    Genes genes = new FixedGapGenes(db, genome);
 
-    parse(file, genes, genome, window);
+    parse(file, genes, db, genome, window);
 
     return genes;
   }
 
   protected Genes parse(Path file,
       BufferedReader reader,
+      final String db,
       final String genome,
       int window) throws IOException {
-    Genes genes = new Genes();
+    Genes genes = new FixedGapGenes(db, genome);
 
-    parse(file, reader, genes, genome, window);
+    parse(file, reader, genes, db, genome, window);
 
     return genes;
   }
 
-  public void parse(Path file, 
-      Genes genes, 
+  public void parse(Path file,
+      Genes genes,
+      final String db,
       final String genome,
-      int window)
-      throws IOException {
+      int window) throws IOException {
     BufferedReader reader = FileUtils.newBufferedReader(file);
 
     try {
-      parse(file, reader, genes, genome, window);
+      parse(file, reader, genes, db, genome, window);
     } finally {
       reader.close();
     }
@@ -252,9 +265,10 @@ public abstract class GeneParser {
   protected void parse(Path file,
       BufferedReader reader,
       Genes genes,
+      final String db,
       final String genome,
       int window) throws IOException {
-    parse(file, reader, genome, genes);
+    parse(file, reader, db, genome, genes);
   }
 
   public Map<String, Set<String>> idMap(Path file, String id1, String id2)
@@ -299,10 +313,8 @@ public abstract class GeneParser {
     GenomicEntity gene = new GenomicEntity(type, region);
 
     // Add the ids
-    for (String id : attributeMap) {
-      String name = attributeMap.get(id);
-
-      gene.setId(id, name);
+    for (Entry<String, String> f : attributeMap) {
+      gene.setId(f.getKey(), f.getValue());
     }
 
     // If there are any tags

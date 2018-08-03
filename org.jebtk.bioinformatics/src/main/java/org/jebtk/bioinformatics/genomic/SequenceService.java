@@ -28,50 +28,55 @@
 package org.jebtk.bioinformatics.genomic;
 
 import java.awt.Color;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map.Entry;
 
 import org.jebtk.core.collections.DefaultHashMap;
 import org.jebtk.core.collections.EntryCreator;
 import org.jebtk.core.collections.IterMap;
+import org.jebtk.core.collections.IterTreeMap;
+import org.jebtk.core.collections.UniqueArrayList;
 import org.jebtk.core.event.ChangeEvent;
+import org.jebtk.core.event.ChangeEventProducer;
 import org.jebtk.core.event.ChangeListener;
 import org.jebtk.core.event.ChangeListeners;
 import org.jebtk.core.settings.SettingsService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
- * Server for genome feature annotations.
+ * Service for extracting DNA/RNA from sequences.
  *
  * @author Antony Holmes Holmes
- *
  */
-public class DnaService extends ChangeListeners {
-
-  /** The Constant serialVersionUID. */
-  private static final long serialVersionUID = 1L;
+public class SequenceService extends SequenceReader
+    implements Iterable<Entry<String, SequenceReader>>, ChangeEventProducer {
 
   /**
-   * The Class DnaServiceLoader.
+   * The Class GenomeAssemblyServiceLoader.
    */
-  private static class DnaServiceLoader {
+  private static class GenomeAssemblyServiceLoader {
 
     /** The Constant INSTANCE. */
-    private static final DnaService INSTANCE = new DnaService();
+    private static final SequenceService INSTANCE = new SequenceService();
   }
 
   /**
-   * Gets the single instance of SettingsService.
+   * Gets the single instance of GenomeAssemblyService.
    *
-   * @return single instance of SettingsService
+   * @return single instance of GenomeAssemblyService
    */
-  public static DnaService getInstance() {
-    return DnaServiceLoader.INSTANCE;
+  public static SequenceService getInstance() {
+    return GenomeAssemblyServiceLoader.INSTANCE;
   }
 
-  /**
-   * The constant LOG.
-   */
-  private static final Logger LOG = LoggerFactory.getLogger(DnaService.class);
+  private List<SequenceReader> mReaders = new UniqueArrayList<SequenceReader>();
+
+  private IterMap<String, SequenceReader> mGenomeMap = new IterTreeMap<String, SequenceReader>();
+
+  private ChangeListeners mListeners = new ChangeListeners();
+
+  private boolean mAutoLoad = true;
 
   private IterMap<Character, Color> mColorMap = DefaultHashMap
       .create(SettingsService.getInstance()
@@ -86,10 +91,12 @@ public class DnaService extends ChangeListeners {
         }
       });
 
+  private SequenceReader mCurrent;
+
   /**
    * Instantiates a new cytobands.
    */
-  private DnaService() {
+  private SequenceService() {
     updateColors();
   }
 
@@ -293,4 +300,115 @@ public class DnaService extends ChangeListeners {
   public void addChangeListener(char base, ChangeListener l) {
     mListenerMap.get(base).addChangeListener(l);
   }
+
+  public void add(SequenceReader reader) {
+    mReaders.add(reader);
+
+    mCurrent = reader;
+  }
+
+  /**
+   * Indicate that the genome references have changed so it they may need to be
+   * cached again.
+   */
+  private void autoLoad() {
+    if (mAutoLoad) {
+      // One assembly object can load multiple genomes potentially.
+      for (SequenceReader reader : mReaders) {
+        try {
+          for (String genome : reader.getGenomes()) {
+            mGenomeMap.put(genome, reader);
+          }
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
+
+      mAutoLoad = false;
+    }
+  }
+
+  /**
+   * Return the latest reader added.
+   * 
+   * @return
+   */
+  public SequenceReader getCurrent() {
+    return mCurrent;
+  }
+
+  public SequenceReader get(String genome) {
+    autoLoad();
+
+    return mGenomeMap.get(genome);
+  }
+
+  @Override
+  public String getName() {
+    return "sequence-reader-service";
+  }
+
+  @Override
+  public Iterator<Entry<String, SequenceReader>> iterator() {
+    autoLoad();
+
+    return mGenomeMap.iterator();
+  }
+
+  public void cache() {
+    mAutoLoad = true;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.jebtk.bioinformatics.genome.GenomeAssembly#getSequence(java.lang.
+   * String, org.jebtk.bioinformatics.genome.GenomicRegion, boolean,
+   * org.jebtk.bioinformatics.genome.RepeatMaskType)
+   */
+  @Override
+  public SequenceRegion getSequence(GenomicRegion region,
+      boolean displayUpper,
+      RepeatMaskType repeatMaskType) {
+
+    String genome = region.getGenome();
+
+    // Iterate over all assemblies until one works.
+
+    SequenceReader a = get(genome);
+
+    if (a == null) {
+      return null;
+    }
+
+    SequenceRegion ret = null;
+
+    try {
+      ret = a.getSequence(region, displayUpper, repeatMaskType);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    return ret;
+  }
+
+  @Override
+  public void addChangeListener(ChangeListener l) {
+    mListeners.addChangeListener(l);
+  }
+
+  @Override
+  public void removeChangeListener(ChangeListener l) {
+    mListeners.removeChangeListener(l);
+  }
+
+  private void fireChanged() {
+    fireChanged(new ChangeEvent(this));
+  }
+
+  @Override
+  public void fireChanged(ChangeEvent e) {
+    mListeners.fireChanged(e);
+  }
+
 }

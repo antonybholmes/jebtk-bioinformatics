@@ -17,13 +17,15 @@ package org.jebtk.bioinformatics.annotation;
 
 import org.jebtk.core.IdProperty;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+
 /**
  * The Class Entity.
  */
-public class Entity implements IdProperty {
+public class Entity implements IdProperty, Comparable<Entity> {
 
   /** The m id. */
-  protected int mId;
+  protected final int mId;
 
   /**
    * Instantiates a new entity.
@@ -40,8 +42,20 @@ public class Entity implements IdProperty {
    * @see org.abh.common.IdProperty#getId()
    */
   @Override
+  @JsonGetter("id")
   public int getId() {
     return mId;
+  }
+
+  @Override
+  public int compareTo(Entity t) {
+    if (mId > t.mId) {
+      return 1;
+    } else if (mId < t.mId) {
+      return -1;
+    } else {
+      return 0;
+    }
   }
 
   /*
@@ -52,7 +66,7 @@ public class Entity implements IdProperty {
   @Override
   public boolean equals(Object o) {
     if (o instanceof Entity) {
-      return mId == ((Entity) o).mId;
+      return compareTo((Entity) o) == 0;
     } else {
       return false;
     }

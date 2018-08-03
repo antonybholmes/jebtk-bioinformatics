@@ -161,22 +161,4 @@ public class AlignmentAssemblyFile2Bit extends ConservationAssembly {
 
     return FileSequenceReader.getBytes(file, sb, eb);
   }
-
-  /**
-   * The main method.
-   *
-   * @param args the arguments
-   * @throws IOException Signals that an I/O exception has occurred.
-   * @throws ParseException the parse exception
-   */
-  public static void main(String[] args) throws IOException, ParseException {
-    AlignmentAssemblyFile2Bit a = new AlignmentAssemblyFile2Bit(
-        PathUtils.getPath(
-            "/ifs/scratch/cancer/Lab_RDF/abh2138/references/ucsc/alignment/human_mouse_hg19_mm10"));
-
-    // System.err.println(a.getScores("chr1:11680-11871"));
-
-    System.err.println(a.getScores("mm10", "chr10:87575-87801") + " "
-        + Statistics.pNonZero(a.getScores("mm10", "chr10:87575-87801")));
-  }
 }

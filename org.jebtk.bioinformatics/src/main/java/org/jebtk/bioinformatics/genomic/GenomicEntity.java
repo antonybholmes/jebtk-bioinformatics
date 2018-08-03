@@ -34,6 +34,9 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.jebtk.core.NameProperty;
+import org.jebtk.core.collections.ArrayListCreator;
+import org.jebtk.core.collections.DefaultHashMap;
 import org.jebtk.core.collections.DefaultTreeMap;
 import org.jebtk.core.collections.IterMap;
 import org.jebtk.core.collections.UniqueArrayListCreator;
@@ -43,35 +46,46 @@ import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+// TODO: Auto-generated Javadoc
 /**
- * Represents a genomic entity such as a gene or exon. An entity is a
- * genomic region with a collection of annotations and sub entities to
- * describe a genomic feature such as a gene, transcript or exon. It is
- * designed for use with different annotation databases such as Refseq and
- * Ensembl where different ids and nomenclature are used.
+ * Represents a genomic entity such as a gene or exon. An entity is a genomic
+ * region with a collection of annotations and sub entities to describe a
+ * genomic feature such as a gene, transcript or exon. It is designed for use
+ * with different annotation databases such as Refseq and Ensembl where
+ * different ids and nomenclature are used.
  */
-@JsonPropertyOrder({"l", "ids"})
-public class GenomicEntity extends GenomicRegion {
+@JsonPropertyOrder({ "loc", "strand", "type", "ids", "tags" })
+public class GenomicEntity extends GenomicRegion implements NameProperty {
   /** The Constant SYMBOL_TYPE. */
-  public static final String SYMBOL_TYPE = "symbol";
+  //public static final String SYMBOL_TYPE = "symbol";
+  
+  public static final String GENE_ID_TYPE = "gene_id";
+  
+  /** The Constant GENE_NAME_TYPE. */
+  public static final String GENE_NAME_TYPE = "gene_name";
 
   /** The Constant REFSEQ_TYPE. */
   public static final String REFSEQ_TYPE = "refseq";
 
   /** The Constant ENTREZ_TYPE. */
-  public static final String ENTREZ_TYPE = "entrez";
+  public static final String ENTREZ_ID_TYPE = "entrez";
 
+  /** The Constant TRANSCRIPT_ID_TYPE. */
   public static final String TRANSCRIPT_ID_TYPE = "transcript_id";
 
+  /** The Constant ENSEMBL_TYPE. */
   public static final String ENSEMBL_TYPE = "ensembl";
 
   /** The m id map. */
-  protected IterMap<String, String> mIdMap = DefaultTreeMap.create(TextUtils.NA); // new
+  protected IterMap<String, String> mIdMap = DefaultTreeMap
+      .create(TextUtils.NA); // new
   // IterTreeMap<String,
   // String>();
 
+  /** The m tags. */
   private Set<String> mTags = new TreeSet<String>();
 
+  /** The m elem map. */
   private IterMap<GenomicType, List<GenomicEntity>> mElemMap = DefaultTreeMap
       .create(new UniqueArrayListCreator<GenomicEntity>());
 
@@ -81,76 +95,127 @@ public class GenomicEntity extends GenomicRegion {
   /** The m text. */
   private String mText;
 
+  /** The m parent. */
   private GenomicEntity mParent = null;
 
+  /** The m type. */
   @JsonIgnore
   public final GenomicType mType;
 
-  public GenomicEntity(GenomicType type, GenomicRegion region) {
-    super(region);
+  /**
+   * Instantiates a new genomic entity.
+   *
+   * @param type the type
+   * @param l the l
+   */
+  public GenomicEntity(GenomicType type, GenomicRegion l) {
+    super(l);
 
     mType = type;
   }
 
-  @JsonIgnore
+  /**
+   * Instantiates a new genomic entity.
+   *
+   * @param type the type
+   * @param l the l
+   * @param s the s
+   */
+  public GenomicEntity(GenomicType type, GenomicRegion l, Strand s) {
+    super(l, s);
+
+    mType = type;
+  }
+
+  /**
+   * Gets the type.
+   *
+   * @return the type
+   */
+  @JsonGetter("type")
   public GenomicType getType() {
     return mType;
   }
 
   /**
    * Set a parent entity to indicate this is a child of another.
-   * 
-   * @param gene
+   *
+   * @param gene the new parent
    */
   public void setParent(GenomicEntity gene) {
     mParent = gene;
   }
 
+  /**
+   * Gets the parent.
+   *
+   * @return the parent
+   */
   @JsonIgnore
   public GenomicEntity getParent() {
     return mParent;
   }
 
-
-
   /**
-   * Add an entity as a child of this one. For example an exon could be
-   * a child of transcript.
+   * Add an entity as a child of this one. For example an exon could be a child
+   * of transcript.
    * 
-   * @param e   A genomic entity.
+   * @param e A genomic entity.
    */
   public void add(GenomicEntity e) {
     mElemMap.get(e.mType).add(e);
   }
 
   /**
-   * Return child entities of this one of a specific type.
-   * 
-   * @param type    a genomic type.
-   * @return
+   * Gets the child types.
+   *
+   * @return the child types
    */
   @JsonIgnore
-  public Iterable<GenomicEntity> getEntities(GenomicType type) {
+  public Set<GenomicType> getChildTypes() {
+    return mElemMap.keySet();
+  }
+
+  /**
+   * Return child entities of this one of a specific type.
+   *
+   * @param type a genomic type.
+   * @return the children
+   */
+  @JsonIgnore
+  public Iterable<GenomicEntity> getChildren(GenomicType type) {
     return mElemMap.get(type);
   }
 
+  /**
+   * Gets the child count.
+   *
+   * @param type the type
+   * @return the child count
+   */
   @JsonIgnore
-  public int getEntityCount(GenomicType type) {
+  public int getChildCount(GenomicType type) {
     return mElemMap.get(type).size();
   }
 
+  /**
+   * Sets the id.
+   *
+   * @param type the type
+   * @param name the name
+   * @return the genomic entity
+   */
   public GenomicEntity setId(String type, String name) {
-    mIdMap.put(type, name);
-
-    if (type.contains("transcript")) {
-      mIdMap.put(TRANSCRIPT_ID_TYPE, name);
-      
-      mIdMap.remove("transcript");
-    }
-
+    
+    String lc = type.toLowerCase();
+    
     // Gene name is the same as symbol
-    if (type.contains("gene_name") || type.contains("gene_id")) {
-      mIdMap.put(SYMBOL_TYPE, name);
+    if (lc.contains("symbol")) {
+      mIdMap.put(GENE_NAME_TYPE, name);
+    } else if (lc.contains("transcript")) {
+      mIdMap.put(TRANSCRIPT_ID_TYPE, name);
+    } else {
+      mIdMap.put(lc, name);
     }
 
     // Invalidate so it will be recreated
@@ -186,17 +251,56 @@ public class GenomicEntity extends GenomicRegion {
    */
   @JsonIgnore
   public String getEntrez() {
-    return getId(ENTREZ_TYPE);
+    return getId(ENTREZ_ID_TYPE);
   }
 
   /**
-   * Gets the symbol.
+   * Gets the gene symbol. Equivalent to {@code getGeneName()}.
    *
-   * @return the symbol
+   * @return the gene symbol.
    */
   @JsonIgnore
   public String getSymbol() {
-    return getId(SYMBOL_TYPE);
+    return getGeneName();
+  }
+  
+  /* (non-Javadoc)
+   * @see org.jebtk.core.NameProperty#getName()
+   */
+  @JsonIgnore
+  @Override
+  public String getName() {
+    return getGeneName();
+  }
+  
+  /**
+   * Gets the gene id. Equivalent to {@code getGeneId()}.
+   *
+   * @return the id
+   */
+  @JsonIgnore
+  public String getId() {
+    return getGeneId();
+  }
+  
+  /**
+   * Gets the gene id.
+   *
+   * @return the gene id
+   */
+  @JsonIgnore
+  public String getGeneId() {
+    return getId(GENE_ID_TYPE);
+  }
+  
+  /**
+   * Gets the gene name.
+   *
+   * @return the gene name
+   */
+  @JsonIgnore
+  public String getGeneName() {
+    return getId(GENE_NAME_TYPE);
   }
 
   /**
@@ -205,8 +309,28 @@ public class GenomicEntity extends GenomicRegion {
    * @param name the name
    * @return the gene
    */
+  public GenomicEntity setName(String name) {
+    return setGeneName(name);
+  }
+  
+  /**
+   * Sets the symbol.
+   *
+   * @param name the name
+   * @return the genomic entity
+   */
   public GenomicEntity setSymbol(String name) {
-    return setId(SYMBOL_TYPE, name);
+    return setGeneName(name);
+  }
+  
+  /**
+   * Sets the gene name.
+   *
+   * @param name the name
+   * @return the genomic entity
+   */
+  public GenomicEntity setGeneName(String name) {
+    return setId(GENE_NAME_TYPE, name);
   }
 
   /**
@@ -226,24 +350,50 @@ public class GenomicEntity extends GenomicRegion {
    * @return the gene
    */
   public GenomicEntity setEntrez(String name) {
-    return setId(ENTREZ_TYPE, name);
+    return setId(ENTREZ_ID_TYPE, name);
   }
 
+  /**
+   * Gets the transcript id.
+   *
+   * @return the transcript id
+   */
   @JsonIgnore
   public String getTranscriptId() {
     return getId(TRANSCRIPT_ID_TYPE);
   }
 
+  /**
+   * Sets the transcript id.
+   *
+   * @param name the name
+   * @return the genomic entity
+   */
   public GenomicEntity setTranscriptId(String name) {
     return setId(TRANSCRIPT_ID_TYPE, name);
   }
 
-  
+  /**
+   * Gets the ids.
+   *
+   * @return the ids
+   */
   @JsonGetter("ids")
   public Iterable<Entry<String, String>> getIds() {
-    return mIdMap.entrySet();
+    return mIdMap;
   }
-  
+
+  /**
+   * Returns true if the entity contains an id with a given name.
+   * 
+   * @param name the name of the id.
+   * @return true if the name exists, false otherwise.
+   */
+  @JsonIgnore
+  public boolean containsId(String name) {
+    return mIdMap.containsKey(name);
+  }
+
   /**
    * Return the different types of ids associated with this entity. Typically
    * this will be 'refseq' or 'gene_symbol'.
@@ -255,21 +405,22 @@ public class GenomicEntity extends GenomicRegion {
     return mIdMap.keySet();
   }
 
+  /**
+   * Gets the id count.
+   *
+   * @return the id count
+   */
   @JsonIgnore
   public int getIdCount() {
     return mIdMap.size();
   }
 
   /**
-   * Return the first available id.
-   * 
-   * @return
+   * Gets the id.
+   *
+   * @param type the type
+   * @return the id
    */
-  @JsonIgnore
-  public String getId() {
-    return getTranscriptId(); // getId(mIdMap.keySet().iterator().next());
-  }
-
   @JsonIgnore
   public String getId(GeneIdType type) {
     return getId(type.toString().toLowerCase());
@@ -288,8 +439,8 @@ public class GenomicEntity extends GenomicRegion {
   /**
    * Add an arbitrary tag to the entity such as an some meta data better
    * describing it.
-   * 
-   * @param tag
+   *
+   * @param tag the tag
    */
   public void addTag(String tag) {
     mTags.add(tag);
@@ -297,39 +448,69 @@ public class GenomicEntity extends GenomicRegion {
 
   /**
    * Add new tags.
-   * 
-   * @param tags
+   *
+   * @param tags the tags
    */
   public void addTags(final Collection<String> tags) {
     mTags.addAll(tags);
   }
 
-  @JsonIgnore
+  /**
+   * Gets the tags.
+   *
+   * @return the tags
+   */
+  @JsonGetter("tags")
   public Iterable<String> getTags() {
     return mTags;
   }
 
+  /**
+   * Checks for tag.
+   *
+   * @param name the name
+   * @return true, if successful
+   */
   public boolean hasTag(String name) {
     return mTags.contains(name);
   }
 
+  /**
+   * Gets the tag count.
+   *
+   * @return the tag count
+   */
   @JsonIgnore
   public int getTagCount() {
     return mTags.size();
   }
 
   /*
-   * (non-Javadoc)
-   * 
-   * @see org.jebtk.bioinformatics.genome.GenomicRegion#equals(java.lang.Object)
+   * @Override public boolean equals(Object o) { if (o instanceof GenomicEntity)
+   * { return toString().equals(((GenomicEntity) o).toString()); } else { return
+   * super.equals(o); } }
+   */
+
+  /* (non-Javadoc)
+   * @see org.jebtk.bioinformatics.genomic.GenomicRegion#compareTo(org.jebtk.bioinformatics.genomic.Region)
    */
   @Override
-  public boolean equals(Object o) {
-    if (o instanceof GenomicEntity) {
-      return toString().equals(((GenomicEntity) o).toString());
-    } else {
-      return super.equals(o);
+  public int compareTo(Region r) {
+    int c = super.compareTo(r);
+
+    // Different location so sort
+    if (c != 0) {
+      return c;
     }
+
+    // Same location, have to test toString
+
+    if (r instanceof GenomicEntity) {
+      c = toString().compareTo(((GenomicEntity) r).toString());
+    }
+
+    // Return whatever we have concluded.
+    return c;
   }
 
   /*
@@ -342,13 +523,15 @@ public class GenomicEntity extends GenomicRegion {
     if (mText == null) {
       StringBuilder buffer = new StringBuilder(super.toString());
 
+      buffer.append(" ").append(getType());
+
       if (mIdMap.size() > 0) {
         buffer.append(" [");
 
-        Iterator<String> iter = mIdMap.iterator();
+        Iterator<Entry<String, String>> iter = mIdMap.iterator();
 
         while (iter.hasNext()) {
-          String id = iter.next();
+          String id = iter.next().getKey();
 
           buffer.append(id).append("=").append(getId(id));
 
@@ -369,7 +552,6 @@ public class GenomicEntity extends GenomicRegion {
   //
   // Static methods
   //
-
 
   /**
    * Tss region.
@@ -418,4 +600,23 @@ public class GenomicEntity extends GenomicRegion {
 
     return GenomicRegion.midDist(region, tssRegion);
   }
+
+  /**
+   * To map.
+   *
+   * @param genes the genes
+   * @return the iter map
+   */
+  public static IterMap<Chromosome, List<GenomicEntity>> toMap(
+      Collection<GenomicEntity> genes) {
+    IterMap<Chromosome, List<GenomicEntity>> ret = DefaultHashMap
+        .create(new ArrayListCreator<GenomicEntity>());
+
+    for (GenomicEntity g : genes) {
+      ret.get(g.mChr).add(g);
+    }
+
+    return ret;
+  }
+
 }

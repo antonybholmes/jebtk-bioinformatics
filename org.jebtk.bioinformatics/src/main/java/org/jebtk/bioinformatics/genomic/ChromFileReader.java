@@ -32,9 +32,10 @@ import org.slf4j.LoggerFactory;
 /**
  * The Class ChromosomeParser.
  */
-public class ChromosomeFileReader extends GenomeDirs implements ChromosomeReader {
+public class ChromFileReader extends GenomeDirs implements ChromosomeReader {
 
-  private static final Logger LOG = LoggerFactory.getLogger(ChromosomeFileReader.class);
+  private static final Logger LOG = LoggerFactory
+      .getLogger(ChromFileReader.class);
 
   private String mGenome;
 
@@ -44,21 +45,21 @@ public class ChromosomeFileReader extends GenomeDirs implements ChromosomeReader
 
   public static final String EXT = "chrs.gz";
 
-  public ChromosomeFileReader(String genome) {
+  public ChromFileReader(String genome) {
     this(genome, Genome.GENOME_HOME, Genome.GENOME_DIR);
   }
 
-  public ChromosomeFileReader(String genome, Collection<Path> dirs) {
+  public ChromFileReader(String genome, Collection<Path> dirs) {
     super(dirs);
-    
+
     mGenome = genome;
-    
+
     LOG.info("chromosomes {}", dirs);
   }
-  
-  public ChromosomeFileReader(String genome, Path dir, Path... dirs) {
+
+  public ChromFileReader(String genome, Path dir, Path... dirs) {
     super(dir, dirs);
-    
+
     mGenome = genome;
   }
 
@@ -66,7 +67,7 @@ public class ChromosomeFileReader extends GenomeDirs implements ChromosomeReader
     if (mAutoLoad) {
       for (Path dir : mDirs) {
         Path genomeDir = dir.resolve(mGenome);
-        
+
         LOG.info("Looking for chromosomes in {}", genomeDir);
 
         if (FileUtils.isDirectory(genomeDir)) {
@@ -97,7 +98,7 @@ public class ChromosomeFileReader extends GenomeDirs implements ChromosomeReader
     } catch (IOException e) {
       e.printStackTrace();
     }
-    
+
     return mChrs.iterator();
   }
 
@@ -110,7 +111,7 @@ public class ChromosomeFileReader extends GenomeDirs implements ChromosomeReader
     return mGenome;
   }
 
-  private static void load(Path file, ChromosomeFileReader ret) throws IOException {
+  private static void load(Path file, ChromFileReader ret) throws IOException {
 
     BufferedReader reader = FileUtils.newBufferedReader(file);
 
@@ -126,11 +127,11 @@ public class ChromosomeFileReader extends GenomeDirs implements ChromosomeReader
       while ((line = reader.readLine()) != null) {
         tokens = TextUtils.tabSplit(line);
 
-        int id = Integer.parseInt(tokens.get(0));
+        // int id = Integer.parseInt(tokens.get(0));
         String name = tokens.get(1);
         int size = Integer.parseInt(tokens.get(2));
 
-        Chromosome chr = new Chromosome(id, name, size, ret.getGenome());
+        Chromosome chr = new Chromosome(name, ret.getGenome(), size);
 
         ret.mChrs.add(chr);
       }

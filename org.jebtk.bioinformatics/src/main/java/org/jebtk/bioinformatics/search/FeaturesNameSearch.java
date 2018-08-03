@@ -47,12 +47,12 @@ public class FeaturesNameSearch implements Iterable<Feature> {
   /**
    * The features.
    */
-  protected Map<String, Feature> features = new HashMap<String, Feature>();
+  protected Map<String, Feature> mFeatures = new HashMap<String, Feature>();
 
   /**
    * The type.
    */
-  protected String type;
+  protected String mType;
 
   /**
    * Instantiates a new features name search.
@@ -60,7 +60,7 @@ public class FeaturesNameSearch implements Iterable<Feature> {
    * @param type the type
    */
   public FeaturesNameSearch(String type) {
-    this.type = type;
+    mType = type;
   }
 
   /**
@@ -69,7 +69,7 @@ public class FeaturesNameSearch implements Iterable<Feature> {
    * @return the type
    */
   public final String getType() {
-    return type;
+    return mType;
   }
 
   /**
@@ -78,7 +78,7 @@ public class FeaturesNameSearch implements Iterable<Feature> {
    * @param file the file
    */
   public void cacheFeatures(Path file) {
-    features.clear();
+    mFeatures.clear();
 
     short chromosomeCount = 0;
     int featureCount = 0;
@@ -103,7 +103,7 @@ public class FeaturesNameSearch implements Iterable<Feature> {
               GenomeService.getInstance().guessChr(file, row.get(1)),
               Integer.parseInt(row.get(2)), Integer.parseInt(row.get(3)));
 
-          features.put(feature.getName(), feature);
+          mFeatures.put(feature.getName(), feature);
 
           ++featureCount;
         }
@@ -125,8 +125,8 @@ public class FeaturesNameSearch implements Iterable<Feature> {
    * @return the feature
    */
   public final Feature getFeature(String name) {
-    if (features.containsKey(name)) {
-      return features.get(name);
+    if (mFeatures.containsKey(name)) {
+      return mFeatures.get(name);
     }
 
     return null;
@@ -138,7 +138,7 @@ public class FeaturesNameSearch implements Iterable<Feature> {
    * @see java.lang.Iterable#iterator()
    */
   public Iterator<Feature> iterator() {
-    return features.values().iterator();
+    return mFeatures.values().iterator();
   }
 
   /**
@@ -147,6 +147,6 @@ public class FeaturesNameSearch implements Iterable<Feature> {
    * @return the int
    */
   public int size() {
-    return features.size();
+    return mFeatures.size();
   }
 }

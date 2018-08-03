@@ -32,6 +32,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.jebtk.bioinformatics.genomic.Chromosome;
@@ -98,8 +99,8 @@ public class BinaryGapSearch<T> extends FixedGapSearch<T> {
 
       mBins.clear();
 
-      for (Chromosome chr : mFeatures) {
-        mBins.put(chr, CollectionUtils.sortKeys(mFeatures.get(chr)));
+      for (Entry<Chromosome, IterMap<Integer, GappedSearchFeatures<T>>> f : mFeatures) {
+        mBins.put(f.getKey(), CollectionUtils.sortKeys(f.getValue()));
       }
 
       mAutoSorted = true;
@@ -155,8 +156,6 @@ public class BinaryGapSearch<T> extends FixedGapSearch<T> {
 
     return range;
   }
-
-  
 
   /**
    * public List<T> getClosestFeatures(GenomicRegion region, int n) { // Make
@@ -396,8 +395,8 @@ public class BinaryGapSearch<T> extends FixedGapSearch<T> {
 
     IterMap<Integer, GappedSearchFeatures<T>> features = mFeatures.get(chr);
 
-    for (int bin : features) {
-      ret += features.get(bin).size();
+    for (Entry<Integer, GappedSearchFeatures<T>> f : features) {
+      ret += f.getValue().size();
     }
 
     return ret;
@@ -423,7 +422,7 @@ public class BinaryGapSearch<T> extends FixedGapSearch<T> {
   public List<Integer> getBins(Chromosome chr) {
     return mBins.get(chr);
   }
-  
+
   /**
    * Return the nth closest features by bin.
    *
@@ -654,7 +653,7 @@ public class BinaryGapSearch<T> extends FixedGapSearch<T> {
      * return ret;
      */
   }
-  
+
   /**
    * Get the closest features distance n from location. For example if n = 0,
    * return the closest, n = 1, return the second closest, n = 3 the third
@@ -671,5 +670,4 @@ public class BinaryGapSearch<T> extends FixedGapSearch<T> {
         n);
   }
 
-  
 }

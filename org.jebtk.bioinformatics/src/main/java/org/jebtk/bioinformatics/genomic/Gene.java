@@ -27,30 +27,40 @@
  */
 package org.jebtk.bioinformatics.genomic;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 /**
  * The class Gene.
  */
-
+@JsonPropertyOrder({ "loc", "strand", "type", "ids", "tags", "transcripts" })
 public class Gene extends Transcript {
 
-  public Gene(GenomicRegion region) {
-    super(region);
+  public Gene(GenomicRegion l) {
+    super(l);
   }
 
-  public Gene(String name, GenomicRegion region) {
-    this(region);
-    
-    setSymbol(name);
+  public Gene(String name, GenomicRegion l) {
+    this(l);
+
+    setGeneName(name);
   }
-  
-  @JsonIgnore
+
+  public Gene(GenomicRegion l, Strand s) {
+    super(l, s);
+  }
+
   @Override
+  @JsonGetter("type")
   public GenomicType getType() {
     return GenomicType.GENE;
   }
-  
+
+  @JsonGetter("transcripts")
+  public Iterable<GenomicEntity> getTranscripts() {
+    return getChildren(GenomicType.TRANSCRIPT);
+  }
+
   /**
    * Adds the exon.
    *

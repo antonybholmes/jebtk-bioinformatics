@@ -183,7 +183,7 @@ public class AlignmentAssemblyFile1Bit extends ConservationAssembly {
         PathUtils.getPath(
             "/ifs/scratch/cancer/Lab_RDF/abh2138/references/ucsc/alignment/human_mouse_hg19_mm10"));
 
-    System.err.println(a.getScores("mm10", "chr1:11872-12139"));
+    // System.err.println(a.getScores("mm10", "chr1:11872-12139"));
 
     // System.err.println(a.getScores("chr10:87575-87801") + " " +
     // Statistics.pNonZero(a.getScores("chr10:87575-87801")));

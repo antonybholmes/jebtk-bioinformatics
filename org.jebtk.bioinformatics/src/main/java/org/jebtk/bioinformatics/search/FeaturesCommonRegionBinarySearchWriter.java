@@ -61,8 +61,6 @@ public class FeaturesCommonRegionBinarySearchWriter
    * Write.
    */
   public void write() {
-    System.out.println("Building index...");
-
     Path dir = mFile.getParent();
 
     Path locationsPath = null;
@@ -168,7 +166,7 @@ public class FeaturesCommonRegionBinarySearchWriter
 
             featuresWriter.write(feature.getName());
             featuresWriter.write(TextUtils.TAB_DELIMITER);
-            featuresWriter.write(feature.getChromosome().toString());
+            featuresWriter.write(feature.getChr().toString());
             featuresWriter.write(TextUtils.TAB_DELIMITER);
             featuresWriter.write(Integer.toString(feature.getStart()));
             featuresWriter.write(TextUtils.TAB_DELIMITER);
@@ -186,7 +184,5 @@ public class FeaturesCommonRegionBinarySearchWriter
     } catch (Exception e) {
       e.printStackTrace();
     }
-
-    System.out.println("Finished.");
   }
 }

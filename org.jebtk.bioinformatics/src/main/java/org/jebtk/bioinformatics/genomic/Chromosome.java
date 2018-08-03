@@ -27,6 +27,7 @@
  */
 package org.jebtk.bioinformatics.genomic;
 
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.jebtk.core.IdProperty;
@@ -38,49 +39,49 @@ import org.jebtk.core.text.TextUtils;
  *
  * @author Antony Holmes Holmes
  */
-public class Chromosome implements Comparable<Chromosome>, IdProperty, NameProperty {
+public class Chromosome
+    implements Comparable<Chromosome>, IdProperty, NameProperty {
 
-  private static int DEFAULT_CHR_ID = -1;
-  
-  public static Pattern CHR_REGEX = Pattern.compile("(chr([1-9][0-9]?|[XYM]))");
-  
+  public static final Pattern CHR_REGEX = Pattern
+      .compile("chr(?:[1-9][0-9]?|[XYM])");
+
+  public static final Pattern CHR_GROUP_REGEX = Pattern
+      .compile("(chr(?:[1-9][0-9]?|[XYM]))");
+
+  public static final Pattern CHR_NUM_GROUP_REGEX = Pattern
+      .compile("([1-9][0-9]?)");
+
   /**
    * Represents an invalid chromosome.
    */
-  public static final Chromosome NO_CHR = new Chromosome(DEFAULT_CHR_ID, "U");
-
-  
+  public static final Chromosome NO_CHR = new Chromosome("U");
 
   /**
    * The member chr.
    */
-  private String mChr = null;
+  public final String mChr;
 
   /** The m short name. */
-  private String mShortName;
+  public final String mShortName;
   // private String mSpecies;
 
   /** The m id. */
-  private int mId;
+  public final int mId;
 
-  private int mSize;
+  public final int mSize;
 
-  private String mGenome = null;
+  public final String mGenome;
 
   public Chromosome(String name) {
-    this(DEFAULT_CHR_ID, name);
-  }
-  
-  public Chromosome(int id, String name) {
-    this(id, name, Genome.HG19);
+    this(name, TextUtils.EMPTY_STRING);
   }
 
-  public Chromosome(int id, String name, String genome) {
-    this(id, name, -1, genome);
+  public Chromosome(String name, String genome) {
+    this(name, genome, -1);
   }
 
-  public Chromosome(int id, String name, int size) {
-    this(id, name, size, Genome.HG19);
+  public Chromosome(String name, int size) {
+    this(name, TextUtils.EMPTY_STRING, size);
   }
 
   /**
@@ -89,18 +90,20 @@ public class Chromosome implements Comparable<Chromosome>, IdProperty, NamePrope
    * @param chr the chr
    * @param parser the parser
    */
-  public Chromosome(int id, String name, int size, String genome) {
+  public Chromosome(String name, String genome, int size) {
     // mSpecies = parser.getSpecies();
-
-    // Ensures chromosome always begins with chr prefix and not cHr or
-    // some other variant
 
     // The suffix of the chromosome without the chr prefix.
     mShortName = getShortName(name);
-    mId = id;
+    mId = getId(mShortName);
     mChr = "chr" + mShortName;
     mSize = size;
-    mGenome = genome;
+
+    if (genome != null) {
+      mGenome = genome;
+    } else {
+      mGenome = TextUtils.EMPTY_STRING;
+    }
   }
 
   /*
@@ -162,30 +165,35 @@ public class Chromosome implements Comparable<Chromosome>, IdProperty, NamePrope
   @Override
   public int compareTo(Chromosome c) {
     // System.err.println("compare chr " + mId + " " + c.mId + " " + mChr + " "
-    // +
-    // c.mChr);
+    // + c.mChr);
 
+    // Short by genome
     int ret = mGenome.compareTo(c.mGenome);
 
     if (ret != 0) {
       return ret;
-    } else {
-      // ret = mChr.compareTo(c.mChr);
+    }
 
-      // if (ret != 0) {
-      // return ret;
-      // } else {
-      // Sort by id so that chr2 comes before chr10
+    // ret = mChr.compareTo(c.mChr);
+
+    // if (ret != 0) {
+    // return ret;
+    // } else {
+    // Sort by id so that chr2 comes before chr10
+
+    if (mId != -1 && c.mId != -1) {
+      // Compare by id for numerical sorting
       if (mId > c.mId) {
         return 1;
       } else if (mId < c.mId) {
         return -1;
       } else {
-        // If chrs cannot be compared via their id, resort to string
-        // comparison on the chr name
-        return mChr.compareTo(c.mChr);
+        return 0;
       }
-      // }
+    } else {
+      // If chr has a non numerical suffix (e.g. chrX), do a conventional
+      // text comparison
+      return mChr.compareTo(c.mChr);
     }
   }
 
@@ -219,12 +227,12 @@ public class Chromosome implements Comparable<Chromosome>, IdProperty, NamePrope
    * @param value the value
    * @return true, if is chr
    */
-  public static boolean isChr(String value) {
-    if (value == null) {
+  public static boolean isChr(String s) {
+    if (s == null) {
       return false;
     }
 
-    return value.toLowerCase().startsWith("chr");
+    return CHR_REGEX.matcher(s).matches(); // value.toLowerCase().startsWith("chr");
   }
 
   /**
@@ -243,4 +251,33 @@ public class Chromosome implements Comparable<Chromosome>, IdProperty, NamePrope
     // .replaceFirst("Q.*", TextUtils.EMPTY_STRING);
   }
 
+  /**
+   * Look for the numerical part of the chromosome to give it a numerical order.
+   * 
+   * @param name
+   * @return
+   */
+  private static int getId(String name) {
+    Matcher matcher = CHR_NUM_GROUP_REGEX.matcher(name);
+
+    if (matcher.find()) {
+      return Integer.parseInt(matcher.group(1));
+    } else {
+      return -1;
+    }
+  }
+
+  public static String search(String s) {
+    if (s == null) {
+      return null;
+    }
+
+    Matcher matcher = CHR_GROUP_REGEX.matcher(s);
+
+    if (matcher.find()) {
+      return matcher.group(1);
+    } else {
+      return null;
+    }
+  }
 }

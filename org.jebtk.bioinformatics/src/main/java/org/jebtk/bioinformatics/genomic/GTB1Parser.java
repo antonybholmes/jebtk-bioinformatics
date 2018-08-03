@@ -64,10 +64,11 @@ public class GTB1Parser extends GTBParser {
    * @throws IOException Signals that an I/O exception has occurred.
    */
   @Override
-  protected void parse(Path file, BufferedReader reader, 
+  protected void parse(Path file,
+      BufferedReader reader,
+      final String db,
       final String genome,
-      Genes genes)
-      throws IOException {
+      Genes genes) throws IOException {
     LOG.info("Parsing GTB file {}, levels: {}...", file, mLevels);
 
     String line;
@@ -163,7 +164,9 @@ public class GTB1Parser extends GTBParser {
           GenomicRegion region = GenomicRegion
               .create(chr, starts.get(i) + 1, ends.get(i), strand);
 
-          GenomicEntity exon = addAttributes(GenomicType.EXON, region, attributeMap);
+          GenomicEntity exon = addAttributes(GenomicType.EXON,
+              region,
+              attributeMap);
 
           if (mKeepExons) {
             if (gene != null) {
@@ -209,7 +212,8 @@ public class GTB1Parser extends GTBParser {
 
       tokens = Splitter.onTab().text(line);
 
-      Chromosome chr = GenomeService.getInstance().guessChr(file, tokens.get(0));
+      Chromosome chr = GenomeService.getInstance().guessChr(file,
+          tokens.get(0));
 
       // Skip random and unofficial chromosomes
       if (chr.toString().contains("_")) {

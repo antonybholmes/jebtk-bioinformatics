@@ -25,7 +25,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package org.jebtk.bioinformatics.genomic;
+package org.jebtk.bioinformatics.dna;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -49,7 +49,7 @@ import org.jebtk.core.network.UrlBuilder;
  *
  * @author Antony Holmes Holmes
  */
-public class HttpGenomeLoader extends SequenceReader {
+public class WebSequenceReader extends SequenceReader {
   /**
    * The member url.
    */
@@ -72,7 +72,7 @@ public class HttpGenomeLoader extends SequenceReader {
    * @param url the url
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public HttpGenomeLoader(URL url) throws IOException {
+  public WebSequenceReader(URL url) throws IOException {
     mUrl = new UrlBuilder(url);
 
     mDnaUrl = mUrl.resolve("dna");

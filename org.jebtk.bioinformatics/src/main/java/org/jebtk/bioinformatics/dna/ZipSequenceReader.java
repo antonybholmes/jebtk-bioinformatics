@@ -35,6 +35,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -148,8 +149,8 @@ public class ZipSequenceReader extends DNASequenceReader {
 
     Map<GenomicRegion, SequenceRegion> mSeqMap = new HashMap<GenomicRegion, SequenceRegion>();
 
-    for (Chromosome chr : chrMap) {
-      for (GenomicRegion region : chrMap.get(chr)) {
+    for (Entry<Chromosome, List<GenomicRegion>> f : chrMap) {
+      for (GenomicRegion region : f.getValue()) {
         SequenceRegion sequence = getSequence(region,
             displayUpper,
             repeatMaskType);

@@ -41,6 +41,7 @@ public class GTB3Parser extends GTBParser {
   @Override
   protected void parse(final Path file,
       BufferedReader reader,
+      final String db,
       final String genome,
       final Genes genes) throws IOException {
     LOG.info("Parsing GTB2 file {}, levels: {}...", file, mLevels);
@@ -125,7 +126,9 @@ public class GTB3Parser extends GTBParser {
             GenomicRegion region = GenomicRegion
                 .create(chr, starts.get(i), ends.get(i), strand);
 
-            GenomicEntity exon = addAttributes(GenomicType.EXON, region, attributeMap);
+            GenomicEntity exon = addAttributes(GenomicType.EXON,
+                region,
+                attributeMap);
 
             if (mKeepExons) {
               if (gene != null) {
@@ -210,7 +213,8 @@ public class GTB3Parser extends GTBParser {
 
       tokens = Splitter.onTab().text(line);
 
-      Chromosome chr = GenomeService.getInstance().guessChr(file, tokens.get(0));
+      Chromosome chr = GenomeService.getInstance().guessChr(file,
+          tokens.get(0));
 
       // Skip random and unofficial chromosomes
       if (chr.toString().contains("_")) {

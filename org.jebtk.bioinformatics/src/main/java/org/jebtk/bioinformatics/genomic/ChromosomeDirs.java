@@ -38,9 +38,12 @@ import org.slf4j.LoggerFactory;
 /**
  * The Class ChromosomeParser.
  */
-public class Chromosomes extends GenomeDirs implements Iterable<Chromosome> {
+public class ChromosomeDirs extends GenomeDirs implements Iterable<Chromosome> {
 
-  private static final Logger LOG = LoggerFactory.getLogger(Chromosomes.class);
+  private static final Logger LOG = LoggerFactory
+      .getLogger(ChromosomeDirs.class);
+
+  public static final String EXT = "chrs.gz";
 
   private String mGenome;
 
@@ -54,32 +57,28 @@ public class Chromosomes extends GenomeDirs implements Iterable<Chromosome> {
 
   private boolean mAutoLoad = true;
 
-  public static final String EXT = "chrs.gz";
-
-  public Chromosomes(String genome) {
+  public ChromosomeDirs(String genome) {
     this(genome, genome);
   }
 
-  public Chromosomes(String species, String genome) {
+  public ChromosomeDirs(String species, String genome) {
     this(species, genome, Genome.GENOME_HOME, Genome.GENOME_DIR);
   }
 
-  public Chromosomes(String genome, Collection<Path> dirs) {
+  public ChromosomeDirs(String genome, Collection<Path> dirs) {
     this(genome, genome, dirs);
   }
-  
-  public Chromosomes(String species, String genome, Collection<Path> dirs) {
+
+  public ChromosomeDirs(String species, String genome, Collection<Path> dirs) {
     super(dirs);
-    
+
     mSpecies = species;
     mGenome = genome;
-    
-    LOG.info("chromosomes {}", dirs);
   }
-  
-  public Chromosomes(String species, String genome, Path dir, Path... dirs) {
+
+  public ChromosomeDirs(String species, String genome, Path dir, Path... dirs) {
     super(dir, dirs);
-    
+
     mSpecies = species;
     mGenome = genome;
   }
@@ -88,7 +87,7 @@ public class Chromosomes extends GenomeDirs implements Iterable<Chromosome> {
     if (mAutoLoad) {
       for (Path dir : mDirs) {
         Path genomeDir = dir.resolve(mGenome);
-        
+
         LOG.info("Looking for chromosomes in {}", genomeDir);
 
         if (FileUtils.isDirectory(genomeDir)) {
@@ -139,7 +138,7 @@ public class Chromosomes extends GenomeDirs implements Iterable<Chromosome> {
     } catch (IOException e) {
       e.printStackTrace();
     }
-    
+
     return mChrs.iterator();
   }
 
@@ -155,7 +154,7 @@ public class Chromosomes extends GenomeDirs implements Iterable<Chromosome> {
     String fc = formatKey(chr);
 
     if (!mChrMap.containsKey(fc)) {
-      add(new Chromosome(-1, chr, mGenome));
+      add(new Chromosome(chr, mGenome));
     }
 
     return mChrMap.get(fc);
@@ -210,12 +209,12 @@ public class Chromosomes extends GenomeDirs implements Iterable<Chromosome> {
     return mChrMap.get(ids.get(Mathematics.rand(ids.size())));
   }
 
-  public static Chromosomes parse(Path file) throws IOException {
+  public static ChromosomeDirs parse(Path file) throws IOException {
     LOG.info("Reading chromosome info from {}", file);
 
     BufferedReader reader = FileUtils.newBufferedReader(file);
 
-    Chromosomes ret = null;
+    ChromosomeDirs ret = null;
 
     try {
       ret = parse(reader);
@@ -226,13 +225,14 @@ public class Chromosomes extends GenomeDirs implements Iterable<Chromosome> {
     return ret;
   }
 
-  private static Chromosomes parse(BufferedReader reader) throws IOException {
+  private static ChromosomeDirs parse(BufferedReader reader)
+      throws IOException {
 
     // The first token contains the names etc, ignore the rest of the line
     String species = TextUtils.tabSplit(reader.readLine()).get(0);
     String genome = TextUtils.tabSplit(reader.readLine()).get(0);
 
-    Chromosomes ret = new Chromosomes(species, genome);
+    ChromosomeDirs ret = new ChromosomeDirs(species, genome);
 
     // Skip header
     reader.readLine();
@@ -243,11 +243,11 @@ public class Chromosomes extends GenomeDirs implements Iterable<Chromosome> {
     while ((line = reader.readLine()) != null) {
       tokens = TextUtils.tabSplit(line);
 
-      int id = Integer.parseInt(tokens.get(0));
+      // int id = Integer.parseInt(tokens.get(0));
       String name = tokens.get(1);
       int size = Integer.parseInt(tokens.get(2));
 
-      Chromosome chr = new Chromosome(id, name, size, genome);
+      Chromosome chr = new Chromosome(name, genome, size);
 
       ret.add(chr);
     }
@@ -262,11 +262,11 @@ public class Chromosomes extends GenomeDirs implements Iterable<Chromosome> {
    * @return the chromosome sizes
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static Chromosomes parseJson(Path file) throws IOException {
+  public static ChromosomeDirs parseJson(Path file) throws IOException {
 
     Json json = new JsonParser().parse(file);
 
-    Chromosomes ret = new Chromosomes(json.getString("species"),
+    ChromosomeDirs ret = new ChromosomeDirs(json.getString("species"),
         json.getString("genome"));
 
     Json chrsJson = json.get("chromosomes");
@@ -278,7 +278,7 @@ public class Chromosomes extends GenomeDirs implements Iterable<Chromosome> {
       String name = chrJson.getString("name");
       int size = chrJson.getInt("size");
 
-      Chromosome chr = new Chromosome(id, name, size);
+      Chromosome chr = new Chromosome(name, size);
 
       ret.mChrIdMap.put(id, chr);
       ret.mChrMap.put(Integer.toString(id), chr);
@@ -288,7 +288,7 @@ public class Chromosomes extends GenomeDirs implements Iterable<Chromosome> {
     return ret;
   }
 
-  private static void load(Path file, Chromosomes ret) throws IOException {
+  private static void load(Path file, ChromosomeDirs ret) throws IOException {
 
     BufferedReader reader = FileUtils.newBufferedReader(file);
 
@@ -304,11 +304,11 @@ public class Chromosomes extends GenomeDirs implements Iterable<Chromosome> {
       while ((line = reader.readLine()) != null) {
         tokens = TextUtils.tabSplit(line);
 
-        int id = Integer.parseInt(tokens.get(0));
+        // int id = Integer.parseInt(tokens.get(0));
         String name = tokens.get(1);
         int size = Integer.parseInt(tokens.get(2));
 
-        Chromosome chr = new Chromosome(id, name, size, ret.getGenome());
+        Chromosome chr = new Chromosome(name, ret.getGenome(), size);
 
         ret.add(chr);
       }
@@ -318,7 +318,7 @@ public class Chromosomes extends GenomeDirs implements Iterable<Chromosome> {
   }
 
   private static final String formatKey(String chr) {
-    return Chromosome.getShortName(chr); //.toUpperCase();
+    return Chromosome.getShortName(chr); // .toUpperCase();
   }
 
 }

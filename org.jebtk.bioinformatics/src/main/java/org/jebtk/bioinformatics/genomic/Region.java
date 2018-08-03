@@ -48,7 +48,9 @@ public class Region implements Comparable<Region>, FormattedTxt {
 
   /** The Constant REGION_REGEX. */
   private static final Pattern REGION_REGEX = Pattern.compile("\\d+(-\\d+)");
-
+  
+  public static final Region NULL_REGION = new Region();
+  
   /**
    * The member start.
    */
@@ -67,6 +69,16 @@ public class Region implements Comparable<Region>, FormattedTxt {
   @JsonIgnore
   public final int mLength;
 
+  
+  /**
+   * Creates a special empty region
+   */
+  private Region() {
+    mStart = 0;
+    mEnd = 0;
+    mLength = 0;
+  }
+  
   /**
    * Instantiates a new region.
    *
@@ -84,8 +96,8 @@ public class Region implements Comparable<Region>, FormattedTxt {
    */
   public Region(int start, int end) {
     // The start must be at least 1
-    start = Math.max(1, start);
-    end = Math.max(1, end);
+    start = oneBased(start);
+    end = oneBased(end);
 
     // Swap if the coordinates are the wrong way around
     if (start > end) {
@@ -104,9 +116,11 @@ public class Region implements Comparable<Region>, FormattedTxt {
 
     mStart = start;
     // The end must be greater than the start
-    mEnd = Math.max(end, start + 1);
+    mEnd = end; //Math.max(end, start + 1);
     mLength = mEnd - mStart + 1;
   }
+  
+  
 
   /**
    * Gets the start.
@@ -281,13 +295,32 @@ public class Region implements Comparable<Region>, FormattedTxt {
    */
   public static Region shift(Region region, int shift) {
     // bound the positions so they dont exceed the chromosome bounds
-    int start = Math.max(1, region.mStart + shift);
-    int end = Math.max(1, region.mEnd + shift);
+    int start = oneBased(region.mStart + shift);
+    int end =  oneBased(region.mEnd + shift);
 
     return new Region(start, end);
   }
 
   public static String toRange(int start, int end) {
     return start + "-" + end;
+  }
+
+  /**
+   * Simply ensure coordinate is a minimum of one
+   * @param v
+   * @return
+   */
+  public static int oneBased(int v) {
+    return Math.max(1, v);
+  }
+  
+  /**
+   * Ensure that end is 
+   * @param start
+   * @param end
+   * @return
+   */
+  public static int strictEnd(int start, int end) {
+    return Math.max(start + 1, end);
   }
 }

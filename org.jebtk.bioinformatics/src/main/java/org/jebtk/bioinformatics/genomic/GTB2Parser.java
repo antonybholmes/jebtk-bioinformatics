@@ -43,6 +43,7 @@ public class GTB2Parser extends GTBParser {
   @Override
   protected void parse(final Path file,
       BufferedReader reader,
+      final String db,
       final String genome,
       final Genes genes) throws IOException {
     LOG.info("Parsing GTB2 file {}, levels: {}...", file, mLevels);
@@ -51,6 +52,7 @@ public class GTB2Parser extends GTBParser {
 
     // Add the exons
     final boolean hasExonLevel = containsLevel(GenomicType.EXON);
+    // final boolean hasTranscriptLevel = containsLevel(GenomicType.TRANSCRIPT);
     final boolean has3pUtrLevel = containsLevel(GenomicType.UTR_3P);
     final boolean has5pUtrLevel = containsLevel(GenomicType.UTR_5P);
 
@@ -127,7 +129,9 @@ public class GTB2Parser extends GTBParser {
             GenomicRegion region = GenomicRegion
                 .create(chr, starts.get(i), ends.get(i), strand);
 
-            GenomicEntity exon = addAttributes(GenomicType.EXON, region, attributeMap);
+            GenomicEntity exon = addAttributes(GenomicType.EXON,
+                region,
+                attributeMap);
 
             if (mKeepExons) {
               if (gene != null) {
@@ -201,7 +205,7 @@ public class GTB2Parser extends GTBParser {
     LOG.info("Creating id map from GTB2 file {}, levels: {}...", file, mLevels);
 
     String genome = GenomeService.getInstance().guessGenome(file);
-    
+
     Map<String, Set<String>> ret = DefaultTreeMap
         .create(new TreeSetCreator<String>());
 
@@ -286,24 +290,30 @@ public class GTB2Parser extends GTBParser {
     return TextUtils.removeNA(splitter.text(tokens.get(14)));
   }
 
-  public static GenomicEntity parse(final Chromosome chr, 
+  public static GenomicEntity parse(final String db,
+      final String genome,
       final String line) {
-    return parse(chr, TextUtils.tabSplit(line));
+    return parse(db, genome, TextUtils.tabSplit(line));
   }
-  
-  public static GenomicEntity parse(final Chromosome chr, 
-      final List<String> tokens) {
-    return parse(chr, Collections.<String>emptySet(), Collections.<String>emptySet(), tokens);
-  }
-  
 
-  public static GenomicEntity parse(final Chromosome chr, 
+  public static GenomicEntity parse(final String db,
+      final String genome,
+      final List<String> tokens) {
+    return parse(db,
+        genome,
+        Collections.<String>emptySet(),
+        Collections.<String>emptySet(),
+        tokens);
+  }
+
+  public static GenomicEntity parse(final String db,
+      String genome,
       final Set<String> matchTags,
       final Set<String> excludeTags,
       final List<String> tokens) {
     final Splitter splitter = Splitter.on(';');
 
-    boolean add = true;
+    Chromosome chr = GenomeService.getInstance().chr(genome, tokens.get(0));
 
     Strand strand = Strand.parse(tokens.get(1));
     int start = Integer.parseInt(tokens.get(2));
@@ -316,37 +326,15 @@ public class GTB2Parser extends GTBParser {
 
     List<String> tags = getTags(splitter, tokens);
 
-    if (excludeTags.size() > 0) {
-      for (String tag : tags) {
-        if (excludeTags.contains(tag)) {
-          add = false;
-          break;
-        }
-      }
-    }
-
-    if (matchTags.size() > 0) {
-      add = false;
-
-      for (String tag : tags) {
-        if (matchTags.contains(tag)) {
-          add = true;
-          break;
-        }
-      }
-    }
-
-    if (!add) {
-      return null;
-    }
-
     IterMap<String, String> attributeMap = getAttributes(splitter, tokens);
 
     // Create the gene
 
-    GenomicEntity gene = addAttributes(GenomicType.TRANSCRIPT,
+    GenomicEntity transcript = addAttributes(GenomicType.TRANSCRIPT,
         GenomicRegion.create(chr, start, end, strand),
         attributeMap);
+
+    transcript.addTags(tags);
 
     List<Integer> starts = TextUtils.splitInts(tokens.get(5),
         TextUtils.SEMI_COLON_DELIMITER);
@@ -359,17 +347,20 @@ public class GTB2Parser extends GTBParser {
       GenomicRegion region = GenomicRegion
           .create(chr, starts.get(i), ends.get(i), strand);
 
-      GenomicEntity exon = addAttributes(GenomicType.EXON, region, attributeMap);
+      GenomicEntity exon = addAttributes(GenomicType.EXON,
+          region,
+          attributeMap);
 
+      //GenomicEntity exon = new Exon(region);
 
-      gene.add(exon);
-      exon.setParent(gene);
+      transcript.add(exon);
+      exon.setParent(transcript);
     }
 
-    processUTR(tokens, gene, attributeMap, 7, GenomicType.UTR_5P, null);
+    processUTR(tokens, transcript, attributeMap, 7, GenomicType.UTR_5P, null);
 
-    processUTR(tokens, gene, attributeMap, 10, GenomicType.UTR_3P, null);
-    
-    return gene;
+    processUTR(tokens, transcript, attributeMap, 10, GenomicType.UTR_3P, null);
+
+    return transcript;
   }
 }

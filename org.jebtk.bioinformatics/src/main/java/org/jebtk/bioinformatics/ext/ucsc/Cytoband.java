@@ -96,7 +96,8 @@ public class Cytoband extends BedRegion {
     List<String> tokens = TextUtils.fastSplit(line, TextUtils.TAB_DELIMITER);
 
     // convert first part to chromosome (replacing x,y and m) {
-    Chromosome chromosome = GenomeService.getInstance().chr(genome, tokens.get(0));
+    Chromosome chromosome = GenomeService.getInstance().chr(genome,
+        tokens.get(0));
 
     // ucsc convention
     int start = Integer.parseInt(tokens.get(1)) + 1;

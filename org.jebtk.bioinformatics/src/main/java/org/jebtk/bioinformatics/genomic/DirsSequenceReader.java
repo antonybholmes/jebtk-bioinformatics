@@ -36,15 +36,6 @@ import java.util.List;
 import org.jebtk.core.io.FileUtils;
 import org.jebtk.core.io.PathUtils;
 
-/**
- * Encodes DNA in a 2 bit file representing ACGT. All other characters such as N
- * map to A. Bases are encoded in two bits, so 4 bases per byte. A = 0, C = 1, G
- * = 2, T = 3. Files can be accompanied by a corresponding n
- * 
- *
- * @author Antony Holmes Holmes
- *
- */
 public abstract class DirsSequenceReader extends SequenceReader {
 
   /** The m directory. */

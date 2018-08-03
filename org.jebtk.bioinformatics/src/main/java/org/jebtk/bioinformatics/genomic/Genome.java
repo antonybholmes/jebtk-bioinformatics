@@ -64,23 +64,23 @@ public class Genome extends GenomeDirs implements NameProperty {
    */
   public static final String NA = TextUtils.NA;
 
-  private Chromosomes mChrs;
+  private ChromosomeDirs mChrs;
 
   private String mName;
-  
-  public Genome(String name) {
+
+  public Genome(String db, String name) {
     this(name, Genome.GENOME_HOME, Genome.GENOME_DIR);
   }
-  
+
   public Genome(String name, Path dir, Path... dirs) {
     super(dir, dirs);
-    
+
     mName = name;
   }
 
   public Genome(String name, Collection<Path> dirs) {
     super(dirs);
-    
+
     mName = name;
   }
 
@@ -89,10 +89,9 @@ public class Genome extends GenomeDirs implements NameProperty {
     return mName;
   }
 
-
-  public Chromosomes chrs() {
+  public ChromosomeDirs chrs() {
     if (mChrs == null) {
-      mChrs = new Chromosomes(mName, mDirs);
+      mChrs = new ChromosomeDirs(mName, mDirs);
     }
 
     return mChrs;

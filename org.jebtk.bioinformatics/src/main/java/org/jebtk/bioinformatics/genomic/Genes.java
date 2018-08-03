@@ -27,156 +27,38 @@
  */
 package org.jebtk.bioinformatics.genomic;
 
-import java.nio.file.Path;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.jebtk.bioinformatics.gapsearch.FixedGapSearch;
-import org.jebtk.core.collections.DefaultHashMap;
-import org.jebtk.core.collections.IterMap;
-import org.jebtk.core.collections.TreeSetCreator;
-import org.jebtk.core.collections.UniqueArrayListCreator;
-import org.jebtk.core.io.PathUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Genes lookup to m.
  *
  * @author Antony Holmes Holmes
  */
-public class Genes extends FixedGapSearch<GenomicEntity> {
-  // private static final GeneService INSTANCE = new GeneService();
-
-  /**
-   * The constant DEFAULT_RES.
-   */
-  public static final String DEFAULT_RES = "res/ucsc_refseq_exons_entrez_hg19.txt.gz";
-
-  /**
-   * The constant DEFAULT_FILE.
-   */
-  public static final Path DEFAULT_FILE = PathUtils.getPath(DEFAULT_RES);
-
-  /**
-   * The constant LOG.
-   */
-  private static final Logger LOG = LoggerFactory.getLogger(Genes.class);
+public abstract class Genes {
 
   /** Empty gene set that can be used as a placeholder */
   public static final Genes EMPTY_GENES = new Genes() {
+
     @Override
-    public void add(GenomicRegion region, GenomicEntity gene) {
-      // Do nothing
+    public Iterable<GeneDb> getGeneDBs() {
+      return Collections.emptyList();
     }
   };
-
-  // public static final GeneService getInstance() {
-  // return INSTANCE;
-  // }
-
-  // private GapSearch<Gene> mPositionMap =
-  // new GappedSearch<Gene>();
-
-  /**
-   * The member position map.
-   */
-  /// private RTree<Gene> mGeneTree =
-  // new RTree<Gene>();
-
-  /**
-   * The member symbol main variant.
-   */
-  private Map<String, GenomicEntity> mSymbolMainVariant = 
-      new HashMap<String, GenomicEntity>();
-
-  /**
-   * The member entrez map.
-   */
-  // private Map<String, Set<Gene>> mEntrezMap =
-  // DefaultHashMap.create(new HashSetCreator<Gene>());
-
-  /**
-   * The member symbol map.
-   */
-
-  private IterMap<String, Set<String>> mTypeMap = DefaultHashMap
-      .create(new TreeSetCreator<String>());
-
-  private IterMap<String, List<GenomicEntity>> mIdMap = DefaultHashMap
-      .create(new UniqueArrayListCreator<GenomicEntity>());
-
-  /**
-   * The member ref seq map.
-   */
-  // private Map<String, Gene> mRefSeqMap =
-  // new HashMap<String, Gene>();
-
-  private boolean mFindMainVariants = true;
-
 
   public void add(GenomicEntity gene) {
     add(gene, gene);
   }
 
-  @Override
   public void add(GenomicRegion region, GenomicEntity gene) {
-    super.add(region, gene);
-
-    // Map to exons
-
-    /*
-     * if (gene.getExonCount() > 0) { for (GenomicRegion exon : gene) {
-     * super.add(exon, gene); } } else { super.add(region, gene); }
-     */
-
-    for (String tid : gene.getIdTypes()) {
-      String name = gene.getId(tid);
-      mTypeMap.get(tid).add(name);
-      mIdMap.get(sanitize(name)).add(gene);
-    }
+    // Do nothing
   }
 
-  /**
-   * Auto find main variants.
-   */
-  public void autoFindMainVariants() {
-
-    if (mFindMainVariants) {
-      //
-      // Find the representative gene e.g. variant 1
-      //
-
-      Set<String> symbols = mTypeMap.get(Gene.SYMBOL_TYPE);
-
-      for (String name : symbols) {
-        List<GenomicEntity> genes = mIdMap.get(sanitize(name));
-
-        // try and find variant 1
-
-        int maxWidth = 0;
-
-        for (GenomicEntity gene : genes) {
-          int width = gene.mLength;
-
-          if (width > maxWidth) {
-            mSymbolMainVariant.put(name, gene);
-
-            maxWidth = width;
-          }
-        }
-      }
-
-      mFindMainVariants = false;
-    }
-
-    // clear to indicate it can be garbage collected.
-    // positionMap.clear();
-    // mSymbolMap.clear();
+  public GenomicEntity getGene(GeneDb g, String id) throws IOException {
+    return getGene(g.getName(), g.getGenome(), id);
   }
 
   /**
@@ -184,31 +66,24 @@ public class Genes extends FixedGapSearch<GenomicEntity> {
    *
    * @param id the id
    * @return the gene
+   * @throws IOException
    */
-  public GenomicEntity lookup(String id) {
-    GenomicEntity gene = getGene(id);
+  // public abstract GenomicEntity lookup(String genome, String id) throws
+  // IOException;
 
-    if (gene != null) {
-      return gene;
-    }
-
-    gene = findMainVariant(id);
-
-    if (gene != null) {
-      return gene;
-    }
-
-    return null;
-  }
-
-  public GenomicEntity getGene(String symbol) {
-    Collection<GenomicEntity> genes = getGenes(symbol);
+  public GenomicEntity getGene(String db, String genome, String id)
+      throws IOException {
+    List<GenomicEntity> genes = getGenes(db, genome, id);
 
     if (genes.size() > 0) {
-      return genes.iterator().next();
+      return genes.get(0);
     } else {
       return null;
     }
+  }
+
+  public List<GenomicEntity> getGenes(GeneDb g, String id) throws IOException {
+    return getGenes(g.getName(), g.getGenome(), id);
   }
 
   /**
@@ -217,9 +92,25 @@ public class Genes extends FixedGapSearch<GenomicEntity> {
    * @param type the type
    * @param symbol the symbol
    * @return the collection
+   * @throws IOException
    */
-  public List<GenomicEntity> getGenes(String symbol) {
-    return mIdMap.get(sanitize(symbol));
+  public List<GenomicEntity> getGenes(String db, String genome, String id)
+      throws IOException {
+    return Collections.emptyList();
+  }
+
+  public List<GenomicEntity> getGenes() throws IOException {
+    return Collections.emptyList();
+  }
+
+  public List<GenomicEntity> findGenes(GeneDb g, String region)
+      throws IOException {
+    return findGenes(g.getName(), g.getGenome(), region);
+  }
+
+  public List<GenomicEntity> findGenes(String db, String genome, String region)
+      throws IOException {
+    return findGenes(db, GenomicRegion.parse(genome, region));
   }
 
   /**
@@ -227,9 +118,11 @@ public class Genes extends FixedGapSearch<GenomicEntity> {
    *
    * @param region the region
    * @return the list
+   * @throws IOException
    */
-  public List<GenomicEntity> findGenes(GenomicRegion region) {
-    return getOverlappingFeatures(region, 10).toList();
+  public List<GenomicEntity> findGenes(String db, GenomicRegion region)
+      throws IOException {
+    return Collections.emptyList();
   }
 
   /**
@@ -237,9 +130,16 @@ public class Genes extends FixedGapSearch<GenomicEntity> {
    *
    * @param region the region
    * @return the list
+   * @throws IOException
    */
-  public List<GenomicEntity> findClosestGenes(GenomicRegion region) {
-    return getClosestFeatures(region);
+  public List<GenomicEntity> findClosestGenes(String db, GenomicRegion region)
+      throws IOException {
+    return Collections.emptyList();
+  }
+
+  public List<GenomicEntity> findClosestGenesByTss(GeneDb g,
+      GenomicRegion region) throws IOException {
+    return findClosestGenesByTss(g.getName(), region);
   }
 
   /**
@@ -247,9 +147,11 @@ public class Genes extends FixedGapSearch<GenomicEntity> {
    *
    * @param region the region
    * @return the list
+   * @throws IOException
    */
-  public List<GenomicEntity> findClosestGenesByTss(GenomicRegion region) {
-    Collection<GenomicEntity> genes = findClosestGenes(region); // findGenes(region);
+  public List<GenomicEntity> findClosestGenesByTss(String db,
+      GenomicRegion region) throws IOException {
+    Collection<GenomicEntity> genes = findClosestGenes(db, region); // findGenes(region);
 
     List<GenomicEntity> ret = new ArrayList<GenomicEntity>();
 
@@ -287,11 +189,9 @@ public class Genes extends FixedGapSearch<GenomicEntity> {
    * @param name the name
    * @return the gene
    */
-  public GenomicEntity findMainVariant(String name) {
-    autoFindMainVariants();
-
-    return mSymbolMainVariant.get(name.toUpperCase());
-  }
+  // public GenomicEntity findMainVariant(String name) {
+  // return null;
+  // }
 
   /**
    * Return the RefSeq ids used to index these genes.
@@ -309,77 +209,29 @@ public class Genes extends FixedGapSearch<GenomicEntity> {
    * @return the ids
    */
   public Iterable<String> getIds(String type) {
-    return mTypeMap.get(type);
+    return Collections.emptyList();
   }
 
-  public Iterable<String> getSymbols() {
-    return getIds(Gene.SYMBOL_TYPE);
+  public Iterable<String> getNames() throws IOException {
+    return getIds(Gene.GENE_NAME_TYPE);
   }
 
-  /*
-  public static GapSearch<GenomicEntity> load(Path file) throws IOException {
-    LOG.info("Parsing {}...", file);
-
-    GapSearch<GenomicEntity> ret = null;
-
-    BufferedReader reader = FileUtils.newBufferedReader(file);
-
-    try {
-      ret = load(GenomeService.getInstance().guessGenome(file), reader);
-    } finally {
-      reader.close();
-    }
-
-    return ret;
+  public boolean contains(Chromosome chr) {
+    return false;
   }
 
-  public static GapSearch<GenomicEntity> load(final String genome, 
-      BufferedReader reader)
-      throws IOException {
-    final Genes ret = new Genes();
+  /**
+   * Should return the supported databases
+   * 
+   * @return
+   */
+  public abstract Iterable<GeneDb> getGeneDBs();
 
-    FileUtils.tokenize(reader, new TokenFunction() {
+  //
+  // Static methods
+  //
 
-      @Override
-      public void parse(List<String> tokens) {
-        String refseq = tokens.get(1);
-        String entrez = tokens.get(2);
-        String symbol = tokens.get(5);
-        Chromosome chr = GenomeService.getInstance().chr(genome, tokens.get(8));
-        Strand strand = Strand.parse(tokens.get(9)); // .charAt(0);
-        // Because of the UCSC using zero based start and one
-        // based end, we need to increment the start by 1
-        int start = Integer.parseInt(tokens.get(10)) + 1;
-        int end = Integer.parseInt(tokens.get(11));
-
-        GenomicEntity gene = new Transcript(
-                new GenomicRegion(chr, start, end, strand))
-            .setSymbol(symbol).setRefseq(refseq).setEntrez(entrez);
-
-        List<Integer> starts = TextUtils.splitInts(tokens.get(13),
-            TextUtils.COMMA_DELIMITER);
-
-        List<Integer> ends = TextUtils.splitInts(tokens.get(14),
-            TextUtils.COMMA_DELIMITER);
-
-        for (int i = 0; i < starts.size(); ++i) {
-          // Again correct for the ucsc
-          GenomicRegion exon = GenomicRegion
-              .create(chr, starts.get(i) + 1, ends.get(i));
-
-          gene.add(new Exon(exon));
-        }
-
-        // add the start and end to the positionMap
-        ret.add(gene, gene);
-      }
-    });
-
-    return ret;
-  }
-  */
-
-  protected static String sanitize(String name) {
+  public static String sanitize(String name) {
     return name.toUpperCase();
   }
 
@@ -395,4 +247,32 @@ public class Genes extends FixedGapSearch<GenomicEntity> {
     return new GTB2Parser();
   }
 
+  public List<GenomicEntity> getOverlappingGenes(String db,
+      GenomicRegion region,
+      int minBp) throws IOException {
+    List<GenomicEntity> ret = new ArrayList<GenomicEntity>();
+
+    getOverlappingGenes(db, region, minBp, ret);
+
+    return ret;
+  }
+
+  public void getOverlappingGenes(String db,
+      GenomicRegion region,
+      int minBp,
+      List<GenomicEntity> ret) throws IOException {
+    List<GenomicEntity> genes = findGenes(db, region);
+
+    if (genes.size() == 0) {
+      return;
+    }
+
+    for (GenomicEntity g : genes) {
+      GenomicRegion overlap = GenomicRegion.overlap(region, g);
+
+      if (overlap != null && overlap.getLength() > minBp) {
+        ret.add(g);
+      }
+    }
+  }
 }

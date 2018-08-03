@@ -33,6 +33,12 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jebtk.bioinformatics.DataSource;
+import org.jebtk.bioinformatics.genomic.SequenceReader;
+import org.jebtk.bioinformatics.genomic.GenomicRegion;
+import org.jebtk.bioinformatics.genomic.RepeatMaskType;
+import org.jebtk.bioinformatics.genomic.Sequence;
+import org.jebtk.bioinformatics.genomic.SequenceRegion;
 import org.jebtk.core.json.Json;
 import org.jebtk.core.json.JsonParser;
 import org.jebtk.core.network.UrlBuilder;
@@ -43,134 +49,129 @@ import org.jebtk.core.network.UrlBuilder;
  *
  * @author Antony Holmes Holmes
  */
-public class URLGenes extends GenesDb {
-
+public class WebSequenceReader extends SequenceReader {
   /**
    * The member url.
    */
   private UrlBuilder mUrl;
 
   /**
-   * The member gene url.
-   */
-  private UrlBuilder mGeneUrl;
-
-  /**
-   * The member main url.
-   */
-  private UrlBuilder mMainUrl;
-
-  /**
    * The member parser.
    */
   private JsonParser mParser;
 
+  /** The m genomes url. */
+  private UrlBuilder mGenomesUrl;
+
+  /** The m dna url. */
+  private UrlBuilder mDnaUrl;
+
   /**
-   * Instantiates a new genes web.
+   * Instantiates a new genome assembly web.
    *
    * @param url the url
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public URLGenes(URL url) throws IOException {
+  public WebSequenceReader(URL url) throws IOException {
     mUrl = new UrlBuilder(url);
 
-    mGeneUrl = new UrlBuilder(mUrl).resolve("gene");
-
-    mMainUrl = new UrlBuilder(mUrl).resolve("gene").resolve("main");
+    mDnaUrl = mUrl.resolve("dna");
+    mGenomesUrl = mUrl.resolve("genomes");
 
     mParser = new JsonParser();
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see edu.columbia.rdf.lib.bioinformatics.genome.GenesDb#getGenes(java.lang.
-   * String)
-   */
   @Override
-  public List<Gene> getGenes(String id) throws IOException {
-    List<Gene> genes = new ArrayList<Gene>();
-
-    try {
-      URL url = new UrlBuilder(mGeneUrl).resolve(id).toURL();
-
-      Json json = mParser.parse(url);
-
-      for (int i = 0; i < json.size(); ++i) {
-        Json geneJson = json.get(i);
-
-        Gene gene = new RdfGene(geneJson.getString("rdf"),
-            geneJson.getString("refseq"), geneJson.getString("entrez"),
-            geneJson.getString("symbol"),
-            GenomicRegion.create(
-                GenomeService.getInstance().chr(Genome.HG19,
-                    geneJson.getString("chr")),
-                geneJson.getInt("start"),
-                geneJson.getInt("end"),
-                Strand.parse(geneJson.getChar("strand"))));
-
-        Json exonStartsJson = geneJson.get("exon_starts");
-        Json exonEndsJson = geneJson.get("exon_ends");
-
-        for (int j = 0; j < exonStartsJson.size(); ++j) {
-          GenomicRegion exon = GenomicRegion.create(gene.mChr,
-              exonStartsJson.get(j).getInt(),
-              exonEndsJson.get(j).getInt());
-
-          gene.addExon(exon);
-        }
-
-        genes.add(gene);
-      }
-    } catch (MalformedURLException e) {
-      e.printStackTrace();
-    }
-
-    return genes;
+  public String getName() {
+    return "http";
   }
 
   /*
    * (non-Javadoc)
    * 
    * @see
-   * edu.columbia.rdf.lib.bioinformatics.genome.GenesDb#getMainGene(java.lang.
-   * String)
+   * edu.columbia.rdf.lib.bioinformatics.genome.GenomeAssembly#getSequence(edu.
+   * columbia.rdf.lib.bioinformatics.genome.GenomicRegion, boolean,
+   * edu.columbia.rdf.lib.bioinformatics.genome.RepeatMaskType)
    */
   @Override
-  public Gene getMainGene(String id) throws IOException {
-    Gene gene = null;
+  public SequenceRegion getSequence(GenomicRegion region,
+      boolean displayUpper,
+      RepeatMaskType repeatMaskType) throws IOException {
+    URL url;
 
     try {
-      URL url = new UrlBuilder(mMainUrl).resolve(id).toURL();
+      UrlBuilder tmpUrl = mDnaUrl.resolve(region.getGenome())
+          .resolve(region.getChr().toString()).resolve(region.getStart())
+          .resolve(region.getEnd()).param("strand", "s")
+          .param("display", displayUpper ? "u" : "l");
+
+      switch (repeatMaskType) {
+      case UPPERCASE:
+        tmpUrl = tmpUrl.param("mask", "u");
+        break;
+      case N:
+        tmpUrl = tmpUrl.param("mask", "n");
+        break;
+      default:
+        tmpUrl = tmpUrl.param("mask", "l");
+        break;
+      }
+
+      url = tmpUrl.toURL();
+
+      // System.err.println(url);
 
       Json json = mParser.parse(url);
 
-      Json geneJson = json.get(0);
+      String dna = json.get("seq").getString();
 
-      gene = new RdfGene(geneJson.get("rdf").getString(),
-          geneJson.getString("refseq"), geneJson.getString("entrez"),
-          geneJson.getString("symbol"),
-          GenomicRegion.create(
-              GenomeService.getInstance().chr(Genome.HG19,
-                  geneJson.getString("chr")),
-              geneJson.getInt("start"),
-              geneJson.getInt("end"),
-              Strand.parse(geneJson.getChar("strand"))));
+      SequenceRegion ret = new SequenceRegion(region, Sequence.create(dna));
 
-      Json exonStartsJson = geneJson.get("exon_starts");
-      Json exonEndsJson = geneJson.get("exon_ends");
+      return ret;
+    } catch (MalformedURLException e) {
+      e.printStackTrace();
+    }
 
-      for (int j = 0; j < exonStartsJson.size(); ++j) {
-        GenomicRegion exon = GenomicRegion.create(gene.mChr,
-            exonStartsJson.get(j).getInt(),
-            exonEndsJson.get(j).getInt());
+    return null;
+  }
 
-        gene.addExon(exon);
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.jebtk.bioinformatics.genome.GenomeAssembly#getGenomes()
+   */
+  @Override
+  public List<String> getGenomes() throws IOException {
+
+    List<String> ret = new ArrayList<String>(100);
+
+    URL url;
+
+    try {
+      url = mGenomesUrl.toURL();
+
+      // System.err.println(url);
+
+      Json json = mParser.parse(url);
+
+      for (int i = 0; i < json.size(); ++i) {
+        ret.add(json.get(i).getString());
       }
     } catch (MalformedURLException e) {
       e.printStackTrace();
     }
 
-    return gene;
+    return ret;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.jebtk.bioinformatics.genome.GenomeAssembly#getDataSource()
+   */
+  @Override
+  public DataSource getDataSource() {
+    return DataSource.WEB;
   }
 }

@@ -27,57 +27,28 @@
  */
 package org.jebtk.bioinformatics.genomic;
 
-import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.jebtk.bioinformatics.dna.Ext2BitMemSequenceReader;
-import org.jebtk.core.io.FileUtils;
+import org.jebtk.core.collections.CollectionUtils;
 
 /**
- * Encodes DNA in a 2 bit file representing ACGT. All other characters such as N
- * map to A. Bases are encoded in two bits, so 4 bases per byte. A = 0, C = 1, G
- * = 2, T = 3. Files can be accompanied by a corresponding n
- * 
+ * Represents a genes collection attached to a single database source.
  *
  * @author Antony Holmes Holmes
- *
  */
-public abstract class GenomesSequenceReader extends DirsSequenceReader {
+public abstract class SingleDbGenes extends Genes {
+  protected final String mDb;
 
-  /** The m map. */
-  protected Map<String, SequenceReader> mGenomeMap = new HashMap<String, SequenceReader>();
+  protected final String mGenome;
 
-  /**
-   * Directory containing genome Paths which must be of the form chr.n.txt. Each
-   * Path must contain exactly one line consisting of the entire chromosome.
-   *
-   * @param directory the directory
-   */
-  public GenomesSequenceReader(Path dir, Path... dirs) {
-    super(dir, dirs);
+  private GeneDb mG;
+
+  public SingleDbGenes(String db, String genome) {
+    mDb = db;
+    mGenome = genome;
+    mG = new GeneDb(db, genome);
   }
 
   @Override
-  public String getName() {
-    return "genomes";
-  }
-
-  @Override
-  public SequenceReader getReader(String genome) {
-    if (!mGenomeMap.containsKey(genome)) {
-      for (Path dir : mDirs) {
-        if (FileUtils.isDirectory(dir)) {
-          Path d = dir.resolve(genome);
-
-          if (FileUtils.isDirectory(d)) {
-            mGenomeMap.put(genome, new Ext2BitMemSequenceReader(d)); // new
-            // GenomeAssemblyExt2Bit(dir));
-          }
-        }
-      }
-    }
-
-    return mGenomeMap.get(genome);
+  public Iterable<GeneDb> getGeneDBs() {
+    return CollectionUtils.asList(mG);
   }
 }

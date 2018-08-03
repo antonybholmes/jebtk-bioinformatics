@@ -39,22 +39,22 @@ import java.util.List;
  *
  */
 public class GenomeDirs {
-  
+
   protected List<Path> mDirs = new ArrayList<Path>();
 
   public GenomeDirs() {
-    
+
   }
-  
+
   public GenomeDirs(Collection<Path> dirs) {
     mDirs.addAll(dirs);
   }
-  
+
   public GenomeDirs(Path dir, Path... dirs) {
     // Do nothing
 
     mDirs.add(dir);
-    
+
     for (Path d : dirs) {
       mDirs.add(d);
     }
@@ -64,7 +64,7 @@ public class GenomeDirs {
    * Set the directory where to search for genomes.
    * 
    * @param dir
-   * @return 
+   * @return
    */
   public GenomeDirs addDir(Path dir) {
     mDirs.add(dir);

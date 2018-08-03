@@ -1,3 +1,18 @@
+/**
+ * Copyright 2018 Antony Holmes
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package org.jebtk.bioinformatics.genomic;
 
@@ -12,62 +27,172 @@ import java.util.List;
 import java.util.Set;
 
 import org.jebtk.core.collections.ArrayUtils;
-import org.jebtk.core.collections.CollectionUtils;
+import org.jebtk.core.collections.UniqueArrayList;
 import org.jebtk.core.io.FileUtils;
 import org.jebtk.core.io.PathUtils;
+import org.jebtk.core.text.Join;
+import org.jebtk.core.text.TextUtils;
 
 /**
- * Encode genes in a binary format for quick lookup.
+ * Encode genes in binary binned format.
  *
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  */
-public class GFBGenes {
+public class GFBGenes extends SingleDbGenes {
 
-  public static final byte INT_BYTES = 4;
-  public static final byte GENOME_BYTES = 8;
-  public static final byte GENOME_BYTES_USABLE = GENOME_BYTES - 1;
-  private static final byte[] BUFFER = new byte[64];
-  private static final long WINDOW_BYTE_OFFSET = 1 + 1 + GENOME_BYTES;
-  private static final long BINS_BYTE_OFFSET = WINDOW_BYTE_OFFSET + INT_BYTES;
-  public static final byte TAG_BYTES = 16;
-  public static final byte TAG_BYTES_USABLE = TAG_BYTES - 1;
-  public static final byte ID_TYPE_BYTES = 16; // * BYTES_PER_INT;
-  public static final byte ID_TYPE_BYTES_USABLE = ID_TYPE_BYTES - 1;
-  public static final byte ID_VALUE_BYTES = 30;// * BYTES_PER_INT;
-  public static final byte ID_VALUE_BYTES_USABLE = ID_VALUE_BYTES - 1;
+  /** The buffer. */
+  private final byte[] mBuffer = new byte[256];
 
-  public static final byte HEADER_BYTES = 1 + 1 + GFBGenes.GENOME_BYTES
-      + GFBGenes.INT_BYTES + GFBGenes.INT_BYTES;
+  /** The bin addresses. */
+  private final int[] mBinAddresses = new int[300000];
 
-  public static final byte ID_BYTES = ID_TYPE_BYTES + ID_VALUE_BYTES;
+  /** The gene addresses. */
+  private final int[] mGeneAddresses = new int[200000];
 
-  private static final int[] GENE_ADDRESSES = new int[128];
+  /** keep track of which addresses are used during a search **/
+  // private final boolean[] mUsed = new boolean[200000];
 
-  private Path mDir;
-  private String mGenome;
+  private final GenomicEntity[] mGenes = new GenomicEntity[200000];
+
+  /**
+   * The Constant INT_BYTES represents the bytes used by a 32bit number (8 * 4)
+   */
+  public static final int INT_BYTES = 4;
+
+  /** The Constant VERSION_OFFSET. */
+  private static final int VERSION_BYTE_OFFSET = INT_BYTES;
+
+  /** The Constant DESCRIPTION_OFFSET. */
+  // private static final int DESCRIPTION_BYTE_OFFSET = VERSION_BYTE_OFFSET + 1;
+
+  /** The Constant DESCRIPTION_BYTES. */
+  // public static final int DESCRIPTION_BYTES = 16;
+
+  /** The Constant DESCRIPTION_BYTES_USABLE. */
+  // public static final int DESCRIPTION_BYTES_USABLE = DESCRIPTION_BYTES - 1;
+
+  /** The Constant WINDOW_BYTE_OFFSET. */
+  public static final int GENES_BYTES_OFFSET = VERSION_BYTE_OFFSET + 1;
+
+  public static final int RADIX_BYTES_OFFSET = GENES_BYTES_OFFSET + INT_BYTES;
+
+  /** The Constant WINDOW_BYTE_OFFSET. */
+  private static final int WINDOW_BYTE_OFFSET = RADIX_BYTES_OFFSET;
+
+  /** The Constant BINS_BYTE_OFFSET. */
+  private static final int BINS_BYTE_OFFSET = WINDOW_BYTE_OFFSET + INT_BYTES;
+
+  /** The Constant HEADER_BYTES is where the bins start */
+  public static final int HEADER_BYTES_OFFSET = BINS_BYTE_OFFSET + INT_BYTES; // GFBGenes.INT_BYTES
+  // + 1 +
+  // GFBGenes.DESCRIPTION_BYTES
+  // +
+  // GFBGenes.INT_BYTES
+  // +
+  // GFBGenes.INT_BYTES;
+
+  public static final int RADIX_TREE_PREFIX_BYTES = 1 + INT_BYTES;
+
+  public static final int GENOMIC_TYPE_GENE = 1;
+  public static final int GENOMIC_TYPE_TRANSCRIPT = 2;
+  public static final int GENOMIC_TYPE_EXON = 4;
+
+  private final Path mDir;
+
+  /** The m window. */
   private int mWindow;
 
-  public GFBGenes(String genome, int window, Path dir) {
-    mGenome = genome;
+  private int mAddress;
+
+  private long mPos;
+
+  private int mAddress2;
+
+  /**
+   * Instantiates a new GFB genes.
+   *
+   * @param genome the genome
+   * @param window the window
+   * @param dir the dir
+   */
+  public GFBGenes(String db, String genome, int window, Path dir) {
+    super(db, genome);
+
     mWindow = window;
     mDir = dir;
   }
 
+  /**
+   * Find genes.
+   *
+   * @param region the region
+   * @return the list
+   * @throws IOException Signals that an I/O exception has occurred.
+   */
   public List<GenomicEntity> findGenes(String region) throws IOException {
-    return findGenes(GenomicRegion.parse(mGenome, region));
+    return findGenes(region, GenomicType.GENE);
   }
   
-  public List<GenomicEntity> findGenes(GenomicRegion region)
-      throws IOException {
-    return findGenes(region.mChr, region.mStart, region.mEnd);
+  public List<GenomicEntity> findGenes(String region, GenomicType type) throws IOException {
+    return findGenes(GenomicRegion.parse(mGenome, region), type);
   }
 
-  public List<GenomicEntity> findGenes(Chromosome chr, int start, int end)
+  /**
+   * Find genes.
+   *
+   * @param region the region
+   * @return the list
+   * @throws IOException Signals that an I/O exception has occurred.
+   */
+  @Override
+  public List<GenomicEntity> findGenes(String db, GenomicRegion region)
       throws IOException {
-    List<GenomicEntity> ret = new ArrayList<GenomicEntity>();
+    return findGenes(region, GenomicType.GENE);
+  }
 
+  public List<GenomicEntity> findGenes(GenomicRegion region, GenomicType type)
+      throws IOException {
+    return findGenes(region.mChr, region.mStart, region.mEnd, type);
+  }
+
+  /**
+   * Find genes.
+   *
+   * @param chr the chr
+   * @param start the start
+   * @param end the end
+   * @return the list
+   * @throws IOException Signals that an I/O exception has occurred.
+   */
+  public List<GenomicEntity> findGenes(Chromosome chr,
+      int start,
+      int end,
+      GenomicType type) throws IOException {
+
+    int n = _findGenes(chr, start, end, type);
+
+    return overlappingGenes(chr, start, end, n);
+  }
+
+  /**
+   * Find genes in the blocks spanning the coordinates. These are the genes most
+   * likely to be overlapping the region of interest. A further test is required
+   * to test for overlap. This method is designed to narrow down the list of
+   * genes
+   * 
+   * @param chr
+   * @param start
+   * @param end
+   * @param genes
+   * @return
+   * @throws IOException
+   */
+  private int _findGenes(Chromosome chr, int start, int end, GenomicType type)
+      throws IOException {
     int sb = start / mWindow;
     int eb = end / mWindow;
+
+    int n = 0;
 
     int[] bins = ArrayUtils.array(sb, eb);
 
@@ -76,255 +201,827 @@ public class GFBGenes {
     RandomAccessFile reader = FileUtils.newRandomAccess(file);
 
     try {
-      System.err.println(getVersion(reader));
-      System.err.println(getGenome(reader));
-      System.err.println(getWindow(reader));
-      System.err.println(getBins(reader));
+      // System.err.println(getVersion(reader));
+      // System.err.println(getDescription(reader));
+      // System.err.println(getWindow(reader));
+      // System.err.println(getBins(reader));
 
-      int[] binAddresses = getBinAddresses(reader, bins);
+      n = binAddressesFromBins(reader, bins);
 
-      int n = getGeneAddresses(reader, binAddresses, GENE_ADDRESSES);
+      n = geneAddressesFromBins(reader, n);
 
-      Gene[] genes = getGenes(reader, chr, GENE_ADDRESSES, n);
-
-      /*
-      for (Gene gene : genes) {
-        System.err.println(gene);
-      }
-
-      for (Gene gene : getOverlappingGenes(region, genes)) {
-        System.err.println("overlap " + gene);
-      }
-      */
+      n = genesFromGeneAddresses(reader, n, type);
       
-      ret.addAll(getOverlappingGenes(chr, start, end, genes));
-
-      /*
-       * for (int b = sb; b <= eb; ++b) { int binAddress = getBinAddress(reader,
-       * b);
-       * 
-       * System.err.println("bin " + b + " " + binAddress);
-       * 
-       * int[] geneAddresses = getGeneAddresses(reader, binAddress);
-       * 
-       * System.err.println("genes " + Arrays.toString(geneAddresses));
-       * 
-       * List<Gene> genes = getGenes(reader, region.mChr, geneAddresses);
-       * 
-       * for (Gene gene : genes) { System.err.println(gene); } }
-       */
-
+      System.err.println("find genes n " + n);
     } finally {
       reader.close();
     }
 
-    return ret;
+    return n;
   }
 
-  public List<Gene> getOverlappingGenes(Chromosome chr, int start, int end, Gene[] genes) {
-    return getOverlappingGenes(chr, start, end, genes, 1);
-  }
+  @Override
+  public List<GenomicEntity> getGenes() throws IOException {
+    Path file = mDir.resolve(getRadixFileName(mGenome));
 
-  public List<Gene> getOverlappingGenes(Chromosome chr, int start, int end,
-      Gene[] genes,
-      int minBp) {
-    if (CollectionUtils.isNullOrEmpty(genes)) {
-      return Collections.emptyList();
-    }
-
-    List<Gene> ret = new ArrayList<Gene>(genes.length);
-
-    for (Gene gene : genes) {
-      GenomicRegion overlap = GenomicRegion.overlap(chr, start, end, gene);
-
-      if (overlap == null || (minBp != -1 && overlap.getLength() < minBp)) {
-        continue;
-      }
-
-      ret.add(gene);
-    }
-
-    return ret;
-  }
-
-  public static int getBinAddress(RandomAccessFile reader, int bin)
-      throws IOException {
-    reader.seek(HEADER_BYTES + bin * INT_BYTES);
-
-    return reader.readInt();
-  }
-
-  public static int[] getBinAddresses(RandomAccessFile reader, int[] bins)
-      throws IOException {
-    int l = bins.length;
-
-    int[] ret = new int[l];
-
-    for (int i = 0; i < l; ++i) {
-      ret[i] = getBinAddress(reader, bins[i]);
-    }
-
-    return ret;
-  }
-
-  public static int[] getGeneAddresses(RandomAccessFile reader, int binAddress)
-      throws IOException {
-    reader.seek(binAddress);
-
-    int size = reader.readInt();
-
-    int[] ret = new int[size];
-
-    for (int i = 0; i < size; ++i) {
-      ret[i] = reader.readInt();
-    }
-
-    return ret;
-  }
-
-  public static int getGeneAddresses(RandomAccessFile reader,
-      final int[] binAddresses,
-      int[] geneAddresses) throws IOException {
+    RandomAccessFile reader = FileUtils.newRandomAccess(file);
 
     int n = 0;
 
-    Set<Integer> used = new HashSet<Integer>();
-    
+    try {
+      int address = readGenesAddress(reader);
+
+      n = readAllGenes(reader, address, GenomicType.GENE);
+    } finally {
+      reader.close();
+    }
+
+    return ArrayUtils.toList(mGenes, n);
+  }
+
+  public List<GenomicEntity> getGenes(String id) throws IOException {
+    return getGenes(id, GenomicType.GENE);
+  }
+
+  @Override
+  public List<GenomicEntity> getGenes(String db, String genome, String id)
+      throws IOException {
+    return getGenes(id, GenomicType.GENE);
+  }
+
+  public List<GenomicEntity> getGenes(String id, GenomicType type)
+      throws IOException {
+    Path file = mDir.resolve(getRadixFileName(mGenome));
+
+    RandomAccessFile reader = FileUtils.newRandomAccess(file);
+
+    int n = 0;
+
+    try {
+      n = geneAddressesFromRadix(reader, id);
+
+      n = genesFromGeneAddresses(reader, n, type);
+    } finally {
+      reader.close();
+    }
+
+    return ArrayUtils.toList(mGenes, n);
+  }
+
+  @Override
+  public List<GenomicEntity> findClosestGenes(String db, GenomicRegion region)
+      throws IOException {
+    return findClosestGenes(region);
+  }
+  
+  public List<GenomicEntity> findClosestGenes(GenomicRegion region)
+      throws IOException {
+    return findClosestGenes(region, GenomicType.GENE);
+  }
+  
+  public List<GenomicEntity> findClosestGenes(GenomicRegion region, GenomicType type)
+      throws IOException {
+    return findClosestGenes(region.mChr, region.mStart, region.mEnd, type);
+  }
+
+  public List<GenomicEntity> findClosestGenes(Chromosome chr,
+      int start,
+      int end) throws IOException {
+    return findClosestGenes(chr, start, end, GenomicType.GENE);
+  }
+
+  public List<GenomicEntity> findClosestGenes(Chromosome chr,
+      int start,
+      int end,
+      GenomicType type) throws IOException {
+
+    int n = _findGenes(chr, start, end, type);
+
+    return findClosestGenes(chr, start, end, n);
+  }
+
+  private List<GenomicEntity> findClosestGenes(Chromosome chr,
+      int start,
+      int end,
+      int n) {
+    if (n < 1) {
+      return Collections.emptyList();
+    }
+
+    List<GenomicEntity> ret = new ArrayList<GenomicEntity>(n);
+
+    int mid = GenomicRegion.mid(start, end);
+    int minD = Integer.MAX_VALUE;
+
+    for (int i = 0; i < n; ++i) {
+      GenomicEntity gene = mGenes[i];
+
+      int d = Math.abs(mid - gene.getStart()); // GenomicRegion.mid(gene));
+
+      if (d < minD) {
+        minD = d;
+      }
+    }
+
+    for (int i = 0; i < n; ++i) {
+      GenomicEntity gene = mGenes[i];
+
+      int d = Math.abs(mid - gene.getStart()); // GenomicRegion.mid(gene));
+
+      if (d == minD) {
+        ret.add(gene);
+      }
+    }
+
+    return ret;
+  }
+
+  /**
+   * Gets the overlapping genes.
+   *
+   * @param chr the chr
+   * @param start the start
+   * @param end the end
+   * @param genes the genes
+   * @return the overlapping genes
+   */
+  private List<GenomicEntity> overlappingGenes(Chromosome chr,
+      int start,
+      int end,
+      int n) {
+    return overlappingGenes(chr, start, end, n, 1);
+  }
+
+  /**
+   * Gets the overlapping genes.
+   *
+   * @param chr the chr
+   * @param start the start
+   * @param end the end
+   * @param genes the genes
+   * @param minBp the min bp
+   * @return the overlapping genes
+   */
+  private List<GenomicEntity> overlappingGenes(Chromosome chr,
+      int start,
+      int end,
+      int n,
+      int minBp) {
+    if (n < 1) {
+      return Collections.emptyList();
+    }
+
+    List<GenomicEntity> ret = new ArrayList<GenomicEntity>(n);
+
+    for (int i = 0; i < n; ++i) {
+      GenomicEntity gene = mGenes[i];
+
+      GenomicRegion overlap = GenomicRegion.overlap(chr, start, end, gene);
+
+      if (overlap != null && (overlap.getLength() >= minBp)) {
+        ret.add(gene);
+      }
+    }
+
+    return ret;
+  }
+
+  /**
+   * Gets the bin addresses in the files for a list of bins.
+   *
+   * @param reader the reader
+   * @param bins a list of bins.
+   * @param addresses array that will be populated with the bin addresses in the
+   *          same order as bins.
+   * @return the number of bins.
+   * @throws IOException Signals that an I/O exception has occurred.
+   */
+  private int binAddressesFromBins(RandomAccessFile reader, final int[] bins)
+      throws IOException {
+    int n = bins.length;
+
+    for (int i = 0; i < n; ++i) {
+      mBinAddresses[i] = readBinAddress(reader, bins[i]);
+    }
+
+    return n;
+  }
+
+  /**
+   * Get the gene addresses from a selection of bin addresses, removing
+   * duplicates. A Gene address corresponds to a gene transcript.
+   *
+   * @param reader a GFB binary file.
+   * @param binAddresses an array of bin addresses
+   * @param n how many bin addresses are in use.
+   * @param geneAddresses an array of gene addresses that will be populated with
+   *          results.
+   * @return the gene addresses
+   * @throws IOException Signals that an I/O exception has occurred.
+   */
+  private int geneAddressesFromBins(RandomAccessFile reader, int n)
+      throws IOException {
+
+    int retn = 0;
+
+    // bin address
+    int ba;
+
     // Gene address
     int ga;
-    
+
     // How many genes are in the bin
     int size;
-    
-    for (int ba : binAddresses) {
-      //System.err.println("bin address:" + ba);
-      
+
+    Set<Integer> used = new HashSet<Integer>();
+
+    for (int i = 0; i < n; ++i) {
+      ba = mBinAddresses[i];
+
       reader.seek(ba);
-      
+
       size = reader.readInt();
 
       // Read how many addresses are in the bin and then extract them
-      for (int i = 0; i < size; ++i) {
+      for (int j = 0; j < size; ++j) {
         ga = reader.readInt();
 
+        // Remove duplicates
         if (!used.contains(ga)) {
-          geneAddresses[n++] = ga;
+          mGeneAddresses[retn++] = ga;
           used.add(ga);
         }
       }
     }
 
     // Return the number of genes we found
+    return retn;
+  }
+
+  /**
+   * Loads genes from an array of gene addresses
+   *
+   * @param reader the reader
+   * @param chr the chr
+   * @param addresses the addresses
+   * @param n the n
+   * @return the genes
+   * @throws IOException Signals that an I/O exception has occurred.
+   */
+  private int genesFromGeneAddresses(RandomAccessFile reader,
+      int n,
+      GenomicType type) throws IOException {
+    int retn = 0;
+
+    // Clear the used array
+    // Arrays.fill(mUsed, false);
+
+    for (int i = 0; i < n; ++i) {
+      // System.err.println("address " + i + " " + addresses[i]);
+
+      // Skip to address of gene
+      reader.seek(mGeneAddresses[i]);
+
+      retn = readGene(reader, retn, type); // readTranscript(reader, type, retn,
+                                           // null, genes); //
+
+      /*
+       * int id = reader.readInt();
+       * 
+       * //System.err.println("id " + id);
+       * 
+       * // If this gene is already in use, skip adding it again if (mUsed[id])
+       * { continue; }
+       * 
+       * // Flag that we have used this gene mUsed[id] = true;
+       * 
+       * Chromosome chr = new Chromosome(readVarchar(reader), mGenome); int
+       * start = reader.readInt(); int end = reader.readInt();
+       * 
+       * gene = new Gene(GenomicRegion.create(chr, start, end));
+       * 
+       * // // Exons //
+       * 
+       * int w = reader.readByte();
+       * 
+       * for (int j = 0; j < w; ++j) { Exon exon = new Exon(
+       * GenomicRegion.create(chr, reader.readInt(), reader.readInt()));
+       * 
+       * // System.err.println("exon " + exon);
+       * 
+       * gene.addExon(exon); }
+       * 
+       * // // Ids //
+       * 
+       * w = reader.readByte();
+       * 
+       * for (int j = 0; j < w; ++j) {
+       * 
+       * // Read type String type = readVarchar(reader);
+       * 
+       * // Read value String name = readVarchar(reader);
+       * 
+       * gene.setId(type, name); }
+       * 
+       * // // Tags //
+       * 
+       * w = reader.readByte();
+       * 
+       * for (int j = 0; j < w; ++j) { gene.addTag(readVarchar(reader)); }
+       * 
+       * // Add gene to array genes[retn++] = gene;
+       */
+    }
+
+    return retn;
+  }
+
+  /**
+   * Read all the genes.
+   * 
+   * @param reader
+   * @param address
+   * @param genes
+   * @return
+   * @throws IOException
+   */
+  private int readAllGenes(RandomAccessFile reader,
+      final int address,
+      GenomicType type) throws IOException {
+    int retn = 0;
+
+    // Clear the used array
+    // Arrays.fill(mUsed, false);
+
+    reader.seek(address);
+
+    int n = reader.readInt();
+
+    for (int i = 0; i < n; ++i) {
+      // Read all the genes
+      retn = readGene(reader, retn, type);
+    }
+
+    return retn;
+  }
+
+  private int readGene(RandomAccessFile reader, int index, GenomicType type)
+      throws IOException {
+    // System.err.println("Reading gene");
+
+    GenomicEntity gene = readEntity(reader, GenomicType.GENE);
+
+    int n = reader.readByte();
+
+    for (int i = 0; i < n; ++i) {
+      // If type requested is not a gene, pass null to indicate that the
+      // transcripts should not add themselves to the gene
+      index = readTranscript(reader, index, type, type == GenomicType.GENE ? gene : null);
+    }
+
+    if (type == GenomicType.GENE) {
+      mGenes[index++] = gene;
+    }
+
+    return index;
+  }
+
+  private int readTranscript(RandomAccessFile reader,
+      int index,
+      GenomicType type,
+      GenomicEntity gene) throws IOException {
+    //System.err.println("Reading transcript");
+
+    GenomicEntity transcript = readEntity(reader, GenomicType.TRANSCRIPT);
+
+    int n = reader.readByte();
+
+    for (int i = 0; i < n; ++i) {
+      index = readExon(reader, index, type, gene, type != GenomicType.EXON ? transcript : null);
+    }
+
+    if (gene != null) {
+      gene.add(transcript);
+    }
+
+    if (type == GenomicType.TRANSCRIPT) {
+      mGenes[index++] = transcript;
+    }
+
+    return index;
+  }
+
+  private int readExon(RandomAccessFile reader,
+      int index,
+      GenomicType type,
+      GenomicEntity gene,
+      GenomicEntity transcript) throws IOException {
+    // System.err.println("Reading exon");
+
+    GenomicEntity exon = readEntity(reader, GenomicType.EXON);
+
+    // skip byte for exon child count, since exons cannot have children
+    // so this byte is always set to zero.
+    reader.skipBytes(1);
+
+    if (transcript != null) {
+      transcript.add(exon);
+    }
+
+    if (type == GenomicType.EXON) {
+      mGenes[index++] = exon;
+    }
+
+    return index;
+  }
+
+  private GenomicEntity readEntity(RandomAccessFile reader, GenomicType type)
+      throws IOException {
+
+    // Skip id (int) and type (byte)
+    reader.skipBytes(INT_BYTES + 1); // .readInt();
+
+    GenomicRegion l = readLocation(reader);
+
+    GenomicEntity gene;
+
+    switch (type) {
+    case GENE:
+      gene = new Gene(l);
+      break;
+    case EXON:
+      gene = new Exon(l);
+      break;
+    default:
+      // Assume everything is a transcript
+      gene = new Transcript(l);
+      break;
+    }
+
+    // System.err.println("location " + l + " " + type);
+
+    readIds(reader, gene);
+
+    readTags(reader, gene);
+
+    return gene;
+  }
+
+  private GenomicRegion readLocation(RandomAccessFile reader)
+      throws IOException {
+    Chromosome chr = new Chromosome(readVarchar(reader), mGenome);
+
+    int start = reader.readInt();
+    int end = reader.readInt();
+
+    return GenomicRegion.create(chr, start, end);
+  }
+
+  /**
+   * Read ids and add them to a genomic entity, e.g. read gene symbol and add to
+   * a transcript.
+   * 
+   * @param reader
+   * @param e
+   * @return
+   * @throws IOException
+   */
+  private int readIds(RandomAccessFile reader, GenomicEntity e)
+      throws IOException {
+    int n = reader.readByte();
+
+    //System.err.println("Read ids " + n);
+
+    for (int i = 0; i < n; ++i) {
+      readId(reader, e);
+    }
+
+    return n;
+  }
+  
+  private void readId(RandomAccessFile reader, GenomicEntity e) 
+      throws IOException {
+
+    mAddress = reader.readInt();
+    mAddress2 = reader.readInt();
+    
+    mPos = reader.getFilePointer();
+    
+    //System.err.println("Read ids " + mAddress + " " + mAddress2);
+    
+    e.setId(readTag(reader, mAddress), readTag(reader, mAddress2));
+    
+    reader.seek(mPos);
+  }
+
+  /**
+   * Load tags associated with an entity.
+   * 
+   * @param reader
+   * @param e
+   * @return
+   * @throws IOException
+   */
+  private int readTags(RandomAccessFile reader, GenomicEntity e)
+      throws IOException {
+    int n = reader.readByte();
+
+    // System.err.println("Read tags " + n);
+
+    for (int i = 0; i < n; ++i) {
+      readTag(reader, e);
+    }
+
     return n;
   }
 
-  public static Gene[] getGenes(RandomAccessFile reader,
-      Chromosome chr,
-      int[] addresses) throws IOException {
-    return getGenes(reader, chr, addresses, addresses.length);
+  private void readTag(RandomAccessFile reader, GenomicEntity e)
+      throws IOException {
+    e.addTag(readTag(reader));
+  }
+  
+  private String readTag(RandomAccessFile reader)
+      throws IOException {
+
+    mAddress = reader.readInt();
+    
+    mPos = reader.getFilePointer();
+    
+    String ret = readTag(reader, mAddress);
+    
+    reader.seek(mPos);
+    
+    return ret;
+  }
+  
+  private String readTag(RandomAccessFile reader, int address)
+      throws IOException {
+
+    reader.seek(address);
+
+    return readVarchar(reader);
   }
 
-  public static Gene[] getGenes(RandomAccessFile reader,
-      Chromosome chr,
-      int[] addresses,
-      int n) throws IOException {
-    Gene[] ret = new Gene[n];
+  /**
+   * Read a variable number of bytes to create a string.
+   *
+   * @param reader the reader
+   * @return the string
+   * @throws IOException Signals that an I/O exception has occurred.
+   */
+  private String readVarchar(RandomAccessFile reader) throws IOException {
+    // System.err.println("vchar " + reader.getFilePointer());
+
+    // First int tells us the length of the string
+    int n = reader.readByte();
+
+    // Read n bytes into the buffer
+    reader.read(mBuffer, 0, n);
+
+    // Create string from buffer
+    String s = new String(mBuffer, 0, n, StandardCharsets.UTF_8);
+
+    return s;
+  }
+
+  /*
+   * private static int getRadixRootGeneAddresses(RandomAccessFile reader, int[]
+   * geneAddresses) throws IOException { reader.seek(RADIX_BYTES_OFFSET);
+   * 
+   * // Number of children int n = reader.readInt();
+   * 
+   * // skip tree addresses // reader.seek(RADIX_HEADER_BYTES + N_BYTES + n *
+   * RADIX_TREE_PREFIX_BYTES); reader.skipBytes(n * RADIX_TREE_PREFIX_BYTES);
+   * 
+   * n = reader.readInt();
+   * 
+   * for (int i = 0; i < n; ++i) { geneAddresses[i] = reader.readInt(); }
+   * 
+   * // Return the number of genes we found return n; }
+   */
+
+  /**
+   * Populates internal address list with the gene addresses from the radix tree
+   * so that a text search can be performed.
+   * 
+   * @param reader
+   * @param id
+   * @return
+   * @throws IOException
+   */
+  private int geneAddressesFromRadix(RandomAccessFile reader, String id)
+      throws IOException {
+
+    char[] chars = id.toLowerCase().toCharArray();
+
+    // Find the tree start
+    reader.seek(RADIX_BYTES_OFFSET);
+
+    char leafc;
+    int address = 0;
+    int n;
+
+    boolean found = false;
+
+    for (char c : chars) {
+      // Number of children
+      n = reader.readInt();
+
+      // assume we won't find a match
+      found = false;
+
+      for (int i = 0; i < n; ++i) {
+        leafc = (char) reader.readByte();
+        address = reader.readInt();
+
+        if (leafc == c) {
+          // we did find a match so keep going
+          found = true;
+          reader.seek(address);
+          break;
+        }
+      }
+
+      if (!found) {
+        break;
+      }
+    }
+
+    if (!found) {
+      return 0;
+    }
+
+    // This means we kept finding a child matching the prefix so the seek
+    // is at the beginning of a node either because we ran out of chars
+    // or nodes. In this case we must skip over the child addresses and
+    // just look at the addresses of the genes
+
+    // skip past number of addresses and the addresses themselves
+    // reader.seek(address + N_BYTES + reader.readInt() *
+    // RADIX_TREE_PREFIX_BYTES);
+    reader.skipBytes(reader.readInt() * RADIX_TREE_PREFIX_BYTES);
+
+    // Should be on a node that is hopefully matches our search term
+    // Since we checked all the children, the seek is at the position of
+    // the gene addressses so we can get them
+
+    n = reader.readInt();
 
     for (int i = 0; i < n; ++i) {
-      ret[i] = getGene(reader, chr, addresses[i]);
+      mGeneAddresses[i] = reader.readInt();
+    }
+
+    // Return the number of genes we found
+    return n;
+  }
+
+  @Override
+  public Iterable<String> getNames() throws IOException {
+    List<GenomicEntity> genes = getGenes();
+
+    List<String> ret = new UniqueArrayList<String>(genes.size());
+
+    for (GenomicEntity gene : genes) {
+      ret.add(gene.getSymbol());
     }
 
     return ret;
   }
 
-  public static Gene getGene(RandomAccessFile reader,
+  /**
+   * Gets the file name.
+   *
+   * @param genome the genome
+   * @param chr the chr
+   * @param window the window
+   * @return the file name
+   */
+  public static final Path getFileName(String genome,
       Chromosome chr,
-      int geneAddress) throws IOException {
-    reader.seek(geneAddress);
-
-    int start = reader.readInt();
-    int end = reader.readInt();
-
-    Gene gene = new Gene(GenomicRegion.create(chr, start, end));
-
-    //
-    // Exons
-    //
-
-    byte exons = reader.readByte();
-
-    for (int i = 0; i < exons; ++i) {
-      Exon exon = new Exon(
-          GenomicRegion.create(chr, reader.readInt(), reader.readInt()));
-      
-      //System.err.println("exon " + exon);
-      
-      gene.addExon(exon);
-    }
-
-    //
-    // Ids
-    //
-
-    byte ids = reader.readByte();
-
-    for (int i = 0; i < ids; ++i) {
-      // Read type
-      String type = readString(reader, ID_TYPE_BYTES_USABLE);
-      
-      // Read value
-      String name = readString(reader, ID_VALUE_BYTES_USABLE);
-
-      gene.setId(type, name);
-    }
-
-    //
-    // tags
-    //
-
-    byte tags = reader.readByte();
-
-    for (int i = 0; i < tags; ++i) {
-      gene.addTag(readString(reader, TAG_BYTES_USABLE));
-    }
-    
-    return gene;
-  }
-  
-  private static String readString(RandomAccessFile reader, int block) throws IOException {
-    int n = reader.readByte();
-    reader.read(BUFFER, 0, block);
-    return new String(BUFFER, 0, n, StandardCharsets.UTF_8);
+      int window) {
+    return PathUtils.getPath(Join.on('.')
+        .values(genome, chr, TextUtils.paste("w", window), "gfb").toString());
   }
 
-  public static int getVersion(RandomAccessFile reader) throws IOException {
-    reader.seek(1);
+  public static final Path getRadixFileName(String genome) {
+    return PathUtils.getPath(genome + ".rgfb");
+  }
+
+  public static int readCheckNum(RandomAccessFile reader) throws IOException {
+    reader.seek(0);
 
     return reader.readByte();
   }
 
-  public static String getGenome(RandomAccessFile reader) throws IOException {
-    reader.seek(2);
-    int n = reader.readByte();
-    reader.read(BUFFER, 0, GENOME_BYTES_USABLE);
-    return new String(BUFFER, 0, n);
+  /**
+   * Gets the version.
+   *
+   * @param reader the reader
+   * @return the version
+   * @throws IOException Signals that an I/O exception has occurred.
+   */
+  public static int readVersion(RandomAccessFile reader) throws IOException {
+    reader.seek(VERSION_BYTE_OFFSET);
+
+    return reader.readByte();
   }
 
-  public static int getWindow(RandomAccessFile reader) throws IOException {
-    reader.seek(WINDOW_BYTE_OFFSET);
+  /*
+   * public String getDescription(RandomAccessFile reader) throws IOException {
+   * reader.seek(DESCRIPTION_BYTE_OFFSET); int n = reader.readByte();
+   * reader.read(mBuffer, 0, DESCRIPTION_BYTES_USABLE); return new
+   * String(mBuffer, 0, n); }
+   */
 
-    return reader.readInt();
-  }
-
-  public static int getBins(RandomAccessFile reader) throws IOException {
+  /**
+   * Gets the bins.
+   *
+   * @param reader the reader
+   * @return the bins
+   * @throws IOException Signals that an I/O exception has occurred.
+   */
+  public static int readBinCount(RandomAccessFile reader) throws IOException {
     reader.seek(BINS_BYTE_OFFSET);
 
     return reader.readInt();
   }
 
-  public static final Path getFileName(String genome,
-      Chromosome chr,
-      int window) {
-    return PathUtils.getPath(genome + "." + chr + "." + window + ".gfb");
+  /**
+   * Gets the window.
+   *
+   * @param reader the reader
+   * @return the window
+   * @throws IOException Signals that an I/O exception has occurred.
+   */
+  public static int readWindow(RandomAccessFile reader) throws IOException {
+    reader.seek(WINDOW_BYTE_OFFSET);
+
+    return reader.readInt();
+  }
+
+  /**
+   * Gets the address of where the genes begin
+   *
+   * @param reader the reader
+   * @return the window
+   * @throws IOException Signals that an I/O exception has occurred.
+   */
+  private static int readGenesAddress(RandomAccessFile reader)
+      throws IOException {
+    reader.seek(GENES_BYTES_OFFSET);
+
+    return reader.readInt();
+  }
+
+  private static GenomicType readType(RandomAccessFile reader)
+      throws IOException {
+    return getType(reader.readByte());
+  }
+
+  private static GenomicType getType(int t) {
+    switch (t) {
+    case GENOMIC_TYPE_TRANSCRIPT:
+      return GenomicType.TRANSCRIPT;
+    case GENOMIC_TYPE_EXON:
+      return GenomicType.EXON;
+    case 8:
+      return GenomicType.UTR_5P;
+    case 16:
+      return GenomicType.UTR_3P;
+    default:
+      return GenomicType.GENE;
+    }
+  }
+
+  /**
+   * Convert a genomic type to a int representation.
+   * 
+   * @param type
+   * @return
+   */
+  public static int getType(GenomicType type) {
+    switch (type) {
+    case TRANSCRIPT:
+      return GENOMIC_TYPE_TRANSCRIPT;
+    case EXON:
+      return GENOMIC_TYPE_EXON;
+    default:
+      return GENOMIC_TYPE_GENE;
+    }
+  }
+
+  /**
+   * Gets the bin address.
+   *
+   * @param reader the reader
+   * @param bin the bin
+   * @return the bin address
+   * @throws IOException Signals that an I/O exception has occurred.
+   */
+  private static int readBinAddress(RandomAccessFile reader, int bin)
+      throws IOException {
+    reader.seek(HEADER_BYTES_OFFSET + bin * INT_BYTES);
+
+    return reader.readInt();
   }
 }

@@ -28,6 +28,8 @@
 package org.jebtk.bioinformatics.search;
 
 import org.jebtk.bioinformatics.genomic.Chromosome;
+import org.jebtk.bioinformatics.genomic.GenomicRegion;
+import org.jebtk.bioinformatics.genomic.Region;
 
 /**
  * Represents a named genomic feature on a chromosome.
@@ -35,27 +37,12 @@ import org.jebtk.bioinformatics.genomic.Chromosome;
  * @author Antony Holmes Holmes
  *
  */
-public class Feature implements Comparable<Feature> {
+public class Feature extends GenomicRegion {
 
   /**
    * The member name.
    */
   private String mName = null;
-
-  /**
-   * The member chr.
-   */
-  private Chromosome mChr;
-
-  /**
-   * The member start.
-   */
-  private int mStart = -1;
-
-  /**
-   * The member end.
-   */
-  private int mEnd = -1;
 
   /**
    * Instantiates a new feature.
@@ -66,10 +53,9 @@ public class Feature implements Comparable<Feature> {
    * @param end the end
    */
   public Feature(String name, Chromosome chromosome, int start, int end) {
+    super(chromosome, start, end);
+
     mName = name;
-    mChr = chromosome;
-    mStart = start;
-    mEnd = end;
   }
 
   /**
@@ -81,53 +67,14 @@ public class Feature implements Comparable<Feature> {
     return mName;
   }
 
-  /**
-   * Gets the chromosome.
-   *
-   * @return the chromosome
-   */
-  public final Chromosome getChromosome() {
-    return mChr;
-  }
-
-  /**
-   * Gets the start.
-   *
-   * @return the start
-   */
-  public final int getStart() {
-    return mStart;
-  }
-
-  /**
-   * Gets the end.
-   *
-   * @return the end
-   */
-  public final int getEnd() {
-    return mEnd;
-  }
-
   /*
    * (non-Javadoc)
    * 
    * @see java.lang.Object#toString()
    */
+  @Override
   public String toString() {
-    return mName + "_" + mStart;
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see java.lang.Object#equals(java.lang.Object)
-   */
-  public boolean equals(Object o) {
-    if (!(o instanceof Feature)) {
-      return false;
-    }
-
-    return (toString().equals(o.toString()));
+    return mName + ":" + super.toString();
   }
 
   /*
@@ -135,7 +82,18 @@ public class Feature implements Comparable<Feature> {
    * 
    * @see java.lang.Comparable#compareTo(java.lang.Object)
    */
-  public int compareTo(Feature f) {
-    return toString().compareTo(f.toString());
+  @Override
+  public int compareTo(Region f) {
+
+    int ret = super.compareTo(f);
+
+    if (ret == 0) {
+      // If they have the same location, differential by name
+      if (f instanceof Feature) {
+        ret = mName.compareTo(((Feature) f).mName);
+      }
+    }
+
+    return ret;
   }
 }

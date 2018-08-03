@@ -10,22 +10,25 @@ import java.util.List;
  * @author antony
  *
  */
-public class LazyGenes extends Genes {
+public class LazyGenes extends FixedGapGenes {
   private GeneParser mParser;
   private boolean mAutoLoad = true;
   private Path mFile;
-  private String mGenome;
 
-  public LazyGenes(Path file, String genome, GeneParser parser) {
+  public LazyGenes(Path file, String db, String genome, GeneParser parser) {
+    super(db, genome);
+
     mFile = file;
-    mGenome = genome;
     mParser = parser;
   }
 
+  /**
+   * We only load genes on request
+   */
   private void autoLoad() {
     if (mAutoLoad) {
       try {
-        mParser.parse(mFile, mGenome, this);
+        mParser.parse(mFile, mDb, mGenome, this);
       } catch (IOException e) {
         e.printStackTrace();
       }
@@ -34,39 +37,42 @@ public class LazyGenes extends Genes {
     }
   }
 
+  /*
+   * @Override public void autoFindMainVariants() { autoLoad();
+   * 
+   * super.autoFindMainVariants(); }
+   */
+
   @Override
-  public void autoFindMainVariants() {
+  public List<GenomicEntity> getGenes(String db, String genome, String id)
+      throws IOException {
     autoLoad();
 
-    super.autoFindMainVariants();
+    return super.getGenes(db, genome, id);
   }
 
   @Override
-  public List<GenomicEntity> getGenes(String symbol) {
+  public List<GenomicEntity> findGenes(String db, GenomicRegion region)
+      throws IOException {
     autoLoad();
 
-    return super.getGenes(symbol);
+    return super.findGenes(db, region);
   }
 
   @Override
-  public List<GenomicEntity> findGenes(GenomicRegion region) {
+  public List<GenomicEntity> findClosestGenes(String db, GenomicRegion region)
+      throws IOException {
     autoLoad();
 
-    return super.findGenes(region);
+    return super.findClosestGenes(db, region);
   }
 
   @Override
-  public List<GenomicEntity> findClosestGenes(GenomicRegion region) {
+  public List<GenomicEntity> findClosestGenesByTss(String db,
+      GenomicRegion region) throws IOException {
     autoLoad();
 
-    return super.findClosestGenes(region);
-  }
-
-  @Override
-  public List<GenomicEntity> findClosestGenesByTss(GenomicRegion region) {
-    autoLoad();
-
-    return super.findClosestGenesByTss(region);
+    return super.findClosestGenesByTss(db, region);
   }
 
   @Override

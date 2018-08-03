@@ -47,12 +47,14 @@ import org.jebtk.core.text.TextUtils;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 /**
  * Describes a region of a genome.
  *
  * @author Antony Holmes Holmes
  */
+@JsonPropertyOrder({ "loc", "strand" })
 public class GenomicRegion extends Region {
 
   // private static final String CHR_REGEX = "(chr(?:[^:]+))";
@@ -67,6 +69,7 @@ public class GenomicRegion extends Region {
 
   private static final Pattern GENOMIC_NUM_PATTERN = Pattern
       .compile("[\\-\\+\\t\\=\\: ](\\d+(?:,\\d+)*)");
+
 
   // private static final Pattern GENOMIC_REGEX =
   // Pattern.compile("(chr[0-9a-zA-Z\\-\\_]+):(\\d+)(\\d+)");
@@ -84,13 +87,6 @@ public class GenomicRegion extends Region {
   public final Strand mStrand;
 
   // protected final String mType;
-
-  /**
-   * The member location.
-   *
-   * @param region the region
-   */
-  // private String mLocation;
 
   /**
    * Instantiates a new genomic region.
@@ -116,6 +112,10 @@ public class GenomicRegion extends Region {
     mStrand = strand;
   }
 
+  public GenomicRegion(String chr, String genome, int start, int end) {
+    this(new Chromosome(chr, genome), start, end);
+  }
+
   /**
    * Gets the strand.
    *
@@ -125,13 +125,13 @@ public class GenomicRegion extends Region {
   public Strand getStrand() {
     return mStrand;
   }
-  
+
   /**
    * Return '+' for sense and '-' for anti-sense.
    * 
    * @return
    */
-  @JsonGetter("s")
+  @JsonGetter("strand")
   public char getFormattedStrand() {
     return Strand.toChar(mStrand);
   }
@@ -141,7 +141,7 @@ public class GenomicRegion extends Region {
    *
    * @return the location
    */
-  @JsonGetter("l")
+  @JsonGetter("loc")
   public String getLocation() {
     return toLocation(mChr, mStart, mEnd);
   }
@@ -208,7 +208,7 @@ public class GenomicRegion extends Region {
     if (r instanceof GenomicRegion) {
       GenomicRegion gr = (GenomicRegion) r;
 
-      int c = getGenome().compareTo(gr.getGenome());
+      int c = mChr.mGenome.compareTo(gr.mChr.mGenome); // getGenome().compareTo(gr.getGenome());
 
       if (c != 0) {
         return c;
@@ -347,20 +347,12 @@ public class GenomicRegion extends Region {
     }
   }
 
-  /**
-   * Parses the.
-   *
-   * @param chr the chr
-   * @param start the start
-   * @param end the end
-   * @return the genomic region
-   * @throws ParseException the parse exception
-   */
   public static GenomicRegion parse(String genome,
       String chr,
       String start,
       String end) {
-    return new GenomicRegion(GenomeService.getInstance().genome(genome).chr(chr),
+    return new GenomicRegion(
+        GenomeService.getInstance().genome(genome).chr(chr),
         TextUtils.parseInt(start), TextUtils.parseInt(end));
   }
 
@@ -1005,7 +997,9 @@ public class GenomicRegion extends Region {
       String chr,
       int start,
       int end) {
-    return create(GenomeService.getInstance().genome(genome).chr(chr), start, end);
+    return create(GenomeService.getInstance().genome(genome).chr(chr),
+        start,
+        end);
   }
 
   /**
@@ -1086,7 +1080,7 @@ public class GenomicRegion extends Region {
     return new GenomicRegion(region.mChr, region.mStart, region.mEnd,
         Strand.oppositeStrand(region.mStrand));
   }
-  
+
   public static GenomicRegion reverseCompliment(GenomicRegion region) {
     return new GenomicRegion(region.mChr, region.mEnd, region.mStart,
         Strand.oppositeStrand(region.mStrand));

@@ -27,12 +27,16 @@
  */
 package org.jebtk.bioinformatics.genomic;
 
-import java.util.Collection;
+import java.nio.file.Path;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map.Entry;
 
+import org.jebtk.core.collections.ArrayListCreator;
 import org.jebtk.core.collections.DefaultTreeMap;
 import org.jebtk.core.collections.IterMap;
-import org.jebtk.core.collections.TreeMapCreator;
+import org.jebtk.core.collections.IterTreeMap;
+import org.jebtk.core.io.PathUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +45,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Antony Holmes Holmes
  */
-public class GenesService implements Iterable<String> {
+public class GenesService implements Iterable<Entry<GeneDb, Genes>> {
 
   /**
    * The Class GenesServiceLoader.
@@ -69,28 +73,31 @@ public class GenesService implements Iterable<String> {
   /**
    * The member symbol map.
    */
-  private IterMap<String, IterMap<String, Genes>> mGenesMap = DefaultTreeMap
-      .create(new TreeMapCreator<String, Genes>());
-
-  private String mCurrentDb;
+  private IterMap<GeneDb, Genes> mGenesMap = new IterTreeMap<GeneDb, Genes>();
 
   /**
-   * Instantiates a new gene entrez service.
+   * Track dbs by genome
+   */
+  private IterMap<String, List<GeneDb>> mGenomeMap = DefaultTreeMap
+      .create(new ArrayListCreator<GeneDb>());
+
+  private GeneDb mCurrentDb;
+
+  private GenomeDbGuess mDbGuess = new GenomeDbGuess();
+
+  /**
+   * Instantiates a new gene service.
    */
   private GenesService() {
     // do nothing
   }
 
-  /**
-   * Get the genes associated with the current database. If there is more than
-   * one database associated with the genome, the first is chosen alphabetically
-   * by name.
-   * 
-   * @param genome
-   * @return
-   */
-  public Genes getGenes(String genome) {
-    return getGenes(genome, mGenesMap.get(genome).first());
+  public Genes getGenes(GeneDb g) {
+    if (mGenesMap.containsKey(g)) {
+      return mGenesMap.get(g);
+    } else {
+      return Genes.EMPTY_GENES;
+    }
   }
 
   /**
@@ -100,18 +107,16 @@ public class GenesService implements Iterable<String> {
    * @param db the db
    * @return the genes
    */
-  public Genes getGenes(String genome, String db) {
-    if (!mGenesMap.containsKey(genome)
-        || !mGenesMap.get(genome).containsKey(db)) {
-      return Genes.EMPTY_GENES;
-    }
-
-    return mGenesMap.get(genome).get(db);
+  public Genes getGenes(String db, String genome) {
+    return getGenes(new GeneDb(db, genome));
   }
 
-  public boolean containsGenes(String genome, String db) {
-    return mGenesMap.containsKey(genome)
-        && mGenesMap.get(genome).containsKey(db);
+  public boolean contains(String db, String genome) {
+    return contains(new GeneDb(db, genome));
+  }
+
+  public boolean contains(GeneDb g) {
+    return mGenesMap.containsKey(g);
   }
 
   /*
@@ -120,18 +125,22 @@ public class GenesService implements Iterable<String> {
    * @see java.lang.Iterable#iterator()
    */
   @Override
-  public Iterator<String> iterator() {
+  public Iterator<Entry<GeneDb, Genes>> iterator() {
     return mGenesMap.iterator();
   }
 
-  /**
-   * Gets the names.
-   *
-   * @param genome the genome
-   * @return the names
-   */
-  public Iterable<String> getNames(String genome) {
-    return mGenesMap.get(genome);
+  public void put(Genes genes) {
+    for (GeneDb g : genes.getGeneDBs()) {
+      put(g, genes);
+    }
+  }
+
+  public void put(GeneDb g, Genes genes) {
+    mGenesMap.put(g, genes);
+
+    mGenomeMap.get(g.getGenome()).add(g);
+
+    mCurrentDb = g;
   }
 
   /**
@@ -141,10 +150,12 @@ public class GenesService implements Iterable<String> {
    * @param name the name
    * @param genes the genes
    */
-  public void put(String genome, String db, Genes genes) {
-    mGenesMap.get(genome).put(db, genes);
+  public void put(String db, String genome, Genes genes) {
+    put(new GeneDb(db, genome), genes);
+  }
 
-    mCurrentDb = db;
+  public GeneDb getCurrentDb() {
+    return mCurrentDb;
   }
 
   /**
@@ -152,16 +163,41 @@ public class GenesService implements Iterable<String> {
    *
    * @return the genomes
    */
-  public Collection<String> getGenomes() {
+  public Iterable<GeneDb> getGenomes() {
     return mGenesMap.keySet();
   }
 
-  public String getCurrentDb() {
-    return mCurrentDb;
+  public String guessDb(String name) {
+    return mDbGuess.guess(name);
   }
 
-  public String getCurrentDb(String genome) {
-    return mGenesMap.get(genome).first();
+  public String guessDb(Path file) {
+    return guessDb(PathUtils.getName(file));
   }
 
+  /**
+   * Return a list of gene dbs for a given genome.
+   * 
+   * @param genome
+   * @return
+   */
+  public Iterable<GeneDb> getGeneDbs(String genome) {
+    return mGenomeMap.get(genome);
+  }
+
+  /**
+   * Returns the first available gene database for a genome. This is a helper
+   * method for when it is desirable to get gene metadata where position is not
+   * important.
+   * 
+   * @param genome
+   * @return
+   */
+  public GeneDb getFirstGeneDb(String genome) {
+    if (mGenomeMap.get(genome).size() > 0) {
+      return mGenomeMap.get(genome).get(0);
+    } else {
+      return null;
+    }
+  }
 }

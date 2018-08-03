@@ -27,35 +27,52 @@
  */
 package org.jebtk.bioinformatics.genomic;
 
-import java.io.IOException;
-import java.text.ParseException;
-import java.util.List;
+import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.jebtk.bioinformatics.dna.Ext2BitMemSequenceReader;
+import org.jebtk.core.io.FileUtils;
 
 /**
- * A genes database stores genes for search and retrieval.
- * 
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  *
  */
-public abstract class GenesDb {
+public abstract class GenomeSequenceReader extends DirsSequenceReader {
+
+  /** The m map. */
+  protected Map<String, SequenceReader> mGenomeMap = new HashMap<String, SequenceReader>();
 
   /**
-   * Should return all variants of a gene.
+   * Directory containing genome Paths which must be of the form chr.n.txt. Each
+   * Path must contain exactly one line consisting of the entire chromosome.
    *
-   * @param id the id
-   * @return the genes
-   * @throws IOException Signals that an I/O exception has occurred.
-   * @throws ParseException the parse exception
+   * @param directory the directory
    */
-  public abstract List<Gene> getGenes(String id) throws IOException;
+  public GenomeSequenceReader(Path dir, Path... dirs) {
+    super(dir, dirs);
+  }
 
-  /**
-   * Should return the main gene transcript associated with a gene.
-   *
-   * @param id the id
-   * @return the main gene
-   * @throws IOException Signals that an I/O exception has occurred.
-   * @throws ParseException the parse exception
-   */
-  public abstract Gene getMainGene(String id) throws IOException;
+  @Override
+  public String getName() {
+    return "genomes";
+  }
+
+  @Override
+  public SequenceReader getReader(String genome) {
+    if (!mGenomeMap.containsKey(genome)) {
+      for (Path dir : mDirs) {
+        if (FileUtils.isDirectory(dir)) {
+          Path d = dir.resolve(genome);
+
+          if (FileUtils.isDirectory(d)) {
+            mGenomeMap.put(genome, new Ext2BitMemSequenceReader(d)); // new
+            // GenomeAssemblyExt2Bit(dir));
+          }
+        }
+      }
+    }
+
+    return mGenomeMap.get(genome);
+  }
 }

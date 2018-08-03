@@ -24,15 +24,14 @@ import java.util.List;
 import org.jebtk.core.json.Json;
 import org.jebtk.core.json.JsonParser;
 import org.jebtk.core.network.UrlBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The Class ChromosomeParser.
  */
-public class ChromosomeHttpReader implements ChromosomeReader {
+public class WebChromReader implements ChromosomeReader {
 
-  private static final Logger LOG = LoggerFactory.getLogger(ChromosomeHttpReader.class);
+  // private static final Logger LOG = LoggerFactory
+  // .getLogger(WebChromReader.class);
 
   private String mGenome;
 
@@ -44,24 +43,23 @@ public class ChromosomeHttpReader implements ChromosomeReader {
 
   private Json chrJson;
 
-  public static final String EXT = "chrs.gz";
-
-  public ChromosomeHttpReader(UrlBuilder url, String genome) {
+  public WebChromReader(UrlBuilder url, String genome) {
     mGenome = genome;
-    
+
     mUrl = url.resolve("genomes").resolve(genome).resolve("chrs");
   }
 
   private void autoLoad() throws IOException {
     if (mAutoLoad) {
       JsonParser parser = new JsonParser();
-      
+
       Json json = parser.parse(mUrl);
-      
+
       for (int i = 0; i < json.size(); ++i) {
         chrJson = json.get(i);
-        
-        Chromosome chr = new Chromosome(chrJson.getInt("id"), chrJson.getString("chr"), chrJson.getInt("bp"), mGenome);
+
+        Chromosome chr = new Chromosome(chrJson.getString("chr"), mGenome,
+            chrJson.getInt("bp"));
 
         mChrs.add(chr);
       }
@@ -79,7 +77,7 @@ public class ChromosomeHttpReader implements ChromosomeReader {
     } catch (IOException e) {
       e.printStackTrace();
     }
-    
+
     return mChrs.iterator();
   }
 

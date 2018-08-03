@@ -124,6 +124,6 @@ public class ConservationAssemblyFile8Bit extends ConservationAssembly {
         PathUtils.getPath(
             "/ifs/scratch/cancer/Lab_RDF/abh2138/references/ucsc/phastcons/hg19"));
 
-    System.err.println(a.getScores("hg19", "chr1:90040-90050"));
+    // System.err.println(a.getScores("hg19", "chr1:90040-90050"));
   }
 }

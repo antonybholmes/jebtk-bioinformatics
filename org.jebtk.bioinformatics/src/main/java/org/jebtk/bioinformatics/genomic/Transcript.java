@@ -40,11 +40,11 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 /**
  * The class Gene.
  */
-@JsonPropertyOrder({"l", "exons", "ids"})
+@JsonPropertyOrder({ "loc", "strand", "type", "ids", "tags", "exons" })
 public class Transcript extends GenomicEntity {
 
-  public Transcript(GenomicRegion region) {
-    super(GenomicType.TRANSCRIPT, region);
+  public Transcript(GenomicRegion l) {
+    super(GenomicType.TRANSCRIPT, l);
   }
 
   /**
@@ -53,10 +53,14 @@ public class Transcript extends GenomicEntity {
    * @param name
    * @param region
    */
-  public Transcript(String name, GenomicRegion region) {
-    this(region);
+  public Transcript(String name, GenomicRegion l) {
+    this(l);
 
-    setTranscriptId(name); 
+    setTranscriptId(name);
+  }
+
+  public Transcript(GenomicRegion l, Strand s) {
+    super(GenomicType.TRANSCRIPT, l, s);
   }
 
   /**
@@ -78,17 +82,17 @@ public class Transcript extends GenomicEntity {
 
   @JsonIgnore
   public Iterable<GenomicEntity> get3pUtrs() {
-    return getEntities(GenomicType.UTR_3P);
+    return getChildren(GenomicType.UTR_3P);
   }
 
   @JsonIgnore
   public Iterable<GenomicEntity> get5pUtrs() {
-    return getEntities(GenomicType.UTR_5P);
+    return getChildren(GenomicType.UTR_5P);
   }
 
   @JsonGetter("exons")
   public Iterable<GenomicEntity> getExons() {
-    return getEntities(GenomicType.EXON);
+    return getChildren(GenomicType.EXON);
   }
 
   /*

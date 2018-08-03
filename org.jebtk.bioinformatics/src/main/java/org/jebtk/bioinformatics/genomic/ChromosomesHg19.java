@@ -18,7 +18,7 @@ package org.jebtk.bioinformatics.genomic;
 /**
  * Represents the chromosomes in hg19, compiled for use.
  */
-public class ChromosomesHg19 extends Chromosomes {
+public class ChromosomesHg19 extends ChromosomeDirs {
 
   /**
    * Instantiates a new chromosomes hg 19.
@@ -26,30 +26,30 @@ public class ChromosomesHg19 extends Chromosomes {
   public ChromosomesHg19() {
     super("Human", Genome.HG19);
 
-    add(new Chromosome(1, "chr1", 249250621, Genome.HG19));
-    add(new Chromosome(2, "chr2", 243199373, Genome.HG19));
-    add(new Chromosome(3, "chr3", 198022430, Genome.HG19));
-    add(new Chromosome(4, "chr4", 191154276, Genome.HG19));
-    add(new Chromosome(5, "chr5", 180915260, Genome.HG19));
-    add(new Chromosome(6, "chr6", 171115067, Genome.HG19));
-    add(new Chromosome(7, "chr7", 159138663, Genome.HG19));
-    add(new Chromosome(8, "chr8", 146364022, Genome.HG19));
-    add(new Chromosome(9, "chr9", 141213431, Genome.HG19));
-    add(new Chromosome(10, "chr10", 135534747, Genome.HG19));
-    add(new Chromosome(11, "chr11", 135006516, Genome.HG19));
-    add(new Chromosome(12, "chr12", 133851895, Genome.HG19));
-    add(new Chromosome(13, "chr13", 115169878, Genome.HG19));
-    add(new Chromosome(14, "chr14", 107349540, Genome.HG19));
-    add(new Chromosome(15, "chr15", 102531392, Genome.HG19));
-    add(new Chromosome(16, "chr16", 90354753, Genome.HG19));
-    add(new Chromosome(17, "chr17", 81195210, Genome.HG19));
-    add(new Chromosome(18, "chr18", 78077248, Genome.HG19));
-    add(new Chromosome(19, "chr19", 59128983, Genome.HG19));
-    add(new Chromosome(20, "chr20", 63025520, Genome.HG19));
-    add(new Chromosome(21, "chr21", 48129895, Genome.HG19));
-    add(new Chromosome(22, "chr22", 51304566, Genome.HG19));
-    add(new Chromosome(23, "chrX", 155270560, Genome.HG19));
-    add(new Chromosome(24, "chrY", 59373566, Genome.HG19));
-    add(new Chromosome(25, "chrM", 16571, Genome.HG19));
+    add(new Chromosome("chr1", Genome.HG19, 249250621));
+    add(new Chromosome("chr2", Genome.HG19, 243199373));
+    add(new Chromosome("chr3", Genome.HG19, 198022430));
+    add(new Chromosome("chr4", Genome.HG19, 191154276));
+    add(new Chromosome("chr5", Genome.HG19, 180915260));
+    add(new Chromosome("chr6", Genome.HG19, 171115067));
+    add(new Chromosome("chr7", Genome.HG19, 159138663));
+    add(new Chromosome("chr8", Genome.HG19, 146364022));
+    add(new Chromosome("chr9", Genome.HG19, 141213431));
+    add(new Chromosome("chr10", Genome.HG19, 135534747));
+    add(new Chromosome("chr11", Genome.HG19, 135006516));
+    add(new Chromosome("chr12", Genome.HG19, 133851895));
+    add(new Chromosome("chr13", Genome.HG19, 115169878));
+    add(new Chromosome("chr14", Genome.HG19, 107349540));
+    add(new Chromosome("chr15", Genome.HG19, 102531392));
+    add(new Chromosome("chr16", Genome.HG19, 90354753));
+    add(new Chromosome("chr17", Genome.HG19, 81195210));
+    add(new Chromosome("chr18", Genome.HG19, 78077248));
+    add(new Chromosome("chr19", Genome.HG19, 59128983));
+    add(new Chromosome("chr20", Genome.HG19, 63025520));
+    add(new Chromosome("chr21", Genome.HG19, 48129895));
+    add(new Chromosome("chr22", Genome.HG19, 51304566));
+    add(new Chromosome("chrX", Genome.HG19, 155270560));
+    add(new Chromosome("chrY", Genome.HG19, 59373566));
+    add(new Chromosome("chrM", Genome.HG19, 16571));
   }
 }

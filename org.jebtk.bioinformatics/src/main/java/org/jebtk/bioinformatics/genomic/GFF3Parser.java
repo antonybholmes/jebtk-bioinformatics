@@ -45,11 +45,11 @@ public class GFF3Parser extends GeneParser {
   }
 
   @Override
-  protected void parse(Path file, 
-      BufferedReader reader, 
+  protected void parse(Path file,
+      BufferedReader reader,
+      final String db,
       final String genome,
-      Genes genes)
-      throws IOException {
+      Genes genes) throws IOException {
     String line;
     List<String> tokens;
     GenomicType type;
@@ -69,7 +69,7 @@ public class GFF3Parser extends GeneParser {
         tokens = splitter.text(line);
 
         Chromosome chr = GenomeService.getInstance().chr(genome, tokens.get(0));
-        
+
         type = GenomicType.parse(tokens.get(2));
         start = Integer.parseInt(tokens.get(3));
         end = Integer.parseInt(tokens.get(4));
@@ -96,7 +96,9 @@ public class GFF3Parser extends GeneParser {
 
           break;
         case EXON:
-          GenomicEntity exon = addAttributes(GenomicType.EXON, region, attributeMap);
+          GenomicEntity exon = addAttributes(GenomicType.EXON,
+              region,
+              attributeMap);
 
           if (gene != null) {
             // Add to the current gene

@@ -3,7 +3,6 @@ package org.jebtk.bioinformatics.genomic;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,15 +18,21 @@ import org.jebtk.core.io.TokenFunction;
  * @author antony
  *
  */
-public class GTBZGenes extends Genes {
+public class GTBZGenes extends FixedGapGenes {
   private GeneParser mParser = new GTB2Parser();
-  private Path mFile;
-  private Map<String, Chromosome> mGeneMap = new HashMap<String, Chromosome>();
-  private String mGenome;
+  private final Path mFile;
+  private final Map<String, Chromosome> mGeneMap = new HashMap<String, Chromosome>();
 
-  public GTBZGenes(Path file, String genome) {
+  public GTBZGenes(Path file, String db, String genome) {
+    super(db, genome);
+
     mFile = file;
-    mGenome = genome;
+  }
+
+  public GTBZGenes(Path file, String db, String genome, GeneParser parser) {
+    this(file, db, genome);
+
+    mParser = parser;
   }
 
   private void geneChrMap() throws IOException {
@@ -60,10 +65,9 @@ public class GTBZGenes extends Genes {
     }
   }
 
-
   private void autoLoad() {
     try {
-      mParser.parse(mFile, mGenome, this);
+      mParser.parse(mFile, mDb, mGenome, this);
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -72,7 +76,7 @@ public class GTBZGenes extends Genes {
   private void autoLoad(Chromosome chr) {
     if (!contains(chr)) {
       try {
-        mParser.parse(mFile, mGenome, chr, this);
+        mParser.parse(mFile, mDb, mGenome, chr, this);
       } catch (IOException e) {
         e.printStackTrace();
       }
@@ -104,39 +108,40 @@ public class GTBZGenes extends Genes {
   }
 
   @Override
-  public List<GenomicEntity> getGenes(String symbol) {
-    autoLoad(symbol);
+  public List<GenomicEntity> getGenes(String db, String genome, String id)
+      throws IOException {
+    autoLoad(id);
 
-    return super.getGenes(symbol);
+    return super.getGenes(db, genome, id);
   }
 
   @Override
-  public List<GenomicEntity> findGenes(GenomicRegion region) {
+  public List<GenomicEntity> findGenes(String db, GenomicRegion region)
+      throws IOException {
     autoLoad(region.mChr);
 
-    return super.findGenes(region);
+    return super.findGenes(db, region);
   }
 
   @Override
-  public List<GenomicEntity> findClosestGenes(GenomicRegion region) {
+  public List<GenomicEntity> findClosestGenes(String db, GenomicRegion region)
+      throws IOException {
     autoLoad(region.mChr);
 
-    return super.findClosestGenes(region);
+    return super.findClosestGenes(db, region);
   }
 
   @Override
-  public List<GenomicEntity> findClosestGenesByTss(GenomicRegion region) {
+  public List<GenomicEntity> findClosestGenesByTss(String db,
+      GenomicRegion region) throws IOException {
     autoLoad(region.mChr);
 
-    return super.findClosestGenesByTss(region);
+    return super.findClosestGenesByTss(db, region);
   }
 
   /*
-  @Override
-  public Iterable<String> getIds(String type) {
-    autoLoad();
-
-    return super.getIds(type);
-  }
+   * @Override public Iterable<String> getIds(String type) { autoLoad();
+   * 
+   * return super.getIds(type); }
    */
 }

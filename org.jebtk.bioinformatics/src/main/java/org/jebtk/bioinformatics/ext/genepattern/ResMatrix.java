@@ -89,8 +89,8 @@ public class ResMatrix extends DataFrame {
    *
    * @param names the new description names
    */
-  public void setDescriptionNames(List<String> names) {
-    setTextRowAnnotations(DESCRIPTION_COLUMN, names);
+  public void setDescriptionNames(String[] names) {
+    setRowAnnotations(DESCRIPTION_COLUMN, names);
   }
 
   /**
@@ -117,8 +117,8 @@ public class ResMatrix extends DataFrame {
    *
    * @param names the new accession names
    */
-  public void setAccessionNames(List<String> names) {
-    setTextRowAnnotations(ACCESSION_COLUMN, names);
+  public void setAccessionNames(String[] names) {
+    setRowAnnotations(ACCESSION_COLUMN, names);
   }
 
   /**
@@ -145,8 +145,8 @@ public class ResMatrix extends DataFrame {
    *
    * @param names the new sample descriptions
    */
-  public void setSampleDescriptions(List<String> names) {
-    setTextColumnAnnotations(SAMPLE_DESCRIPTIONS, names);
+  public void setSampleDescriptions(String[] names) {
+    setColumnAnnotations(SAMPLE_DESCRIPTIONS, names);
   }
 
   /**

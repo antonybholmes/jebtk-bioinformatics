@@ -17,13 +17,17 @@ package org.jebtk.bioinformatics.annotation;
 
 import org.jebtk.core.NameProperty;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
 /**
  * The Class Type.
  */
-public class Type extends Entity implements Comparable<Type>, NameProperty {
+@JsonPropertyOrder({ "id", "n" })
+public class Type extends Entity implements NameProperty {
 
   /** The m name. */
-  protected String mName;
+  protected final String mName;
 
   /**
    * Instantiates a new type.
@@ -43,6 +47,7 @@ public class Type extends Entity implements Comparable<Type>, NameProperty {
    * @see org.abh.common.NameProperty#getName()
    */
   @Override
+  @JsonGetter("n")
   public String getName() {
     return mName;
   }
@@ -63,18 +68,17 @@ public class Type extends Entity implements Comparable<Type>, NameProperty {
    * @see java.lang.Comparable#compareTo(java.lang.Object)
    */
   @Override
-  public int compareTo(Type t) {
-    return mName.compareTo(t.mName);
+  public int compareTo(Entity t) {
+    if (t instanceof Type) {
+      return mName.compareTo(((Type) t).mName);
+    } else {
+      return super.compareTo(t);
+    }
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.jebtk.bioinformatics.annotation.Entity#hashCode()
-   */
-  @Override
-  public int hashCode() {
-    return mName.hashCode();
-  }
+  // @Override
+  // public int hashCode() {
+  // return mName.hashCode();
+  // }
 
 }
