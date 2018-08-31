@@ -64,14 +64,16 @@ public class GenomicEntity extends GenomicRegion implements NameProperty {
   /** The Constant GENE_NAME_TYPE. */
   public static final String GENE_NAME_TYPE = "gene_name";
 
+  /** The Constant TRANSCRIPT_ID_TYPE. */
+  public static final String TRANSCRIPT_ID_TYPE = "transcript_id";
+
+  
   /** The Constant REFSEQ_TYPE. */
   public static final String REFSEQ_TYPE = "refseq";
 
   /** The Constant ENTREZ_TYPE. */
   public static final String ENTREZ_ID_TYPE = "entrez";
 
-  /** The Constant TRANSCRIPT_ID_TYPE. */
-  public static final String TRANSCRIPT_ID_TYPE = "transcript_id";
 
   /** The Constant ENSEMBL_TYPE. */
   public static final String ENSEMBL_TYPE = "ensembl";
@@ -206,6 +208,11 @@ public class GenomicEntity extends GenomicRegion implements NameProperty {
    * @return the genomic entity
    */
   public GenomicEntity setId(String type, String name) {
+    
+    // Don't bother adding blank entries
+    if (name.equals(TextUtils.NA)) {
+      return this;
+    }
     
     String lc = type.toLowerCase();
     

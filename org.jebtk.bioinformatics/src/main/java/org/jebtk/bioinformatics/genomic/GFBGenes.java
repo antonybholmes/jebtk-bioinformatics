@@ -641,6 +641,8 @@ public class GFBGenes extends SingleDbGenes {
     // Skip id (int) and type (byte)
     reader.skipBytes(INT_BYTES + 1); // .readInt();
 
+    System.err.println("blob" + reader.getFilePointer());
+    
     GenomicRegion l = readLocation(reader);
 
     GenomicEntity gene;
@@ -658,7 +660,7 @@ public class GFBGenes extends SingleDbGenes {
       break;
     }
 
-    // System.err.println("location " + l + " " + type);
+    System.err.println("location " + l + " " + type);
 
     readIds(reader, gene);
 
@@ -690,12 +692,14 @@ public class GFBGenes extends SingleDbGenes {
       throws IOException {
     int n = reader.readByte();
 
-    //System.err.println("Read ids " + n);
+    System.err.println("Read ids " + n);
 
     for (int i = 0; i < n; ++i) {
       readId(reader, e);
     }
 
+    System.err.println("ids read " + reader.getFilePointer());
+    
     return n;
   }
   
@@ -709,7 +713,7 @@ public class GFBGenes extends SingleDbGenes {
     
     //System.err.println("Read ids " + mAddress + " " + mAddress2);
     
-    e.setId(readTag(reader, mAddress), readTag(reader, mAddress2));
+    e.setId(readString(reader, mAddress), readString(reader, mAddress2));
     
     reader.seek(mPos);
   }
@@ -747,14 +751,14 @@ public class GFBGenes extends SingleDbGenes {
     
     mPos = reader.getFilePointer();
     
-    String ret = readTag(reader, mAddress);
+    String ret = readString(reader, mAddress);
     
     reader.seek(mPos);
     
     return ret;
   }
   
-  private String readTag(RandomAccessFile reader, int address)
+  private String readString(RandomAccessFile reader, int address)
       throws IOException {
 
     reader.seek(address);
@@ -816,6 +820,8 @@ public class GFBGenes extends SingleDbGenes {
 
     // Find the tree start
     reader.seek(RADIX_BYTES_OFFSET);
+    
+    System.err.println("radix " + reader.getFilePointer());
 
     char leafc;
     int address = 0;
@@ -824,15 +830,21 @@ public class GFBGenes extends SingleDbGenes {
     boolean found = false;
 
     for (char c : chars) {
+      
       // Number of children
       n = reader.readInt();
 
+      System.err.println("c " + c + " " + n);
+      
+      
       // assume we won't find a match
       found = false;
 
       for (int i = 0; i < n; ++i) {
         leafc = (char) reader.readByte();
         address = reader.readInt();
+        
+        System.err.println("leaf " + leafc);
 
         if (leafc == c) {
           // we did find a match so keep going
@@ -971,26 +983,6 @@ public class GFBGenes extends SingleDbGenes {
     reader.seek(GENES_BYTES_OFFSET);
 
     return reader.readInt();
-  }
-
-  private static GenomicType readType(RandomAccessFile reader)
-      throws IOException {
-    return getType(reader.readByte());
-  }
-
-  private static GenomicType getType(int t) {
-    switch (t) {
-    case GENOMIC_TYPE_TRANSCRIPT:
-      return GenomicType.TRANSCRIPT;
-    case GENOMIC_TYPE_EXON:
-      return GenomicType.EXON;
-    case 8:
-      return GenomicType.UTR_5P;
-    case 16:
-      return GenomicType.UTR_3P;
-    default:
-      return GenomicType.GENE;
-    }
   }
 
   /**

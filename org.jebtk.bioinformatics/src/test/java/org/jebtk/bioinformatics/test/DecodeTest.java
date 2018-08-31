@@ -28,18 +28,18 @@ public class DecodeTest {
   @Test
   public void posTest() throws IOException {
     
+    /*
     GFBGenes g = new GFBGenes("gencode", "grch38", 1000, PathUtils.getPath("/home/antony/Desktop/gff/gfb/grch38/"));
     
-    /*
     List<GenomicEntity> r = g.findGenes("chr3:187721377-187745727");
     //List<GenomicEntity> r = g.findGenes("chrM:1-10000");
     
     System.err.println("g " + r.size());
     
     for (GenomicEntity gene : r) { 
-      System.err.println(gene);
+      System.err.println(gene + " " + gene.getTags() + " " + gene.getChildCount(GenomicType.TRANSCRIPT));
       
-      for (GenomicEntity e : gene.getChildren(GenomicType.EXON)) {
+      for (GenomicEntity e : gene.getChildren(GenomicType.TRANSCRIPT)) {
         System.err.println("exon " + e);
       }
     }
@@ -47,15 +47,15 @@ public class DecodeTest {
   }
 	
 	@Test
-	public void searchTest() {
-	  /*
+	public void searchTest() throws IOException {
+
 	  String search = "bcl6";
 	  
-	  GFBGenes genes = new GFBGenes("gencode", "hg19", 1000, PathUtils.getPath("/home/antony/Desktop/gff/gfb/hg19/"));
+	  GFBGenes genes = new GFBGenes("gencode", "grch38", 1000, PathUtils.getPath("/home/antony/Desktop/gff/gfb/grch38/"));
     
-	  GeneSearchQuery query = new GeneSearchQuery(genes);
+	  //GeneSearchQuery query = new GeneSearchQuery(genes);
     
-    Collection<GenomicEntity> r = query.search(search);
+    List<GenomicEntity> r = genes.getGenes(search);
     
     for (GenomicEntity gene : r) { 
       System.err.println("blo " + gene);
@@ -64,6 +64,5 @@ public class DecodeTest {
         System.err.println("exon " + e);
       }
     }
-    */
 	}
 }
