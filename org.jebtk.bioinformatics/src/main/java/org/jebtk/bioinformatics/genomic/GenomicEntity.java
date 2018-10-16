@@ -28,6 +28,7 @@
 package org.jebtk.bioinformatics.genomic;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
@@ -175,7 +176,7 @@ public class GenomicEntity extends GenomicRegion implements NameProperty {
    */
   @JsonIgnore
   public Set<GenomicType> getChildTypes() {
-    return mElemMap.keySet();
+    return Collections.unmodifiableSet(mElemMap.keySet());
   }
 
   /**

@@ -67,8 +67,10 @@ public class WebGenes extends Genes {
   public List<GenomicEntity> findGenes(String db, GenomicRegion region) {
     String genome = region.getGenome();
 
-    UrlBuilder url = mFindUrl.param("db", db).param("g", genome)
-        .param("chr", region.mChr).param("s", region.mStart)
+    UrlBuilder url = mFindUrl.param("db", db)
+        .param("g", genome)
+        .param("chr", region.mChr)
+        .param("s", region.mStart)
         .param("e", region.mEnd);
 
     List<GenomicEntity> ret = parseGenes(db, genome, url);
@@ -78,8 +80,10 @@ public class WebGenes extends Genes {
 
   @Override
   public List<GenomicEntity> getGenes(String db, String genome, String search) {
-    UrlBuilder url = mSearchUrl.param("db", db).param("g", genome).param("s",
-        search);
+    UrlBuilder url = mSearchUrl
+        .param("db", db)
+        .param("g", genome)
+        .param("s", search);
 
     List<GenomicEntity> ret = parseGenes(db, genome, url);
 
@@ -92,6 +96,8 @@ public class WebGenes extends Genes {
     List<GenomicEntity> ret = new ArrayList<GenomicEntity>();
 
     JsonParser parser = new JsonParser();
+    
+    System.err.println(url);
 
     try {
       Json json = parser.parse(url);
@@ -108,9 +114,10 @@ public class WebGenes extends Genes {
 
         GenomicRegion l = GenomicRegion.parse(genome,
             geneJson.getString("loc"));
+        
         Strand s = Strand.parse(geneJson.getString("strand"));
 
-        Gene gene = new Gene(l, s);
+        Transcript gene = new Transcript(l, s);
 
         Json exonsJson = geneJson.get("exons");
 
@@ -162,7 +169,7 @@ public class WebGenes extends Genes {
     return ret;
   }
 
-  private static void addId(String name, Json json, Gene gene) {
+  private static void addId(String name, Json json, GenomicEntity gene) {
     if (json.containsKey(name)) {
       gene.setId(name, json.getString(name));
     }

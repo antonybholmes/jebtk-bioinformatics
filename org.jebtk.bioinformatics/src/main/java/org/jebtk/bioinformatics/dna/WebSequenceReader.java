@@ -75,7 +75,7 @@ public class WebSequenceReader extends SequenceReader {
   public WebSequenceReader(URL url) throws IOException {
     mUrl = new UrlBuilder(url);
 
-    mDnaUrl = mUrl.resolve("dna");
+    mDnaUrl = mUrl.resolve("seq");
     mGenomesUrl = mUrl.resolve("genomes");
 
     mParser = new JsonParser();
@@ -101,10 +101,10 @@ public class WebSequenceReader extends SequenceReader {
     URL url;
 
     try {
-      UrlBuilder tmpUrl = mDnaUrl.resolve(region.getGenome())
-          .resolve(region.getChr().toString()).resolve(region.getStart())
-          .resolve(region.getEnd()).param("strand", "s")
-          .param("display", displayUpper ? "u" : "l");
+      UrlBuilder tmpUrl = mDnaUrl.param("g", region.getGenome())
+          .param("chr", region.getChr().toString()).param("s", region.getStart())
+          .param("e", region.getEnd()).param("strand", "s")
+          .param("lc", displayUpper ? "0" : "1");
 
       switch (repeatMaskType) {
       case UPPERCASE:

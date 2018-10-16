@@ -130,7 +130,7 @@ public class GFBGenes extends SingleDbGenes {
    * @throws IOException Signals that an I/O exception has occurred.
    */
   public List<GenomicEntity> findGenes(String region) throws IOException {
-    return findGenes(region, GenomicType.GENE);
+    return findGenes(region, GenomicType.TRANSCRIPT);
   }
   
   public List<GenomicEntity> findGenes(String region, GenomicType type) throws IOException {
@@ -211,8 +211,6 @@ public class GFBGenes extends SingleDbGenes {
       n = geneAddressesFromBins(reader, n);
 
       n = genesFromGeneAddresses(reader, n, type);
-      
-      System.err.println("find genes n " + n);
     } finally {
       reader.close();
     }
@@ -240,13 +238,13 @@ public class GFBGenes extends SingleDbGenes {
   }
 
   public List<GenomicEntity> getGenes(String id) throws IOException {
-    return getGenes(id, GenomicType.GENE);
+    return getGenes(id, GenomicType.TRANSCRIPT);
   }
 
   @Override
   public List<GenomicEntity> getGenes(String db, String genome, String id)
       throws IOException {
-    return getGenes(id, GenomicType.GENE);
+    return getGenes(id, GenomicType.TRANSCRIPT);
   }
 
   public List<GenomicEntity> getGenes(String id, GenomicType type)
@@ -276,7 +274,7 @@ public class GFBGenes extends SingleDbGenes {
   
   public List<GenomicEntity> findClosestGenes(GenomicRegion region)
       throws IOException {
-    return findClosestGenes(region, GenomicType.GENE);
+    return findClosestGenes(region, GenomicType.TRANSCRIPT);
   }
   
   public List<GenomicEntity> findClosestGenes(GenomicRegion region, GenomicType type)
@@ -287,7 +285,7 @@ public class GFBGenes extends SingleDbGenes {
   public List<GenomicEntity> findClosestGenes(Chromosome chr,
       int start,
       int end) throws IOException {
-    return findClosestGenes(chr, start, end, GenomicType.GENE);
+    return findClosestGenes(chr, start, end, GenomicType.TRANSCRIPT);
   }
 
   public List<GenomicEntity> findClosestGenes(Chromosome chr,
@@ -477,60 +475,10 @@ public class GFBGenes extends SingleDbGenes {
     // Arrays.fill(mUsed, false);
 
     for (int i = 0; i < n; ++i) {
-      // System.err.println("address " + i + " " + addresses[i]);
-
       // Skip to address of gene
       reader.seek(mGeneAddresses[i]);
 
-      retn = readGene(reader, retn, type); // readTranscript(reader, type, retn,
-                                           // null, genes); //
-
-      /*
-       * int id = reader.readInt();
-       * 
-       * //System.err.println("id " + id);
-       * 
-       * // If this gene is already in use, skip adding it again if (mUsed[id])
-       * { continue; }
-       * 
-       * // Flag that we have used this gene mUsed[id] = true;
-       * 
-       * Chromosome chr = new Chromosome(readVarchar(reader), mGenome); int
-       * start = reader.readInt(); int end = reader.readInt();
-       * 
-       * gene = new Gene(GenomicRegion.create(chr, start, end));
-       * 
-       * // // Exons //
-       * 
-       * int w = reader.readByte();
-       * 
-       * for (int j = 0; j < w; ++j) { Exon exon = new Exon(
-       * GenomicRegion.create(chr, reader.readInt(), reader.readInt()));
-       * 
-       * // System.err.println("exon " + exon);
-       * 
-       * gene.addExon(exon); }
-       * 
-       * // // Ids //
-       * 
-       * w = reader.readByte();
-       * 
-       * for (int j = 0; j < w; ++j) {
-       * 
-       * // Read type String type = readVarchar(reader);
-       * 
-       * // Read value String name = readVarchar(reader);
-       * 
-       * gene.setId(type, name); }
-       * 
-       * // // Tags //
-       * 
-       * w = reader.readByte();
-       * 
-       * for (int j = 0; j < w; ++j) { gene.addTag(readVarchar(reader)); }
-       * 
-       * // Add gene to array genes[retn++] = gene;
-       */
+      retn = readGene(reader, retn, type);
     }
 
     return retn;
@@ -571,7 +519,7 @@ public class GFBGenes extends SingleDbGenes {
 
     GenomicEntity gene = readEntity(reader, GenomicType.GENE);
 
-    int n = reader.readByte();
+    int n = reader.read();
 
     for (int i = 0; i < n; ++i) {
       // If type requested is not a gene, pass null to indicate that the
@@ -594,7 +542,7 @@ public class GFBGenes extends SingleDbGenes {
 
     GenomicEntity transcript = readEntity(reader, GenomicType.TRANSCRIPT);
 
-    int n = reader.readByte();
+    int n = reader.read();
 
     for (int i = 0; i < n; ++i) {
       index = readExon(reader, index, type, gene, type != GenomicType.EXON ? transcript : null);
@@ -603,7 +551,7 @@ public class GFBGenes extends SingleDbGenes {
     if (gene != null) {
       gene.add(transcript);
     }
-
+    
     if (type == GenomicType.TRANSCRIPT) {
       mGenes[index++] = transcript;
     }
@@ -641,26 +589,24 @@ public class GFBGenes extends SingleDbGenes {
     // Skip id (int) and type (byte)
     reader.skipBytes(INT_BYTES + 1); // .readInt();
 
-    System.err.println("blob" + reader.getFilePointer());
-    
     GenomicRegion l = readLocation(reader);
+    
+    Strand strand = readStrand(reader);
 
     GenomicEntity gene;
 
     switch (type) {
     case GENE:
-      gene = new Gene(l);
+      gene = new Gene(l, strand);
       break;
     case EXON:
-      gene = new Exon(l);
+      gene = new Exon(l, strand);
       break;
     default:
       // Assume everything is a transcript
-      gene = new Transcript(l);
+      gene = new Transcript(l, strand);
       break;
     }
-
-    System.err.println("location " + l + " " + type);
 
     readIds(reader, gene);
 
@@ -678,6 +624,13 @@ public class GFBGenes extends SingleDbGenes {
 
     return GenomicRegion.create(chr, start, end);
   }
+  
+  private Strand readStrand(RandomAccessFile reader)
+      throws IOException {
+    int strand = reader.read();
+    
+    return getStrand(strand);
+  }
 
   /**
    * Read ids and add them to a genomic entity, e.g. read gene symbol and add to
@@ -692,14 +645,10 @@ public class GFBGenes extends SingleDbGenes {
       throws IOException {
     int n = reader.readByte();
 
-    System.err.println("Read ids " + n);
-
     for (int i = 0; i < n; ++i) {
       readId(reader, e);
     }
-
-    System.err.println("ids read " + reader.getFilePointer());
-    
+ 
     return n;
   }
   
@@ -710,8 +659,6 @@ public class GFBGenes extends SingleDbGenes {
     mAddress2 = reader.readInt();
     
     mPos = reader.getFilePointer();
-    
-    //System.err.println("Read ids " + mAddress + " " + mAddress2);
     
     e.setId(readString(reader, mAddress), readString(reader, mAddress2));
     
@@ -821,8 +768,6 @@ public class GFBGenes extends SingleDbGenes {
     // Find the tree start
     reader.seek(RADIX_BYTES_OFFSET);
     
-    System.err.println("radix " + reader.getFilePointer());
-
     char leafc;
     int address = 0;
     int n;
@@ -832,19 +777,18 @@ public class GFBGenes extends SingleDbGenes {
     for (char c : chars) {
       
       // Number of children
-      n = reader.readInt();
+      n = reader.read(); //  .readInt();
 
-      System.err.println("c " + c + " " + n);
+      //System.err.println("c " + c + " " + n);
       
       
       // assume we won't find a match
       found = false;
 
       for (int i = 0; i < n; ++i) {
-        leafc = (char) reader.readByte();
+        leafc = (char) reader.read(); //readByte();
         address = reader.readInt();
         
-        System.err.println("leaf " + leafc);
 
         if (leafc == c) {
           // we did find a match so keep going
@@ -862,7 +806,7 @@ public class GFBGenes extends SingleDbGenes {
     if (!found) {
       return 0;
     }
-
+    
     // This means we kept finding a child matching the prefix so the seek
     // is at the beginning of a node either because we ran out of chars
     // or nodes. In this case we must skip over the child addresses and
@@ -871,7 +815,7 @@ public class GFBGenes extends SingleDbGenes {
     // skip past number of addresses and the addresses themselves
     // reader.seek(address + N_BYTES + reader.readInt() *
     // RADIX_TREE_PREFIX_BYTES);
-    reader.skipBytes(reader.readInt() * RADIX_TREE_PREFIX_BYTES);
+    reader.skipBytes(reader.read() * RADIX_TREE_PREFIX_BYTES); // readInt()
 
     // Should be on a node that is hopefully matches our search term
     // Since we checked all the children, the seek is at the position of
@@ -1015,5 +959,21 @@ public class GFBGenes extends SingleDbGenes {
     reader.seek(HEADER_BYTES_OFFSET + bin * INT_BYTES);
 
     return reader.readInt();
+  }
+
+  public static int getStrand(Strand strand) {
+    if (Strand.isSense(strand)) {
+      return 0;
+    } else {
+      return 1;
+    }
+  }
+  
+  public static Strand getStrand(int strand) {
+    if (strand == 0) {
+      return Strand.SENSE;
+    } else {
+      return Strand.ANTISENSE;
+    }
   }
 }

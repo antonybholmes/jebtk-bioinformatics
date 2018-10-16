@@ -58,7 +58,7 @@ public class DecodeTest {
     List<GenomicEntity> r = genes.getGenes(search);
     
     for (GenomicEntity gene : r) { 
-      System.err.println("blo " + gene);
+      System.err.println("blo " + gene + " " + gene.getType() + " " + gene.getChildTypes());
       
       for (GenomicEntity e : gene.getChildren(GenomicType.EXON)) {
         System.err.println("exon " + e);

@@ -34,10 +34,14 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
  * The class Gene.
  */
 @JsonPropertyOrder({ "loc", "strand", "type", "ids", "tags", "transcripts" })
-public class Gene extends Transcript {
+public class Gene extends GenomicEntity {
 
   public Gene(GenomicRegion l) {
-    super(l);
+    this(l, Strand.SENSE);
+  }
+  
+  public Gene(GenomicRegion l, Strand s) {
+    super(GenomicType.GENE, l, s);
   }
 
   public Gene(String name, GenomicRegion l) {
@@ -46,15 +50,12 @@ public class Gene extends Transcript {
     setGeneName(name);
   }
 
-  public Gene(GenomicRegion l, Strand s) {
-    super(l, s);
-  }
 
-  @Override
-  @JsonGetter("type")
-  public GenomicType getType() {
-    return GenomicType.GENE;
-  }
+  //@Override
+  //@JsonGetter("type")
+  //public GenomicType getType() {
+  //  return GenomicType.GENE;
+  //}
 
   @JsonGetter("transcripts")
   public Iterable<GenomicEntity> getTranscripts() {
