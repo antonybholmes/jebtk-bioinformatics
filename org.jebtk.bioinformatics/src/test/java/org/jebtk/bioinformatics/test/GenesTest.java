@@ -5,7 +5,7 @@ import java.io.IOException;
 import org.jebtk.bioinformatics.genomic.GenomicEntity;
 import org.jebtk.bioinformatics.genomic.GenomicType;
 import org.jebtk.bioinformatics.genomic.WebGenes;
-import org.jebtk.core.network.UrlBuilder;
+import org.jebtk.core.http.UrlBuilder;
 import org.junit.Test;
 
 public class GenesTest {

@@ -21,9 +21,9 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import org.jebtk.core.http.UrlBuilder;
 import org.jebtk.core.json.Json;
 import org.jebtk.core.json.JsonParser;
-import org.jebtk.core.network.UrlBuilder;
 
 /**
  * The Class ChromosomeParser.

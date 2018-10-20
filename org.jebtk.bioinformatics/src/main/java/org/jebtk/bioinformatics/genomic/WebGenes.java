@@ -32,9 +32,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jebtk.core.http.UrlBuilder;
 import org.jebtk.core.json.Json;
 import org.jebtk.core.json.JsonParser;
-import org.jebtk.core.network.UrlBuilder;
 
 /**
  * Find overlapping genes using a web service.
