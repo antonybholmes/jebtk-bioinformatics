@@ -41,7 +41,7 @@ import org.jebtk.core.io.FileUtils;
 public abstract class GenomeSequenceReader extends DirsSequenceReader {
 
   /** The m map. */
-  protected Map<String, SequenceReader> mGenomeMap = new HashMap<String, SequenceReader>();
+  protected Map<Genome, SequenceReader> mGenomeMap = new HashMap<Genome, SequenceReader>();
 
   /**
    * Directory containing genome Paths which must be of the form chr.n.txt. Each
@@ -59,15 +59,21 @@ public abstract class GenomeSequenceReader extends DirsSequenceReader {
   }
 
   @Override
-  public SequenceReader getReader(String genome) {
+  public SequenceReader getReader(Genome genome) {
     if (!mGenomeMap.containsKey(genome)) {
       for (Path dir : mDirs) {
         if (FileUtils.isDirectory(dir)) {
-          Path d = dir.resolve(genome);
+          Path d = dir.resolve(genome.getName());
 
           if (FileUtils.isDirectory(d)) {
-            mGenomeMap.put(genome, new Ext2BitMemSequenceReader(d)); // new
-            // GenomeAssemblyExt2Bit(dir));
+
+            Path d2 = d.resolve(genome.getAssembly());
+
+            if (FileUtils.isDirectory(d2)) {
+
+              mGenomeMap.put(genome, new Ext2BitMemSequenceReader(d2)); // new
+              // GenomeAssemblyExt2Bit(dir));
+            }
           }
         }
       }

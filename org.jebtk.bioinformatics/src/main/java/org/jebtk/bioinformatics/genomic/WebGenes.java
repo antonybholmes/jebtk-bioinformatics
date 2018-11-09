@@ -55,7 +55,7 @@ public class WebGenes extends Genes {
   public WebGenes(UrlBuilder url) {
     // mUrl = url;
 
-    //UrlBuilder genesUrl = url.resolve("genes");
+    // UrlBuilder genesUrl = url.resolve("genes");
     // Default to returning transcripts
     mFindUrl = url.resolve("find").param("t", "t");
     // mClosestUrl = mGenesUrl.resolve("closest");
@@ -64,44 +64,38 @@ public class WebGenes extends Genes {
   }
 
   @Override
-  public List<GenomicEntity> findGenes(String db, GenomicRegion region) {
-    String genome = region.getGenome();
+  public List<GenomicEntity> findGenes(Genome genome, GenomicRegion region) {
+    UrlBuilder url = mFindUrl.param("genome", genome.getName())
+        .param("assembly", genome.getAssembly())
+        .param("track", genome.getTrack()).param("chr", region.mChr.toString())
+        .param("s", region.mStart).param("e", region.mEnd);
 
-    UrlBuilder url = mFindUrl.param("db", db)
-        .param("g", genome)
-        .param("chr", region.mChr)
-        .param("s", region.mStart)
-        .param("e", region.mEnd);
-
-    List<GenomicEntity> ret = parseGenes(db, genome, url);
+    List<GenomicEntity> ret = parseGenes(genome, url);
 
     return ret;
   }
 
   @Override
-  public List<GenomicEntity> getGenes(String db, String genome, String search) {
-    UrlBuilder url = mSearchUrl
-        .param("db", db)
-        .param("g", genome)
-        .param("s", search);
+  public List<GenomicEntity> getGenes(Genome genome, String search) {
+    UrlBuilder url = mSearchUrl.param("genome", genome.getName())
+        .param("assembly", genome.getAssembly())
+        .param("track", genome.getTrack()).param("s", search);
 
-    List<GenomicEntity> ret = parseGenes(db, genome, url);
+    List<GenomicEntity> ret = parseGenes(genome, url);
 
     return ret;
   }
 
-  private static List<GenomicEntity> parseGenes(String db,
-      String genome,
-      UrlBuilder url) {
+  private static List<GenomicEntity> parseGenes(Genome genome, UrlBuilder url) {
     List<GenomicEntity> ret = new ArrayList<GenomicEntity>();
 
     JsonParser parser = new JsonParser();
-    
+
     System.err.println(url);
 
     try {
       Json json = parser.parse(url);
-      
+
       // Position searches embed the results in an array called genes so
       // we will use that if found, otherwise just assume the json represents
       // an array.
@@ -114,7 +108,7 @@ public class WebGenes extends Genes {
 
         GenomicRegion l = GenomicRegion.parse(genome,
             geneJson.getString("loc"));
-        
+
         Strand s = Strand.parse(geneJson.getString("strand"));
 
         Transcript gene = new Transcript(l, s);
@@ -124,15 +118,15 @@ public class WebGenes extends Genes {
         for (int j = 0; j < exonsJson.size(); ++j) {
           GenomicRegion exon = GenomicRegion.parse(genome,
               exonsJson.get(j).getString("loc"));
-          
+
           gene.addExon(exon);
         }
 
         Json idsJson = geneJson.get("ids");
-        
+
         addId(GenomicEntity.GENE_ID_TYPE, idsJson, gene);
         addId(GenomicEntity.TRANSCRIPT_ID_TYPE, idsJson, gene);
-        //addId("symbol", idJson, gene);
+        // addId("symbol", idJson, gene);
         addId(GenomicEntity.GENE_NAME_TYPE, idsJson, gene);
 
         ret.add(gene);
@@ -145,12 +139,12 @@ public class WebGenes extends Genes {
   }
 
   @Override
-  public Iterable<GeneDb> getGeneDBs() {
+  public Iterable<Genome> getGenomes() {
     return getGeneDBs(mGeneDbsUrl);
   }
 
-  private static List<GeneDb> getGeneDBs(UrlBuilder url) {
-    List<GeneDb> ret = new ArrayList<GeneDb>();
+  private static List<Genome> getGeneDBs(UrlBuilder url) {
+    List<Genome> ret = new ArrayList<Genome>();
 
     JsonParser parser = new JsonParser();
 
@@ -160,7 +154,12 @@ public class WebGenes extends Genes {
       for (int i = 0; i < json.size(); ++i) {
         Json dbJson = json.get(i);
 
-        ret.add(new GeneDb(dbJson.getString("db"), dbJson.getString("genome")));
+        Genome genome = new Genome(GenomeService.getInstance().guessGenome(
+            dbJson.getString("assembly")), dbJson.getString("track"));
+
+        System.err.println("aha " + genome);
+
+        ret.add(genome);
       }
     } catch (IOException e) {
       e.printStackTrace();
@@ -171,7 +170,7 @@ public class WebGenes extends Genes {
 
   private static void addId(String name, Json json, GenomicEntity gene) {
     if (json.containsKey(name)) {
-      gene.setId(name, json.getString(name));
+      gene.setProperty(name, json.getString(name));
     }
   }
 

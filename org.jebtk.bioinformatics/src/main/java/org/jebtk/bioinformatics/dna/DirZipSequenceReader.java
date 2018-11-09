@@ -34,6 +34,7 @@ import java.util.List;
 
 import org.jebtk.bioinformatics.genomic.Genome;
 import org.jebtk.bioinformatics.genomic.GenomeSequenceReader;
+import org.jebtk.bioinformatics.genomic.GenomeService;
 import org.jebtk.bioinformatics.genomic.SequenceReader;
 import org.jebtk.core.io.FileUtils;
 import org.jebtk.core.io.PathUtils;
@@ -63,15 +64,15 @@ public class DirZipSequenceReader extends GenomeSequenceReader {
   }
 
   @Override
-  public List<String> getGenomes() throws IOException {
+  public List<Genome> getGenomes() throws IOException {
 
-    List<String> ret = new ArrayList<String>();
+    List<Genome> ret = new ArrayList<Genome>();
 
     for (Path dir : getDirs()) {
       List<Path> files = FileUtils.endsWith(dir, "dna.zip");
 
       for (Path file : files) {
-        ret.add(PathUtils.namePrefix(file));
+        ret.add(GenomeService.getInstance().guessGenome(PathUtils.namePrefix(file)));
       }
     }
 
@@ -79,19 +80,23 @@ public class DirZipSequenceReader extends GenomeSequenceReader {
   }
 
   @Override
-  public SequenceReader getReader(String genome) {
+  public SequenceReader getReader(Genome genome) {
     if (!mGenomeMap.containsKey(genome)) {
       // Path d = dir.resolve(genome);
 
       for (Path dir : mDirs) {
         if (FileUtils.isDirectory(dir)) {
-          Path d = dir.resolve(genome);
+          Path d = dir.resolve(genome.getName());
 
           if (FileUtils.isDirectory(d)) {
-            Path zip = d.resolve(genome + ".dna.zip");
+            Path d2 = d.resolve(genome.getAssembly());
 
-            if (FileUtils.isFile(zip)) {
-              mGenomeMap.put(genome, new ZipSequenceReader(zip));
+            if (FileUtils.isDirectory(d2)) {
+              Path zip = d2.resolve(genome + ".dna.zip");
+
+              if (FileUtils.isFile(zip)) {
+                mGenomeMap.put(genome, new ZipSequenceReader(zip));
+              }
             }
           }
         }

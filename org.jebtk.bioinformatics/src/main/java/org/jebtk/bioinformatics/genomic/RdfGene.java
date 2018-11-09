@@ -33,6 +33,11 @@ package org.jebtk.bioinformatics.genomic;
 public class RdfGene extends Gene {
 
   /**
+   * 
+   */
+  private static final long serialVersionUID = 1L;
+
+  /**
    * Instantiates a new rdf gene.
    *
    * @param rdf the rdf
@@ -48,10 +53,10 @@ public class RdfGene extends Gene {
       GenomicRegion region) {
     super(region);
 
-    setName(name);
+    setGeneName(name);
     setRefseq(refseq);
     setEntrez(entrez);
-    setId("rdf", rdf);
+    setProperty("rdf", rdf);
   }
 
   /**
@@ -60,6 +65,6 @@ public class RdfGene extends Gene {
    * @return the rdf
    */
   public String getRdf() {
-    return getId("rdf");
+    return getProp("rdf");
   }
 }

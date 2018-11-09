@@ -43,8 +43,13 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @JsonPropertyOrder({ "loc", "strand", "type", "ids", "tags", "exons" })
 public class Transcript extends GenomicEntity {
 
+  /**
+   * 
+   */
+  private static final long serialVersionUID = 1L;
+
   public Transcript(GenomicRegion l) {
-    super(GenomicType.TRANSCRIPT, l);
+    super(TRANSCRIPT, l);
   }
 
   /**
@@ -60,7 +65,7 @@ public class Transcript extends GenomicEntity {
   }
 
   public Transcript(GenomicRegion l, Strand s) {
-    super(GenomicType.TRANSCRIPT, l, s);
+    super(TRANSCRIPT, l, s);
   }
 
   /**
@@ -81,18 +86,18 @@ public class Transcript extends GenomicEntity {
   }
 
   @JsonIgnore
-  public Iterable<GenomicEntity> get3pUtrs() {
-    return getChildren(GenomicType.UTR_3P);
+  public Iterable<GenomicElement> get3pUtrs() {
+    return getChildren(UTR_3P);
   }
 
   @JsonIgnore
-  public Iterable<GenomicEntity> get5pUtrs() {
-    return getChildren(GenomicType.UTR_5P);
+  public Iterable<GenomicElement> get5pUtrs() {
+    return getChildren(UTR_5P);
   }
 
   @JsonGetter("exons")
-  public Iterable<GenomicEntity> getExons() {
-    return getChildren(GenomicType.EXON);
+  public Iterable<GenomicElement> getExons() {
+    return getChildren(EXON);
   }
 
   /*
@@ -112,8 +117,8 @@ public class Transcript extends GenomicEntity {
    * // Compare exons return super.compareTo(r); }
    */
 
-  public GenomicEntity setId(GeneIdType type, String name) {
-    return setId(type.toString().toLowerCase(), name);
+  public GenomicElement setId(GeneIdType type, String name) {
+    return setProperty(type.toString().toLowerCase(), name);
   }
 
   //

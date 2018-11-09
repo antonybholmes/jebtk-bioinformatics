@@ -45,7 +45,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Antony Holmes Holmes
  */
-public class GenesService implements Iterable<Entry<GeneDb, Genes>> {
+public class GenesService implements Iterable<Entry<Genome, Genes>> {
 
   /**
    * The Class GenesServiceLoader.
@@ -73,15 +73,15 @@ public class GenesService implements Iterable<Entry<GeneDb, Genes>> {
   /**
    * The member symbol map.
    */
-  private IterMap<GeneDb, Genes> mGenesMap = new IterTreeMap<GeneDb, Genes>();
+  private IterMap<Genome, Genes> mGenesMap = new IterTreeMap<Genome, Genes>();
 
   /**
    * Track dbs by genome
    */
-  private IterMap<String, List<GeneDb>> mGenomeMap = DefaultTreeMap
-      .create(new ArrayListCreator<GeneDb>());
+  private IterMap<String, List<Genome>> mGenomeMap = DefaultTreeMap
+      .create(new ArrayListCreator<Genome>());
 
-  private GeneDb mCurrentDb;
+  private Genome mCurrentDb;
 
   private GenomeDbGuess mDbGuess = new GenomeDbGuess();
 
@@ -92,7 +92,7 @@ public class GenesService implements Iterable<Entry<GeneDb, Genes>> {
     // do nothing
   }
 
-  public Genes getGenes(GeneDb g) {
+  public Genes getGenes(Genome g) {
     if (mGenesMap.containsKey(g)) {
       return mGenesMap.get(g);
     } else {
@@ -100,22 +100,7 @@ public class GenesService implements Iterable<Entry<GeneDb, Genes>> {
     }
   }
 
-  /**
-   * Return the genes on a particular genome and database.
-   *
-   * @param genome the genome
-   * @param db the db
-   * @return the genes
-   */
-  public Genes getGenes(String db, String genome) {
-    return getGenes(new GeneDb(db, genome));
-  }
-
-  public boolean contains(String db, String genome) {
-    return contains(new GeneDb(db, genome));
-  }
-
-  public boolean contains(GeneDb g) {
+  public boolean contains(Genome g) {
     return mGenesMap.containsKey(g);
   }
 
@@ -125,36 +110,26 @@ public class GenesService implements Iterable<Entry<GeneDb, Genes>> {
    * @see java.lang.Iterable#iterator()
    */
   @Override
-  public Iterator<Entry<GeneDb, Genes>> iterator() {
+  public Iterator<Entry<Genome, Genes>> iterator() {
     return mGenesMap.iterator();
   }
 
   public void put(Genes genes) {
-    for (GeneDb g : genes.getGeneDBs()) {
+    for (Genome g : genes.getGenomes()) {
       put(g, genes);
     }
   }
 
-  public void put(GeneDb g, Genes genes) {
+  public void put(Genome g, Genes genes) {
     mGenesMap.put(g, genes);
 
-    mGenomeMap.get(g.getGenome()).add(g);
+    mGenomeMap.get(g.getName()).add(g);
+    mGenomeMap.get(g.getAssembly()).add(g);
 
     mCurrentDb = g;
   }
 
-  /**
-   * Put.
-   *
-   * @param genome the genome
-   * @param name the name
-   * @param genes the genes
-   */
-  public void put(String db, String genome, Genes genes) {
-    put(new GeneDb(db, genome), genes);
-  }
-
-  public GeneDb getCurrentDb() {
+  public Genome getCurrentGenome() {
     return mCurrentDb;
   }
 
@@ -163,7 +138,7 @@ public class GenesService implements Iterable<Entry<GeneDb, Genes>> {
    *
    * @return the genomes
    */
-  public Iterable<GeneDb> getGenomes() {
+  public Iterable<Genome> getGenomes() {
     return mGenesMap.keySet();
   }
 
@@ -181,7 +156,7 @@ public class GenesService implements Iterable<Entry<GeneDb, Genes>> {
    * @param genome
    * @return
    */
-  public Iterable<GeneDb> getGeneDbs(String genome) {
+  public Iterable<Genome> getGeneDbs(String genome) {
     return mGenomeMap.get(genome);
   }
 
@@ -193,7 +168,7 @@ public class GenesService implements Iterable<Entry<GeneDb, Genes>> {
    * @param genome
    * @return
    */
-  public GeneDb getFirstGeneDb(String genome) {
+  public Genome getFirstGeneDb(String genome) {
     if (mGenomeMap.get(genome).size() > 0) {
       return mGenomeMap.get(genome).get(0);
     } else {

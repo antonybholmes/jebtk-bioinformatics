@@ -31,7 +31,10 @@ import java.io.IOException;
 import java.util.List;
 
 import org.jebtk.bioinformatics.genomic.Chromosome;
+import org.jebtk.bioinformatics.genomic.Genome;
 import org.jebtk.bioinformatics.genomic.GenomeService;
+import org.jebtk.bioinformatics.genomic.GenomicElement;
+import org.jebtk.bioinformatics.genomic.GenomicRegion;
 import org.jebtk.core.text.TextUtils;
 
 /**
@@ -40,13 +43,10 @@ import org.jebtk.core.text.TextUtils;
  * @author Antony Holmes Holmes
  *
  */
-public class BedGraphRegion extends UCSCTrackRegion {
+public class BedGraphElement extends GenomicElement {
 
-  /**
-   * The member value.
-   */
-  private double mValue;
-
+  private static final long serialVersionUID = 1L;
+  
   /**
    * Create a new region. Coordinates are one based.
    *
@@ -55,11 +55,10 @@ public class BedGraphRegion extends UCSCTrackRegion {
    * @param end the end
    * @param value the value
    */
-  public BedGraphRegion(Chromosome chromosome, int start, int end,
-      double value) {
-    super(chromosome, start, end);
+  public BedGraphElement(GenomicRegion r, double value) {
+    super("bedgraph", r);
 
-    mValue = value;
+    setProperty("value", value);
   }
 
   /**
@@ -68,7 +67,7 @@ public class BedGraphRegion extends UCSCTrackRegion {
    * @return the value
    */
   public double getValue() {
-    return mValue;
+    return getProperty("value").toDouble();
   }
 
   /*
@@ -81,7 +80,7 @@ public class BedGraphRegion extends UCSCTrackRegion {
   public void formattedTxt(Appendable buffer) throws IOException {
     super.formattedTxt(buffer);
     buffer.append(TextUtils.TAB_DELIMITER);
-    buffer.append(Double.toString(mValue));
+    buffer.append(Double.toString(getValue()));
   }
 
   /**
@@ -90,11 +89,11 @@ public class BedGraphRegion extends UCSCTrackRegion {
    * @param line the line
    * @return the bed graph region
    */
-  public static BedGraphRegion parse(String genome, String line) {
+  public static BedGraphElement parse(Genome genome, String line) {
     List<String> tokens = TextUtils.fastSplit(line, TextUtils.TAB_DELIMITER);
 
     // convert first part to chromosome (replacing x,y and m) {
-    Chromosome chromosome = GenomeService.getInstance().chr(genome,
+    Chromosome chr = GenomeService.getInstance().chr(genome,
         tokens.get(0));
 
     // Per UCSC convention, coordinates are zero based in the file
@@ -103,6 +102,6 @@ public class BedGraphRegion extends UCSCTrackRegion {
     int end = Integer.parseInt(tokens.get(2));
     double value = Double.parseDouble(tokens.get(3));
 
-    return new BedGraphRegion(chromosome, start, end, value);
+    return new BedGraphElement(new GenomicRegion(chr, start, end), value);
   }
 }

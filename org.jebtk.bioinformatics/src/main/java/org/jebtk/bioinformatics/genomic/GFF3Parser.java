@@ -47,8 +47,7 @@ public class GFF3Parser extends GeneParser {
   @Override
   protected void parse(Path file,
       BufferedReader reader,
-      final String db,
-      final String genome,
+      final Genome genome,
       Genes genes) throws IOException {
     String line;
     List<String> tokens;
@@ -90,13 +89,13 @@ public class GFF3Parser extends GeneParser {
           // Gene
           // gene = new Gene(region).setSymbol(name);
 
-          gene = addAttributes(GenomicType.TRANSCRIPT, region, attributeMap);
+          gene = addAttributes(GenomicEntity.TRANSCRIPT, region, attributeMap);
 
           genes.add(gene);
 
           break;
         case EXON:
-          GenomicEntity exon = addAttributes(GenomicType.EXON,
+          GenomicEntity exon = addAttributes(GenomicEntity.EXON,
               region,
               attributeMap);
 

@@ -66,8 +66,7 @@ public class GTB1Parser extends GTBParser {
   @Override
   protected void parse(Path file,
       BufferedReader reader,
-      final String db,
-      final String genome,
+      final Genome genome,
       Genes genes) throws IOException {
     LOG.info("Parsing GTB file {}, levels: {}...", file, mLevels);
 
@@ -150,7 +149,7 @@ public class GTB1Parser extends GTBParser {
 
       // Create the gene
 
-      gene = addAttributes(GenomicType.TRANSCRIPT,
+      gene = addAttributes(GenomicEntity.TRANSCRIPT,
           GenomicRegion.create(chr, start, end, strand),
           attributeMap);
 
@@ -164,7 +163,7 @@ public class GTB1Parser extends GTBParser {
           GenomicRegion region = GenomicRegion
               .create(chr, starts.get(i) + 1, ends.get(i), strand);
 
-          GenomicEntity exon = addAttributes(GenomicType.EXON,
+          GenomicEntity exon = addAttributes(GenomicEntity.EXON,
               region,
               attributeMap);
 

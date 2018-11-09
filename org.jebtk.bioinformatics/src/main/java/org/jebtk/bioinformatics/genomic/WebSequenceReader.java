@@ -142,9 +142,9 @@ public class WebSequenceReader extends SequenceReader {
    * @see org.jebtk.bioinformatics.genome.GenomeAssembly#getGenomes()
    */
   @Override
-  public List<String> getGenomes() throws IOException {
+  public List<Genome> getGenomes() throws IOException {
 
-    List<String> ret = new ArrayList<String>(100);
+    List<Genome> ret = new ArrayList<Genome>(100);
 
     URL url;
 
@@ -156,7 +156,8 @@ public class WebSequenceReader extends SequenceReader {
       Json json = mParser.parse(url);
 
       for (int i = 0; i < json.size(); ++i) {
-        ret.add(json.get(i).getString());
+        ret.add(
+            GenomeService.getInstance().guessGenome(json.get(i).getString()));
       }
     } catch (MalformedURLException e) {
       e.printStackTrace();

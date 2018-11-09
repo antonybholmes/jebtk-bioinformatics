@@ -45,7 +45,7 @@ public class ChromosomeDirs extends GenomeDirs implements Iterable<Chromosome> {
 
   public static final String EXT = "chrs.gz";
 
-  private String mGenome;
+  private Genome mGenome;
 
   private IterMap<Integer, Chromosome> mChrIdMap = new IterHashMap<Integer, Chromosome>();
 
@@ -53,55 +53,47 @@ public class ChromosomeDirs extends GenomeDirs implements Iterable<Chromosome> {
 
   private List<Chromosome> mChrs = new ArrayList<Chromosome>();
 
-  private String mSpecies;
-
   private boolean mAutoLoad = true;
 
-  public ChromosomeDirs(String genome) {
-    this(genome, genome);
-  }
-
-  public ChromosomeDirs(String species, String genome) {
-    this(species, genome, Genome.GENOME_HOME, Genome.GENOME_DIR);
-  }
-
-  public ChromosomeDirs(String genome, Collection<Path> dirs) {
-    this(genome, genome, dirs);
-  }
-
-  public ChromosomeDirs(String species, String genome, Collection<Path> dirs) {
+  public ChromosomeDirs(Genome genome, Collection<Path> dirs) {
     super(dirs);
 
-    mSpecies = species;
     mGenome = genome;
   }
 
-  public ChromosomeDirs(String species, String genome, Path dir, Path... dirs) {
-    super(dir, dirs);
+  public ChromosomeDirs(Genome genome, Path... dirs) {
+    super(dirs);
 
-    mSpecies = species;
     mGenome = genome;
   }
 
   private void autoLoad() throws IOException {
     if (mAutoLoad) {
+      mAutoLoad = false;
+
       for (Path dir : mDirs) {
-        Path genomeDir = dir.resolve(mGenome);
+        // Path genomeDir = dir.resolve(mGenome.getName());
 
-        LOG.info("Looking for chromosomes in {}", genomeDir);
+        LOG.info("Looking for data in {} {}", dir, mGenome);
 
-        if (FileUtils.isDirectory(genomeDir)) {
-          List<Path> files = FileUtils.endsWith(genomeDir, EXT);
+        // if (FileUtils.isDirectory(genomeDir)) {
 
-          for (Path file : files) {
-            load(file);
-          }
+        // Path dbDir = genomeDir.resolve(mGenome.getBuild());
+
+        // LOG.info("Looking for chromosomes in {}", dbDir, mGenome);
+
+        // if (FileUtils.isDirectory(dbDir)) {
+        List<Path> files = FileUtils.endsWith(dir, EXT);
+
+        for (Path file : files) {
+          load(file);
         }
       }
+      // }
+      // }
 
       Collections.sort(mChrs);
 
-      mAutoLoad = false;
     }
   }
 
@@ -154,10 +146,20 @@ public class ChromosomeDirs extends GenomeDirs implements Iterable<Chromosome> {
     String fc = formatKey(chr);
 
     if (!mChrMap.containsKey(fc)) {
-      add(new Chromosome(chr, mGenome));
+      add(Chromosome.newChr(chr, mGenome));
     }
 
-    return mChrMap.get(fc);
+    Chromosome ret = mChrMap.get(fc);
+
+    // if (ret.getName().contains("_")) {
+    // LOG.info("Request _ {} {} {}", chr, fc, ret);
+    // }
+
+    // if (ret.getShortName().contains("_")) {
+    // LOG.info("Short Request _ {} {} {}", chr, fc, ret);
+    // }
+
+    return ret;
   }
 
   public Chromosome chr(int id) {
@@ -172,20 +174,11 @@ public class ChromosomeDirs extends GenomeDirs implements Iterable<Chromosome> {
 
   protected void add(Chromosome chr) {
     mChrIdMap.put(chr.getId(), chr);
-    mChrMap.put(Integer.toString(chr.getId()), chr);
+    // mChrMap.put(Integer.toString(chr.getId()), chr);
     mChrMap.put(chr.getShortName().toUpperCase(), chr);
     mChrs.add(chr);
 
-    mAutoLoad = true;
-  }
-
-  /**
-   * Returns the genome name, for example 'Human'.
-   *
-   * @return the genome name.
-   */
-  public String getSpecies() {
-    return mSpecies;
+    // mAutoLoad = true;
   }
 
   /**
@@ -193,7 +186,7 @@ public class ChromosomeDirs extends GenomeDirs implements Iterable<Chromosome> {
    * 
    * @return
    */
-  public String getGenome() {
+  public Genome getGenome() {
     return mGenome;
   }
 
@@ -209,51 +202,47 @@ public class ChromosomeDirs extends GenomeDirs implements Iterable<Chromosome> {
     return mChrMap.get(ids.get(Mathematics.rand(ids.size())));
   }
 
-  public static ChromosomeDirs parse(Path file) throws IOException {
-    LOG.info("Reading chromosome info from {}", file);
+  /*
+   * public static ChromosomeDirs parse(Path file) throws IOException {
+   * LOG.info("Reading chromosome info from {}", file);
+   * 
+   * BufferedReader reader = FileUtils.newBufferedReader(file);
+   * 
+   * ChromosomeDirs ret = null;
+   * 
+   * try { ret = parse(reader); } finally { reader.close(); }
+   * 
+   * return ret; }
+   */
 
-    BufferedReader reader = FileUtils.newBufferedReader(file);
-
-    ChromosomeDirs ret = null;
-
-    try {
-      ret = parse(reader);
-    } finally {
-      reader.close();
-    }
-
-    return ret;
-  }
-
-  private static ChromosomeDirs parse(BufferedReader reader)
-      throws IOException {
-
-    // The first token contains the names etc, ignore the rest of the line
-    String species = TextUtils.tabSplit(reader.readLine()).get(0);
-    String genome = TextUtils.tabSplit(reader.readLine()).get(0);
-
-    ChromosomeDirs ret = new ChromosomeDirs(species, genome);
-
-    // Skip header
-    reader.readLine();
-
-    String line;
-    List<String> tokens;
-
-    while ((line = reader.readLine()) != null) {
-      tokens = TextUtils.tabSplit(line);
-
-      // int id = Integer.parseInt(tokens.get(0));
-      String name = tokens.get(1);
-      int size = Integer.parseInt(tokens.get(2));
-
-      Chromosome chr = new Chromosome(name, genome, size);
-
-      ret.add(chr);
-    }
-
-    return ret;
-  }
+  /*
+   * private static ChromosomeDirs parse(BufferedReader reader) throws
+   * IOException {
+   * 
+   * // The first token contains the names etc, ignore the rest of the line
+   * String species = TextUtils.tabSplit(reader.readLine()).get(0); String g =
+   * TextUtils.tabSplit(reader.readLine()).get(0);
+   * 
+   * Genome genome = GenomeService.getInstance().genome(species, g);
+   * 
+   * ChromosomeDirs ret = new ChromosomeDirs(genome);
+   * 
+   * // Skip header reader.readLine();
+   * 
+   * String line; List<String> tokens;
+   * 
+   * while ((line = reader.readLine()) != null) { tokens =
+   * TextUtils.tabSplit(line);
+   * 
+   * // int id = Integer.parseInt(tokens.get(0)); String name = tokens.get(1);
+   * int size = Integer.parseInt(tokens.get(2));
+   * 
+   * Chromosome chr = Chromosome.newChr(name, genome, size);
+   * 
+   * ret.add(chr); }
+   * 
+   * return ret; }
+   */
 
   /**
    * Parses the.
@@ -266,8 +255,8 @@ public class ChromosomeDirs extends GenomeDirs implements Iterable<Chromosome> {
 
     Json json = new JsonParser().parse(file);
 
-    ChromosomeDirs ret = new ChromosomeDirs(json.getString("species"),
-        json.getString("genome"));
+    ChromosomeDirs ret = new ChromosomeDirs(
+        GenomeService.getInstance().guessGenome(json.getString("genome")));
 
     Json chrsJson = json.get("chromosomes");
 
@@ -278,7 +267,7 @@ public class ChromosomeDirs extends GenomeDirs implements Iterable<Chromosome> {
       String name = chrJson.getString("name");
       int size = chrJson.getInt("size");
 
-      Chromosome chr = new Chromosome(name, size);
+      Chromosome chr = Chromosome.newChr(name, size);
 
       ret.mChrIdMap.put(id, chr);
       ret.mChrMap.put(Integer.toString(id), chr);
@@ -289,6 +278,11 @@ public class ChromosomeDirs extends GenomeDirs implements Iterable<Chromosome> {
   }
 
   private static void load(Path file, ChromosomeDirs ret) throws IOException {
+
+    Genome g = ret.getGenome();
+    String species = g.getName().toLowerCase();
+    
+    LOG.info("Loading chrs from {} {}...", file, g);
 
     BufferedReader reader = FileUtils.newBufferedReader(file);
 
@@ -306,15 +300,36 @@ public class ChromosomeDirs extends GenomeDirs implements Iterable<Chromosome> {
 
         // int id = Integer.parseInt(tokens.get(0));
         String name = tokens.get(1);
+
+        if (name.contains("_")) {
+          continue;
+        }
+
         int size = Integer.parseInt(tokens.get(2));
 
-        Chromosome chr = new Chromosome(name, ret.getGenome(), size);
+        Chromosome chr;
+        
+        switch(species) {
+        case "human":
+          chr = Chromosome.newHumanChr(name, g, size);
+          break;
+        case "mouse":
+          chr = Chromosome.newMouseChr(name, g, size);
+          break;
+        default:
+          chr = Chromosome.newChr(name, g, size);
+          break;
+        }
+      
+        // System.err.println(name + " " + chr);
 
         ret.add(chr);
       }
     } finally {
       reader.close();
     }
+
+    LOG.info("Finished.");
   }
 
   private static final String formatKey(String chr) {

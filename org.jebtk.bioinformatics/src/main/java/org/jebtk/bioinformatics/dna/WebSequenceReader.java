@@ -34,10 +34,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jebtk.bioinformatics.DataSource;
-import org.jebtk.bioinformatics.genomic.SequenceReader;
+import org.jebtk.bioinformatics.genomic.Genome;
+import org.jebtk.bioinformatics.genomic.GenomeService;
 import org.jebtk.bioinformatics.genomic.GenomicRegion;
 import org.jebtk.bioinformatics.genomic.RepeatMaskType;
 import org.jebtk.bioinformatics.genomic.Sequence;
+import org.jebtk.bioinformatics.genomic.SequenceReader;
 import org.jebtk.bioinformatics.genomic.SequenceRegion;
 import org.jebtk.core.http.UrlBuilder;
 import org.jebtk.core.json.Json;
@@ -101,7 +103,7 @@ public class WebSequenceReader extends SequenceReader {
     URL url;
 
     try {
-      UrlBuilder tmpUrl = mDnaUrl.param("g", region.getGenome())
+      UrlBuilder tmpUrl = mDnaUrl.param("g", region.getGenome().getAssembly())
           .param("chr", region.getChr().toString()).param("s", region.getStart())
           .param("e", region.getEnd()).param("strand", "s")
           .param("lc", displayUpper ? "0" : "1");
@@ -142,9 +144,9 @@ public class WebSequenceReader extends SequenceReader {
    * @see org.jebtk.bioinformatics.genome.GenomeAssembly#getGenomes()
    */
   @Override
-  public List<String> getGenomes() throws IOException {
+  public List<Genome> getGenomes() throws IOException {
 
-    List<String> ret = new ArrayList<String>(100);
+    List<Genome> ret = new ArrayList<Genome>(100);
 
     URL url;
 
@@ -156,7 +158,7 @@ public class WebSequenceReader extends SequenceReader {
       Json json = mParser.parse(url);
 
       for (int i = 0; i < json.size(); ++i) {
-        ret.add(json.get(i).getString());
+        ret.add(GenomeService.getInstance().guessGenome(json.get(i).getString()));
       }
     } catch (MalformedURLException e) {
       e.printStackTrace();

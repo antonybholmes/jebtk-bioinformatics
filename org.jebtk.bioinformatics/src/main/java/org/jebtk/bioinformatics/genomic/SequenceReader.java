@@ -53,7 +53,7 @@ public abstract class SequenceReader implements NameProperty {
    * @return the sequence
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public SequenceRegion getSequence(String genome,
+  public SequenceRegion getSequence(Genome genome,
       String position,
       boolean displayUpper,
       RepeatMaskType repeatMaskType) throws IOException {
@@ -71,7 +71,7 @@ public abstract class SequenceReader implements NameProperty {
    * @return the sequence
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public SequenceRegion getSequence(String genome,
+  public SequenceRegion getSequence(Genome genome,
       String position,
       RepeatMaskType repeatMaskType) throws IOException {
     return getSequence(GenomicRegion.parse(genome, position),
@@ -136,7 +136,7 @@ public abstract class SequenceReader implements NameProperty {
    * @return the sequence
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public SequenceRegion getSequence(String genome, String sequence)
+  public SequenceRegion getSequence(Genome genome, String sequence)
       throws IOException {
     return getSequence(genome, sequence, true, RepeatMaskType.UPPERCASE);
   }
@@ -201,7 +201,7 @@ public abstract class SequenceReader implements NameProperty {
    * @return the genomes
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public List<String> getGenomes() throws IOException {
+  public List<Genome> getGenomes() throws IOException {
     return Collections.emptyList();
   }
 

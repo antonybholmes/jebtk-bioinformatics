@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.text.ParseException;
 
 import org.jebtk.bioinformatics.genomic.Genome;
-import org.jebtk.bioinformatics.genomic.GeneDb;
 import org.jebtk.bioinformatics.genomic.GenomicRegion;
 import org.junit.Test;
 

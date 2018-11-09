@@ -26,21 +26,21 @@ public class GenomeGuess {
    * @param id the id
    * @return the string
    */
-  public String guess(String id) {
+  public Genome guess(String id) {
     String lid = id.toLowerCase();
 
-    if (lid.contains("mm10")) {
-      return "mm10";
-    } else if (lid.contains("grcm38")) {
-      return "grcm38";
-    } else if (lid.contains("grch38")) {
-      return "grch38";
+    if (lid.contains("grch38")) {
+      return Genome.GRCH38;
     } else if (lid.contains("hg18")) {
-      return "hg18";
+      return Genome.HG18;
+    } else if (lid.contains("mm10")) {
+      return Genome.MM10;
+    } else if (lid.contains("grcm38")) {
+      return Genome.GRCM38;
     } else if (lid.contains("mouse")) {
-      return "mm10";
+      return Genome.MM10;
     } else {
-      return "hg19";
+      return Genome.HG19;
     }
   }
 }

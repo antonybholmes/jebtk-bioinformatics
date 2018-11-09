@@ -41,8 +41,7 @@ public class GTB3Parser extends GTBParser {
   @Override
   protected void parse(final Path file,
       BufferedReader reader,
-      final String db,
-      final String genome,
+      final Genome genome,
       final Genes genes) throws IOException {
     LOG.info("Parsing GTB2 file {}, levels: {}...", file, mLevels);
 
@@ -106,7 +105,7 @@ public class GTB3Parser extends GTBParser {
 
         // Create the gene
 
-        GenomicEntity gene = addAttributes(GenomicType.TRANSCRIPT,
+        GenomicEntity gene = addAttributes(GenomicEntity.TRANSCRIPT,
             GenomicRegion.create(chr, start, end, strand),
             attributeMap);
 
@@ -126,7 +125,7 @@ public class GTB3Parser extends GTBParser {
             GenomicRegion region = GenomicRegion
                 .create(chr, starts.get(i), ends.get(i), strand);
 
-            GenomicEntity exon = addAttributes(GenomicType.EXON,
+            GenomicEntity exon = addAttributes(GenomicEntity.EXON,
                 region,
                 attributeMap);
 
@@ -145,11 +144,21 @@ public class GTB3Parser extends GTBParser {
         }
 
         if (has5pUtrLevel) {
-          processUTR(tokens, gene, attributeMap, 7, GenomicType.UTR_5P, genes);
+          processUTR(tokens,
+              gene,
+              attributeMap,
+              7,
+              GenomicEntity.UTR_5P,
+              genes);
         }
 
         if (has3pUtrLevel) {
-          processUTR(tokens, gene, attributeMap, 10, GenomicType.UTR_3P, genes);
+          processUTR(tokens,
+              gene,
+              attributeMap,
+              10,
+              GenomicEntity.UTR_3P,
+              genes);
         }
       }
     });
@@ -159,7 +168,7 @@ public class GTB3Parser extends GTBParser {
       GenomicEntity gene,
       IterMap<String, String> attributeMap,
       int offset,
-      GenomicType type,
+      String type,
       Genes ret) {
 
     int count = Integer.parseInt(tokens.get(offset));

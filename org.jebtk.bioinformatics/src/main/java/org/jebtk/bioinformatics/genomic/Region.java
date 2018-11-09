@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.jebtk.core.event.ChangeListeners;
 import org.jebtk.core.io.Io;
 import org.jebtk.core.text.FormattedTxt;
 import org.jebtk.core.text.Splitter;
@@ -44,13 +45,19 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  *
  * @author Antony Holmes Holmes
  */
-public class Region implements Comparable<Region>, FormattedTxt {
+public class Region extends ChangeListeners
+    implements Comparable<Region>, FormattedTxt {
+
+  /**
+   * 
+   */
+  private static final long serialVersionUID = 1L;
 
   /** The Constant REGION_REGEX. */
   private static final Pattern REGION_REGEX = Pattern.compile("\\d+(-\\d+)");
-  
+
   public static final Region NULL_REGION = new Region();
-  
+
   /**
    * The member start.
    */
@@ -69,7 +76,6 @@ public class Region implements Comparable<Region>, FormattedTxt {
   @JsonIgnore
   public final int mLength;
 
-  
   /**
    * Creates a special empty region
    */
@@ -78,7 +84,7 @@ public class Region implements Comparable<Region>, FormattedTxt {
     mEnd = 0;
     mLength = 0;
   }
-  
+
   /**
    * Instantiates a new region.
    *
@@ -116,11 +122,9 @@ public class Region implements Comparable<Region>, FormattedTxt {
 
     mStart = start;
     // The end must be greater than the start
-    mEnd = end; //Math.max(end, start + 1);
+    mEnd = end; // Math.max(end, start + 1);
     mLength = mEnd - mStart + 1;
   }
-  
-  
 
   /**
    * Gets the start.
@@ -296,7 +300,7 @@ public class Region implements Comparable<Region>, FormattedTxt {
   public static Region shift(Region region, int shift) {
     // bound the positions so they dont exceed the chromosome bounds
     int start = oneBased(region.mStart + shift);
-    int end =  oneBased(region.mEnd + shift);
+    int end = oneBased(region.mEnd + shift);
 
     return new Region(start, end);
   }
@@ -307,15 +311,17 @@ public class Region implements Comparable<Region>, FormattedTxt {
 
   /**
    * Simply ensure coordinate is a minimum of one
+   * 
    * @param v
    * @return
    */
   public static int oneBased(int v) {
     return Math.max(1, v);
   }
-  
+
   /**
-   * Ensure that end is 
+   * Ensure that end is
+   * 
    * @param start
    * @param end
    * @return

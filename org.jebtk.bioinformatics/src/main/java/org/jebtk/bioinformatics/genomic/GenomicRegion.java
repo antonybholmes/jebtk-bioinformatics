@@ -27,6 +27,7 @@
  */
 package org.jebtk.bioinformatics.genomic;
 
+import java.awt.Color;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -57,7 +58,10 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @JsonPropertyOrder({ "loc", "strand" })
 public class GenomicRegion extends Region {
 
-  // private static final String CHR_REGEX = "(chr(?:[^:]+))";
+  /**
+   * 
+   */
+  private static final long serialVersionUID = 1L;
 
   private static final String CHR_REGEX = "(chr[a-zA-Z0-9\\-\\_]+)";
 
@@ -69,10 +73,6 @@ public class GenomicRegion extends Region {
 
   private static final Pattern GENOMIC_NUM_PATTERN = Pattern
       .compile("[\\-\\+\\t\\=\\: ](\\d+(?:,\\d+)*)");
-
-
-  // private static final Pattern GENOMIC_REGEX =
-  // Pattern.compile("(chr[0-9a-zA-Z\\-\\_]+):(\\d+)(\\d+)");
 
   /**
    * The member chr.
@@ -112,8 +112,18 @@ public class GenomicRegion extends Region {
     mStrand = strand;
   }
 
-  public GenomicRegion(String chr, String genome, int start, int end) {
-    this(new Chromosome(chr, genome), start, end);
+  public GenomicRegion(Genome genome, String chr, int start, int end) {
+    this(GenomeService.getInstance().chr(genome, chr), start, end);
+  }
+
+  /**
+   * Clone a genomic region, but change its genome.
+   * 
+   * @param genome
+   * @param r
+   */
+  public GenomicRegion(Genome genome, GenomicRegion r) {
+    this(GenomeService.getInstance().chr(genome, r.mChr), r.mStart, r.mEnd);
   }
 
   /**
@@ -176,17 +186,6 @@ public class GenomicRegion extends Region {
     return mChr;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see java.lang.Object#toString()
-   */
-  @Override
-  @JsonIgnore
-  public String toString() {
-    return getLocation();
-  }
-
   /**
    * Returns the genome associated with this region. Equivalent to calling
    * <code>getChr().getGenome()</code>.
@@ -194,7 +193,7 @@ public class GenomicRegion extends Region {
    * @return the genome.
    */
   @JsonIgnore
-  public String getGenome() {
+  public Genome getGenome() {
     return mChr.getGenome();
   }
 
@@ -234,6 +233,35 @@ public class GenomicRegion extends Region {
   /*
    * (non-Javadoc)
    * 
+   * @see java.lang.Object#toString()
+   */
+  @Override
+  @JsonIgnore
+  public String toString() {
+    return getLocation();
+  }
+
+  /**
+   * Formatted txt.
+   *
+   * @return the string
+   */
+  public String formattedTxt() {
+    StringBuilder buffer = new StringBuilder();
+
+    try {
+      formattedTxt(buffer);
+      buffer.append(TextUtils.NEW_LINE);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    return buffer.toString();
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see
    * edu.columbia.rdf.lib.bioinformatics.genome.Region#formattedTxt(java.lang.
    * Appendable)
@@ -255,7 +283,7 @@ public class GenomicRegion extends Region {
    * @return the list
    * @throws ParseException the parse exception
    */
-  public static List<GenomicRegion> parse(String genome,
+  public static List<GenomicRegion> parse(Genome genome,
       List<String> locations) {
     List<GenomicRegion> ret = new ArrayList<GenomicRegion>();
 
@@ -276,7 +304,7 @@ public class GenomicRegion extends Region {
    * @param location the location
    * @return the genomic region
    */
-  public static GenomicRegion parse(String genome, String location) {
+  public static GenomicRegion parse(Genome genome, String location) {
     // System.err.println("location: " + location);
 
     if (Io.isEmptyLine(location)) {
@@ -351,8 +379,7 @@ public class GenomicRegion extends Region {
       String chr,
       String start,
       String end) {
-    return new GenomicRegion(
-        GenomeService.getInstance().genome(genome).chr(chr),
+    return new GenomicRegion(GenomeService.getInstance().chr(genome, chr),
         TextUtils.parseInt(start), TextUtils.parseInt(end));
   }
 
@@ -997,9 +1024,17 @@ public class GenomicRegion extends Region {
       String chr,
       int start,
       int end) {
-    return create(GenomeService.getInstance().genome(genome).chr(chr),
+    return create(GenomeService.getInstance().guessGenome(genome),
+        chr,
         start,
         end);
+  }
+
+  public static GenomicRegion create(Genome genome,
+      String chr,
+      int start,
+      int end) {
+    return create(GenomeService.getInstance().chr(genome, chr), start, end);
   }
 
   /**

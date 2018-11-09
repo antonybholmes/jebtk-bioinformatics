@@ -44,7 +44,7 @@ public abstract class Genes {
   public static final Genes EMPTY_GENES = new Genes() {
 
     @Override
-    public Iterable<GeneDb> getGeneDBs() {
+    public Iterable<Genome> getGenomes() {
       return Collections.emptyList();
     }
   };
@@ -57,10 +57,6 @@ public abstract class Genes {
     // Do nothing
   }
 
-  public GenomicEntity getGene(GeneDb g, String id) throws IOException {
-    return getGene(g.getName(), g.getGenome(), id);
-  }
-
   /**
    * Lookup a gene by either symbol or refseq.
    *
@@ -71,9 +67,8 @@ public abstract class Genes {
   // public abstract GenomicEntity lookup(String genome, String id) throws
   // IOException;
 
-  public GenomicEntity getGene(String db, String genome, String id)
-      throws IOException {
-    List<GenomicEntity> genes = getGenes(db, genome, id);
+  public GenomicEntity getGene(Genome genome, String id) throws IOException {
+    List<GenomicEntity> genes = getGenes(genome, id);
 
     if (genes.size() > 0) {
       return genes.get(0);
@@ -82,20 +77,7 @@ public abstract class Genes {
     }
   }
 
-  public List<GenomicEntity> getGenes(GeneDb g, String id) throws IOException {
-    return getGenes(g.getName(), g.getGenome(), id);
-  }
-
-  /**
-   * Lookup.
-   *
-   * @param type the type
-   * @param symbol the symbol
-   * @return the collection
-   * @throws IOException
-   */
-  public List<GenomicEntity> getGenes(String db, String genome, String id)
-      throws IOException {
+  public List<GenomicEntity> getGenes(Genome g, String id) throws IOException {
     return Collections.emptyList();
   }
 
@@ -103,14 +85,9 @@ public abstract class Genes {
     return Collections.emptyList();
   }
 
-  public List<GenomicEntity> findGenes(GeneDb g, String region)
+  public List<GenomicEntity> findGenes(Genome genome, String region)
       throws IOException {
-    return findGenes(g.getName(), g.getGenome(), region);
-  }
-
-  public List<GenomicEntity> findGenes(String db, String genome, String region)
-      throws IOException {
-    return findGenes(db, GenomicRegion.parse(genome, region));
+    return findGenes(genome, GenomicRegion.parse(genome, region));
   }
 
   /**
@@ -120,7 +97,7 @@ public abstract class Genes {
    * @return the list
    * @throws IOException
    */
-  public List<GenomicEntity> findGenes(String db, GenomicRegion region)
+  public List<GenomicEntity> findGenes(Genome genome, GenomicRegion region)
       throws IOException {
     return Collections.emptyList();
   }
@@ -132,14 +109,9 @@ public abstract class Genes {
    * @return the list
    * @throws IOException
    */
-  public List<GenomicEntity> findClosestGenes(String db, GenomicRegion region)
-      throws IOException {
-    return Collections.emptyList();
-  }
-
-  public List<GenomicEntity> findClosestGenesByTss(GeneDb g,
+  public List<GenomicEntity> findClosestGenes(Genome genome,
       GenomicRegion region) throws IOException {
-    return findClosestGenesByTss(g.getName(), region);
+    return Collections.emptyList();
   }
 
   /**
@@ -149,9 +121,9 @@ public abstract class Genes {
    * @return the list
    * @throws IOException
    */
-  public List<GenomicEntity> findClosestGenesByTss(String db,
+  public List<GenomicEntity> findClosestGenesByTss(Genome genome,
       GenomicRegion region) throws IOException {
-    Collection<GenomicEntity> genes = findClosestGenes(db, region); // findGenes(region);
+    Collection<GenomicEntity> genes = findClosestGenes(genome, region); // findGenes(region);
 
     List<GenomicEntity> ret = new ArrayList<GenomicEntity>();
 
@@ -225,7 +197,7 @@ public abstract class Genes {
    * 
    * @return
    */
-  public abstract Iterable<GeneDb> getGeneDBs();
+  public abstract Iterable<Genome> getGenomes();
 
   //
   // Static methods
@@ -247,21 +219,21 @@ public abstract class Genes {
     return new GTB2Parser();
   }
 
-  public List<GenomicEntity> getOverlappingGenes(String db,
+  public List<GenomicEntity> getOverlappingGenes(Genome genome,
       GenomicRegion region,
       int minBp) throws IOException {
     List<GenomicEntity> ret = new ArrayList<GenomicEntity>();
 
-    getOverlappingGenes(db, region, minBp, ret);
+    getOverlappingGenes(genome, region, minBp, ret);
 
     return ret;
   }
 
-  public void getOverlappingGenes(String db,
+  public void getOverlappingGenes(Genome genome,
       GenomicRegion region,
       int minBp,
       List<GenomicEntity> ret) throws IOException {
-    List<GenomicEntity> genes = findGenes(db, region);
+    List<GenomicEntity> genes = findGenes(genome, region);
 
     if (genes.size() == 0) {
       return;

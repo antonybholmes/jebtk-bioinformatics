@@ -25,7 +25,7 @@ import com.fasterxml.jackson.annotation.JsonGetter;
 public class Entity implements IdProperty, Comparable<Entity> {
 
   /** The m id. */
-  protected final int mId;
+  public final int mId;
 
   /**
    * Instantiates a new entity.

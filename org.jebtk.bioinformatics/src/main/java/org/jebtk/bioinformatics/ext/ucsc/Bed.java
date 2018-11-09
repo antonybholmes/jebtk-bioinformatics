@@ -38,9 +38,14 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.regex.Matcher;
 
+import org.jebtk.bioinformatics.genomic.Chromosome;
+import org.jebtk.bioinformatics.genomic.Genome;
 import org.jebtk.bioinformatics.genomic.GenomeService;
+import org.jebtk.bioinformatics.genomic.GenomicElement;
 import org.jebtk.bioinformatics.genomic.GenomicRegion;
 import org.jebtk.core.io.FileUtils;
 import org.jebtk.core.io.Io;
@@ -77,7 +82,7 @@ public class Bed extends UCSCTrack {
   /**
    * The constant BED_TRACK_TYPE.
    */
-  private static final String BED_TRACK_TYPE = "bed";
+  public static final String BED_TRACK_TYPE = "bed";
 
   /**
    * Instantiates a new bed.
@@ -119,8 +124,10 @@ public class Bed extends UCSCTrack {
   @Override
   public void setColor(Color color) {
     // Override the color preferences for all segments
-    for (UCSCTrackRegion region : mChrRegions) {
-      ((BedRegion) region).setColor(color);
+    for (Entry<Chromosome, Set<GenomicElement>> item : mRegions) {
+      for (GenomicElement r : item.getValue()) {
+        ((BedElement) r).setColor(color);
+      }
     }
 
     super.setColor(color);
@@ -163,7 +170,7 @@ public class Bed extends UCSCTrack {
    * @return the list
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static List<UCSCTrack> parseTracks(String genome,
+  public static List<UCSCTrack> parseTracks(Genome genome,
       String defaultName,
       BufferedReader reader) throws IOException {
     Bed bed = null;
@@ -210,10 +217,10 @@ public class Bed extends UCSCTrack {
             tracks.add(bed);
           }
 
-          BedRegion region = BedRegion.parse(genome, line);
+          BedElement region = BedElement.parse(genome, line);
 
           if (region != null) {
-            bed.getRegions().add(region);
+            bed.add(region);
           }
         }
       }
@@ -221,7 +228,7 @@ public class Bed extends UCSCTrack {
       reader.close();
     }
 
-    LOG.info("BED {} ({} peaks).", bed.getName(), bed.getRegions().size());
+    LOG.info("BED {} ({} peaks).", bed.getName(), bed.getElements().size());
 
     return tracks;
   }
@@ -318,9 +325,9 @@ public class Bed extends UCSCTrack {
 
           beds.add(bed);
         } else {
-          BedRegion region = BedRegion
+          BedElement region = BedElement
               .parse(GenomeService.getInstance().guessGenome(file), line);
-          bed.getRegions().add(region);
+          bed.add(region);
         }
       }
     } finally {
@@ -543,7 +550,7 @@ public class Bed extends UCSCTrack {
     Bed bed = new Bed(name);
 
     for (GenomicRegion region : regions) {
-      bed.getRegions().add(BedRegion.create(region));
+      bed.add(BedElement.create(region));
     }
 
     return bed;

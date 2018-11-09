@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
 
+import org.jebtk.bioinformatics.genomic.Genome;
 import org.jebtk.bioinformatics.genomic.GenomicRegion;
 
 /**
@@ -46,7 +47,7 @@ public abstract class ConservationAssembly {
    * @throws IOException Signals that an I/O exception has occurred.
    * @throws ParseException the parse exception
    */
-  public List<Double> getScores(String genome, String region)
+  public List<Double> getScores(Genome genome, String region)
       throws IOException, ParseException {
     return getScores(GenomicRegion.parse(genome, region));
   }

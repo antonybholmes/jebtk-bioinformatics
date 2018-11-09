@@ -33,7 +33,7 @@ public class WebChromReader implements ChromosomeReader {
   // private static final Logger LOG = LoggerFactory
   // .getLogger(WebChromReader.class);
 
-  private String mGenome;
+  private Genome mGenome;
 
   private List<Chromosome> mChrs = new ArrayList<Chromosome>();
 
@@ -43,7 +43,7 @@ public class WebChromReader implements ChromosomeReader {
 
   private Json chrJson;
 
-  public WebChromReader(UrlBuilder url, String genome) {
+  public WebChromReader(UrlBuilder url, Genome genome) {
     mGenome = genome;
 
     mUrl = url.resolve("genomes").resolve(genome).resolve("chrs");
@@ -58,7 +58,7 @@ public class WebChromReader implements ChromosomeReader {
       for (int i = 0; i < json.size(); ++i) {
         chrJson = json.get(i);
 
-        Chromosome chr = new Chromosome(chrJson.getString("chr"), mGenome,
+        Chromosome chr = Chromosome.newChr(chrJson.getString("chr"), mGenome,
             chrJson.getInt("bp"));
 
         mChrs.add(chr);
@@ -87,7 +87,7 @@ public class WebChromReader implements ChromosomeReader {
    * @return
    */
   @Override
-  public String getGenome() {
+  public Genome getGenome() {
     return mGenome;
   }
 }

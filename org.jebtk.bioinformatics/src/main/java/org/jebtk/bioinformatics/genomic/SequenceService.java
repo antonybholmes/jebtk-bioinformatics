@@ -50,7 +50,7 @@ import org.jebtk.core.settings.SettingsService;
  * @author Antony Holmes Holmes
  */
 public class SequenceService extends SequenceReader
-    implements Iterable<Entry<String, SequenceReader>>, ChangeEventProducer {
+    implements Iterable<Entry<Genome, SequenceReader>>, ChangeEventProducer {
 
   /**
    * The Class GenomeAssemblyServiceLoader.
@@ -72,7 +72,7 @@ public class SequenceService extends SequenceReader
 
   private List<SequenceReader> mReaders = new UniqueArrayList<SequenceReader>();
 
-  private IterMap<String, SequenceReader> mGenomeMap = new IterTreeMap<String, SequenceReader>();
+  private IterMap<Genome, SequenceReader> mGenomeMap = new IterTreeMap<Genome, SequenceReader>();
 
   private ChangeListeners mListeners = new ChangeListeners();
 
@@ -316,7 +316,7 @@ public class SequenceService extends SequenceReader
       // One assembly object can load multiple genomes potentially.
       for (SequenceReader reader : mReaders) {
         try {
-          for (String genome : reader.getGenomes()) {
+          for (Genome genome : reader.getGenomes()) {
             mGenomeMap.put(genome, reader);
           }
         } catch (IOException e) {
@@ -337,7 +337,7 @@ public class SequenceService extends SequenceReader
     return mCurrent;
   }
 
-  public SequenceReader get(String genome) {
+  public SequenceReader get(Genome genome) {
     autoLoad();
 
     return mGenomeMap.get(genome);
@@ -349,7 +349,7 @@ public class SequenceService extends SequenceReader
   }
 
   @Override
-  public Iterator<Entry<String, SequenceReader>> iterator() {
+  public Iterator<Entry<Genome, SequenceReader>> iterator() {
     autoLoad();
 
     return mGenomeMap.iterator();
@@ -371,7 +371,7 @@ public class SequenceService extends SequenceReader
       boolean displayUpper,
       RepeatMaskType repeatMaskType) {
 
-    String genome = region.getGenome();
+    Genome genome = region.getGenome();
 
     // Iterate over all assemblies until one works.
 

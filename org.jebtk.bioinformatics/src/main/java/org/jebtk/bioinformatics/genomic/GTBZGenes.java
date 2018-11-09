@@ -23,14 +23,14 @@ public class GTBZGenes extends FixedGapGenes {
   private final Path mFile;
   private final Map<String, Chromosome> mGeneMap = new HashMap<String, Chromosome>();
 
-  public GTBZGenes(Path file, String db, String genome) {
-    super(db, genome);
+  public GTBZGenes(Path file, Genome genome) {
+    super(genome);
 
     mFile = file;
   }
 
-  public GTBZGenes(Path file, String db, String genome, GeneParser parser) {
-    this(file, db, genome);
+  public GTBZGenes(Path file, Genome genome, GeneParser parser) {
+    this(file, genome);
 
     mParser = parser;
   }
@@ -67,7 +67,7 @@ public class GTBZGenes extends FixedGapGenes {
 
   private void autoLoad() {
     try {
-      mParser.parse(mFile, mDb, mGenome, this);
+      mParser.parse(mFile, mGenome, this);
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -76,7 +76,7 @@ public class GTBZGenes extends FixedGapGenes {
   private void autoLoad(Chromosome chr) {
     if (!contains(chr)) {
       try {
-        mParser.parse(mFile, mDb, mGenome, chr, this);
+        mParser.parse(mFile, mGenome, chr, this);
       } catch (IOException e) {
         e.printStackTrace();
       }
@@ -108,35 +108,35 @@ public class GTBZGenes extends FixedGapGenes {
   }
 
   @Override
-  public List<GenomicEntity> getGenes(String db, String genome, String id)
+  public List<GenomicEntity> getGenes(Genome genome, String id)
       throws IOException {
     autoLoad(id);
 
-    return super.getGenes(db, genome, id);
+    return super.getGenes(genome, id);
   }
 
   @Override
-  public List<GenomicEntity> findGenes(String db, GenomicRegion region)
+  public List<GenomicEntity> findGenes(Genome genome, GenomicRegion region)
       throws IOException {
     autoLoad(region.mChr);
 
-    return super.findGenes(db, region);
+    return super.findGenes(genome, region);
   }
 
   @Override
-  public List<GenomicEntity> findClosestGenes(String db, GenomicRegion region)
-      throws IOException {
-    autoLoad(region.mChr);
-
-    return super.findClosestGenes(db, region);
-  }
-
-  @Override
-  public List<GenomicEntity> findClosestGenesByTss(String db,
+  public List<GenomicEntity> findClosestGenes(Genome genome,
       GenomicRegion region) throws IOException {
     autoLoad(region.mChr);
 
-    return super.findClosestGenesByTss(db, region);
+    return super.findClosestGenes(genome, region);
+  }
+
+  @Override
+  public List<GenomicEntity> findClosestGenesByTss(Genome genome,
+      GenomicRegion region) throws IOException {
+    autoLoad(region.mChr);
+
+    return super.findClosestGenesByTss(genome, region);
   }
 
   /*

@@ -28,10 +28,10 @@
 package org.jebtk.bioinformatics.ext.ucsc;
 
 import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Path;
 
+import org.jebtk.core.io.FileUtils;
 import org.jebtk.core.model.ListModel;
 
 /**
@@ -54,9 +54,9 @@ public class UCSCTracksModel extends ListModel<UCSCTrack> {
    * @param file the file
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static void write(UCSCTracksModel model, File file)
+  public static void write(UCSCTracksModel model, Path file)
       throws IOException {
-    BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+    BufferedWriter writer = FileUtils.newBufferedWriter(file);
 
     try {
       for (UCSCTrack track : model) {

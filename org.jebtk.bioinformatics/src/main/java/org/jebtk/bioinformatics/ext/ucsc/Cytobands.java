@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.jebtk.bioinformatics.genomic.Chromosome;
+import org.jebtk.bioinformatics.genomic.Genome;
 import org.jebtk.core.io.Io;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,7 +66,7 @@ public class Cytobands {
    * @param reader the reader
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public Cytobands(String genome, BufferedReader reader) throws IOException {
+  public Cytobands(Genome genome, BufferedReader reader) throws IOException {
 
     String line;
 

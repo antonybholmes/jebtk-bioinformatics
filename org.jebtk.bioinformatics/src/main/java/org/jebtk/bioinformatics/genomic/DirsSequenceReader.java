@@ -85,15 +85,15 @@ public abstract class DirsSequenceReader extends SequenceReader {
    * @see org.jebtk.bioinformatics.genome.GenomeAssembly#getGenomes()
    */
   @Override
-  public List<String> getGenomes() throws IOException {
+  public List<Genome> getGenomes() throws IOException {
 
-    List<String> ret = new ArrayList<String>();
+    List<Genome> ret = new ArrayList<Genome>();
 
     for (Path dir : mDirs) {
       List<Path> subDirs = FileUtils.lsdir(dir);
 
       for (Path sd : subDirs) {
-        ret.add(PathUtils.getName(sd));
+        ret.add(GenomeService.getInstance().guessGenome(PathUtils.getName(sd)));
       }
     }
 
@@ -112,7 +112,7 @@ public abstract class DirsSequenceReader extends SequenceReader {
   public final SequenceRegion getSequence(GenomicRegion region,
       boolean displayUpper,
       RepeatMaskType repeatMaskType) throws IOException {
-    String genome = region.getGenome();
+    Genome genome = region.getGenome();
 
     return getReader(genome).getSequence(region, displayUpper, repeatMaskType);
   }
@@ -121,11 +121,11 @@ public abstract class DirsSequenceReader extends SequenceReader {
   public List<SequenceRegion> getSequences(Collection<GenomicRegion> regions,
       boolean displayUpper,
       RepeatMaskType repeatMaskType) throws IOException {
-    String genome = regions.iterator().next().getGenome();
+    Genome genome = regions.iterator().next().getGenome();
 
     return getReader(genome)
         .getSequences(regions, displayUpper, repeatMaskType);
   }
 
-  public abstract SequenceReader getReader(String genome);
+  public abstract SequenceReader getReader(Genome genome);
 }

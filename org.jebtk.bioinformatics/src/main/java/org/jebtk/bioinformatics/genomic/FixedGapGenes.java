@@ -67,7 +67,8 @@ public class FixedGapGenes extends SingleDbGenes {
   private static final Logger LOG = LoggerFactory
       .getLogger(FixedGapGenes.class);
 
-  private FixedGapSearch<GenomicEntity> mSearch = new FixedGapSearch<GenomicEntity>();
+  private FixedGapSearch<GenomicEntity> mSearch = 
+      new FixedGapSearch<GenomicEntity>();
 
   /**
    * The member symbol main variant.
@@ -98,8 +99,8 @@ public class FixedGapGenes extends SingleDbGenes {
 
   private boolean mFindMainVariants = true;
 
-  public FixedGapGenes(String db, String genome) {
-    super(db, genome);
+  public FixedGapGenes(Genome genome) {
+    super(genome);
   }
 
   @Override
@@ -113,8 +114,8 @@ public class FixedGapGenes extends SingleDbGenes {
      * super.add(exon, gene); } } else { super.add(region, gene); }
      */
 
-    for (String tid : gene.getIdTypes()) {
-      String name = gene.getId(tid);
+    for (String tid : gene.getPropertyNames()) {
+      String name = gene.getProp(tid);
       mTypeMap.get(tid).add(name);
       mIdMap.get(sanitize(name)).add(gene);
     }
@@ -178,7 +179,7 @@ public class FixedGapGenes extends SingleDbGenes {
    * @throws IOException
    */
   @Override
-  public List<GenomicEntity> getGenes(String db, String genome, String id)
+  public List<GenomicEntity> getGenes(Genome genome, String id)
       throws IOException {
     return mIdMap.get(sanitize(id));
   }
@@ -189,9 +190,9 @@ public class FixedGapGenes extends SingleDbGenes {
   }
 
   @Override
-  public List<GenomicEntity> findGenes(String db, String genome, String region)
+  public List<GenomicEntity> findGenes(Genome genome, String region)
       throws IOException {
-    return findGenes(db, GenomicRegion.parse(genome, region));
+    return findGenes(genome, GenomicRegion.parse(genome, region));
   }
 
   /**
@@ -202,7 +203,7 @@ public class FixedGapGenes extends SingleDbGenes {
    * @throws IOException
    */
   @Override
-  public List<GenomicEntity> findGenes(String db, GenomicRegion region)
+  public List<GenomicEntity> findGenes(Genome genome, GenomicRegion region)
       throws IOException {
     return mSearch.getOverlappingFeatures(region, 10).toList();
   }
@@ -215,8 +216,8 @@ public class FixedGapGenes extends SingleDbGenes {
    * @throws IOException
    */
   @Override
-  public List<GenomicEntity> findClosestGenes(String db, GenomicRegion region)
-      throws IOException {
+  public List<GenomicEntity> findClosestGenes(Genome genome,
+      GenomicRegion region) throws IOException {
     return mSearch.getClosestFeatures(region);
   }
 

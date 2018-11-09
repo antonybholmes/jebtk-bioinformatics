@@ -179,17 +179,17 @@ public class BedGraph extends UCSCTrack {
 
           tracks.add(bed);
         } else {
-          BedGraphRegion region = BedGraphRegion
+          BedGraphElement region = BedGraphElement
               .parse(GenomeService.getInstance().guessGenome(file), line);
 
-          bed.getRegions().add(region);
+          bed.add(region);
         }
       }
     } finally {
       reader.close();
     }
 
-    LOG.info("BED {} ({} peaks).", bed.getName(), bed.getRegions().size());
+    LOG.info("BED {} ({} peaks).", bed.getName(), bed.getElements().size());
 
     return tracks;
   }

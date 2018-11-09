@@ -89,7 +89,7 @@ public class CytobandsService {
   /**
    * The member cytobands map.
    */
-  private Map<String, Cytobands> mCytobandsMap = new HashMap<String, Cytobands>();
+  private Map<Genome, Cytobands> mCytobandsMap = new HashMap<Genome, Cytobands>();
 
   /**
    * Instantiates a new cytobands.
@@ -149,7 +149,7 @@ public class CytobandsService {
    * @param reader the reader
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public void load(String genome, BufferedReader reader) throws IOException {
+  public void load(Genome genome, BufferedReader reader) throws IOException {
     load(genome, new Cytobands(genome, reader));
   }
 
@@ -159,7 +159,7 @@ public class CytobandsService {
    * @param genome the genome
    * @param cytobands the cytobands
    */
-  public void load(String genome, Cytobands cytobands) {
+  public void load(Genome genome, Cytobands cytobands) {
     mCytobandsMap.put(genome, cytobands);
   }
 
@@ -169,7 +169,7 @@ public class CytobandsService {
    * @param genome the genome
    * @return the cytobands
    */
-  public Cytobands getCytobands(String genome) {
+  public Cytobands getCytobands(Genome genome) {
     return mCytobandsMap.get(genome);
   }
 

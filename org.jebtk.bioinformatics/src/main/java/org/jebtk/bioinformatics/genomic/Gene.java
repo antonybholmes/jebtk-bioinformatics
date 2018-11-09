@@ -36,12 +36,17 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @JsonPropertyOrder({ "loc", "strand", "type", "ids", "tags", "transcripts" })
 public class Gene extends GenomicEntity {
 
+  /**
+   * 
+   */
+  private static final long serialVersionUID = 1L;
+
   public Gene(GenomicRegion l) {
     this(l, Strand.SENSE);
   }
-  
+
   public Gene(GenomicRegion l, Strand s) {
-    super(GenomicType.GENE, l, s);
+    super(GENE, l, s);
   }
 
   public Gene(String name, GenomicRegion l) {
@@ -50,16 +55,15 @@ public class Gene extends GenomicEntity {
     setGeneName(name);
   }
 
-
-  //@Override
-  //@JsonGetter("type")
-  //public GenomicType getType() {
-  //  return GenomicType.GENE;
-  //}
+  // @Override
+  // @JsonGetter("type")
+  // public GenomicType getType() {
+  // return GenomicType.GENE;
+  // }
 
   @JsonGetter("transcripts")
-  public Iterable<GenomicEntity> getTranscripts() {
-    return getChildren(GenomicType.TRANSCRIPT);
+  public Iterable<GenomicElement> getTranscripts() {
+    return getChildren(TRANSCRIPT);
   }
 
   /**

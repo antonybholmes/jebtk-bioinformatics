@@ -37,6 +37,8 @@ import java.util.Map;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.jebtk.bioinformatics.genomic.Genome;
+
 /**
  * Server for genome feature annotations.
  *
@@ -68,7 +70,7 @@ public class FeaturesServer {
    * The feature map.
    */
   // genome, group, feature name
-  private Map<String, Map<String, Map<String, AbstractFeaturesSearch>>> mFeatureMap = new HashMap<String, Map<String, Map<String, AbstractFeaturesSearch>>>();
+  private Map<Genome, Map<String, Map<String, AbstractFeaturesSearch>>> mFeatureMap = new HashMap<Genome, Map<String, Map<String, AbstractFeaturesSearch>>>();
 
   /**
    * Instantiates a new features server.
@@ -107,7 +109,7 @@ public class FeaturesServer {
    * @param filePrefix the file prefix
    * @throws FileNotFoundException the file not found exception
    */
-  public final void addCommonRegionBinarySearch(String genome,
+  public final void addCommonRegionBinarySearch(Genome genome,
       String group,
       String name,
       String description,
@@ -128,7 +130,7 @@ public class FeaturesServer {
    * @param file the file
    * @throws FileNotFoundException the file not found exception
    */
-  public final void addBinarySearch(String genome,
+  public final void addBinarySearch(Genome genome,
       String group,
       String name,
       String description,
@@ -148,7 +150,7 @@ public class FeaturesServer {
    * @param description the description
    * @param file the file
    */
-  public final void addBasicSearch(String genome,
+  public final void addBasicSearch(Genome genome,
       String group,
       String name,
       String description,
@@ -166,7 +168,7 @@ public class FeaturesServer {
    * @param group the group
    * @param features the features
    */
-  public final void add(String genome,
+  public final void add(Genome genome,
       String group,
       AbstractFeaturesSearch features) {
     if (!mFeatureMap.containsKey(genome)) {
@@ -193,7 +195,7 @@ public class FeaturesServer {
    * @param name the name
    * @return the abstract features search
    */
-  public final AbstractFeaturesSearch get(String genome,
+  public final AbstractFeaturesSearch get(Genome genome,
       String group,
       String name) {
     System.err.println("feature " + genome + " " + group + " " + name);
@@ -216,7 +218,7 @@ public class FeaturesServer {
    * @param group the group
    * @return the collection
    */
-  public final Collection<AbstractFeaturesSearch> get(String genome,
+  public final Collection<AbstractFeaturesSearch> get(Genome genome,
       String group) {
     if (!mFeatureMap.containsKey(genome)) {
       return null;
@@ -233,7 +235,7 @@ public class FeaturesServer {
    * Uncaches any loaded feature sets.
    */
   public final void freeMemory() {
-    for (String genome : mFeatureMap.keySet()) {
+    for (Genome genome : mFeatureMap.keySet()) {
       for (String group : mFeatureMap.get(genome).keySet()) {
         for (String name : mFeatureMap.get(genome).get(group).keySet()) {
           mFeatureMap.get(genome).get(group).get(name).freeMemory();

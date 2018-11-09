@@ -30,7 +30,6 @@ package org.jebtk.bioinformatics.genomic;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Iterator;
-import java.util.Map.Entry;
 
 import org.jebtk.core.collections.IterMap;
 import org.jebtk.core.collections.IterTreeMap;
@@ -45,8 +44,7 @@ import org.slf4j.LoggerFactory;
  * @author Antony Holmes Holmes
  *
  */
-public class GenomeService extends GenomeDirs
-    implements Iterable<Entry<String, Genome>> {
+public class GenomeService extends GenomeDirs implements Iterable<Genome> {
   /**
    * The Class ChromosomesLoader.
    */
@@ -74,7 +72,10 @@ public class GenomeService extends GenomeDirs
   // DefaultTreeMap
   // .create(new TreeMapCreator<String, Genome>());
 
-  private IterMap<String, Genome> mGenomeMap = new IterTreeMap<String, Genome>();
+  // private IterMap<String, Genome> mGenomeMap = new IterTreeMap<String,
+  // Genome>();
+
+  private IterMap<Genome, ChromosomeDirs> mGenomeMap = new IterTreeMap<Genome, ChromosomeDirs>();
 
   private GenomeGuess mGenomeGuess = new GenomeGuess();
 
@@ -89,8 +90,8 @@ public class GenomeService extends GenomeDirs
     this(Genome.GENOME_HOME, Genome.GENOME_DIR);
   }
 
-  public GenomeService(Path dir, Path... dirs) {
-    super(dir, dirs);
+  public GenomeService(Path... dirs) {
+    super(dirs);
   }
 
   /**
@@ -101,46 +102,62 @@ public class GenomeService extends GenomeDirs
    * @param genome
    * @return
    */
-  public Genome genome(String genome) {
-    try {
-      autoLoad();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-
-    // String fg = formatKey(genome);
-
-    if (!mGenomeMap.containsKey(genome)) {
-      // If the genome does not exist, create one
-      mGenomeMap.put(genome, new Genome(genome, mDirs));
-    }
-
-    return mGenomeMap.get(genome);
-  }
+  /*
+   * public Genome genome(String genome, String db) { try { autoLoad(); } catch
+   * (IOException e) { e.printStackTrace(); }
+   * 
+   * // String fg = formatKey(genome);
+   * 
+   * if (!mGenomeMap.containsKey(genome)) { // If the genome does not exist,
+   * create one mGenomeMap.put(genome, new Genome(genome, db, mDirs)); }
+   * 
+   * return mGenomeMap.get(genome); }
+   * 
+   * public Genome genome(Genome genome) { return genome(genome.getName(),
+   * genome.getBuild()); }
+   * 
+   * public Genome genome(String genome) { return genome(guessGenome(genome)); }
+   */
 
   private void autoLoad() throws IOException {
     if (mAutoLoad) {
+      LOG.info("Checking {} for genome info.", mDirs);
+
+      mAutoLoad = false;
+
       for (Path dir : mDirs) {
         if (FileUtils.isDirectory(dir)) {
           LOG.info("Checking {} for genome info.", dir);
 
           // String db = PathUtils.getName(dir);
 
-          for (Path genoneSubDir : FileUtils.lsdir(dir)) {
-            if (FileUtils.isDirectory(genoneSubDir)) {
-              String genome = PathUtils.getName(genoneSubDir);
+          for (Path genomeDir : FileUtils.lsdir(dir)) {
+            System.err.println(genomeDir);
+            if (FileUtils.isDirectory(genomeDir)) {
+              String g = PathUtils.getName(genomeDir); // TextUtils.sentenceCase(PathUtils.getName(genomeDir));
 
-              if (!mGenomeMap.containsKey(genome)) {
-                LOG.info("Discovered genome {} in {}.", genome, genoneSubDir);
+              System.err.println(g);
 
-                mGenomeMap.put(genome, new Genome(genome, dir));
+              for (Path buildDir : FileUtils.lsdir(genomeDir)) {
+                if (FileUtils.isDirectory(buildDir)) {
+                  String build = PathUtils.getName(buildDir);
+
+                  // if (!mGenomeMap.containsKey(db)) {
+                  LOG.info("Discovered genome {} in {}.", build, buildDir);
+
+                  Genome genome = new Genome(g, build);
+
+                  // mGenomeMap.put(db, genome);
+
+                  mGenomeMap.put(genome, new ChromosomeDirs(genome, buildDir));
+                  // }
+                }
               }
             }
           }
         }
       }
 
-      mAutoLoad = false;
     }
   }
 
@@ -159,10 +176,43 @@ public class GenomeService extends GenomeDirs
    * 
    * @return The chromosome object from the desired genome.
    */
+  public Chromosome chr(Genome genome, String chr) {
+    // LOG.info("chr {} {}", genome, chr);
+
+    try {
+      autoLoad();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    if (!mGenomeMap.containsKey(genome)) {
+      LOG.info("Genome {} does not exist, creating it.", genome, chr);
+
+      mGenomeMap.put(genome, new ChromosomeDirs(genome));
+    }
+
+    return mGenomeMap.get(genome).chr(chr);
+  }
+
+  /**
+   * Returns the chromosome associated with a genome. This method will be
+   * deprecated since it requires guessing the genome and database from the name
+   * and these should ideally be explicity given.
+   * 
+   * @param genome
+   * @param chr
+   * @return
+   */
   public Chromosome chr(String genome, String chr) {
     // LOG.info("chr {} {}", genome, chr);
 
-    return genome(genome).chr(chr);
+    return chr(guessGenome(genome), chr);
+  }
+
+  public Chromosome chr(String genome, String db, String chr) {
+    // LOG.info("chr {} {}", genome, chr);
+
+    return chr(new Genome(genome, db), chr);
   }
 
   /**
@@ -172,10 +222,14 @@ public class GenomeService extends GenomeDirs
    * @param chr
    * @return
    */
-  public Chromosome chr(String genome, Chromosome chr) {
+  public Chromosome chr(Genome genome, Chromosome chr) {
     // LOG.info("chr {} {}", genome, chr);
 
     return chr(genome, chr.toString());
+  }
+
+  public Chromosome chr(String genome, String db, Chromosome chr) {
+    return chr(new Genome(genome, db), chr);
   }
 
   public Chromosome hg19(String chr) {
@@ -195,25 +249,28 @@ public class GenomeService extends GenomeDirs
     mGenomeGuess = guess;
   }
 
-  public String guessGenome(String name) {
+  public Genome guessGenome(String name) {
     return mGenomeGuess.guess(name);
   }
 
-  public String guessGenome(Path file) {
+  public Genome guessGenome(Path file) {
     return guessGenome(PathUtils.getName(file));
   }
 
+  public Chromosome randChr(String genome, String db) {
+    return randChr(genome, db);
+  }
+
   public Chromosome randChr(String genome) {
-    return genome(genome).randChr();
+    return randChr(guessGenome(genome));
+  }
+
+  public Chromosome randChr(Genome genome) {
+    return mGenomeMap.get(genome).randChr();
   }
 
   @Override
-  public Iterator<Entry<String, Genome>> iterator() {
-    return mGenomeMap.iterator();
+  public Iterator<Genome> iterator() {
+    return mGenomeMap.keySet().iterator();
   }
-
-  private static String formatKey(String key) {
-    return key.toLowerCase();
-  }
-
 }

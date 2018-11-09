@@ -31,7 +31,9 @@ import java.io.IOException;
 import java.util.List;
 
 import org.jebtk.bioinformatics.genomic.Chromosome;
+import org.jebtk.bioinformatics.genomic.Genome;
 import org.jebtk.bioinformatics.genomic.GenomeService;
+import org.jebtk.bioinformatics.genomic.GenomicRegion;
 import org.jebtk.core.text.TextUtils;
 
 /**
@@ -40,8 +42,12 @@ import org.jebtk.core.text.TextUtils;
  * @author Antony Holmes Holmes
  *
  */
-public class Cytoband extends BedRegion {
+public class Cytoband extends BedElement {
 
+  /**
+   * 
+   */
+  private static final long serialVersionUID = 1L;
   /**
    * The member stain.
    */
@@ -56,9 +62,8 @@ public class Cytoband extends BedRegion {
    * @param name the name
    * @param stain the stain
    */
-  public Cytoband(Chromosome chromosome, int start, int end, String name,
-      String stain) {
-    super(chromosome, start, end, name);
+  public Cytoband(GenomicRegion r, String name, String stain) {
+    super(name, r);
 
     mStain = stain;
   }
@@ -92,7 +97,7 @@ public class Cytoband extends BedRegion {
    * @param line the line
    * @return the cytoband
    */
-  public static Cytoband parse(String genome, String line) {
+  public static Cytoband parse(Genome genome, String line) {
     List<String> tokens = TextUtils.fastSplit(line, TextUtils.TAB_DELIMITER);
 
     // convert first part to chromosome (replacing x,y and m) {
@@ -105,6 +110,6 @@ public class Cytoband extends BedRegion {
     String name = tokens.get(3);
     String stain = tokens.get(4);
 
-    return new Cytoband(chromosome, start, end, name, stain);
+    return new Cytoband(new GenomicRegion(chromosome, start, end), name, stain);
   }
 }

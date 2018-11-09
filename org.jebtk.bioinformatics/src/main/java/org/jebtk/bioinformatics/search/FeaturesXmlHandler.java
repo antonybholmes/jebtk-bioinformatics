@@ -43,7 +43,7 @@ public class FeaturesXmlHandler extends DefaultHandler {
   /**
    * The current genome.
    */
-  private String currentGenome = Genome.HG18;
+  private Genome currentGenome = Genome.HG18;
 
   /**
    * The group.

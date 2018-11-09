@@ -34,10 +34,14 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.jebtk.bioinformatics.genomic.Chromosome;
+import org.jebtk.bioinformatics.genomic.GenomicElement;
 import org.jebtk.core.NameProperty;
 import org.jebtk.core.Resources;
 import org.jebtk.core.collections.CollectionUtils;
@@ -118,7 +122,7 @@ public class UCSCTrack extends ChangeListeners implements NameProperty {
   /**
    * The member chr regions.
    */
-  protected UCSCTrackRegions mChrRegions = new UCSCTrackRegions();
+  protected UCSCTrackElements mRegions = new UCSCTrackElements();
 
   /**
    * The member display mode.
@@ -247,13 +251,19 @@ public class UCSCTrack extends ChangeListeners implements NameProperty {
     return mColor;
   }
 
+  public UCSCTrack add(GenomicElement e) {
+    getElements().add(e);
+    
+    return this;
+  }
+  
   /**
    * Return the regions associated with this track.
    *
    * @return the regions
    */
-  public UCSCTrackRegions getRegions() {
-    return mChrRegions;
+  public UCSCTrackElements getElements() {
+    return mRegions;
   }
 
   /*
@@ -300,9 +310,11 @@ public class UCSCTrack extends ChangeListeners implements NameProperty {
 
     buffer.append(TextUtils.NEW_LINE);
 
-    for (UCSCTrackRegion region : mChrRegions) {
-      region.formattedTxt(buffer);
-      buffer.append(TextUtils.NEW_LINE);
+    for (Entry<Chromosome, Set<GenomicElement>> item : mRegions) {
+      for (GenomicElement region : item.getValue()) {
+        region.formattedTxt(buffer);
+        buffer.append(TextUtils.NEW_LINE);
+      }
     }
   }
 
@@ -507,9 +519,11 @@ public class UCSCTrack extends ChangeListeners implements NameProperty {
         writer.write(track.getHeader(priority));
         writer.newLine();
 
-        for (UCSCTrackRegion region : track.getRegions()) {
-          writer.write(region.toString());
-          writer.newLine();
+        for (Entry<Chromosome, Set<GenomicElement>> item : track.getElements()) {
+          for (GenomicElement e : item.getValue()) {
+            writer.write(e.toString());
+            writer.newLine();
+          }
         }
 
         ++priority;

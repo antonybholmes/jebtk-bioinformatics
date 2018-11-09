@@ -115,8 +115,8 @@ public class GFBGenes extends SingleDbGenes {
    * @param window the window
    * @param dir the dir
    */
-  public GFBGenes(String db, String genome, int window, Path dir) {
-    super(db, genome);
+  public GFBGenes(Genome genome, int window, Path dir) {
+    super(genome);
 
     mWindow = window;
     mDir = dir;
@@ -132,8 +132,9 @@ public class GFBGenes extends SingleDbGenes {
   public List<GenomicEntity> findGenes(String region) throws IOException {
     return findGenes(region, GenomicType.TRANSCRIPT);
   }
-  
-  public List<GenomicEntity> findGenes(String region, GenomicType type) throws IOException {
+
+  public List<GenomicEntity> findGenes(String region, GenomicType type)
+      throws IOException {
     return findGenes(GenomicRegion.parse(mGenome, region), type);
   }
 
@@ -145,7 +146,7 @@ public class GFBGenes extends SingleDbGenes {
    * @throws IOException Signals that an I/O exception has occurred.
    */
   @Override
-  public List<GenomicEntity> findGenes(String db, GenomicRegion region)
+  public List<GenomicEntity> findGenes(Genome genome, GenomicRegion region)
       throws IOException {
     return findGenes(region, GenomicType.GENE);
   }
@@ -242,7 +243,7 @@ public class GFBGenes extends SingleDbGenes {
   }
 
   @Override
-  public List<GenomicEntity> getGenes(String db, String genome, String id)
+  public List<GenomicEntity> getGenes(Genome genome, String id)
       throws IOException {
     return getGenes(id, GenomicType.TRANSCRIPT);
   }
@@ -267,18 +268,18 @@ public class GFBGenes extends SingleDbGenes {
   }
 
   @Override
-  public List<GenomicEntity> findClosestGenes(String db, GenomicRegion region)
-      throws IOException {
+  public List<GenomicEntity> findClosestGenes(Genome genome,
+      GenomicRegion region) throws IOException {
     return findClosestGenes(region);
   }
-  
+
   public List<GenomicEntity> findClosestGenes(GenomicRegion region)
       throws IOException {
     return findClosestGenes(region, GenomicType.TRANSCRIPT);
   }
-  
-  public List<GenomicEntity> findClosestGenes(GenomicRegion region, GenomicType type)
-      throws IOException {
+
+  public List<GenomicEntity> findClosestGenes(GenomicRegion region,
+      GenomicType type) throws IOException {
     return findClosestGenes(region.mChr, region.mStart, region.mEnd, type);
   }
 
@@ -524,7 +525,10 @@ public class GFBGenes extends SingleDbGenes {
     for (int i = 0; i < n; ++i) {
       // If type requested is not a gene, pass null to indicate that the
       // transcripts should not add themselves to the gene
-      index = readTranscript(reader, index, type, type == GenomicType.GENE ? gene : null);
+      index = readTranscript(reader,
+          index,
+          type,
+          type == GenomicType.GENE ? gene : null);
     }
 
     if (type == GenomicType.GENE) {
@@ -538,20 +542,24 @@ public class GFBGenes extends SingleDbGenes {
       int index,
       GenomicType type,
       GenomicEntity gene) throws IOException {
-    //System.err.println("Reading transcript");
+    // System.err.println("Reading transcript");
 
     GenomicEntity transcript = readEntity(reader, GenomicType.TRANSCRIPT);
 
     int n = reader.read();
 
     for (int i = 0; i < n; ++i) {
-      index = readExon(reader, index, type, gene, type != GenomicType.EXON ? transcript : null);
+      index = readExon(reader,
+          index,
+          type,
+          gene,
+          type != GenomicType.EXON ? transcript : null);
     }
 
     if (gene != null) {
       gene.add(transcript);
     }
-    
+
     if (type == GenomicType.TRANSCRIPT) {
       mGenes[index++] = transcript;
     }
@@ -590,7 +598,7 @@ public class GFBGenes extends SingleDbGenes {
     reader.skipBytes(INT_BYTES + 1); // .readInt();
 
     GenomicRegion l = readLocation(reader);
-    
+
     Strand strand = readStrand(reader);
 
     GenomicEntity gene;
@@ -617,18 +625,17 @@ public class GFBGenes extends SingleDbGenes {
 
   private GenomicRegion readLocation(RandomAccessFile reader)
       throws IOException {
-    Chromosome chr = new Chromosome(readVarchar(reader), mGenome);
+    Chromosome chr = Chromosome.newChr(readVarchar(reader), mGenome);
 
     int start = reader.readInt();
     int end = reader.readInt();
 
     return GenomicRegion.create(chr, start, end);
   }
-  
-  private Strand readStrand(RandomAccessFile reader)
-      throws IOException {
+
+  private Strand readStrand(RandomAccessFile reader) throws IOException {
     int strand = reader.read();
-    
+
     return getStrand(strand);
   }
 
@@ -648,20 +655,20 @@ public class GFBGenes extends SingleDbGenes {
     for (int i = 0; i < n; ++i) {
       readId(reader, e);
     }
- 
+
     return n;
   }
-  
-  private void readId(RandomAccessFile reader, GenomicEntity e) 
+
+  private void readId(RandomAccessFile reader, GenomicEntity e)
       throws IOException {
 
     mAddress = reader.readInt();
     mAddress2 = reader.readInt();
-    
+
     mPos = reader.getFilePointer();
-    
-    e.setId(readString(reader, mAddress), readString(reader, mAddress2));
-    
+
+    e.setProperty(readString(reader, mAddress), readString(reader, mAddress2));
+
     reader.seek(mPos);
   }
 
@@ -690,21 +697,20 @@ public class GFBGenes extends SingleDbGenes {
       throws IOException {
     e.addTag(readTag(reader));
   }
-  
-  private String readTag(RandomAccessFile reader)
-      throws IOException {
+
+  private String readTag(RandomAccessFile reader) throws IOException {
 
     mAddress = reader.readInt();
-    
+
     mPos = reader.getFilePointer();
-    
+
     String ret = readString(reader, mAddress);
-    
+
     reader.seek(mPos);
-    
+
     return ret;
   }
-  
+
   private String readString(RandomAccessFile reader, int address)
       throws IOException {
 
@@ -767,7 +773,7 @@ public class GFBGenes extends SingleDbGenes {
 
     // Find the tree start
     reader.seek(RADIX_BYTES_OFFSET);
-    
+
     char leafc;
     int address = 0;
     int n;
@@ -775,20 +781,18 @@ public class GFBGenes extends SingleDbGenes {
     boolean found = false;
 
     for (char c : chars) {
-      
-      // Number of children
-      n = reader.read(); //  .readInt();
 
-      //System.err.println("c " + c + " " + n);
-      
-      
+      // Number of children
+      n = reader.read(); // .readInt();
+
+      // System.err.println("c " + c + " " + n);
+
       // assume we won't find a match
       found = false;
 
       for (int i = 0; i < n; ++i) {
-        leafc = (char) reader.read(); //readByte();
+        leafc = (char) reader.read(); // readByte();
         address = reader.readInt();
-        
 
         if (leafc == c) {
           // we did find a match so keep going
@@ -806,7 +810,7 @@ public class GFBGenes extends SingleDbGenes {
     if (!found) {
       return 0;
     }
-    
+
     // This means we kept finding a child matching the prefix so the seek
     // is at the beginning of a node either because we ran out of chars
     // or nodes. In this case we must skip over the child addresses and
@@ -852,15 +856,16 @@ public class GFBGenes extends SingleDbGenes {
    * @param window the window
    * @return the file name
    */
-  public static final Path getFileName(String genome,
+  public static final Path getFileName(Genome genome,
       Chromosome chr,
       int window) {
     return PathUtils.getPath(Join.on('.')
-        .values(genome, chr, TextUtils.paste("w", window), "gfb").toString());
+        .values(genome.getAssembly(), chr, TextUtils.cat("w", window), "gfb")
+        .toString());
   }
 
-  public static final Path getRadixFileName(String genome) {
-    return PathUtils.getPath(genome + ".rgfb");
+  public static final Path getRadixFileName(Genome genome) {
+    return PathUtils.getPath(genome.getAssembly() + ".rgfb");
   }
 
   public static int readCheckNum(RandomAccessFile reader) throws IOException {
@@ -935,11 +940,11 @@ public class GFBGenes extends SingleDbGenes {
    * @param type
    * @return
    */
-  public static int getType(GenomicType type) {
+  public static int getType(String type) {
     switch (type) {
-    case TRANSCRIPT:
+    case GenomicEntity.TRANSCRIPT:
       return GENOMIC_TYPE_TRANSCRIPT;
-    case EXON:
+    case GenomicEntity.EXON:
       return GENOMIC_TYPE_EXON;
     default:
       return GENOMIC_TYPE_GENE;
@@ -968,7 +973,7 @@ public class GFBGenes extends SingleDbGenes {
       return 1;
     }
   }
-  
+
   public static Strand getStrand(int strand) {
     if (strand == 0) {
       return Strand.SENSE;

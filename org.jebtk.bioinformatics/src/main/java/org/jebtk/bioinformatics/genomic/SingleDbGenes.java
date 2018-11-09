@@ -35,20 +35,14 @@ import org.jebtk.core.collections.CollectionUtils;
  * @author Antony Holmes Holmes
  */
 public abstract class SingleDbGenes extends Genes {
-  protected final String mDb;
+  protected final Genome mGenome;
 
-  protected final String mGenome;
-
-  private GeneDb mG;
-
-  public SingleDbGenes(String db, String genome) {
-    mDb = db;
+  public SingleDbGenes(Genome genome) {
     mGenome = genome;
-    mG = new GeneDb(db, genome);
   }
 
   @Override
-  public Iterable<GeneDb> getGeneDBs() {
-    return CollectionUtils.asList(mG);
+  public Iterable<Genome> getGenomes() {
+    return CollectionUtils.asList(mGenome);
   }
 }

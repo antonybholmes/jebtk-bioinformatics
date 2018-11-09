@@ -50,10 +50,8 @@ public class GenomeDirs {
     mDirs.addAll(dirs);
   }
 
-  public GenomeDirs(Path dir, Path... dirs) {
+  public GenomeDirs(Path... dirs) {
     // Do nothing
-
-    mDirs.add(dir);
 
     for (Path d : dirs) {
       mDirs.add(d);

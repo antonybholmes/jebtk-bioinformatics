@@ -67,8 +67,8 @@ public class GeneSearchQuery extends SearchQuery<GenomicEntity> {
     for (GenomicEntity gene : genes) {
       boolean found = false;
 
-      for (Entry<String, String> e : gene.getIds()) {
-        if (e.getValue().toLowerCase().equals(s)) {
+      for (Entry<String, Tag> e : gene.getProperties()) {
+        if (e.getValue().toString().toLowerCase().equals(s)) {
           found = true;
           break;
         }

@@ -15,8 +15,8 @@ public class LazyGenes extends FixedGapGenes {
   private boolean mAutoLoad = true;
   private Path mFile;
 
-  public LazyGenes(Path file, String db, String genome, GeneParser parser) {
-    super(db, genome);
+  public LazyGenes(Path file, Genome genome, GeneParser parser) {
+    super(genome);
 
     mFile = file;
     mParser = parser;
@@ -28,7 +28,7 @@ public class LazyGenes extends FixedGapGenes {
   private void autoLoad() {
     if (mAutoLoad) {
       try {
-        mParser.parse(mFile, mDb, mGenome, this);
+        mParser.parse(mFile, mGenome, this);
       } catch (IOException e) {
         e.printStackTrace();
       }
@@ -44,35 +44,35 @@ public class LazyGenes extends FixedGapGenes {
    */
 
   @Override
-  public List<GenomicEntity> getGenes(String db, String genome, String id)
+  public List<GenomicEntity> getGenes(Genome genome, String id)
       throws IOException {
     autoLoad();
 
-    return super.getGenes(db, genome, id);
+    return super.getGenes(genome, id);
   }
 
   @Override
-  public List<GenomicEntity> findGenes(String db, GenomicRegion region)
+  public List<GenomicEntity> findGenes(Genome genome, GenomicRegion region)
       throws IOException {
     autoLoad();
 
-    return super.findGenes(db, region);
+    return super.findGenes(genome, region);
   }
 
   @Override
-  public List<GenomicEntity> findClosestGenes(String db, GenomicRegion region)
-      throws IOException {
-    autoLoad();
-
-    return super.findClosestGenes(db, region);
-  }
-
-  @Override
-  public List<GenomicEntity> findClosestGenesByTss(String db,
+  public List<GenomicEntity> findClosestGenes(Genome genome,
       GenomicRegion region) throws IOException {
     autoLoad();
 
-    return super.findClosestGenesByTss(db, region);
+    return super.findClosestGenes(genome, region);
+  }
+
+  @Override
+  public List<GenomicEntity> findClosestGenesByTss(Genome genome,
+      GenomicRegion region) throws IOException {
+    autoLoad();
+
+    return super.findClosestGenesByTss(genome, region);
   }
 
   @Override

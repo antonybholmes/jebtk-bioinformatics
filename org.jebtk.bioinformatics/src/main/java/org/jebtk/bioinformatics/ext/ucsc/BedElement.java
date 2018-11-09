@@ -29,15 +29,17 @@ package org.jebtk.bioinformatics.ext.ucsc;
 
 import java.awt.Color;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 
 import org.jebtk.bioinformatics.genomic.Chromosome;
+import org.jebtk.bioinformatics.genomic.Exon;
+import org.jebtk.bioinformatics.genomic.Genome;
 import org.jebtk.bioinformatics.genomic.GenomeService;
+import org.jebtk.bioinformatics.genomic.GenomicElement;
 import org.jebtk.bioinformatics.genomic.GenomicRegion;
 import org.jebtk.bioinformatics.genomic.Strand;
+import org.jebtk.core.NameProperty;
 import org.jebtk.core.text.TextUtils;
 
 /**
@@ -46,31 +48,20 @@ import org.jebtk.core.text.TextUtils;
  * @author Antony Holmes Holmes
  *
  */
-public class BedRegion extends UCSCTrackRegion implements Iterable<String> {
+public class BedElement extends GenomicElement implements NameProperty {
 
   /**
-   * The member name.
+   * 
    */
-  protected List<String> mNames;
-
+  private static final long serialVersionUID = 1L;
+  
   /**
    * Instantiates a new bed region.
    *
    * @param region the region
    */
-  public BedRegion(GenomicRegion region) {
-    this(region.getChr(), region.getStart(), region.getEnd());
-  }
-
-  /**
-   * Instantiates a new bed region.
-   *
-   * @param chr the chr
-   * @param start the start
-   * @param end the end
-   */
-  public BedRegion(Chromosome chr, int start, int end) {
-    this(chr, start, end, GenomicRegion.toLocation(chr, start, end));
+  public BedElement(GenomicRegion region) {
+    this(region, Color.BLACK);
   }
 
   /**
@@ -82,8 +73,12 @@ public class BedRegion extends UCSCTrackRegion implements Iterable<String> {
    * @param end the end
    * @param name the name
    */
-  public BedRegion(Chromosome chr, int start, int end, String name) {
-    this(chr, start, end, name, Strand.SENSE, null);
+  public BedElement(GenomicRegion r, Color color) {
+    this(TextUtils.EMPTY_STRING, r, color);
+  }
+  
+  public BedElement(String name, GenomicRegion r) {
+    this(name, r, Color.BLACK);
   }
 
   /**
@@ -96,11 +91,12 @@ public class BedRegion extends UCSCTrackRegion implements Iterable<String> {
    * @param strand the strand
    * @param color the color
    */
-  public BedRegion(Chromosome chromosome, int start, int end, String name,
-      Strand strand, Color color) {
-    super(chromosome, start, end, strand, color);
+  public BedElement(String name, GenomicRegion r, Color color) {
+    super(Bed.BED_TRACK_TYPE, r);
+    
+    setColor(color);
 
-    mNames = TextUtils.scSplit(name);
+    setProperty("name", name);
   }
 
   /**
@@ -108,17 +104,9 @@ public class BedRegion extends UCSCTrackRegion implements Iterable<String> {
    *
    * @return the name
    */
+  @Override
   public String getName() {
-    return mNames.get(0);
-  }
-
-  /**
-   * Gets the names.
-   *
-   * @return the names
-   */
-  public List<String> getNames() {
-    return Collections.unmodifiableList(mNames);
+    return getProp("name");
   }
 
   /*
@@ -131,18 +119,9 @@ public class BedRegion extends UCSCTrackRegion implements Iterable<String> {
   public void formattedTxt(Appendable buffer) throws IOException {
     super.formattedTxt(buffer);
     buffer.append(TextUtils.TAB_DELIMITER);
-    buffer.append(TextUtils.scJoin(mNames));
+    buffer.append(getName());
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see java.lang.Iterable#iterator()
-   */
-  @Override
-  public Iterator<String> iterator() {
-    return mNames.iterator();
-  }
 
   /**
    * Parses the.
@@ -150,7 +129,7 @@ public class BedRegion extends UCSCTrackRegion implements Iterable<String> {
    * @param line the line
    * @return the bed region
    */
-  public static BedRegion parse(String genome, String line) {
+  public static BedElement parse(Genome genome, String line) {
     // System.err.println("bed: " + line);
 
     List<String> tokens = TextUtils.tabSplit(line);
@@ -178,7 +157,7 @@ public class BedRegion extends UCSCTrackRegion implements Iterable<String> {
         color = UCSCTrack.parseColor(matcher);
       }
 
-      BedRegion region = new BedRegion(chr, start, end, name, strand, color);
+      BedElement bed = new BedElement(name, new GenomicRegion(chr, start, end, strand), color);
 
       if (tokens.size() > 11) {
         // blocks mode
@@ -191,18 +170,18 @@ public class BedRegion extends UCSCTrackRegion implements Iterable<String> {
             .toInt(TextUtils.commaSplit(tokens.get(11)));
 
         for (int i = 0; i < count; ++i) {
-          region.mSubRegions.add(new GenomicRegion(chr, start + starts.get(i),
+          bed.add(new Exon(chr, start + starts.get(i),
               start + starts.get(i) + sizes.get(i)));
         }
       }
 
-      return region;
+      return bed;
     } else if (tokens.size() > 3) {
       String name = tokens.get(3);
 
-      return new BedRegion(chr, start, end, name);
+      return new BedElement(name, new GenomicRegion(chr, start, end));
     } else {
-      return new BedRegion(chr, start, end);
+      return new BedElement(new GenomicRegion(chr, start, end));
     }
   }
 
@@ -212,8 +191,8 @@ public class BedRegion extends UCSCTrackRegion implements Iterable<String> {
    * @param region the region
    * @return the bed region
    */
-  public static BedRegion create(GenomicRegion region) {
-    return new BedRegion(region);
+  public static BedElement create(GenomicRegion region) {
+    return new BedElement(region);
   }
 
 }
