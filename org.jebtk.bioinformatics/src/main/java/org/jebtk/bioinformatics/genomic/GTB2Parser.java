@@ -44,7 +44,7 @@ public class GTB2Parser extends GTBParser {
   protected void parse(final Path file,
       BufferedReader reader,
       final Genome genome,
-      final Genes genes) throws IOException {
+      final GenesDB genes) throws IOException {
     LOG.info("Parsing GTB2 file {}, levels: {}...", file, mLevels);
 
     final Splitter splitter = Splitter.on(';');
@@ -172,7 +172,7 @@ public class GTB2Parser extends GTBParser {
       IterMap<String, String> attributeMap,
       int offset,
       String type,
-      Genes genes) {
+      GenesDB genes) {
 
     int count = Integer.parseInt(tokens.get(offset));
 

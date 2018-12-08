@@ -60,8 +60,8 @@ public class BedElement extends GenomicElement implements NameProperty {
    *
    * @param region the region
    */
-  public BedElement(GenomicRegion region) {
-    this(region, Color.BLACK);
+  public BedElement(String type, GenomicRegion region) {
+    this(type, region, Color.BLACK);
   }
 
   /**
@@ -73,26 +73,16 @@ public class BedElement extends GenomicElement implements NameProperty {
    * @param end the end
    * @param name the name
    */
-  public BedElement(GenomicRegion r, Color color) {
-    this(TextUtils.EMPTY_STRING, r, color);
+  public BedElement(String type, GenomicRegion r, Color color) {
+    this(type, TextUtils.EMPTY_STRING, r, color);
   }
   
-  public BedElement(String name, GenomicRegion r) {
-    this(name, r, Color.BLACK);
+  public BedElement(String type, String name, GenomicRegion r) {
+    this(type, name, r, Color.BLACK);
   }
-
-  /**
-   * Instantiates a new bed region.
-   *
-   * @param chromosome the chromosome
-   * @param start the start
-   * @param end the end
-   * @param name the name
-   * @param strand the strand
-   * @param color the color
-   */
-  public BedElement(String name, GenomicRegion r, Color color) {
-    super(Bed.BED_TRACK_TYPE, r);
+  
+  public BedElement(String type, String name, GenomicRegion r, Color color) {
+    super(type, r);
     
     setColor(color);
 
@@ -129,7 +119,7 @@ public class BedElement extends GenomicElement implements NameProperty {
    * @param line the line
    * @return the bed region
    */
-  public static BedElement parse(Genome genome, String line) {
+  public static GenomicElement parse(String type, Genome genome, String line) {
     // System.err.println("bed: " + line);
 
     List<String> tokens = TextUtils.tabSplit(line);
@@ -157,7 +147,9 @@ public class BedElement extends GenomicElement implements NameProperty {
         color = UCSCTrack.parseColor(matcher);
       }
 
-      BedElement bed = new BedElement(name, new GenomicRegion(chr, start, end, strand), color);
+      GenomicElement bed = new BedElement(type, new GenomicRegion(chr, start, end, strand))
+          .setProperty("name", name)
+          .setColor(color);
 
       if (tokens.size() > 11) {
         // blocks mode
@@ -179,9 +171,9 @@ public class BedElement extends GenomicElement implements NameProperty {
     } else if (tokens.size() > 3) {
       String name = tokens.get(3);
 
-      return new BedElement(name, new GenomicRegion(chr, start, end));
+      return new BedElement(type, new GenomicRegion(chr, start, end)).setProperty("name", name);
     } else {
-      return new BedElement(new GenomicRegion(chr, start, end));
+      return new BedElement(type, new GenomicRegion(chr, start, end));
     }
   }
 
@@ -191,8 +183,8 @@ public class BedElement extends GenomicElement implements NameProperty {
    * @param region the region
    * @return the bed region
    */
-  public static BedElement create(GenomicRegion region) {
-    return new BedElement(region);
+  public static BedElement create(String type, GenomicRegion region) {
+    return new BedElement(type, region);
   }
 
 }

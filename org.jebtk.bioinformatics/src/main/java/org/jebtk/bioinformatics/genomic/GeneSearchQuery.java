@@ -8,33 +8,33 @@ import java.util.Map.Entry;
 
 import org.jebtk.core.search.SearchQuery;
 
-public class GeneSearchQuery extends SearchQuery<GenomicEntity> {
+public class GeneSearchQuery extends SearchQuery<GenomicElement> {
 
   private GFBGenes mGenes;
-  private GenomicType mType;
+  private String mType;
 
   public GeneSearchQuery(GFBGenes genes) {
-    this(genes, GenomicType.GENE);
+    this(genes, GenomicEntity.GENE);
   }
 
-  public GeneSearchQuery(GFBGenes genes, GenomicType type) {
+  public GeneSearchQuery(GFBGenes genes, String type) {
     mGenes = genes;
     mType = type;
   }
 
   @Override
-  public Collection<GenomicEntity> match(String s,
+  public Collection<GenomicElement> match(String s,
       boolean exact,
       boolean include) {
 
     String ls = s.toLowerCase();
 
-    List<GenomicEntity> ret = new ArrayList<GenomicEntity>();
+    List<GenomicElement> ret = new ArrayList<GenomicElement>();
 
     // System.err.println("qs " + s);
 
     try {
-      List<GenomicEntity> genes = mGenes.getGenes(ls, mType);
+      List<GenomicElement> genes = mGenes.getGenes(ls, mType);
 
       // if (!include) {
       // Add all the genes not in this list of genes
@@ -60,11 +60,11 @@ public class GeneSearchQuery extends SearchQuery<GenomicEntity> {
    * @param genes
    * @return
    */
-  private static List<GenomicEntity> exact(String s,
-      Collection<GenomicEntity> genes) {
-    List<GenomicEntity> ret = new ArrayList<GenomicEntity>(genes.size());
+  private static List<GenomicElement> exact(String s,
+      Collection<GenomicElement> genes) {
+    List<GenomicElement> ret = new ArrayList<GenomicElement>(genes.size());
 
-    for (GenomicEntity gene : genes) {
+    for (GenomicElement gene : genes) {
       boolean found = false;
 
       for (Entry<String, Tag> e : gene.getProperties()) {

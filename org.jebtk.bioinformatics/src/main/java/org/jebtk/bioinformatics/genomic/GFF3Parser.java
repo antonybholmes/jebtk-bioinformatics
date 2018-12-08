@@ -48,7 +48,7 @@ public class GFF3Parser extends GeneParser {
   protected void parse(Path file,
       BufferedReader reader,
       final Genome genome,
-      Genes genes) throws IOException {
+      GenesDB genes) throws IOException {
     String line;
     List<String> tokens;
     GenomicType type;

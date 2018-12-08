@@ -27,8 +27,9 @@
  */
 package org.jebtk.bioinformatics.genomic;
 
-import java.awt.Color;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -40,6 +41,7 @@ import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.jebtk.core.io.FileUtils;
 import org.jebtk.core.io.Io;
 import org.jebtk.core.text.Formatter;
 import org.jebtk.core.text.Formatter.NumberFormatter;
@@ -374,13 +376,12 @@ public class GenomicRegion extends Region {
       return null;
     }
   }
-
-  public static GenomicRegion parse(String genome,
+  
+  public static GenomicRegion parse(Genome genome,
       String chr,
-      String start,
-      String end) {
-    return new GenomicRegion(GenomeService.getInstance().chr(genome, chr),
-        TextUtils.parseInt(start), TextUtils.parseInt(end));
+      int start,
+      int end) {
+    return new GenomicRegion(genome, chr, start, end);
   }
 
   /**
@@ -1093,7 +1094,7 @@ public class GenomicRegion extends Region {
     return new GenomicRegion(region.mChr, mid, mid);
   }
 
-  public static GenomicRegion randomRegion(String genome, int length)
+  public static GenomicRegion randomRegion(Genome genome, int length)
       throws IOException {
     Random rand = new Random();
 
@@ -1119,5 +1120,25 @@ public class GenomicRegion extends Region {
   public static GenomicRegion reverseCompliment(GenomicRegion region) {
     return new GenomicRegion(region.mChr, region.mEnd, region.mStart,
         Strand.oppositeStrand(region.mStrand));
+  }
+
+  public static List<GenomicRegion> parseRegions(Genome genome, Path file) throws IOException {
+    BufferedReader reader = FileUtils.newBufferedReader(file);
+    
+    List<GenomicRegion> ret = new ArrayList<GenomicRegion>();
+    
+    String line;
+    
+    try {
+      reader.readLine();
+      
+      while ((line = reader.readLine()) != null) {
+        ret.add(parse(genome, line));
+      }
+    } finally {
+      reader.close();
+    }
+    
+    return ret;
   }
 }

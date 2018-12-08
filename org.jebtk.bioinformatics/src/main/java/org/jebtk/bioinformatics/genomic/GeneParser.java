@@ -176,24 +176,24 @@ public abstract class GeneParser {
 
   public abstract GeneParser create(GeneParser parser);
 
-  public Genes parse(Path file, final Genome genome) throws IOException {
-    Genes genes = new FixedGapGenes(genome);
+  public GenesDB parse(Path file, final Genome genome) throws IOException {
+    GenesDB genes = new FixedGapGenes(genome);
 
     parse(file, genome, genes);
 
     return genes;
   }
 
-  protected Genes parse(Path file, Genome genome, BufferedReader reader)
+  protected GenesDB parse(Path file, Genome genome, BufferedReader reader)
       throws IOException {
-    Genes genes = new FixedGapGenes(genome);
+    GenesDB genes = new FixedGapGenes(genome);
 
     parse(file, reader, genome, genes);
 
     return genes;
   }
 
-  public void parse(Path file, final Genome genome, Genes genes)
+  public void parse(Path file, final Genome genome, GenesDB genes)
       throws IOException {
     BufferedReader reader = FileUtils.newBufferedReader(file);
 
@@ -207,36 +207,36 @@ public abstract class GeneParser {
   protected void parse(Path file,
       BufferedReader reader,
       final Genome genome,
-      Genes genes) throws IOException {
+      GenesDB genes) throws IOException {
     // Do nothing
   }
 
-  public void parse(Path file, final Genome genome, Chromosome chr, Genes genes)
+  public void parse(Path file, final Genome genome, Chromosome chr, GenesDB genes)
       throws IOException {
     parse(file, genome, genes);
   }
 
-  public Genes parse(Path file, final Genome genome, int window)
+  public GenesDB parse(Path file, final Genome genome, int window)
       throws IOException {
-    Genes genes = new FixedGapGenes(genome);
+    GenesDB genes = new FixedGapGenes(genome);
 
     parse(file, genes, genome, window);
 
     return genes;
   }
 
-  protected Genes parse(Path file,
+  protected GenesDB parse(Path file,
       BufferedReader reader,
       final Genome genome,
       int window) throws IOException {
-    Genes genes = new FixedGapGenes(genome);
+    GenesDB genes = new FixedGapGenes(genome);
 
     parse(file, reader, genes, genome, window);
 
     return genes;
   }
 
-  public void parse(Path file, Genes genes, final Genome genome, int window)
+  public void parse(Path file, GenesDB genes, final Genome genome, int window)
       throws IOException {
     BufferedReader reader = FileUtils.newBufferedReader(file);
 
@@ -249,7 +249,7 @@ public abstract class GeneParser {
 
   protected void parse(Path file,
       BufferedReader reader,
-      Genes genes,
+      GenesDB genes,
       final Genome genome,
       int window) throws IOException {
     parse(file, reader, genome, genes);

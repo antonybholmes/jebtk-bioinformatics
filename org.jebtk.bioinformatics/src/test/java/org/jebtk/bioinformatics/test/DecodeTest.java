@@ -56,13 +56,13 @@ public class DecodeTest {
     
 	  //GeneSearchQuery query = new GeneSearchQuery(genes);
     
-    List<GenomicEntity> r = genes.getGenes(search);
+    List<GenomicElement> r = genes.getGenes(search, GenomicEntity.TRANSCRIPT);
     
-    for (GenomicEntity gene : r) { 
+    for (GenomicElement gene : r) { 
       System.err.println("blo " + gene + " " + gene.getType() + " " + gene.getChildTypes());
       
       for (GenomicElement e : gene.getChildren(GenomicEntity.EXON)) {
-        System.err.println("exon " + e);
+        System.err.println(e);
       }
     }
 	}

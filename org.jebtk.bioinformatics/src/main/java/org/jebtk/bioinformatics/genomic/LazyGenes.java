@@ -44,35 +44,37 @@ public class LazyGenes extends FixedGapGenes {
    */
 
   @Override
-  public List<GenomicEntity> getGenes(Genome genome, String id)
+  public List<GenomicElement> getElements(Genome genome, String id, String type)
       throws IOException {
     autoLoad();
 
-    return super.getGenes(genome, id);
+    return super.getElements(genome, id, type);
   }
 
   @Override
-  public List<GenomicEntity> findGenes(Genome genome, GenomicRegion region)
+  public List<GenomicElement> find(Genome genome, GenomicRegion region, String type)
       throws IOException {
     autoLoad();
 
-    return super.findGenes(genome, region);
+    return super.find(genome, region, type);
   }
 
   @Override
-  public List<GenomicEntity> findClosestGenes(Genome genome,
-      GenomicRegion region) throws IOException {
+  public List<GenomicElement> closest(Genome genome,
+      GenomicRegion region,
+      String type) throws IOException {
     autoLoad();
 
-    return super.findClosestGenes(genome, region);
+    return super.closest(genome, region, type);
   }
 
   @Override
-  public List<GenomicEntity> findClosestGenesByTss(Genome genome,
-      GenomicRegion region) throws IOException {
+  public List<GenomicElement> closestByTss(Genome genome,
+      GenomicRegion region,
+      String type) throws IOException {
     autoLoad();
 
-    return super.findClosestGenesByTss(genome, region);
+    return super.closestByTss(genome, region, type);
   }
 
   @Override

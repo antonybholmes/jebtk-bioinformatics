@@ -87,12 +87,8 @@ public class Genome implements NameProperty, Comparable<Genome> {
     mTrack = track;
   }
 
-  public Genome(Genome genome, String track) {
-    this(genome.mName, genome.mBuild, track);
-  }
-
   public Genome(Genome genome) {
-    this(genome, genome.mTrack);
+    this(genome.mName, genome.mBuild, genome.mTrack);
   }
 
   @Override
@@ -185,5 +181,16 @@ public class Genome implements NameProperty, Comparable<Genome> {
   @Override
   public int hashCode() {
     return toString().hashCode();
+  }
+
+  /**
+   * Change the track on a genome since genomes are immutable.
+   * 
+   * @param genome
+   * @param track
+   * @return
+   */
+  public static Genome changeTrack(Genome genome, String track) {
+    return new Genome(genome.mName, genome.mBuild, track);
   }
 }

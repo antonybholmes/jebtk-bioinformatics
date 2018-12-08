@@ -67,7 +67,7 @@ public class GTB1Parser extends GTBParser {
   protected void parse(Path file,
       BufferedReader reader,
       final Genome genome,
-      Genes genes) throws IOException {
+      GenesDB genes) throws IOException {
     LOG.info("Parsing GTB file {}, levels: {}...", file, mLevels);
 
     String line;

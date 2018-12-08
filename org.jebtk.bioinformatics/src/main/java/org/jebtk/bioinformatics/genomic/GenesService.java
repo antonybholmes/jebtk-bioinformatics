@@ -45,7 +45,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Antony Holmes Holmes
  */
-public class GenesService implements Iterable<Entry<Genome, Genes>> {
+public class GenesService implements Iterable<Entry<Genome, GenesDB>> {
 
   /**
    * The Class GenesServiceLoader.
@@ -73,7 +73,7 @@ public class GenesService implements Iterable<Entry<Genome, Genes>> {
   /**
    * The member symbol map.
    */
-  private IterMap<Genome, Genes> mGenesMap = new IterTreeMap<Genome, Genes>();
+  private IterMap<Genome, GenesDB> mGenesMap = new IterTreeMap<Genome, GenesDB>();
 
   /**
    * Track dbs by genome
@@ -92,11 +92,11 @@ public class GenesService implements Iterable<Entry<Genome, Genes>> {
     // do nothing
   }
 
-  public Genes getGenes(Genome g) {
+  public GenomicElementsDB getGenes(Genome g) {
     if (mGenesMap.containsKey(g)) {
       return mGenesMap.get(g);
     } else {
-      return Genes.EMPTY_GENES;
+      return GenomicElementsDB.EMPTY;
     }
   }
 
@@ -110,17 +110,17 @@ public class GenesService implements Iterable<Entry<Genome, Genes>> {
    * @see java.lang.Iterable#iterator()
    */
   @Override
-  public Iterator<Entry<Genome, Genes>> iterator() {
+  public Iterator<Entry<Genome, GenesDB>> iterator() {
     return mGenesMap.iterator();
   }
 
-  public void put(Genes genes) {
+  public void put(GenesDB genes) {
     for (Genome g : genes.getGenomes()) {
       put(g, genes);
     }
   }
 
-  public void put(Genome g, Genes genes) {
+  public void put(Genome g, GenesDB genes) {
     mGenesMap.put(g, genes);
 
     mGenomeMap.get(g.getName()).add(g);

@@ -25,23 +25,27 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package org.jebtk.bioinformatics.ext.ucsc;
+package org.jebtk.bioinformatics.genomic;
+
+import java.io.IOException;
 
 /**
- * Control how tracks are shown. Compact mode shows everything on one row.
- * 
- * @author Antony Holmes Holmes
+ * Genes lookup to m.
  *
+ * @author Antony Holmes Holmes
  */
-public enum TrackDisplayMode {
+public abstract class GenesDB extends GenomicElementsDB {
 
   /**
-   * The compact.
+   * Return the RefSeq ids used to index these genes.
+   *
+   * @return the ref seq ids
    */
-  COMPACT,
+  public Iterable<String> getRefSeqIds() {
+    return getIds(Gene.REFSEQ_TYPE);
+  }
 
-  /**
-   * The full.
-   */
-  FULL
+  public Iterable<String> getNames() throws IOException {
+    return getIds(Gene.GENE_NAME_TYPE);
+  }
 }

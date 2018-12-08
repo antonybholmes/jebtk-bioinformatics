@@ -34,10 +34,10 @@ import org.jebtk.core.collections.CollectionUtils;
  *
  * @author Antony Holmes Holmes
  */
-public abstract class SingleDbGenes extends Genes {
+public abstract class SingleGenesDB extends GenesDB {
   protected final Genome mGenome;
 
-  public SingleDbGenes(Genome genome) {
+  public SingleGenesDB(Genome genome) {
     mGenome = genome;
   }
 

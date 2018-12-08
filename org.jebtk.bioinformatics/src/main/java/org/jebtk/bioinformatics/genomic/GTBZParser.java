@@ -52,7 +52,7 @@ public class GTBZParser extends GTB2Parser {
   }
 
   @Override
-  public void parse(Path file, Genome genome, Genes genes) throws IOException {
+  public void parse(Path file, Genome genome, GenesDB genes) throws IOException {
 
     final ZipFile zipFile = new ZipFile(file.toFile());
 
@@ -78,7 +78,7 @@ public class GTBZParser extends GTB2Parser {
   }
 
   @Override
-  public void parse(Path file, Genome genome, Chromosome chr, Genes genes)
+  public void parse(Path file, Genome genome, Chromosome chr, GenesDB genes)
       throws IOException {
 
     final ZipFile zipFile = new ZipFile(file.toFile());

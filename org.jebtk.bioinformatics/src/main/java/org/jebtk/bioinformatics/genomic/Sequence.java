@@ -581,7 +581,7 @@ public class Sequence
    * @return the random sequence
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static SequenceRegion getRandomSequence(String genome,
+  public static SequenceRegion getRandomSequence(Genome genome,
       SequenceReader assembly,
       int length) throws IOException {
     return getRandomSequence(genome,
@@ -591,7 +591,7 @@ public class Sequence
         RepeatMaskType.LOWERCASE);
   }
 
-  public static SequenceRegion getRandomSequence(String genome,
+  public static SequenceRegion getRandomSequence(Genome genome,
       SequenceReader assembly,
       int length,
       boolean uppercase,

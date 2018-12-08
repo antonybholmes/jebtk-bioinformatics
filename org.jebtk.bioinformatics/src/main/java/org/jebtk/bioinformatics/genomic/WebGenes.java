@@ -30,6 +30,7 @@ package org.jebtk.bioinformatics.genomic;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.jebtk.core.http.UrlBuilder;
@@ -41,7 +42,7 @@ import org.jebtk.core.json.JsonParser;
  *
  * @author Antony Holmes
  */
-public class WebGenes extends Genes {
+public class WebGenes extends GenesDB {
 
   // private UrlBuilder mUrl;
   private UrlBuilder mFindUrl;
@@ -64,30 +65,76 @@ public class WebGenes extends Genes {
   }
 
   @Override
-  public List<GenomicEntity> findGenes(Genome genome, GenomicRegion region) {
+  public List<GenomicElement> find(Genome genome, GenomicRegion region, String type) {
     UrlBuilder url = mFindUrl.param("genome", genome.getName())
         .param("assembly", genome.getAssembly())
         .param("track", genome.getTrack()).param("chr", region.mChr.toString())
         .param("s", region.mStart).param("e", region.mEnd);
 
-    List<GenomicEntity> ret = parseGenes(genome, url);
+    List<GenomicElement> ret = parse(genome, url);
 
     return ret;
   }
 
   @Override
-  public List<GenomicEntity> getGenes(Genome genome, String search) {
+  public List<GenomicElement> getElements(Genome genome, String search, String type) {
     UrlBuilder url = mSearchUrl.param("genome", genome.getName())
         .param("assembly", genome.getAssembly())
         .param("track", genome.getTrack()).param("s", search);
 
-    List<GenomicEntity> ret = parseGenes(genome, url);
+    List<GenomicElement> ret = parse(genome, url);
 
     return ret;
   }
 
-  private static List<GenomicEntity> parseGenes(Genome genome, UrlBuilder url) {
-    List<GenomicEntity> ret = new ArrayList<GenomicEntity>();
+  @Override
+  public Iterable<Genome> getGenomes() {
+    return getGeneDBs(mGeneDbsUrl);
+  }
+
+  private static List<Genome> getGeneDBs(UrlBuilder url) {
+    List<Genome> ret = new ArrayList<Genome>();
+
+    JsonParser parser = new JsonParser();
+
+    try {
+      Json json = parser.parse(url);
+
+      for (int i = 0; i < json.size(); ++i) {
+        Json dbJson = json.get(i);
+
+        Genome genome = new Genome(GenomeService.getInstance().guessGenome(
+            dbJson.getString("assembly")), dbJson.getString("track"));
+
+        ret.add(genome);
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    return ret;
+  }
+
+  @Override
+  public List<GenomicElement> closest(Genome genome, GenomicRegion region, String type)
+      throws IOException {
+    return Collections.emptyList();
+  }
+  
+  @Override
+  public void add(GenomicElement element) {
+    // Do nothing
+  }
+
+  private static void addId(String name, Json json, GenomicElement gene) {
+    if (json.containsKey(name)) {
+      gene.setProperty(name, json.getString(name));
+    }
+  }
+  
+  
+  private static List<GenomicElement> parse(Genome genome, UrlBuilder url) {
+    List<GenomicElement> ret = new ArrayList<GenomicElement>();
 
     JsonParser parser = new JsonParser();
 
@@ -137,41 +184,4 @@ public class WebGenes extends Genes {
 
     return ret;
   }
-
-  @Override
-  public Iterable<Genome> getGenomes() {
-    return getGeneDBs(mGeneDbsUrl);
-  }
-
-  private static List<Genome> getGeneDBs(UrlBuilder url) {
-    List<Genome> ret = new ArrayList<Genome>();
-
-    JsonParser parser = new JsonParser();
-
-    try {
-      Json json = parser.parse(url);
-
-      for (int i = 0; i < json.size(); ++i) {
-        Json dbJson = json.get(i);
-
-        Genome genome = new Genome(GenomeService.getInstance().guessGenome(
-            dbJson.getString("assembly")), dbJson.getString("track"));
-
-        System.err.println("aha " + genome);
-
-        ret.add(genome);
-      }
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-
-    return ret;
-  }
-
-  private static void addId(String name, Json json, GenomicEntity gene) {
-    if (json.containsKey(name)) {
-      gene.setProperty(name, json.getString(name));
-    }
-  }
-
 }

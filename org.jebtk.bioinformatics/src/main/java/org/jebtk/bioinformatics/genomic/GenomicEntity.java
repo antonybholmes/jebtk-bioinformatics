@@ -27,8 +27,6 @@
  */
 package org.jebtk.bioinformatics.genomic;
 
-import java.util.List;
-
 import org.jebtk.core.NameProperty;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;

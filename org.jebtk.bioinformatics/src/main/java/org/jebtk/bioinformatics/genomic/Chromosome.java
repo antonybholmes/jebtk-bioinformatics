@@ -62,9 +62,9 @@ implements Comparable<Chromosome>, IdProperty, NameProperty {
   public static final Chromosome NO_CHR = new Chromosome(-1, "chrU", "U", null, -1);
 
   public static final ChrParser DEFAULT_PARSER = new ChrParser();
-  
+
   public static final ChrParser HUMAN_PARSER = new HumanChrParser();
-  
+
   public static final ChrParser MOUSE_PARSER = new MouseChrParser();
 
   /**
@@ -171,10 +171,13 @@ implements Comparable<Chromosome>, IdProperty, NameProperty {
     // + c.mChr);
 
     // Check if genomes match and if not sort by genome
-    int ret = mGenome.compareTo(c.mGenome);
 
-    if (ret != 0) {
-      return ret;
+    if (mGenome != null && c.mGenome != null) {
+      int ret = mGenome.compareTo(c.mGenome);
+
+      if (ret != 0) {
+        return ret;
+      }
     }
 
     // ret = mChr.compareTo(c.mChr);
@@ -192,7 +195,7 @@ implements Comparable<Chromosome>, IdProperty, NameProperty {
 
       // If both ids are in the lower 24 bits (numerical chr) or the upper 8
       // bits (X, Y, M etc) then do simple numerical comparison.
-      
+
       if (mId > c.mId) {
         return 1;
       } else if (mId < c.mId) {
@@ -299,11 +302,11 @@ implements Comparable<Chromosome>, IdProperty, NameProperty {
   public static Chromosome newChr(String chr, Genome genome, int size) {
     return newChr(chr, genome, size, DEFAULT_PARSER);
   }
-  
+
   public static Chromosome newHumanChr(String chr, Genome genome, int size) {
     return newChr(chr, genome, size, HUMAN_PARSER);
   }
-  
+
   public static Chromosome newMouseChr(String chr, Genome genome, int size) {
     return newChr(chr, genome, size, MOUSE_PARSER);
   }

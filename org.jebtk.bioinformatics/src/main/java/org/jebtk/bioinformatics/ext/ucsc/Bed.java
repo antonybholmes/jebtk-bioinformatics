@@ -141,8 +141,8 @@ public class Bed extends UCSCTrack {
    * @throws IOException Signals that an I/O exception has occurred.
    * @throws ParseException the parse exception
    */
-  public static UCSCTrack parseTrack(Path file) throws IOException {
-    return parseTracks(file).get(0);
+  public static UCSCTrack parseTrack(String type, Path file) throws IOException {
+    return parseTracks(type, file).get(0);
   }
 
   /**
@@ -152,12 +152,13 @@ public class Bed extends UCSCTrack {
    * @return the list
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static List<UCSCTrack> parseTracks(Path file) throws IOException {
+  public static List<UCSCTrack> parseTracks(String type, Path file) throws IOException {
     LOG.info("Parsing BED file {}...", file);
 
     BufferedReader reader = FileUtils.newBufferedReader(file);
 
-    return parseTracks(GenomeService.getInstance().guessGenome(file),
+    return parseTracks(type,
+        GenomeService.getInstance().guessGenome(file),
         getName(file),
         reader);
   }
@@ -170,7 +171,8 @@ public class Bed extends UCSCTrack {
    * @return the list
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static List<UCSCTrack> parseTracks(Genome genome,
+  public static List<UCSCTrack> parseTracks(String type,
+      Genome genome,
       String defaultName,
       BufferedReader reader) throws IOException {
     Bed bed = null;
@@ -217,7 +219,7 @@ public class Bed extends UCSCTrack {
             tracks.add(bed);
           }
 
-          BedElement region = BedElement.parse(genome, line);
+          GenomicElement region = BedElement.parse(type, genome, line);
 
           if (region != null) {
             bed.add(region);
@@ -291,8 +293,8 @@ public class Bed extends UCSCTrack {
    * @return the bed
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static Bed parseBedGraph(Path file) throws IOException {
-    return parseBedGraphs(file).get(0);
+  public static Bed parseBedGraph(String type, Path file) throws IOException {
+    return parseBedGraphs(type, file).get(0);
   }
 
   /**
@@ -302,7 +304,7 @@ public class Bed extends UCSCTrack {
    * @return the list
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static List<Bed> parseBedGraphs(Path file) throws IOException {
+  public static List<Bed> parseBedGraphs(String type, Path file) throws IOException {
     LOG.info("Parsing Bedgraph as BED file {}...", file);
 
     BufferedReader reader = Files.newBufferedReader(file,
@@ -325,8 +327,8 @@ public class Bed extends UCSCTrack {
 
           beds.add(bed);
         } else {
-          BedElement region = BedElement
-              .parse(GenomeService.getInstance().guessGenome(file), line);
+          GenomicElement region = BedElement
+              .parse(type, GenomeService.getInstance().guessGenome(file), line);
           bed.add(region);
         }
       }
@@ -545,12 +547,12 @@ public class Bed extends UCSCTrack {
    * @param regions the regions
    * @return the bed
    */
-  public static Bed create(String name, Collection<GenomicRegion> regions) {
+  public static Bed create(String type, String name, Collection<GenomicRegion> regions) {
 
     Bed bed = new Bed(name);
 
     for (GenomicRegion region : regions) {
-      bed.add(BedElement.create(region));
+      bed.add(BedElement.create(type, region));
     }
 
     return bed;

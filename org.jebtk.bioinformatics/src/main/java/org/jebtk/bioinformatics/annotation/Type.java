@@ -27,7 +27,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 public class Type extends Entity implements NameProperty {
 
   /** The m name. */
-  protected final String mName;
+  public final String mName;
 
   /**
    * Instantiates a new type.

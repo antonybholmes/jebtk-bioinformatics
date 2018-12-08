@@ -38,25 +38,37 @@ import java.util.List;
  *
  * @author Antony Holmes Holmes
  */
-public abstract class Genes {
+public abstract class GenomicElementsDB {
 
   /** Empty gene set that can be used as a placeholder */
-  public static final Genes EMPTY_GENES = new Genes() {
+  public static final GenomicElementsDB EMPTY = new GenomicElementsDB() {
 
     @Override
     public Iterable<Genome> getGenomes() {
       return Collections.emptyList();
     }
+
+    @Override
+    public List<GenomicElement> getElements(Genome g, String search, String type)
+        throws IOException {
+      return Collections.emptyList();
+    }
+
+    @Override
+    public List<GenomicElement> find(Genome genome,
+        GenomicRegion region,
+        String type) throws IOException {
+      return Collections.emptyList();
+    }
+
+    @Override
+    public void add(GenomicElement element) {
+      // Do nothing
+    }
   };
 
-  public void add(GenomicEntity gene) {
-    add(gene, gene);
-  }
-
-  public void add(GenomicRegion region, GenomicEntity gene) {
-    // Do nothing
-  }
-
+  public abstract void add(GenomicElement element);
+  
   /**
    * Lookup a gene by either symbol or refseq.
    *
@@ -64,11 +76,11 @@ public abstract class Genes {
    * @return the gene
    * @throws IOException
    */
-  // public abstract GenomicEntity lookup(String genome, String id) throws
+  // public abstract GenomicElement lookup(String genome, String id) throws
   // IOException;
 
-  public GenomicEntity getGene(Genome genome, String id) throws IOException {
-    List<GenomicEntity> genes = getGenes(genome, id);
+  public GenomicElement getElement(Genome genome, String search, String type) throws IOException {
+    List<GenomicElement> genes = getElements(genome, search, type);
 
     if (genes.size() > 0) {
       return genes.get(0);
@@ -77,19 +89,22 @@ public abstract class Genes {
     }
   }
 
-  public List<GenomicEntity> getGenes(Genome g, String id) throws IOException {
+  public abstract List<GenomicElement> getElements(Genome g, String search, String type) throws IOException;
+
+  public List<GenomicElement> getElements() throws IOException {
     return Collections.emptyList();
   }
 
-  public List<GenomicEntity> getGenes() throws IOException {
-    return Collections.emptyList();
-  }
-
-  public List<GenomicEntity> findGenes(Genome genome, String region)
+  public List<GenomicElement> find(Genome genome, String region, String type)
       throws IOException {
-    return findGenes(genome, GenomicRegion.parse(genome, region));
+    return find(genome, GenomicRegion.parse(genome, region), type);
   }
 
+  public List<GenomicElement> find(GenomicRegion region,
+      String type) throws IOException {
+    return find(null, region, type);
+  }
+  
   /**
    * Find genes.
    *
@@ -97,10 +112,9 @@ public abstract class Genes {
    * @return the list
    * @throws IOException
    */
-  public List<GenomicEntity> findGenes(Genome genome, GenomicRegion region)
-      throws IOException {
-    return Collections.emptyList();
-  }
+  public abstract List<GenomicElement> find(Genome genome, 
+      GenomicRegion region,
+      String type) throws IOException;
 
   /**
    * Find closest genes.
@@ -109,11 +123,17 @@ public abstract class Genes {
    * @return the list
    * @throws IOException
    */
-  public List<GenomicEntity> findClosestGenes(Genome genome,
-      GenomicRegion region) throws IOException {
-    return Collections.emptyList();
-  }
+  public List<GenomicElement> closest(Genome genome, 
+      GenomicRegion region, 
+      String type) throws IOException {
 
+    List<GenomicElement> elements = find(genome, region, type);
+
+    return closest(region, elements);
+  }
+  
+
+  
   /**
    * Find closest genes by tss.
    *
@@ -121,21 +141,22 @@ public abstract class Genes {
    * @return the list
    * @throws IOException
    */
-  public List<GenomicEntity> findClosestGenesByTss(Genome genome,
-      GenomicRegion region) throws IOException {
-    Collection<GenomicEntity> genes = findClosestGenes(genome, region); // findGenes(region);
+  public List<GenomicElement> closestByTss(Genome genome,
+      GenomicRegion region,
+      String type) throws IOException {
+    Collection<GenomicElement> genes = closest(genome, region, type); // findGenes(region);
 
-    List<GenomicEntity> ret = new ArrayList<GenomicEntity>();
+    List<GenomicElement> ret = new ArrayList<GenomicElement>();
 
     int minD = Integer.MAX_VALUE;
 
-    for (GenomicEntity gene : genes) {
+    for (GenomicElement gene : genes) {
       GenomicRegion tss = Gene.tssRegion(gene);
 
       minD = Math.min(minD, GenomicRegion.midAbsDist(region, tss));
     }
 
-    for (GenomicEntity gene : genes) {
+    for (GenomicElement gene : genes) {
       GenomicRegion tss = Gene.tssRegion(gene);
 
       int d = GenomicRegion.midAbsDist(region, tss);
@@ -148,32 +169,6 @@ public abstract class Genes {
     return ret;
   }
 
-  // public List<Gene> findGenes(Chromosome c, int start) {
-  // ChromosomeBins bins = mPositionMap.get(c);
-  //
-  // return bins.findGenes(start);
-  // }
-
-  /**
-   * Find the representative gene by name. Search is case insensitive. Returns
-   * null if gene not found.
-   *
-   * @param name the name
-   * @return the gene
-   */
-  // public GenomicEntity findMainVariant(String name) {
-  // return null;
-  // }
-
-  /**
-   * Return the RefSeq ids used to index these genes.
-   *
-   * @return the ref seq ids
-   */
-  public Iterable<String> getRefSeqIds() {
-    return getIds(Gene.REFSEQ_TYPE);
-  }
-
   /**
    * Return the set of ids (e.g. RefSeq ids) associated with a given id type.
    *
@@ -182,10 +177,6 @@ public abstract class Genes {
    */
   public Iterable<String> getIds(String type) {
     return Collections.emptyList();
-  }
-
-  public Iterable<String> getNames() throws IOException {
-    return getIds(Gene.GENE_NAME_TYPE);
   }
 
   public boolean contains(Chromosome chr) {
@@ -197,7 +188,9 @@ public abstract class Genes {
    * 
    * @return
    */
-  public abstract Iterable<Genome> getGenomes();
+  public Iterable<Genome> getGenomes() {
+    return Collections.emptyList();
+  }
 
   //
   // Static methods
@@ -219,32 +212,61 @@ public abstract class Genes {
     return new GTB2Parser();
   }
 
-  public List<GenomicEntity> getOverlappingGenes(Genome genome,
+  public List<GenomicElement> overlapping(Genome genome,
       GenomicRegion region,
+      String type,
       int minBp) throws IOException {
-    List<GenomicEntity> ret = new ArrayList<GenomicEntity>();
+    List<GenomicElement> ret = new ArrayList<GenomicElement>();
 
-    getOverlappingGenes(genome, region, minBp, ret);
+    overlapping(genome, region, type, minBp, ret);
 
     return ret;
   }
 
-  public void getOverlappingGenes(Genome genome,
+  public void overlapping(Genome genome,
       GenomicRegion region,
+      String type,
       int minBp,
-      List<GenomicEntity> ret) throws IOException {
-    List<GenomicEntity> genes = findGenes(genome, region);
+      List<GenomicElement> ret) throws IOException {
+    List<GenomicElement> elements = find(genome, region, type);
 
-    if (genes.size() == 0) {
+    if (elements.size() == 0) {
       return;
     }
 
-    for (GenomicEntity g : genes) {
+    for (GenomicElement g : elements) {
       GenomicRegion overlap = GenomicRegion.overlap(region, g);
 
       if (overlap != null && overlap.getLength() > minBp) {
         ret.add(g);
       }
     }
+  }
+  
+  private static List<GenomicElement> closest(GenomicRegion region, 
+      List<GenomicElement> elements) {
+
+    List<GenomicElement> ret = new ArrayList<GenomicElement>(elements.size());
+
+    int mid = GenomicRegion.mid(region);
+    int minD = Integer.MAX_VALUE;
+
+    for (GenomicElement element : elements) {
+      int d = Math.abs(mid - element.getStart()); // GenomicRegion.mid(gene));
+
+      if (d < minD) {
+        minD = d;
+      }
+    }
+
+    for (GenomicElement element : elements) {
+      int d = Math.abs(mid - element.getStart()); // GenomicRegion.mid(gene));
+
+      if (d == minD) {
+        ret.add(element);
+      }
+    }
+
+    return ret;
   }
 }

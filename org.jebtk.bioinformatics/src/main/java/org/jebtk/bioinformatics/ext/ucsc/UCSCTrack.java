@@ -42,6 +42,7 @@ import java.util.regex.Pattern;
 
 import org.jebtk.bioinformatics.genomic.Chromosome;
 import org.jebtk.bioinformatics.genomic.GenomicElement;
+import org.jebtk.bioinformatics.genomic.GenomicElementsMap;
 import org.jebtk.core.NameProperty;
 import org.jebtk.core.Resources;
 import org.jebtk.core.collections.CollectionUtils;
@@ -89,15 +90,6 @@ public class UCSCTrack extends ChangeListeners implements NameProperty {
    */
   protected static final String TRACK_PREFIX = "track";
 
-  /**
-   * The constant DEFAULT_HEIGHT.
-   */
-  public static final int DEFAULT_HEIGHT = 128;
-
-  /**
-   * The member height.
-   */
-  protected int mHeight = DEFAULT_HEIGHT;
 
   /**
    * The member name.
@@ -122,12 +114,18 @@ public class UCSCTrack extends ChangeListeners implements NameProperty {
   /**
    * The member chr regions.
    */
-  protected UCSCTrackElements mRegions = new UCSCTrackElements();
+  protected GenomicElementsMap mRegions = new GenomicElementsMap();
+
+  
+  /**
+   * The constant DEFAULT_HEIGHT.
+   */
+  public static final int DEFAULT_HEIGHT = 128;
 
   /**
-   * The member display mode.
+   * The member height.
    */
-  private TrackDisplayMode mDisplayMode = TrackDisplayMode.COMPACT;
+  protected int mHeight = DEFAULT_HEIGHT;
 
   /**
    * Instantiates a new UCSC track.
@@ -184,24 +182,6 @@ public class UCSCTrack extends ChangeListeners implements NameProperty {
    */
   public int getHeight() {
     return mHeight;
-  }
-
-  /**
-   * Sets the display mode.
-   *
-   * @param mode the new display mode
-   */
-  public void setDisplayMode(TrackDisplayMode mode) {
-    mDisplayMode = mode;
-  }
-
-  /**
-   * Gets the display mode.
-   *
-   * @return the display mode
-   */
-  public TrackDisplayMode getDisplayMode() {
-    return mDisplayMode;
   }
 
   /**
@@ -262,7 +242,7 @@ public class UCSCTrack extends ChangeListeners implements NameProperty {
    *
    * @return the regions
    */
-  public UCSCTrackElements getElements() {
+  public GenomicElementsMap getElements() {
     return mRegions;
   }
 

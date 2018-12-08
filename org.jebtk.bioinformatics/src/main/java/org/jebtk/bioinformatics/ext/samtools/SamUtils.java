@@ -19,12 +19,12 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.jebtk.bioinformatics.genomic.Chromosome;
 import org.jebtk.bioinformatics.genomic.GenomicRegion;
 import org.jebtk.bioinformatics.genomic.Strand;
-import org.jebtk.core.text.Parser;
 
 import htsjdk.samtools.AbstractBAMFileIndex;
 import htsjdk.samtools.BAMIndexMetaData;
@@ -113,7 +113,7 @@ public class SamUtils {
    */
   public static List<GenomicRegion> parseCigar(Chromosome chr,
       int start,
-      final String cigar) throws ParseException {
+      final String cigar) {
 
     StringBuilder buffer = new StringBuilder();
 
@@ -127,7 +127,7 @@ public class SamUtils {
         // We have a matching portion so we know the end
         // is the size of the cigar integer plus the
         // current start
-        end = start + Parser.toInt(buffer.toString()) - 1;
+        end = start + Integer.parseInt(buffer.toString()) - 1;
 
         locations.add(GenomicRegion.create(chr, start, end));
 
@@ -137,13 +137,13 @@ public class SamUtils {
         break;
       case 'I':
         // A gap requires the start to be shifted.
-        start -= Parser.toInt(buffer.toString()) - 1;
+        start -= Integer.parseInt(buffer.toString()) - 1;
         buffer.setLength(0);
         break;
       case 'D':
       case 'N':
         // A gap requires the start to be shifted.
-        start += Parser.toInt(buffer.toString()) - 1;
+        start += Integer.parseInt(buffer.toString()) - 1;
         buffer.setLength(0);
         break;
       default:
@@ -183,6 +183,46 @@ public class SamUtils {
     return count;
   }
 
+
+  public static int countReads(Path file, GenomicRegion r) throws IOException {
+    SamReader sam = SamReaderFactory.makeDefault().open(file.toFile());
+
+    int ret = 0;
+
+    try {
+      ret = countReads(sam, r);
+    } finally {
+      sam.close();
+    }
+
+    return ret;
+  }
+
+  /**
+   * Count reads in multiple regions.
+   * 
+   * @param file
+   * @param regions
+   * @return
+   * @throws IOException
+   */
+  public static List<Integer> countReads(Path file, Collection<GenomicRegion> regions) throws IOException {
+    List<Integer> ret = new ArrayList<Integer>();
+
+
+    SamReader sam = SamReaderFactory.makeDefault().open(file.toFile());
+
+    try {
+      for (GenomicRegion r : regions) {
+        ret.add(countReads(sam, r));
+      }
+    } finally {
+      sam.close();
+    }
+
+    return ret;
+  }
+
   /**
    * Returns the length of the reads by examing the first record in the BAM
    * file. The assumption is that reads are of equal length.
@@ -191,6 +231,23 @@ public class SamUtils {
    * @return the read length from bam
    * @throws IOException Signals that an I/O exception has occurred.
    */
+  public static int countReads(SamReader sam, GenomicRegion r) throws IOException {
+    int ret = 0;
+
+    //System.err.println("Counting from " + r);
+    
+    SAMRecordIterator iter = sam.queryOverlapping(r.mChr.toString(), r.mStart, r.mEnd);
+    
+    while (iter.hasNext()) {
+      ++ret;
+      iter.next();
+    }
+    
+    iter.close();
+
+    return ret;
+  }
+
   public static int getReadLengthFromBam(Path file) throws IOException {
     int ret = -1;
 

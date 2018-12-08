@@ -48,7 +48,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Antony Holmes Holmes
  */
-public class FixedGapGenes extends SingleDbGenes {
+public class FixedGapGenes extends SingleGenesDB {
   // private static final GeneService INSTANCE = new GeneService();
 
   /**
@@ -67,13 +67,13 @@ public class FixedGapGenes extends SingleDbGenes {
   private static final Logger LOG = LoggerFactory
       .getLogger(FixedGapGenes.class);
 
-  private FixedGapSearch<GenomicEntity> mSearch = 
-      new FixedGapSearch<GenomicEntity>();
+  private FixedGapSearch<GenomicElement> mSearch = 
+      new FixedGapSearch<GenomicElement>();
 
   /**
    * The member symbol main variant.
    */
-  private Map<String, GenomicEntity> mSymbolMainVariant = new HashMap<String, GenomicEntity>();
+  private Map<String, GenomicElement> mSymbolMainVariant = new HashMap<String, GenomicElement>();
 
   /**
    * The member entrez map.
@@ -88,8 +88,8 @@ public class FixedGapGenes extends SingleDbGenes {
   private IterMap<String, Set<String>> mTypeMap = DefaultHashMap
       .create(new TreeSetCreator<String>());
 
-  private IterMap<String, List<GenomicEntity>> mIdMap = DefaultHashMap
-      .create(new UniqueArrayListCreator<GenomicEntity>());
+  private IterMap<String, List<GenomicElement>> mIdMap = DefaultHashMap
+      .create(new UniqueArrayListCreator<GenomicElement>());
 
   /**
    * The member ref seq map.
@@ -104,8 +104,8 @@ public class FixedGapGenes extends SingleDbGenes {
   }
 
   @Override
-  public void add(GenomicRegion region, GenomicEntity gene) {
-    mSearch.add(region, gene);
+  public void add(GenomicElement gene) {
+    mSearch.add(gene, gene);
 
     // Map to exons
 
@@ -134,13 +134,13 @@ public class FixedGapGenes extends SingleDbGenes {
       Set<String> symbols = mTypeMap.get(Gene.GENE_NAME_TYPE);
 
       for (String name : symbols) {
-        List<GenomicEntity> genes = mIdMap.get(sanitize(name));
+        List<GenomicElement> genes = mIdMap.get(sanitize(name));
 
         // try and find variant 1
 
         int maxWidth = 0;
 
-        for (GenomicEntity gene : genes) {
+        for (GenomicElement gene : genes) {
           int width = gene.mLength;
 
           if (width > maxWidth) {
@@ -160,8 +160,8 @@ public class FixedGapGenes extends SingleDbGenes {
   }
 
   /*
-   * public GenomicEntity lookup(String genome, String id) throws IOException {
-   * GenomicEntity gene = getGene(genome, id);
+   * public GenomicElement lookup(String genome, String id) throws IOException {
+   * GenomicElement gene = getGene(genome, id);
    * 
    * if (gene != null) { return gene; }
    * 
@@ -179,20 +179,14 @@ public class FixedGapGenes extends SingleDbGenes {
    * @throws IOException
    */
   @Override
-  public List<GenomicEntity> getGenes(Genome genome, String id)
+  public List<GenomicElement> getElements(Genome genome, String id, String type)
       throws IOException {
     return mIdMap.get(sanitize(id));
   }
 
   @Override
-  public List<GenomicEntity> getGenes() throws IOException {
+  public List<GenomicElement> getElements() throws IOException {
     return mSearch.getFeatures();
-  }
-
-  @Override
-  public List<GenomicEntity> findGenes(Genome genome, String region)
-      throws IOException {
-    return findGenes(genome, GenomicRegion.parse(genome, region));
   }
 
   /**
@@ -203,7 +197,7 @@ public class FixedGapGenes extends SingleDbGenes {
    * @throws IOException
    */
   @Override
-  public List<GenomicEntity> findGenes(Genome genome, GenomicRegion region)
+  public List<GenomicElement> find(Genome genome, GenomicRegion region, String type)
       throws IOException {
     return mSearch.getOverlappingFeatures(region, 10).toList();
   }
@@ -216,13 +210,14 @@ public class FixedGapGenes extends SingleDbGenes {
    * @throws IOException
    */
   @Override
-  public List<GenomicEntity> findClosestGenes(Genome genome,
-      GenomicRegion region) throws IOException {
+  public List<GenomicElement> closest(Genome genome,
+      GenomicRegion region,
+      String type) throws IOException {
     return mSearch.getClosestFeatures(region);
   }
 
   /*
-   * @Override public GenomicEntity findMainVariant(String name) {
+   * @Override public GenomicElement findMainVariant(String name) {
    * autoFindMainVariants();
    * 
    * return mSymbolMainVariant.get(name.toUpperCase()); }

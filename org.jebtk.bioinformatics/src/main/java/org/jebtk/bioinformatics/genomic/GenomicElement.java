@@ -28,7 +28,9 @@
 package org.jebtk.bioinformatics.genomic;
 
 import java.awt.Color;
+import java.util.ArrayDeque;
 import java.util.Collection;
+import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
@@ -40,7 +42,6 @@ import org.jebtk.core.collections.IterMap;
 import org.jebtk.core.collections.IterTreeMap;
 import org.jebtk.core.collections.TreeSetCreator;
 import org.jebtk.core.collections.UniqueArrayListCreator;
-import org.jebtk.core.text.Join;
 import org.jebtk.core.text.TextUtils;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
@@ -140,7 +141,11 @@ public class GenomicElement extends GenomicRegion {
   }
 
   public GenomicElement setColor(Color color) {
-    mColor = color;
+    return setColor(color, true);
+  }
+  
+  public GenomicElement setColor(Color color, boolean propogate) {
+    setColor(this, color, propogate);
 
     return this;
   }
@@ -523,6 +528,36 @@ public class GenomicElement extends GenomicRegion {
     }
 
     return ret;
+  }
+
+  /**
+   * Set the color of an element.
+   * 
+   * @param element
+   * @param color
+   * @param propogate
+   */
+  private static void setColor(GenomicElement element,
+      Color color,
+      boolean propogate) {
+    Deque<GenomicElement> stack = new ArrayDeque<GenomicElement>();
+    
+    stack.push(element);
+    
+    GenomicElement e;
+    
+    while (!stack.isEmpty()) {
+      e = stack.pop();
+      e.mColor = color;
+      
+      if (propogate) {
+        for (Entry<String, List<GenomicElement>> item : element.getChildren()) {
+          for (GenomicElement c : item.getValue()) {
+            stack.push(c);
+          }
+        }
+      }
+    }
   }
 
 }

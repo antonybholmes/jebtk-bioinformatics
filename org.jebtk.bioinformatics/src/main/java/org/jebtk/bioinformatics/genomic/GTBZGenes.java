@@ -49,7 +49,7 @@ public class GTBZGenes extends FixedGapGenes {
           FileUtils.tokenize(new TokenFunction() {
             @Override
             public void parse(final List<String> tokens) {
-              String name = Genes.sanitize(tokens.get(0));
+              String name = GenesDB.sanitize(tokens.get(0));
               Chromosome chr = GenomeService.getInstance().guessChr(mFile,
                   tokens.get(1));
 
@@ -93,7 +93,7 @@ public class GTBZGenes extends FixedGapGenes {
       }
     }
 
-    Chromosome chr = mGeneMap.get(Genes.sanitize(name));
+    Chromosome chr = mGeneMap.get(GenesDB.sanitize(name));
 
     if (chr != null) {
       autoLoad(chr);
@@ -108,35 +108,35 @@ public class GTBZGenes extends FixedGapGenes {
   }
 
   @Override
-  public List<GenomicEntity> getGenes(Genome genome, String id)
+  public List<GenomicElement> getElements(Genome genome, String id, String type)
       throws IOException {
     autoLoad(id);
 
-    return super.getGenes(genome, id);
+    return super.getElements(genome, id, type);
   }
 
   @Override
-  public List<GenomicEntity> findGenes(Genome genome, GenomicRegion region)
+  public List<GenomicElement> find(Genome genome, GenomicRegion region, String type)
       throws IOException {
     autoLoad(region.mChr);
 
-    return super.findGenes(genome, region);
+    return super.find(genome, region, type);
   }
 
   @Override
-  public List<GenomicEntity> findClosestGenes(Genome genome,
-      GenomicRegion region) throws IOException {
+  public List<GenomicElement> closest(Genome genome,
+      GenomicRegion region, String type) throws IOException {
     autoLoad(region.mChr);
 
-    return super.findClosestGenes(genome, region);
+    return super.closest(genome, region, type);
   }
 
   @Override
-  public List<GenomicEntity> findClosestGenesByTss(Genome genome,
-      GenomicRegion region) throws IOException {
+  public List<GenomicElement> closestByTss(Genome genome,
+      GenomicRegion region, String type) throws IOException {
     autoLoad(region.mChr);
 
-    return super.findClosestGenesByTss(genome, region);
+    return super.closestByTss(genome, region, type);
   }
 
   /*
