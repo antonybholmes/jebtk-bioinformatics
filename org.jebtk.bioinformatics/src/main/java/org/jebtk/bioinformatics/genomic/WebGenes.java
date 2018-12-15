@@ -103,7 +103,7 @@ public class WebGenes extends GenesDB {
       for (int i = 0; i < json.size(); ++i) {
         Json dbJson = json.get(i);
 
-        Genome genome = new Genome(GenomeService.getInstance().guessGenome(
+        Genome genome = Genome.changeTrack(GenomeService.getInstance().guessGenome(
             dbJson.getString("assembly")), dbJson.getString("track"));
 
         ret.add(genome);

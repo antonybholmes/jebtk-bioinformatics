@@ -34,7 +34,6 @@ import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Set;
-import java.util.zip.GZIPInputStream;
 
 import org.jebtk.core.collections.CollectionUtils;
 import org.jebtk.core.io.FileUtils;
@@ -128,7 +127,7 @@ public class GeneSetCollection extends ListModel<GeneSet>
    * @return the gene set name
    */
   public static String getGeneSetName(Path file) {
-    return PathUtils.getName(file).toLowerCase().replaceFirst("\\.gmt.+", "");
+    return PathUtils.getName(file).toLowerCase().replaceFirst("\\..+", "");
   }
 
   /**
@@ -141,15 +140,7 @@ public class GeneSetCollection extends ListModel<GeneSet>
   public static GeneSetCollection parse(Path file) throws IOException {
     LOG.info("Parsing gene set collection in {}...", file);
 
-    String name = getGeneSetName(file);
-
-    InputStream is = FileUtils.newBufferedInputStream(file);
-
-    if (PathUtils.ext().gz().test(file)) {
-      is = new GZIPInputStream(is);
-    }
-
-    return parse(is, name);
+    return parseGMT(file);
   }
 
   /**
@@ -160,11 +151,13 @@ public class GeneSetCollection extends ListModel<GeneSet>
    * @return the gene set collection
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static GeneSetCollection parse(InputStream is, String name)
+  public static GeneSetCollection parseGMT(Path file)
       throws IOException {
+    String name = getGeneSetName(file);
+    
     GeneSetCollection collection = new GeneSetCollection(name);
 
-    BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+    BufferedReader reader = FileUtils.newBufferedReader(file);
 
     String line;
     List<String> tokens;

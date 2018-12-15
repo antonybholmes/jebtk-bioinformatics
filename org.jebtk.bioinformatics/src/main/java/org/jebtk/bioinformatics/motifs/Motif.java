@@ -772,8 +772,6 @@ public class Motif
     for (int i = l - 1; i >= 0; --i) {
       BaseCounts c = motif.getCounts(i);
 
-      System.err.println("rev " + i + " " + c);
-
       counts.add(
           new BaseCounts(c.getT(), c.getG(), c.getC(), c.getA(), c.getN()));
     }

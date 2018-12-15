@@ -33,7 +33,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import org.jebtk.core.Resources;
 import org.jebtk.core.model.SetModel;
 
 /**
@@ -94,12 +93,7 @@ public class GeneSetCollections extends SetModel<GeneSetCollection> {
     }
   }
 
-  /**
-   * Load from resources.
-   *
-   * @return the gene set collections
-   * @throws IOException Signals that an I/O exception has occurred.
-   */
+  /*
   public static GeneSetCollections loadFromResources() throws IOException {
     GeneSetCollections model = new GeneSetCollections();
 
@@ -112,11 +106,12 @@ public class GeneSetCollections extends SetModel<GeneSetCollection> {
           .replaceFirst("\\.symbols.+", "");
 
       GeneSetCollection collection = GeneSetCollection
-          .parse(Resources.getResInputStream(res), name);
+          .parseGMT(Resources.getResInputStream(res), name);
 
       model.add(collection);
     }
 
     return model;
   }
+  */
 }

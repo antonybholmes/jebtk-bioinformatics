@@ -7,6 +7,8 @@
 	<setting name="bioinformatics.dna.bases.t.color" value="#c83737" />
 	<setting name="bioinformatics.dna.bases.n.color" value="#333333" />
 	
+	<setting name="bioinformatics.pathway.total-genes" value="45956" />
+	
 	<setting name="genome" value="hg19" />
 
 	<setting name="motifs.bases.a.color" value="#00d400" />

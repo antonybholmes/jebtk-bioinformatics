@@ -152,6 +152,16 @@ public enum Strand {
 
     return ret;
   }
+  
+  public static Strand[] parse(final char[] chars) {
+    Strand[] ret = new Strand[chars.length];
+
+    for (int i =0; i < chars.length; ++i) {
+      ret[i] = parse(chars[i]);
+    }
+
+    return ret;
+  }
 
   /**
    * Checks if is sense.

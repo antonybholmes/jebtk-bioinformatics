@@ -42,6 +42,7 @@ import java.util.TreeSet;
 import org.jebtk.core.Mathematics;
 import org.jebtk.core.collections.CollectionUtils;
 import org.jebtk.core.io.FileUtils;
+import org.jebtk.core.settings.SettingsService;
 import org.jebtk.core.text.TextUtils;
 import org.jebtk.math.statistics.Hypergeometric;
 import org.slf4j.Logger;
@@ -56,6 +57,10 @@ public class Pathway {
    * The constant LOG.
    */
   private static final Logger LOG = LoggerFactory.getLogger(Pathway.class);
+  
+  // Match genepattern
+  private static final int TOTAL_GENES = 
+      SettingsService.getInstance().getInt("bioinformatics.pathway.total-genes");
 
   /**
    * Analysis.
@@ -155,7 +160,7 @@ public class Pathway {
       }
     }
 
-    int totalGenes = conversion.getSymbolCount();
+    int totalGenes = TOTAL_GENES; //conversion.getSymbolCount();
 
     LOG.info("Gene universe = {}", totalGenes);
 
@@ -201,7 +206,9 @@ public class Pathway {
 
       if (overlap > 1) {
         p = 1 - hyperg
-            .cdf(overlap - 2, validSymbols.size(), geneSet.size(), totalGenes);
+            .cdf(overlap - 2, geneSet.size(), validSymbols.size(), totalGenes);
+        
+        p = Mathematics.bound(p, 0, 1);
       }
 
       if (!pvalues.containsKey(p)) {
