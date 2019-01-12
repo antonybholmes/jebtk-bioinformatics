@@ -43,7 +43,7 @@ import org.jebtk.core.text.TextUtils;
 /**
  * Server for gene synonyms.
  *
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  */
 public class GeneSynonymsService {
 

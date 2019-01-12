@@ -43,7 +43,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 /**
  * Describes a region of a genome.
  *
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  */
 public class Region extends ChangeListeners
     implements Comparable<Region>, FormattedTxt {

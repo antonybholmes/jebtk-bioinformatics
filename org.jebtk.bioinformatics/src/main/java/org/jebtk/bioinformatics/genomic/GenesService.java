@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Keep track of genes associated with genomes.
  *
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  */
 public class GenesService implements Iterable<Entry<Genome, GenesDB>> {
 

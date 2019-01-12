@@ -30,7 +30,7 @@ package org.jebtk.bioinformatics.genomic;
 /**
  * Represents a gene along with a description of the gene.
  * 
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  *
  */
 public class ProbeGene implements Comparable<ProbeGene> {

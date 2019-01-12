@@ -32,7 +32,7 @@ import org.jebtk.core.collections.CollectionUtils;
 /**
  * Represents a genes collection attached to a single database source.
  *
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  */
 public abstract class SingleGenesDB extends GenesDB {
   protected final Genome mGenome;

@@ -32,7 +32,7 @@ import java.io.IOException;
 /**
  * Genes lookup to m.
  *
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  */
 public abstract class GenesDB extends GenomicElementsDB {
 

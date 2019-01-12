@@ -35,7 +35,7 @@ import org.jebtk.bioinformatics.genomic.RepeatMaskType;
 /**
  * Fast search of genome sequence files to get get actual genomic data.
  *
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  */
 public abstract class DNASequenceReader extends FileSequenceReader {
   /**

@@ -47,7 +47,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Represents a gene along with a description of the gene,.
  *
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  */
 public class GeneSetCollection extends ListModel<GeneSet>
     implements Comparable<GeneSetCollection> {

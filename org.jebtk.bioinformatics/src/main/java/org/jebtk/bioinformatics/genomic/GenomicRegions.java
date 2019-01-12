@@ -35,7 +35,7 @@ import org.jebtk.core.model.ListModel;
 /**
  * Keeps a sorted list of regions.
  *
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  * @param <T> the generic type
  */
 public class GenomicRegions<T extends GenomicElement> extends ListModel<T> {

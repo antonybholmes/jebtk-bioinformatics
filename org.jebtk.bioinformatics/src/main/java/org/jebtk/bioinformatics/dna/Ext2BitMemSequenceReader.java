@@ -54,7 +54,7 @@ import org.slf4j.LoggerFactory;
  * memory to speed it up.
  * 
  *
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  *
  */
 public class Ext2BitMemSequenceReader extends ChrSequenceReader {

@@ -37,7 +37,7 @@ import org.jebtk.core.text.TextUtils;
 /**
  * Represents a chromosome that can be sorted.
  *
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  */
 public class Chromosome
 implements Comparable<Chromosome>, IdProperty, NameProperty {

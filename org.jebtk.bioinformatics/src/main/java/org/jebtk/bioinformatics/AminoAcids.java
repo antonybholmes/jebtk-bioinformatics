@@ -43,7 +43,7 @@ import org.jebtk.core.text.TextUtils;
  * Allows multiple logs to be agglomerated so a message can be fire to multiple
  * logs.
  *
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  *
  */
 public class AminoAcids implements Iterable<AminoAcid> {

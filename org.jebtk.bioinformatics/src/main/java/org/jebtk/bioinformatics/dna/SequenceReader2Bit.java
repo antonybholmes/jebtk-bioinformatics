@@ -48,7 +48,7 @@ import org.jebtk.core.io.FileUtils;
  * Fast search of genome sequence Paths to get get actual genomic data. This
  * Path reads 4bit encoded genomes (i.e. 2 bases per byte).
  *
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  *
  */
 public class SequenceReader2Bit extends ChrSequenceReader {

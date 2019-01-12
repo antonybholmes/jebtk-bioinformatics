@@ -29,7 +29,7 @@ import org.jebtk.core.collections.IterTreeMap;
  * Represents a node in a radix tree. Names are stored as sequences of
  * characters which can be associated with one or more objects.
  *
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  * @param <T> the generic type
  */
 public class RadixNode<T>

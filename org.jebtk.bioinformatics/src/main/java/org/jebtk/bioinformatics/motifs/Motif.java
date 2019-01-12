@@ -49,7 +49,7 @@ import org.jebtk.core.text.TextUtils;
  * Represents a motif sequence. Each position consists of the counts for each
  * base (a,c,g,t).
  * 
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  *
  */
 public class Motif

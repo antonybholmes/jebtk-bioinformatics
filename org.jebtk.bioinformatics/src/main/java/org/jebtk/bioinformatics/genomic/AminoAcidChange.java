@@ -30,7 +30,7 @@ package org.jebtk.bioinformatics.genomic;
 /**
  * Representation of an amino acid change.
  * 
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  *
  */
 public class AminoAcidChange extends BaseChange {

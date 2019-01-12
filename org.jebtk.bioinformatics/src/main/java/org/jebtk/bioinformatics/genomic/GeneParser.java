@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Genes lookup to m.
  *
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  */
 public abstract class GeneParser {
   public static final Logger LOG = LoggerFactory.getLogger(GeneParser.class);

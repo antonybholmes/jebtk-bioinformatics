@@ -34,7 +34,7 @@ import org.jebtk.core.settings.SettingsService;
 /**
  * Functions related to DNA.
  * 
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  *
  */
 public class DNA {

@@ -42,7 +42,7 @@ import org.jebtk.bioinformatics.genomic.Genome;
 /**
  * Server for genome feature annotations.
  *
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  *
  */
 public class FeaturesServer {

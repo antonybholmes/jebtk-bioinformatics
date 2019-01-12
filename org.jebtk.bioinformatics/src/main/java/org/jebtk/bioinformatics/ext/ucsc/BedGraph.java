@@ -47,7 +47,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Describes a BED file.
  * 
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  *
  */
 public class BedGraph extends UCSCTrack {

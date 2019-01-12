@@ -35,7 +35,7 @@ import org.jebtk.core.text.TextUtils;
 /**
  * Describes a base change at a position.
  *
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  *
  */
 public class BaseChange implements Comparable<BaseChange> {

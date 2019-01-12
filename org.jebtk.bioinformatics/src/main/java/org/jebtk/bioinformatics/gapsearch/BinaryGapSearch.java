@@ -46,7 +46,7 @@ import org.jebtk.core.collections.UniqueArrayList;
  * An extension of the fixed gap search that can perform a binary search on to
  * look for the closest items to a genomic location. This
  *
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  * @param <T> the generic type
  */
 public class BinaryGapSearch<T> extends FixedGapSearch<T> {

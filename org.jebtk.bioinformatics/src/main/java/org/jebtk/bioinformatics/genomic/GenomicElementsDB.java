@@ -36,7 +36,7 @@ import java.util.List;
 /**
  * Genes lookup to m.
  *
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  */
 public abstract class GenomicElementsDB {
 

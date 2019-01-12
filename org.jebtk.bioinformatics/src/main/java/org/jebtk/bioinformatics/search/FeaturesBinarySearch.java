@@ -39,7 +39,7 @@ import org.jebtk.bioinformatics.genomic.Chromosome;
  * Provides binary search within an ordered list of features with the proviso
  * that none of the features have starting or stopping overlaps.
  *
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  *
  */
 public class FeaturesBinarySearch extends FeaturesBasicSearch {

@@ -37,7 +37,7 @@ import org.jebtk.core.io.Io;
 /**
  * Fast search of genome sequence files to get get actual genomic data.
  *
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  */
 public abstract class FileSequenceReader extends SequenceReader {
 

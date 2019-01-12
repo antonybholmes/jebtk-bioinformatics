@@ -31,7 +31,7 @@ package org.jebtk.bioinformatics;
  * Represents a three letter amino acid codon. It enforces only 3 letters per
  * codon.
  * 
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  *
  */
 public class Codon implements Comparable<Codon> {

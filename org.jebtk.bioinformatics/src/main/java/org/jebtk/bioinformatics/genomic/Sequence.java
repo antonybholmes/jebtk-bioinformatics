@@ -51,7 +51,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Represents a DNA sequence.
  * 
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  *
  */
 public class Sequence

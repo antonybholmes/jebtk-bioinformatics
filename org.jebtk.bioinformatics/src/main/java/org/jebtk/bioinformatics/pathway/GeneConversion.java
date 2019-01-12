@@ -37,7 +37,7 @@ import org.jebtk.core.text.TextUtils;
 /**
  * Maps an id to a new set of objects (ids, other mappings etc).
  *
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  * @param <T> the generic type
  */
 public class GeneConversion<T extends Comparable<? super T>>

@@ -20,7 +20,7 @@ import org.jebtk.bioinformatics.gapsearch.FixedGapSearch;
 /**
  * Improved fixed gap search for dealing with genomic coordinates.
  *
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  * @param <T> the generic type
  */
 public class GenomicFixedGapSearch<T extends GenomicRegion>

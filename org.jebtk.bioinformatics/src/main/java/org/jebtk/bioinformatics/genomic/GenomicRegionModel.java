@@ -32,7 +32,7 @@ import org.jebtk.core.model.ItemModel;
 /**
  * A model for shared genomic regions.
  * 
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  *
  */
 public class GenomicRegionModel extends ItemModel<GenomicRegion> {

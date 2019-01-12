@@ -37,7 +37,7 @@ import org.jebtk.core.collections.UniqueArrayList;
 /**
  * Generic interface for quickly searching for features by genomic location.
  *
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  * @param <T> the generic type
  */
 public abstract class GapSearch<T> implements Iterable<Chromosome> {

@@ -49,7 +49,7 @@ import org.jebtk.core.json.JsonParser;
 /**
  * Maintains a connection to a caArray server.
  *
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  */
 public class WebSequenceReader extends SequenceReader {
   /**

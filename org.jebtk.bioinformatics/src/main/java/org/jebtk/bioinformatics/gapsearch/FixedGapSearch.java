@@ -44,7 +44,7 @@ import org.jebtk.core.collections.UniqueArrayList;
 /**
  * Use fixed size blocks to find features.
  *
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  * @param <T> the generic type
  */
 public class FixedGapSearch<T> extends GapSearch<T> {

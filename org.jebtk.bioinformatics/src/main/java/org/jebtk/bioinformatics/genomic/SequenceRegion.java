@@ -35,7 +35,7 @@ import org.jebtk.core.text.TextUtils;
 /**
  * Describes a region of a genome and its sequence.
  *
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  *
  */
 public class SequenceRegion extends GenomicRegion {

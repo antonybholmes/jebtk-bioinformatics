@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Fast search of genome sequence Paths to get get actual genomic data.
  *
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  */
 public class GZipSequenceReader extends ChrSequenceReader {
 

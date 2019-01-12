@@ -59,7 +59,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Describes a BED file (a list of genomic positions with a track).
  * 
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  *
  */
 public class Bed extends UCSCTrack {

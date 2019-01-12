@@ -32,7 +32,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
-import org.jebtk.core.collections.CollectionUtils;
 import org.jebtk.core.io.FileUtils;
 import org.jebtk.core.text.TextUtils;
 import org.jebtk.math.matrix.DataFrame;
@@ -90,7 +89,7 @@ public class ResMatrix extends DataFrame {
    * @param names the new description names
    */
   public void setDescriptionNames(String[] names) {
-    setRowAnnotations(DESCRIPTION_COLUMN, names);
+    getIndex().setAnnotation(DESCRIPTION_COLUMN, names);
   }
 
   /**
@@ -100,7 +99,7 @@ public class ResMatrix extends DataFrame {
    * @return the description name
    */
   public String getDescriptionName(int i) {
-    return getRowAnnotation(DESCRIPTION_COLUMN, i).toString();
+    return getIndex().getText(DESCRIPTION_COLUMN, i);
   }
 
   /**
@@ -108,8 +107,8 @@ public class ResMatrix extends DataFrame {
    *
    * @return the description names
    */
-  public List<String> getDescriptionNames() {
-    return CollectionUtils.toString(getRowAnnotationText(DESCRIPTION_COLUMN));
+  public String[] getDescriptionNames() {
+    return getIndex().getText(DESCRIPTION_COLUMN);
   }
 
   /**
@@ -118,7 +117,7 @@ public class ResMatrix extends DataFrame {
    * @param names the new accession names
    */
   public void setAccessionNames(String[] names) {
-    setRowAnnotations(ACCESSION_COLUMN, names);
+    getIndex().setAnnotation(ACCESSION_COLUMN, names);
   }
 
   /**
@@ -128,7 +127,7 @@ public class ResMatrix extends DataFrame {
    * @return the accession name
    */
   public String getAccessionName(int i) {
-    return getRowAnnotation(ACCESSION_COLUMN, i).toString();
+    return getIndex().getText(ACCESSION_COLUMN, i);
   }
 
   /**
@@ -136,8 +135,8 @@ public class ResMatrix extends DataFrame {
    *
    * @return the accession names
    */
-  public List<String> getAccessionNames() {
-    return CollectionUtils.toString(getRowAnnotationText(ACCESSION_COLUMN));
+  public String[] getAccessionNames() {
+    return getIndex().getText(ACCESSION_COLUMN);
   }
 
   /**
@@ -146,7 +145,7 @@ public class ResMatrix extends DataFrame {
    * @param names the new sample descriptions
    */
   public void setSampleDescriptions(String[] names) {
-    setColumnAnnotations(SAMPLE_DESCRIPTIONS, names);
+    getColumnHeader().setAnnotation(SAMPLE_DESCRIPTIONS, names);
   }
 
   /**
@@ -156,7 +155,7 @@ public class ResMatrix extends DataFrame {
    * @return the sample description
    */
   public String getSampleDescription(int i) {
-    return getColumnAnnotationText(SAMPLE_DESCRIPTIONS, i);
+    return getIndex().getText(SAMPLE_DESCRIPTIONS, i);
   }
 
   /**
@@ -164,8 +163,8 @@ public class ResMatrix extends DataFrame {
    *
    * @return the sample descriptions
    */
-  public List<String> getSampleDescriptions() {
-    return getColumnAnnotationText(SAMPLE_DESCRIPTIONS);
+  public String[] getSampleDescriptions() {
+    return getIndex().getText(SAMPLE_DESCRIPTIONS);
   }
 
   /**
@@ -233,13 +232,13 @@ public class ResMatrix extends DataFrame {
       writer.write(Integer.toString(matrix.getRows()));
       writer.newLine();
 
-      List<String> names = matrix.getRowAnnotationNames();
+      List<String> names = matrix.getIndex().getNames();
 
       for (int i = 0; i < matrix.getRows(); ++i) {
-        writer.write(matrix.getRowAnnotationText(names.get(0), i));
+        writer.write(matrix.getIndex().getText(names.get(0), i));
         writer.write(TextUtils.TAB_DELIMITER);
         writer
-            .write(matrix.getRowAnnotationText(names.get(names.size() - 1), i));
+            .write(matrix.getIndex().getText(names.get(names.size() - 1), i));
 
         for (int j = 0; j < matrix.getCols(); ++j) {
           if (i > 0) {

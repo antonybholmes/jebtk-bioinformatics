@@ -34,7 +34,7 @@ import org.jebtk.bioinformatics.genomic.GenomicRegion;
  * Uses a binary search to identify the closest points to a genomic coordinate
  * and returns all objects in the range this spans.
  *
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  * @param <T> the generic type
  */
 public class BinarySearch<T> extends BinaryGapSearch<T> {

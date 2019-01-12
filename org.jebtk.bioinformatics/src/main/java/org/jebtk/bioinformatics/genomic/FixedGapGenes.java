@@ -46,7 +46,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Genes lookup to m.
  *
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  */
 public class FixedGapGenes extends SingleGenesDB {
   // private static final GeneService INSTANCE = new GeneService();

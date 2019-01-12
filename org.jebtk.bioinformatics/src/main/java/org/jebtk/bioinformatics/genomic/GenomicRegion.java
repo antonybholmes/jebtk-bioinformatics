@@ -55,7 +55,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 /**
  * Describes a region of a genome.
  *
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  */
 @JsonPropertyOrder({ "loc", "strand" })
 public class GenomicRegion extends Region {

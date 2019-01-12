@@ -40,7 +40,7 @@ import org.jebtk.core.collections.IterMap;
 /**
  * Use fixed size blocks to find features.
  *
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  * @param <T> the generic type
  */
 public class BinMap<T> implements IterMap<Integer, T> {

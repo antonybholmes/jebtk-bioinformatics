@@ -40,7 +40,7 @@ import org.jebtk.core.event.ChangeListeners;
 /**
  * A model for shared bed graphs.
  * 
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  *
  */
 public class BedGraphGroupsModel extends ChangeListeners

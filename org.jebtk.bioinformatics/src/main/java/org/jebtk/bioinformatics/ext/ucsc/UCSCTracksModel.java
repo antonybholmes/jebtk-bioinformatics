@@ -37,7 +37,7 @@ import org.jebtk.core.model.ListModel;
 /**
  * A model for shared bed graphs.
  * 
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  *
  */
 public class UCSCTracksModel extends ListModel<UCSCTrack> {

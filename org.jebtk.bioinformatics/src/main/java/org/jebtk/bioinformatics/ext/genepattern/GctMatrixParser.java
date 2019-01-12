@@ -131,9 +131,9 @@ public class GctMatrixParser implements MatrixParser {
         ++row;
       }
 
-      matrix.setRowAnnotations(idHeader, rowNames.toArray());
+      matrix.getIndex().setAnnotation(idHeader, rowNames.toArray());
 
-      matrix.setRowAnnotations(descriptionHeader, descriptionNames.toArray());
+      matrix.getIndex().setAnnotation(descriptionHeader, descriptionNames.toArray());
     } finally {
       reader.close();
     }

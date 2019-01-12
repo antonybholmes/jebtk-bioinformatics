@@ -40,7 +40,7 @@ import org.jebtk.math.matrix.DoubleMatrix;
 /**
  * Represents a UCSC GCT file in matrix form.
  * 
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  *
  */
 public class GctMatrix extends DataFrame {
@@ -81,7 +81,7 @@ public class GctMatrix extends DataFrame {
    * @param names the new description names
    */
   public void setDescriptionNames(String[] names) {
-    setRowAnnotations(DESCRIPTION_COLUMN, names);
+    getIndex().setAnnotation(DESCRIPTION_COLUMN, names);
   }
 
   /**
@@ -91,7 +91,7 @@ public class GctMatrix extends DataFrame {
    * @return the description name
    */
   public String getDescriptionName(int i) {
-    return getRowAnnotationText(DESCRIPTION_COLUMN, i);
+    return getIndex().getText(DESCRIPTION_COLUMN, i);
   }
 
   /**
@@ -99,8 +99,8 @@ public class GctMatrix extends DataFrame {
    *
    * @return the description names
    */
-  public List<String> getDescriptionNames() {
-    return getRowAnnotationText(DESCRIPTION_COLUMN);
+  public String[] getDescriptionNames() {
+    return getIndex().getText(DESCRIPTION_COLUMN);
   }
 
   /**
@@ -145,14 +145,14 @@ public class GctMatrix extends DataFrame {
 
       writer.newLine();
 
-      List<String> names = matrix.getRowAnnotationNames();
+      List<String> names = matrix.getIndex().getNames();
 
       for (int i = 0; i < matrix.getRows(); ++i) {
-        writer.write(matrix.getRowAnnotationText(names.get(0), i));
+        writer.write(matrix.getIndex().getText(names.get(0), i));
         writer.write(TextUtils.TAB_DELIMITER);
 
         writer
-            .write(matrix.getRowAnnotationText(names.get(names.size() - 1), i));
+            .write(matrix.getIndex().getText(names.get(names.size() - 1), i));
 
         for (int j = 0; j < matrix.getCols(); ++j) {
           writer.write(TextUtils.TAB_DELIMITER);

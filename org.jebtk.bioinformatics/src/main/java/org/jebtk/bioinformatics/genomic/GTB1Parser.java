@@ -44,7 +44,7 @@ import org.jebtk.core.text.TextUtils;
 /**
  * Genes lookup to m.
  *
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  */
 public class GTB1Parser extends GTBParser {
 

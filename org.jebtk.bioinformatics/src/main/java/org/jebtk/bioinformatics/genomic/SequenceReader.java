@@ -40,7 +40,7 @@ import org.jebtk.core.NameProperty;
  * Read sequence data from a data source (such as a file) an extract sequences
  * using genomic coordinates.
  *
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  */
 public abstract class SequenceReader implements NameProperty {
   /**

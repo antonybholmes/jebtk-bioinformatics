@@ -47,7 +47,7 @@ import org.jebtk.core.settings.SettingsService;
 /**
  * Service for extracting DNA/RNA from sequences.
  *
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  */
 public class SequenceService extends SequenceReader
     implements Iterable<Entry<Genome, SequenceReader>>, ChangeEventProducer {

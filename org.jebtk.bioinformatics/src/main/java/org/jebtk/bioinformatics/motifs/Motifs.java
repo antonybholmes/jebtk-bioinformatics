@@ -38,7 +38,7 @@ import org.jebtk.core.collections.CollectionUtils;
  * Represents a motif sequence. Each position consists of the counts for each
  * base (a,c,g,t).
  * 
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  *
  */
 public class Motifs implements NameProperty, Iterable<Motif> {

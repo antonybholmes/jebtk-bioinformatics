@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Deals with functions related to chromosomes.
  *
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  *
  */
 public class GenomeService extends GenomeDirs implements Iterable<Genome> {

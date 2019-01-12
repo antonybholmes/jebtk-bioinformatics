@@ -44,7 +44,7 @@ import org.jebtk.core.io.PathUtils;
  * Stores 1 bit per genome base ergo this is only suitable for binary
  * representations of the genome e.g. base matches other species, true or false.
  *
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  *
  */
 public class AlignmentAssemblyFile1Bit extends ConservationAssembly {

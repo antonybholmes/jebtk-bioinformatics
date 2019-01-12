@@ -34,7 +34,7 @@ import org.jebtk.core.Mathematics;
 /**
  * Stores the counts of each base (a,c,g,t).
  * 
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  *
  */
 public class BaseCounts {

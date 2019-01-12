@@ -30,7 +30,7 @@ package org.jebtk.bioinformatics.genomic;
 /**
  * Represents a symbol and its entrez id.
  *
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  */
 public class GeneSymbol implements Comparable<GeneSymbol> {
 

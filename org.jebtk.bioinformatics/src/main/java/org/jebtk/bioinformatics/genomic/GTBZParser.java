@@ -39,7 +39,7 @@ import org.jebtk.core.io.FileUtils;
 /**
  * Genes lookup to m.
  *
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  */
 public class GTBZParser extends GTB2Parser {
 

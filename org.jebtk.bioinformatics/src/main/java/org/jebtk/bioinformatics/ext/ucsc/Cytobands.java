@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Server for genome feature annotations.
  *
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  *
  */
 public class Cytobands {

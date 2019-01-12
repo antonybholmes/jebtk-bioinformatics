@@ -34,7 +34,7 @@ import org.jebtk.bioinformatics.genomic.Region;
 /**
  * Represents a named genomic feature on a chromosome.
  *
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  *
  */
 public class Feature extends GenomicRegion {

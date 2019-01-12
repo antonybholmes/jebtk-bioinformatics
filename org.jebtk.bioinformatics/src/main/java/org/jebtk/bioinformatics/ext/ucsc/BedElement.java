@@ -45,7 +45,7 @@ import org.jebtk.core.text.TextUtils;
 /**
  * Genomic region plus value.
  * 
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  *
  */
 public class BedElement extends GenomicElement implements NameProperty {

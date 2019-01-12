@@ -45,7 +45,7 @@ import org.jebtk.core.io.PathUtils;
  * = 2, T = 3. Files can be accompanied by a corresponding n
  * 
  *
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  *
  */
 public class DirZipSequenceReader extends GenomeSequenceReader {

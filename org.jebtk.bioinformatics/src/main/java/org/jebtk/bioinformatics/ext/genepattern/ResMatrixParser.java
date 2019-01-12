@@ -43,7 +43,7 @@ import org.jebtk.math.matrix.MatrixParser;
 /**
  * Parses a simple txt matrix.
  *
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  */
 public class ResMatrixParser implements MatrixParser {
 
@@ -188,7 +188,7 @@ public class ResMatrixParser implements MatrixParser {
         tokens = TextUtils.tabSplit(line);
 
         matrix.setRowName(row, tokens.get(1));
-        matrix.setRowAnnotation("Description", row, tokens.get(0));
+        matrix.getIndex().setAnnotation("Description", row, tokens.get(0));
 
         stream = Stream.of(tokens).skip(2);
 

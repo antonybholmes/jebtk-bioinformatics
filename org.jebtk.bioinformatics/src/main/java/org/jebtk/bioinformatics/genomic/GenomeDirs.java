@@ -35,7 +35,7 @@ import java.util.List;
 /**
  * Deals with functions related to chromosomes.
  *
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  *
  */
 public class GenomeDirs {

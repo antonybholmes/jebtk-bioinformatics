@@ -38,7 +38,7 @@ import org.jebtk.core.collections.CollectionUtils;
  * Keeps together sorted regions on the same chromosome. Regions are auto-sorted
  * before search
  *
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  * @param <T> the generic type
  */
 public class SortedRegions<T extends GenomicRegion> implements Iterable<T> {
