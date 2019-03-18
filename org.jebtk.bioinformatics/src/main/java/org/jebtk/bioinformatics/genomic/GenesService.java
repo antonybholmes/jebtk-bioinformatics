@@ -93,6 +93,8 @@ public class GenesService implements Iterable<Entry<Genome, GenesDB>> {
   }
 
   public GenomicElementsDB getGenes(Genome g) {
+    System.err.println("Found genome in gene service " + g + " " + mGenesMap.containsKey(g));
+    
     if (mGenesMap.containsKey(g)) {
       return mGenesMap.get(g);
     } else {

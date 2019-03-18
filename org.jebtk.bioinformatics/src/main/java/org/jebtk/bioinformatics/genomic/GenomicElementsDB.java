@@ -80,6 +80,8 @@ public abstract class GenomicElementsDB {
   // IOException;
 
   public GenomicElement getElement(Genome genome, String search, String type) throws IOException {
+    System.err.println("Searching for genes in " + genome + " " + this.getClass());
+    
     List<GenomicElement> genes = getElements(genome, search, type);
 
     if (genes.size() > 0) {
