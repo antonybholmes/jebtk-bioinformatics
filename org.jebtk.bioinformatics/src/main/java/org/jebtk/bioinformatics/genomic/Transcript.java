@@ -74,15 +74,19 @@ public class Transcript extends GenomicEntity {
    * @param exon the exon
    */
   public void addExon(GenomicRegion exon) {
-    add(new Exon(exon));
+    addChild(new Exon(exon));
+  }
+  
+  public void addExon(Exon exon) {
+    addChild(exon);
   }
 
   public void add5pUtr(GenomicRegion exon) {
-    add(new UTR3p(exon));
+    addChild(new UTR3p(exon));
   }
 
   public void add3pUtr(GenomicRegion exon) {
-    add(new UTR3p(exon));
+    addChild(new UTR3p(exon));
   }
 
   @JsonIgnore

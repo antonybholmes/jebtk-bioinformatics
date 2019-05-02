@@ -131,7 +131,7 @@ public class GTB3Parser extends GTBParser {
 
             if (mKeepExons) {
               if (gene != null) {
-                gene.add(exon);
+                gene.addChild(exon);
               }
             }
 

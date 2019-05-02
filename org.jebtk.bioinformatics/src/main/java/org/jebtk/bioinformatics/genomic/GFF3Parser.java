@@ -18,16 +18,20 @@ package org.jebtk.bioinformatics.genomic;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.jebtk.bioinformatics.gapsearch.FixedGapSearch;
+import org.jebtk.core.collections.CollectionUtils;
 import org.jebtk.core.collections.DefaultTreeMap;
 import org.jebtk.core.collections.IterMap;
 import org.jebtk.core.collections.IterTreeMap;
 import org.jebtk.core.collections.TreeSetCreator;
+import org.jebtk.core.io.FileUtils;
 import org.jebtk.core.text.Splitter;
 import org.jebtk.core.text.TextUtils;
 
@@ -35,7 +39,11 @@ import org.jebtk.core.text.TextUtils;
  * The Class GFF.
  */
 public class GFF3Parser extends GeneParser {
-
+  
+  public static final String LEVEL_GENE = "gene";
+  public static final String LEVEL_TRANSCRIPT = "transcript";
+  public static final String LEVEL_EXON = "exon";
+  
   public GFF3Parser() {
     // _setKeepExons(false);
   }
@@ -60,6 +68,7 @@ public class GFF3Parser extends GeneParser {
     Splitter splitter = Splitter.onTab();
 
     GenomicEntity gene = null;
+    GenomicEntity transcript = null;
 
     try {
       while ((line = reader.readLine()) != null) {
@@ -85,13 +94,28 @@ public class GFF3Parser extends GeneParser {
 
         switch (type) {
         case GENE:
+          gene = addAttributes(GenomicEntity.GENE, region, attributeMap);
+
+          genes.add(gene);
+          
+          break;
         case TRANSCRIPT:
           // Gene
           // gene = new Gene(region).setSymbol(name);
 
-          gene = addAttributes(GenomicEntity.TRANSCRIPT, region, attributeMap);
+          transcript = addAttributes(GenomicEntity.TRANSCRIPT, 
+              region, 
+              attributeMap);
 
-          genes.add(gene);
+          if (gene != null) {
+            if (mKeepTranscripts) {
+              gene.addChild(transcript);
+            }
+
+            transcript.setParent(gene);
+          }
+          
+          genes.add(transcript);
 
           break;
         case EXON:
@@ -99,14 +123,14 @@ public class GFF3Parser extends GeneParser {
               region,
               attributeMap);
 
-          if (gene != null) {
+          if (transcript != null) {
             // Add to the current gene
 
             if (mKeepExons) {
-              gene.add(exon);
+              transcript.addChild(exon);
             }
 
-            exon.setParent(gene);
+            transcript.setParent(gene);
           }
 
           genes.add(exon);
@@ -273,4 +297,39 @@ public class GFF3Parser extends GeneParser {
     return new GFF3Parser(parser);
   }
 
+  public static List<String> gff3IdTypes(Path file, String level) throws IOException {
+
+    BufferedReader reader = FileUtils.newBufferedReader(file);
+
+    List<String> ret = new ArrayList<String>(20);
+
+    String line;
+
+    try {
+      while((line = reader.readLine()) != null) {
+        if (line.contains(level)) {
+          Map<String, String> attributes = parseGFF3Attributes(TextUtils.tabSplit(line));
+
+          for (String attribute : CollectionUtils.sortKeys(attributes)) {
+            
+            // Skip some predefined fields that will not be of interest to the
+            // user
+            if (attribute.contains("Parent")) {
+              continue;
+            }
+            
+            ret.add(attribute); //formatAttributeName(attribute));
+          }
+
+          break;
+        }
+      }
+    } finally {
+      reader.close();
+    }
+
+    Collections.sort(ret);
+
+    return ret;
+  }
 }

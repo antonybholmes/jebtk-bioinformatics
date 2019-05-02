@@ -88,6 +88,16 @@ public class SearchResults<T> implements Iterable<GenomicRegion> {
   public int size() {
     return mFeatures.size();
   }
+  
+  public int itemCount() {
+    int ret = 0;
+    
+    for (GenomicRegion r : this) {
+      ret += getValues(r).size();
+    }
+
+    return ret;
+  }
 
   public List<T> toList() {
     List<T> ret = new UniqueArrayList<T>(mFeatures.size());

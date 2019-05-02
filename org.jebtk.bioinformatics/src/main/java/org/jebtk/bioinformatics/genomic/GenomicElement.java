@@ -175,7 +175,7 @@ public class GenomicElement extends GenomicRegion {
    * 
    * @param e A genomic entity.
    */
-  public void add(GenomicElement e) {
+  public void addChild(GenomicElement e) {
     mElemMap.get(e.mType).add(e);
   }
 
@@ -311,6 +311,8 @@ public class GenomicElement extends GenomicRegion {
    */
   public Tag getProperty(String name) {
     name = Tag.format(name);
+    
+    //System.err.println("tag:" + name);
     
     if (!mPropertyMap.containsKey(name)) {
       setProperty(name, TextUtils.NA);
@@ -560,4 +562,34 @@ public class GenomicElement extends GenomicRegion {
     }
   }
 
+  
+  /**
+   * Get the distance from the mid point of a region to a gene accounting for
+   * the strand.
+   * 
+   * @param gene
+   * @param region
+   * @return
+   */
+  public static int getTssMidDist(GenomicElement gene, GenomicRegion region) {
+    int mid = GenomicRegion.mid(region);
+
+    return getTssMidDist(gene, mid);
+  }
+
+  /**
+   * Returns the distance of the mid to the gene tss. If the mid is downstream,
+   * the value is positive.
+   * 
+   * @param gene
+   * @param mid
+   * @return
+   */
+  public static int getTssMidDist(GenomicElement gene, int mid) {
+    if (gene.mStrand == Strand.SENSE) {
+      return mid - gene.getStart();
+    } else {
+      return gene.getEnd() - mid;
+    }
+  }
 }

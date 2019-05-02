@@ -72,6 +72,6 @@ public class Gene extends GenomicEntity {
    * @param exon the exon
    */
   public void addTranscript(GenomicRegion transcript) {
-    add(new Transcript(transcript));
+    addChild(new Transcript(transcript));
   }
 }

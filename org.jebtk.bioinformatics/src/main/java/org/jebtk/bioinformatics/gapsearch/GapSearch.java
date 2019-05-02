@@ -110,6 +110,7 @@ public abstract class GapSearch<T> implements Iterable<Chromosome> {
     if (region == null) {
       return Collections.emptyList();
     }
+    
 
     return getFeatures(region.getChr(), region.getStart(), region.getEnd());
   }

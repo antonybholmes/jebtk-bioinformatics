@@ -29,13 +29,20 @@ package org.jebtk.bioinformatics.genomic;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.jebtk.bioinformatics.gapsearch.FixedGapSearch;
+import org.jebtk.bioinformatics.gapsearch.GappedSearchFeatures;
+import org.jebtk.core.collections.ArrayListCreator;
+import org.jebtk.core.collections.CollectionUtils;
 import org.jebtk.core.collections.DefaultHashMap;
+import org.jebtk.core.collections.DefaultTreeMap;
 import org.jebtk.core.collections.IterMap;
 import org.jebtk.core.collections.TreeSetCreator;
 import org.jebtk.core.collections.UniqueArrayListCreator;
@@ -199,7 +206,17 @@ public class FixedGapGenes extends SingleGenesDB {
   @Override
   public List<GenomicElement> find(Genome genome, GenomicRegion region, String type)
       throws IOException {
-    return mSearch.getOverlappingFeatures(region, 10).toList();
+    List<GenomicElement> features = mSearch.getOverlappingFeatures(region, 10).toList();
+
+    List<GenomicElement> ret = new ArrayList<GenomicElement>(features.size());
+
+    for (GenomicElement feature : features) {
+      if (feature.mType.equals(type)) {
+        ret.add(feature);
+      }
+    }
+
+    return ret;
   }
 
   /**
@@ -214,6 +231,113 @@ public class FixedGapGenes extends SingleGenesDB {
       GenomicRegion region,
       String type) throws IOException {
     return mSearch.getClosestFeatures(region);
+  }
+
+  @Override
+  public List<List<GenomicElement>> getClosestFeatures(Genome genome,
+      GenomicRegion region,
+      int n,
+      String type) {
+    //return mSearch.getClosestFeatures(region, n);
+
+    return getClosestFeatures(region.getChr(),
+        region.getStart(),
+        region.getEnd(),
+        n,
+        type);
+  }
+
+  private List<List<GenomicElement>> getClosestFeatures(Chromosome chr,
+      int start,
+      int end,
+      int n,
+      String type) {
+    int bs = mSearch.getBin(start);
+    int be = mSearch.getBin(end);
+
+    Map<Integer, GappedSearchFeatures<GenomicElement>> features = mSearch.get(chr);
+
+    List<Integer> bins = CollectionUtils.sortKeys(features);
+
+    int is = bins.indexOf(bs);
+    int ie = bins.indexOf(be);
+
+    int l = bins.size() - 1;
+
+    List<GappedSearchFeatures<GenomicElement>> bf = null;
+
+    //SysUtils.err().println(bs, be, is, ie);
+
+    int mid = (start + end) / 2;
+
+    while (is >= 0 || ie < bins.size()) {
+      bs = bins.get(is);
+      be = bins.get(ie);
+
+      // Keep expanding bin search area around location until we find enough
+      // items to order by 1st, 2nd, 3rd... closest.
+
+      bf = mSearch.getFeaturesByBin(chr, bs, be);
+
+      //
+      // Count
+      //
+
+      IterMap<Integer, List<GenomicElement>> closestMap = 
+          DefaultTreeMap.create(new ArrayListCreator<GenomicElement>());
+
+      for (GappedSearchFeatures<GenomicElement> gsf : bf) {
+        for (GenomicRegion region : gsf) {
+          // distance from item to
+
+          int d;
+
+          if (Strand.isSense(region.getStrand())) {
+            d = Math.abs(region.getStart() - mid);
+          } else {
+            d = Math.abs(region.getEnd() - mid);
+          }
+          
+          for (GenomicElement item : gsf.getValues(region)) {
+            if (item.mType.equals(type)) {
+              closestMap.get(d).add(item);
+            }
+
+            //SysUtils.err().println("closest", n, d, item, mid, region.getStart());
+          }
+        }
+      }
+
+      if (closestMap.size() >= n) {
+        // Once we have enough closest genes, assemble and return
+        List<List<GenomicElement>> ret = new ArrayList<List<GenomicElement>>(n);
+        
+        int c = 0;
+        
+        for (Entry<Integer, List<GenomicElement>> entry : closestMap) {
+          ret.add(entry.getValue());
+          
+          ++c;
+          
+          if (c == n) {
+            break;
+          }
+        }
+
+        return ret;
+      }
+
+
+      //
+      //
+      //
+
+      // Expand search region
+      is = Math.max(0, is - 1);
+      ie = Math.min(ie + 1, l);
+    }
+
+    return Collections.emptyList();
   }
 
   /*

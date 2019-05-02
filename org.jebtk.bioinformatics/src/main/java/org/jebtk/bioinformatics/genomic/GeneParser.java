@@ -53,6 +53,7 @@ public abstract class GeneParser {
 
   /** Whether to add exons to gene structure */
   protected boolean mKeepExons = true;
+  protected boolean mKeepTranscripts = true;
   protected Set<String> mMatchTags = new HashSet<String>();
   protected Set<String> mExcludeTags = new HashSet<String>();
   protected Set<String> mExcludeIds = new HashSet<String>();

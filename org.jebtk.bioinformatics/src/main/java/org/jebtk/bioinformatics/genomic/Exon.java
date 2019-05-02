@@ -17,4 +17,8 @@ public class Exon extends GenomicEntity {
   public Exon(Chromosome chr, int start, int end) {
     super(EXON, chr, start, end);
   }
+  
+  public Exon(Chromosome chr, int start, int end, Strand strand) {
+    super(EXON, chr, start, end, strand);
+  }
 }

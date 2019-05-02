@@ -36,10 +36,14 @@ import java.util.Map.Entry;
 
 import org.jebtk.bioinformatics.genomic.Chromosome;
 import org.jebtk.bioinformatics.genomic.GenomicRegion;
+import org.jebtk.bioinformatics.genomic.Strand;
+import org.jebtk.core.collections.ArrayListCreator;
+import org.jebtk.core.collections.CollectionUtils;
 import org.jebtk.core.collections.DefaultTreeMap;
 import org.jebtk.core.collections.IterMap;
 import org.jebtk.core.collections.TreeMapCreator;
 import org.jebtk.core.collections.UniqueArrayList;
+import org.jebtk.core.sys.SysUtils;
 
 /**
  * Use fixed size blocks to find features.
@@ -124,7 +128,7 @@ public class FixedGapSearch<T> extends GapSearch<T> {
     ++mSize;
   }
 
-  private int getBin(int x) {
+  public int getBin(int x) {
     return x / mBinSize;
   }
 
@@ -158,6 +162,10 @@ public class FixedGapSearch<T> extends GapSearch<T> {
   @Override
   public boolean contains(Chromosome chr) {
     return mFeatures.containsKey(chr);
+  }
+  
+  public IterMap<Integer, GappedSearchFeatures<T>> get(Chromosome chr) {
+    return mFeatures.get(chr);
   }
 
   /*
@@ -261,6 +269,100 @@ public class FixedGapSearch<T> extends GapSearch<T> {
 
     return range;
   }
+  
+  /**
+   * Return the nth closest features.
+   * 
+   * @param region
+   * @param n
+   * @return
+   */
+  public List<List<T>> getClosestFeatures(GenomicRegion region, int n) {
+    return getClosestFeatures(region.getChr(),
+        region.getStart(),
+        region.getEnd(),
+        n);
+  }
+  
+  public List<List<T>> getClosestFeatures(Chromosome chr,
+      int start,
+      int end,
+      int n) {
+    int bs = getBin(start);
+    int be = getBin(end);
+
+    Map<Integer, GappedSearchFeatures<T>> features = mFeatures.get(chr);
+    
+    List<Integer> bins = CollectionUtils.sortKeys(features);
+    
+    int is = bins.indexOf(bs);
+    int ie = bins.indexOf(be);
+    
+    int l = bins.size() - 1;
+    
+    List<GappedSearchFeatures<T>> bf = null;
+    
+    SysUtils.err().println(bs, be, is, ie);
+    
+    int mid = (start + end) / 2;
+    
+    while (is >= 0 || ie < bins.size()) {
+      bs = bins.get(is);
+      be = bins.get(ie);
+      
+      // Keep expanding bin search area around location until we find enough
+      // items to order by 1st, 2nd, 3rd... closest.
+      
+      bf = getFeaturesByBin(chr, bs, be);
+      
+      //
+      // Count
+      //
+  
+      IterMap<Integer, List<T>> closestMap = 
+          DefaultTreeMap.create(new ArrayListCreator<T>());
+      
+      for (GappedSearchFeatures<T> gsf : bf) {
+        for (GenomicRegion region : gsf) {
+          // distance from item to
+          int d;
+          
+          if (Strand.isSense(region.getStrand())) {
+            d = Math.abs(region.getStart() - mid);
+          } else {
+            d = Math.abs(region.getEnd() - mid);
+          }
+          
+          for (T item : gsf.getValues(region)) {
+            closestMap.get(d).add(item);
+            
+            //SysUtils.err().println("closest", n, d, item, mid, region.getStart());
+          }
+          
+          if (closestMap.size() == n) {
+            // Once we have enough closest genes, assemble and return
+            List<List<T>> ret = new ArrayList<List<T>>(n);
+            
+            for (Entry<Integer, List<T>> entry : closestMap) {
+              ret.add(entry.getValue());
+            }
+            
+            return ret;
+          }
+        }
+      }
+
+      //
+      //
+      //
+      
+      // Expand search region
+      is = Math.max(0, is - 1);
+      ie = Math.min(ie + 1, l);
+    }
+    
+    return Collections.emptyList();
+  }
 
   /*
    * (non-Javadoc)
@@ -345,4 +447,6 @@ public class FixedGapSearch<T> extends GapSearch<T> {
 
     return ret;
   }
+
+  
 }

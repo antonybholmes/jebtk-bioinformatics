@@ -104,7 +104,7 @@ public class ElementReader extends BinaryReader {
     }
 
     if (parent != null) {
-      parent.add(element);
+      parent.addChild(element);
     }
 
     if (correctType) {

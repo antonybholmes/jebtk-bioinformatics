@@ -162,7 +162,7 @@ public class BedElement extends GenomicElement implements NameProperty {
             .toInt(TextUtils.commaSplit(tokens.get(11)));
 
         for (int i = 0; i < count; ++i) {
-          bed.add(new Exon(chr, start + starts.get(i),
+          bed.addChild(new Exon(chr, start + starts.get(i),
               start + starts.get(i) + sizes.get(i)));
         }
       }

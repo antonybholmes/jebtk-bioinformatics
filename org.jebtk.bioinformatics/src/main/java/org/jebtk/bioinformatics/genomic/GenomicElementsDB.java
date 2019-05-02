@@ -134,6 +134,13 @@ public abstract class GenomicElementsDB {
     return closest(region, elements);
   }
   
+  public List<List<GenomicElement>> getClosestFeatures(Genome genome,
+      GenomicRegion region,
+      int n,
+      String type) {
+    return Collections.emptyList();
+  }
+  
 
   
   /**
@@ -212,6 +219,12 @@ public abstract class GenomicElementsDB {
 
   public static GTB2Parser gtb2Parser() {
     return new GTB2Parser();
+  }
+  
+  public List<GenomicElement> overlapping(Genome genome,
+      GenomicRegion region,
+      String type) throws IOException {
+    return overlapping(genome, region, type, 1);
   }
 
   public List<GenomicElement> overlapping(Genome genome,

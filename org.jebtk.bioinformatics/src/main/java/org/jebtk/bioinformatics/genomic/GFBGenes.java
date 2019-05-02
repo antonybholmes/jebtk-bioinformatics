@@ -550,7 +550,7 @@ public class GFBGenes extends SingleGenesDB {
     }
 
     if (gene != null) {
-      gene.add(transcript);
+      gene.addChild(transcript);
     }
 
     if (type.equals(GenomicEntity.TRANSCRIPT)) {
@@ -574,7 +574,7 @@ public class GFBGenes extends SingleGenesDB {
     reader.skipBytes(1);
 
     if (transcript != null) {
-      transcript.add(exon);
+      transcript.addChild(exon);
     }
 
     if (type.equals(GenomicEntity.EXON)) {

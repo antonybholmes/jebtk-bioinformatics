@@ -28,10 +28,12 @@
 package org.jebtk.bioinformatics.genomic;
 
 import java.nio.file.Path;
+import java.util.List;
 
 import org.jebtk.core.AppService;
 import org.jebtk.core.NameProperty;
 import org.jebtk.core.text.Join;
+import org.jebtk.core.text.Splitter;
 import org.jebtk.core.text.TextUtils;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
@@ -69,26 +71,32 @@ public class Genome implements NameProperty, Comparable<Genome> {
 
   // private ChromosomeDirs mChrs = null;
 
-  private final String mName;
+  public final String mName;
 
-  private final String mBuild;
+  public final String mAssembly;
 
-  private final String mTrack;
+  public final String mTrack;
 
   private String mS;
 
   public Genome(String name, String build) {
-    this(name, build, GENCODE);
+    this(name, build, TextUtils.EMPTY_STRING);
   }
 
+  /**
+   * 
+   * @param name      e.g. 'human'
+   * @param build     e.g. 'grch38'
+   * @param track     e.g. 'gencode'
+   */
   public Genome(String name, String build, String track) {
     mName = TextUtils.sentenceCase(name);
-    mBuild = build;
+    mAssembly = build;
     mTrack = track;
   }
 
   public Genome(Genome genome) {
-    this(genome.mName, genome.mBuild, genome.mTrack);
+    this(genome.mName, genome.mAssembly, genome.mTrack);
   }
 
   @Override
@@ -97,11 +105,21 @@ public class Genome implements NameProperty, Comparable<Genome> {
     return mName;
   }
 
+  /**
+   * Returns the assembly.
+   * 
+   * @return    e.g. grch38
+   */
   @JsonGetter("assembly")
   public String getAssembly() {
-    return mBuild;
+    return mAssembly;
   }
 
+  /**
+   * Returns the track.
+   * 
+   * @return e.g. 'gencode'.
+   */
   @JsonGetter("track")
   public String getTrack() {
     return mTrack;
@@ -140,11 +158,7 @@ public class Genome implements NameProperty, Comparable<Genome> {
   @Override
   public String toString() {
     if (mS == null) {
-      if (!TextUtils.isNullOrEmpty(mTrack)) {
-        mS = Join.onColon().values(mName, mBuild, mTrack).toString();
-      } else {
-        mS = Join.onColon().values(mName, mBuild).toString();
-      }
+      mS = genomeId(mName, mAssembly, mTrack);
     }
 
     return mS;
@@ -158,7 +172,7 @@ public class Genome implements NameProperty, Comparable<Genome> {
       return ret;
     }
 
-    ret = mBuild.compareTo(g.mBuild);
+    ret = mAssembly.compareTo(g.mAssembly);
 
     if (ret != 0) {
       return ret;
@@ -191,6 +205,40 @@ public class Genome implements NameProperty, Comparable<Genome> {
    * @return
    */
   public static Genome changeTrack(Genome genome, String track) {
-    return new Genome(genome.mName, genome.mBuild, track);
+    return new Genome(genome.mName, genome.mAssembly, track);
+  }
+
+  /**
+   * Create a genome from a colon separated id e.g. human:grch38:gencode
+   * @param g
+   * @return
+   */
+  public static Genome fromId(String g) {
+    List<String> tokens = Splitter.onColon().text(g); //TextUtils.fastSplit(g, TextUtils.COLON_DELIMITER);
+    
+    switch (tokens.size()) {
+    case 2:
+        return new Genome(tokens.get(0), tokens.get(1));
+    case 3:
+      return new Genome(tokens.get(0), tokens.get(1), tokens.get(2));
+    default:
+      return null;
+    }
+  }
+  
+  public static String genomeId(String name, String assembly) {
+    return genomeId(name, assembly, TextUtils.EMPTY_STRING);
+  }
+  
+  /**
+   * Create a genome id from the genome name parts.
+   * 
+   * @param name
+   * @param assembly
+   * @param track
+   * @return
+   */
+  public static String genomeId(String name, String assembly, String track) {
+    return Join.onColon().values(name, assembly, track).toString();
   }
 }

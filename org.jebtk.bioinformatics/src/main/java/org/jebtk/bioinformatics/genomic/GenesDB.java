@@ -48,4 +48,8 @@ public abstract class GenesDB extends GenomicElementsDB {
   public Iterable<String> getNames() throws IOException {
     return getIds(Gene.GENE_NAME_TYPE);
   }
+
+
+
+  
 }

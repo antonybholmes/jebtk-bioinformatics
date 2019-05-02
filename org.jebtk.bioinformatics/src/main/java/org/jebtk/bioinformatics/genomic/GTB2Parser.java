@@ -134,7 +134,7 @@ public class GTB2Parser extends GTBParser {
 
             if (mKeepExons) {
               if (gene != null) {
-                gene.add(exon);
+                gene.addChild(exon);
               }
             }
 
@@ -356,7 +356,7 @@ public class GTB2Parser extends GTBParser {
 
       // GenomicEntity exon = new Exon(region);
 
-      transcript.add(exon);
+      transcript.addChild(exon);
       exon.setParent(transcript);
     }
 
