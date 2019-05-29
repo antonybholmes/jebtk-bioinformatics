@@ -45,28 +45,22 @@ public class GenomicEntity extends GenomicElement implements NameProperty {
   /** The Constant SYMBOL_TYPE. */
   // public static final String SYMBOL_TYPE = "symbol";
 
-  public static final String GENE_ID_TYPE = "gene_id";
+  public static final String GENE_ID = "gene_id";
 
   /** The Constant GENE_NAME_TYPE. */
-  public static final String GENE_NAME_TYPE = "gene_name";
+  public static final String GENE_NAME = "gene_name";
 
   /** The Constant TRANSCRIPT_ID_TYPE. */
-  public static final String TRANSCRIPT_ID_TYPE = "transcript_id";
+  public static final String TRANSCRIPT_ID = "transcript_id";
 
   /** The Constant REFSEQ_TYPE. */
-  public static final String REFSEQ_TYPE = "refseq";
+  public static final String REFSEQ_ID = "refseq_id";
 
   /** The Constant ENTREZ_TYPE. */
-  public static final String ENTREZ_ID_TYPE = "entrez";
+  public static final String ENTREZ_ID = "entrez_id";
 
   /** The Constant ENSEMBL_TYPE. */
-  public static final String ENSEMBL_TYPE = "ensembl";
-
-  public static final String TRANSCRIPT = "transcript";
-
-  public static final String GENE = "gene";
-
-  public static final String EXON = "exon";
+  public static final String ENSEMBL_ID = "ensembl_id";
 
   public static final String UTR_5P = "utr_5p";
 
@@ -78,7 +72,7 @@ public class GenomicEntity extends GenomicElement implements NameProperty {
    * @param type the type
    * @param l the l
    */
-  public GenomicEntity(String type, GenomicRegion l) {
+  public GenomicEntity(GenomicType type, GenomicRegion l) {
     super(type, l);
   }
 
@@ -89,37 +83,39 @@ public class GenomicEntity extends GenomicElement implements NameProperty {
    * @param l the l
    * @param s the s
    */
-  public GenomicEntity(String type, GenomicRegion l, Strand s) {
+  public GenomicEntity(GenomicType type, GenomicRegion l, Strand s) {
     super(type, l, s);
   }
 
-  public GenomicEntity(String type, Chromosome chr, int start, int end) {
+  public GenomicEntity(GenomicType type, Chromosome chr, int start, int end) {
     this(type, chr, start, end, Strand.SENSE);
   }
 
-  public GenomicEntity(String type, Chromosome chr, int start, int end,
+  public GenomicEntity(GenomicType type, Chromosome chr, int start, int end,
       Strand strand) {
     super(type, chr, start, end, strand);
   }
 
   /**
-   * Sets the id.
+   * Set a named property of the gene, such as a gene symbol or entrez id.
    *
-   * @param type the type
-   * @param name the name
+   * @param name the type
+   * @param value the name
    * @return the genomic entity
    */
-  public GenomicElement setProperty(String type, String name) {
+  public GenomicElement setProperty(String name, String value) {
 
-    String lc = type.toLowerCase();
+    String lc = name.toLowerCase();
 
-    if (type.contains("symbol")) {
-      return super.setProperty(GENE_NAME_TYPE, name);
-    } else if (lc.contains("transcript")) {
-      return super.setProperty(TRANSCRIPT_ID_TYPE, name);
-    } else {
-      return super.setProperty(lc, name);
+    if (lc.contains("symbol")) {
+      super.setProperty(GENE_NAME, value);
     }
+    
+    if (lc.contains("transcript")) {
+      return super.setProperty(TRANSCRIPT_ID, value);
+    } 
+    
+    return super.setProperty(lc, value);
   }
 
   /**
@@ -129,7 +125,7 @@ public class GenomicEntity extends GenomicElement implements NameProperty {
    */
   @JsonIgnore
   public String getRefSeq() {
-    return getProperty(REFSEQ_TYPE).toString();
+    return getProperty(REFSEQ_ID).toString();
   }
 
   /**
@@ -139,7 +135,7 @@ public class GenomicEntity extends GenomicElement implements NameProperty {
    */
   @JsonIgnore
   public String getEntrez() {
-    return getProperty(ENTREZ_ID_TYPE).toString();
+    return getProperty(ENTREZ_ID);
   }
 
   /**
@@ -180,7 +176,7 @@ public class GenomicEntity extends GenomicElement implements NameProperty {
    */
   @JsonIgnore
   public String getGeneId() {
-    return getProperty(GENE_ID_TYPE).toString();
+    return getProperty(GENE_ID);
   }
 
   /**
@@ -190,7 +186,7 @@ public class GenomicEntity extends GenomicElement implements NameProperty {
    */
   @JsonIgnore
   public String getGeneName() {
-    return getProperty(GENE_NAME_TYPE).toString();
+    return getProperty(GENE_NAME);
   }
 
   /**
@@ -210,7 +206,7 @@ public class GenomicEntity extends GenomicElement implements NameProperty {
    * @return the genomic entity
    */
   public GenomicEntity setGeneName(String name) {
-    return (GenomicEntity) setProperty(GENE_NAME_TYPE, name);
+    return (GenomicEntity) setProperty(GENE_NAME, name);
   }
 
   /**
@@ -220,7 +216,7 @@ public class GenomicEntity extends GenomicElement implements NameProperty {
    * @return the gene
    */
   public GenomicEntity setRefseq(String name) {
-    return (GenomicEntity) setProperty(REFSEQ_TYPE, name);
+    return (GenomicEntity) setProperty(REFSEQ_ID, name);
   }
 
   /**
@@ -230,7 +226,7 @@ public class GenomicEntity extends GenomicElement implements NameProperty {
    * @return the gene
    */
   public GenomicEntity setEntrez(String name) {
-    return (GenomicEntity) setProperty(ENTREZ_ID_TYPE, name);
+    return (GenomicEntity) setProperty(ENTREZ_ID, name);
   }
 
   /**
@@ -240,7 +236,7 @@ public class GenomicEntity extends GenomicElement implements NameProperty {
    */
   @JsonIgnore
   public String getTranscriptId() {
-    return getProperty(TRANSCRIPT_ID_TYPE).toString();
+    return getProperty(TRANSCRIPT_ID).toString();
   }
 
   /**
@@ -250,8 +246,7 @@ public class GenomicEntity extends GenomicElement implements NameProperty {
    * @return the genomic entity
    */
   public GenomicEntity setTranscriptId(String name) {
-    return (GenomicEntity) setProperty(TRANSCRIPT_ID_TYPE, name);
+    return (GenomicEntity) setProperty(TRANSCRIPT_ID, name);
   }
-
 
 }

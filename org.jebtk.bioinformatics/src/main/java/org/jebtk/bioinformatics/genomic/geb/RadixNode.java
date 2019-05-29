@@ -32,8 +32,7 @@ import org.jebtk.core.collections.IterTreeMap;
  * @author Antony Holmes
  * @param <T> the generic type
  */
-public class RadixNode<T>
-    implements Comparable<RadixNode<T>>, Serializable {
+public class RadixNode<T> implements Comparable<RadixNode<T>>, Serializable {
 
   /**
    * The constant serialVersionUID.
@@ -43,16 +42,15 @@ public class RadixNode<T>
   /**
    * The member objects.
    */
-  //private List<T> mObjects = new UniqueArrayList<T>();
-  
+  // private List<T> mObjects = new UniqueArrayList<T>();
+
   private Set<T> mExactObjects = new TreeSet<T>();
   private Set<T> mObjects = new TreeSet<T>();
 
   /**
    * The member children.
    */
-  private IterMap<Character, RadixNode<T>> mChildren = 
-      new IterTreeMap<Character, RadixNode<T>>();
+  private IterMap<Character, RadixNode<T>> mChildren = new IterTreeMap<Character, RadixNode<T>>();
 
   /**
    * The member c.
@@ -62,7 +60,7 @@ public class RadixNode<T>
   /**
    * The member prefix.
    */
-  //private String mPrefix;
+  // private String mPrefix;
 
   /**
    * Create the root node
@@ -79,7 +77,7 @@ public class RadixNode<T>
    */
   public RadixNode(char c) {
     mC = standardize(c);
-    //mPrefix = newPrefix(prefix, c);
+    // mPrefix = newPrefix(prefix, c);
   }
 
   /**
@@ -108,7 +106,7 @@ public class RadixNode<T>
   public Collection<T> getExactObjects() {
     return mExactObjects;
   }
-  
+
   public Collection<T> getObjects() {
     return mObjects;
   }
@@ -168,14 +166,14 @@ public class RadixNode<T>
 
     for (int i = 0; i < chars.length; ++i) {
       char c = chars[i];
-      
+
       // Create child
       if (!ret.mChildren.containsKey(c)) {
         ret.mChildren.put(c, new RadixNode<T>(c));
       }
-      
+
       ret = ret.mChildren.get(c);
-      
+
       if (i == chars.length - 1) {
         ret.mExactObjects.add(v);
       } else {
@@ -212,8 +210,6 @@ public class RadixNode<T>
       return 0;
     }
   }
-
-
 
   /**
    * Clear.

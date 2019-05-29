@@ -121,7 +121,7 @@ public class Mutation implements Comparable<Mutation> {
 
     return ret;
   }
-  
+
   public static List<Mutation> parse(String[] lines) {
     List<Mutation> ret = new ArrayList<Mutation>(lines.length);
 

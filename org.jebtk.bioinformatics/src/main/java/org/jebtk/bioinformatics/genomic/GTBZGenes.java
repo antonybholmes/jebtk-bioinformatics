@@ -100,24 +100,28 @@ public class GTBZGenes extends FixedGapGenes {
     }
   }
 
+  /*
   @Override
   public void autoFindMainVariants() {
     autoLoad();
 
     super.autoFindMainVariants();
   }
+  */
 
   @Override
-  public List<GenomicElement> getElements(Genome genome, String id, String type)
-      throws IOException {
+  public List<GenomicElement> getElements(Genome genome,
+      String id,
+      GenomicType type) throws IOException {
     autoLoad(id);
 
     return super.getElements(genome, id, type);
   }
 
   @Override
-  public List<GenomicElement> find(Genome genome, GenomicRegion region, String type)
-      throws IOException {
+  public List<GenomicElement> find(Genome genome,
+      GenomicRegion region,
+      GenomicType type) throws IOException {
     autoLoad(region.mChr);
 
     return super.find(genome, region, type);
@@ -125,7 +129,8 @@ public class GTBZGenes extends FixedGapGenes {
 
   @Override
   public List<GenomicElement> closest(Genome genome,
-      GenomicRegion region, String type) throws IOException {
+      GenomicRegion region,
+      GenomicType type) throws IOException {
     autoLoad(region.mChr);
 
     return super.closest(genome, region, type);
@@ -133,7 +138,8 @@ public class GTBZGenes extends FixedGapGenes {
 
   @Override
   public List<GenomicElement> closestByTss(Genome genome,
-      GenomicRegion region, String type) throws IOException {
+      GenomicRegion region,
+      GenomicType type) throws IOException {
     autoLoad(region.mChr);
 
     return super.closestByTss(genome, region, type);

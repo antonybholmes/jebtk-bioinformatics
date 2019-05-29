@@ -212,8 +212,10 @@ public abstract class GeneParser {
     // Do nothing
   }
 
-  public void parse(Path file, final Genome genome, Chromosome chr, GenesDB genes)
-      throws IOException {
+  public void parse(Path file,
+      final Genome genome,
+      Chromosome chr,
+      GenesDB genes) throws IOException {
     parse(file, genome, genes);
   }
 
@@ -291,7 +293,7 @@ public abstract class GeneParser {
     return mLevels.contains(level);
   }
 
-  public static GenomicEntity addAttributes(String type,
+  public static GenomicEntity addAttributes(GenomicType type,
       final GenomicRegion region,
       final IterMap<String, String> attributeMap) {
 

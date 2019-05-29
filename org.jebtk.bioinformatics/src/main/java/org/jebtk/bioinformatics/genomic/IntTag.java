@@ -12,7 +12,7 @@ public class IntTag extends Tag {
     return mValue;
   }
 
-  @Override 
+  @Override
   public double toDouble() {
     return mValue;
   }

@@ -35,6 +35,7 @@ import org.jebtk.bioinformatics.genomic.Genome;
 import org.jebtk.bioinformatics.genomic.GenomeService;
 import org.jebtk.bioinformatics.genomic.GenomicElement;
 import org.jebtk.bioinformatics.genomic.GenomicRegion;
+import org.jebtk.bioinformatics.genomic.GenomicType;
 import org.jebtk.core.text.TextUtils;
 
 /**
@@ -46,7 +47,7 @@ import org.jebtk.core.text.TextUtils;
 public class BedGraphElement extends GenomicElement {
 
   private static final long serialVersionUID = 1L;
-  
+
   /**
    * Create a new region. Coordinates are one based.
    *
@@ -55,8 +56,8 @@ public class BedGraphElement extends GenomicElement {
    * @param end the end
    * @param value the value
    */
-  public BedGraphElement(GenomicRegion r, double value) {
-    super("bedgraph", r);
+  public BedGraphElement(GenomicType type, GenomicRegion r, double value) {
+    super(type, r);
 
     setProperty("value", value);
   }
@@ -67,8 +68,10 @@ public class BedGraphElement extends GenomicElement {
    * @return the value
    */
   public double getValue() {
-    return getProperty("value").toDouble();
+    return getDouble("value");
   }
+
+  
 
   /*
    * (non-Javadoc)
@@ -89,12 +92,13 @@ public class BedGraphElement extends GenomicElement {
    * @param line the line
    * @return the bed graph region
    */
-  public static BedGraphElement parse(Genome genome, String line) {
+  public static BedGraphElement parse(GenomicType type,
+      Genome genome,
+      String line) {
     List<String> tokens = TextUtils.fastSplit(line, TextUtils.TAB_DELIMITER);
 
     // convert first part to chromosome (replacing x,y and m) {
-    Chromosome chr = GenomeService.getInstance().chr(genome,
-        tokens.get(0));
+    Chromosome chr = GenomeService.getInstance().chr(genome, tokens.get(0));
 
     // Per UCSC convention, coordinates are zero based in the file
     // but we shall convert them to one based for consistency
@@ -102,6 +106,6 @@ public class BedGraphElement extends GenomicElement {
     int end = Integer.parseInt(tokens.get(2));
     double value = Double.parseDouble(tokens.get(3));
 
-    return new BedGraphElement(new GenomicRegion(chr, start, end), value);
+    return new BedGraphElement(type, new GenomicRegion(chr, start, end), value);
   }
 }

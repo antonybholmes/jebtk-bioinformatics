@@ -1,7 +1,7 @@
 package org.jebtk.bioinformatics.genomic;
 
 public enum GenomicType {
-  GENE, TRANSCRIPT, EXON, UTR_5P, UTR_3P, UNDEFINED;
+  GENE, TRANSCRIPT, EXON, UTR_5P, UTR_3P, CYTOBAND, SUPER_ENHANCER, ENHANCER, PEAK, REGION;
 
   public static GenomicType parse(String s) {
     if (s.startsWith("gene")) {
@@ -14,8 +14,12 @@ public enum GenomicType {
       return UTR_5P;
     } else if (s.startsWith("3p_utr")) {
       return UTR_3P;
+    } else if (s.startsWith("super_enhancer")) {
+      return SUPER_ENHANCER;
+    } else if (s.startsWith("peak")) {
+      return PEAK;
     } else {
-      return UNDEFINED;
+      return REGION;
     }
   }
 

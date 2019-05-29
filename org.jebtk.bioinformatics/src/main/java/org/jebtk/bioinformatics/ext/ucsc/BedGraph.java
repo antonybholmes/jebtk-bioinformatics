@@ -37,6 +37,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.jebtk.bioinformatics.genomic.GenomeService;
+import org.jebtk.bioinformatics.genomic.GenomicType;
 import org.jebtk.core.io.FileUtils;
 import org.jebtk.core.io.Io;
 import org.jebtk.core.text.TextUtils;
@@ -179,8 +180,9 @@ public class BedGraph extends UCSCTrack {
 
           tracks.add(bed);
         } else {
-          BedGraphElement region = BedGraphElement
-              .parse(GenomeService.getInstance().guessGenome(file), line);
+          BedGraphElement region = BedGraphElement.parse(GenomicType.REGION,
+              GenomeService.getInstance().guessGenome(file),
+              line);
 
           bed.add(region);
         }

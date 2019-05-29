@@ -104,9 +104,9 @@ public class WebSequenceReader extends SequenceReader {
 
     try {
       UrlBuilder tmpUrl = mDnaUrl.param("g", region.getGenome().getAssembly())
-          .param("chr", region.getChr().toString()).param("s", region.getStart())
-          .param("e", region.getEnd()).param("strand", "s")
-          .param("lc", displayUpper ? "0" : "1");
+          .param("chr", region.getChr().toString())
+          .param("s", region.getStart()).param("e", region.getEnd())
+          .param("strand", "s").param("lc", displayUpper ? "0" : "1");
 
       switch (repeatMaskType) {
       case UPPERCASE:
@@ -158,7 +158,8 @@ public class WebSequenceReader extends SequenceReader {
       Json json = mParser.parse(url);
 
       for (int i = 0; i < json.size(); ++i) {
-        ret.add(GenomeService.getInstance().guessGenome(json.get(i).getString()));
+        ret.add(
+            GenomeService.getInstance().guessGenome(json.get(i).getString()));
       }
     } catch (MalformedURLException e) {
       e.printStackTrace();

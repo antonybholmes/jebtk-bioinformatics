@@ -151,8 +151,7 @@ public class GctMatrix extends DataFrame {
         writer.write(matrix.getIndex().getText(names.get(0), i));
         writer.write(TextUtils.TAB_DELIMITER);
 
-        writer
-            .write(matrix.getIndex().getText(names.get(names.size() - 1), i));
+        writer.write(matrix.getIndex().getText(names.get(names.size() - 1), i));
 
         for (int j = 0; j < matrix.getCols(); ++j) {
           writer.write(TextUtils.TAB_DELIMITER);

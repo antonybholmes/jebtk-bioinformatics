@@ -17,8 +17,8 @@ public class MouseChrParser extends ChrParser {
       return Integer.parseInt(matcher.group(1));
     } else {
       char c = name.charAt(0);
-      
-      switch(c) {
+
+      switch (c) {
       case 'X':
         return 20;
       case 'Y':

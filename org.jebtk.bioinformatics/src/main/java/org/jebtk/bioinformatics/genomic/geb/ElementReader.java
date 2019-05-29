@@ -10,17 +10,21 @@ import org.jebtk.bioinformatics.genomic.Chromosome;
 import org.jebtk.bioinformatics.genomic.Genome;
 import org.jebtk.bioinformatics.genomic.GenomicElement;
 import org.jebtk.bioinformatics.genomic.GenomicRegion;
+import org.jebtk.bioinformatics.genomic.GenomicType;
 import org.jebtk.bioinformatics.genomic.TagType;
 import org.jebtk.bioinformatics.genomic.Strand;
 
 public class ElementReader extends BinaryReader {
-  public static final int N_BYTES_OFFSET = GEBReader.WINDOW_BYTE_OFFSET + GEBReader.INT_BYTES;
+  public static final int N_BYTES_OFFSET = GEBReader.WINDOW_BYTE_OFFSET
+      + GEBReader.INT_BYTES;
 
-  public static final int HEADER_BYTES_OFFSET = N_BYTES_OFFSET + GEBReader.INT_BYTES;
+  public static final int HEADER_BYTES_OFFSET = N_BYTES_OFFSET
+      + GEBReader.INT_BYTES;
 
   private DataReader mDataReader;
 
-  public ElementReader(DataReader dataReader, Path dir, String prefix, Genome genome, int window) throws IOException {
+  public ElementReader(DataReader dataReader, Path dir, String prefix,
+      Genome genome, int window) throws IOException {
     super(dir, prefix, genome, window);
 
     mDataReader = dataReader;
@@ -30,7 +34,7 @@ public class ElementReader extends BinaryReader {
    * Return the total number of primary elements (not including children).
    * 
    * @return
-   * @throws IOException 
+   * @throws IOException
    */
   private int getN() throws IOException {
     getReader().seek(N_BYTES_OFFSET);
@@ -47,7 +51,7 @@ public class ElementReader extends BinaryReader {
    * @return
    * @throws IOException
    */
-  public List<GenomicElement> readAll(String type) throws IOException {
+  public List<GenomicElement> readAll(GenomicType type) throws IOException {
     int n = getN();
 
     List<GenomicElement> ret = new ArrayList<GenomicElement>(n);
@@ -61,12 +65,12 @@ public class ElementReader extends BinaryReader {
   }
 
   public List<GenomicElement> readElements(Collection<Integer> addresses,
-      String type) throws IOException {
-    List<GenomicElement> ret = new ArrayList<GenomicElement>(
-        addresses.size());
+      GenomicType type) throws IOException {
+    List<GenomicElement> ret = new ArrayList<GenomicElement>(addresses.size());
 
     for (int address : addresses) {
-      //System.err.println("seeking " + address + " in " + getFileName((Chromosome)null));
+      // System.err.println("seeking " + address + " in " +
+      // getFileName((Chromosome)null));
       seek(address);
       readElement(type, ret);
     }
@@ -74,13 +78,12 @@ public class ElementReader extends BinaryReader {
     return ret;
   }
 
-  private void readElement(String type,
-      List<GenomicElement> ret)
-          throws IOException {
+  private void readElement(GenomicType type, List<GenomicElement> ret)
+      throws IOException {
     readElement(type, null, 0, ret);
   }
 
-  private void readElement(String type,
+  private void readElement(GenomicType type,
       GenomicElement parent,
       int depth,
       List<GenomicElement> ret) throws IOException {
@@ -97,10 +100,7 @@ public class ElementReader extends BinaryReader {
     for (int i = 0; i < n; ++i) {
       // If type requested is not a gene, pass null to indicate that the
       // transcripts should not add themselves to the gene
-      readElement(type,
-          correctType ? element : null,
-              depth + 1, 
-              ret);
+      readElement(type, correctType ? element : null, depth + 1, ret);
     }
 
     if (parent != null) {
@@ -122,21 +122,19 @@ public class ElementReader extends BinaryReader {
   private GenomicElement readElement() throws IOException {
 
     // Skip id (int)
-    //readInt();
+    // readInt();
 
     // read block
-    //read();
+    // read();
 
     int address = readInt();
 
-    String t = mDataReader.readVarchar(address);
-    
-    
+    GenomicType t = GenomicType.parse(mDataReader.readVarchar(address));
 
     GenomicRegion l = readLocation();
 
-    //System.err.println("type " + t + " " + l);
-    
+    // System.err.println("type " + t + " " + l);
+
     Strand strand = readStrand();
 
     GenomicElement gene = new GenomicElement(t, l, strand);
@@ -248,4 +246,3 @@ public class ElementReader extends BinaryReader {
     return GEBReader.getFileName("elements", prefix);
   }
 }
-

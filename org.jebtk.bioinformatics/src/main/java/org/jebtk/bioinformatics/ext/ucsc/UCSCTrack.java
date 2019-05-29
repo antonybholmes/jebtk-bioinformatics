@@ -90,7 +90,6 @@ public class UCSCTrack extends ChangeListeners implements NameProperty {
    */
   protected static final String TRACK_PREFIX = "track";
 
-
   /**
    * The member name.
    */
@@ -116,7 +115,6 @@ public class UCSCTrack extends ChangeListeners implements NameProperty {
    */
   protected GenomicElementsMap mRegions = new GenomicElementsMap();
 
-  
   /**
    * The constant DEFAULT_HEIGHT.
    */
@@ -233,10 +231,10 @@ public class UCSCTrack extends ChangeListeners implements NameProperty {
 
   public UCSCTrack add(GenomicElement e) {
     getElements().add(e);
-    
+
     return this;
   }
-  
+
   /**
    * Return the regions associated with this track.
    *
@@ -499,7 +497,8 @@ public class UCSCTrack extends ChangeListeners implements NameProperty {
         writer.write(track.getHeader(priority));
         writer.newLine();
 
-        for (Entry<Chromosome, Set<GenomicElement>> item : track.getElements()) {
+        for (Entry<Chromosome, Set<GenomicElement>> item : track
+            .getElements()) {
           for (GenomicElement e : item.getValue()) {
             writer.write(e.toString());
             writer.newLine();

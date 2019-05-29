@@ -17,8 +17,8 @@ public class HumanChrParser extends ChrParser {
       return Integer.parseInt(matcher.group(1));
     } else {
       char c = name.charAt(0);
-      
-      switch(c) {
+
+      switch (c) {
       case 'X':
         return 23;
       case 'Y':

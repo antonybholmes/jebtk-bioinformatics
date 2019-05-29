@@ -10,11 +10,13 @@ import java.util.Deque;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 import java.util.Set;
 
 import org.jebtk.bioinformatics.genomic.Chromosome;
 import org.jebtk.bioinformatics.genomic.Genome;
 import org.jebtk.bioinformatics.genomic.GenomicElement;
+import org.jebtk.bioinformatics.genomic.GenomicType;
 import org.jebtk.bioinformatics.genomic.Tag;
 import org.jebtk.bioinformatics.genomic.TagType;
 import org.jebtk.core.collections.CollectionUtils;
@@ -192,7 +194,7 @@ public class GEBWriter {
     if (mRadixMode) {
       writeRadix(elements, elementOffsetBytes);
     }
-    
+
     // Finally write the index file
     writeIndex();
   }
@@ -286,7 +288,7 @@ public class GEBWriter {
     // Set all bits to 1
     // writer.write(GEBReader.BLOCK_SEPARATOR);
 
-    writer.writeInt(tagsStartBytes + tagOffsetBytes.get(e.getType()));
+    writer.writeInt(tagsStartBytes + tagOffsetBytes.get(e.getType().toString()));
 
     writer.writeInt(tagsStartBytes + tagOffsetBytes.get(e.getChr().toString()));
     // writer.write(GEBReader.getChr(e.mChr));
@@ -301,10 +303,12 @@ public class GEBWriter {
 
     int size = 0;
 
-    for (Entry<String, Tag> item : e.getProperties()) {
+    for (String name : e.getPropertyNames()) {
+      String value = e.getProperty(name);
+      
       writeProperty(writer,
-          item.getKey(),
-          item.getValue(),
+          name,
+          value,
           tagsStartBytes,
           tagOffsetBytes,
           intTagsStartBytes,
@@ -321,7 +325,7 @@ public class GEBWriter {
 
     size = 0;
 
-    for (Tag tag : e.getTags()) {
+    for (String tag : e.getTags()) {
       writeTag(writer,
           tag,
           tagsStartBytes,
@@ -339,7 +343,7 @@ public class GEBWriter {
     // Count children
     size = 0;
 
-    for (Entry<String, List<GenomicElement>> item : e.getChildren()) {
+    for (Entry<GenomicType, List<GenomicElement>> item : e.getChildren()) {
       size += item.getValue().size();
     }
 
@@ -347,7 +351,7 @@ public class GEBWriter {
 
     size = 0;
 
-    for (String type : e.getChildTypes()) {
+    for (GenomicType type : e.getChildTypes()) {
       for (GenomicElement child : e.getChildren(type)) {
         writeElement(writer,
             child,
@@ -367,7 +371,7 @@ public class GEBWriter {
 
   private static void writeProperty(DataOutputStream writer,
       String name,
-      Tag tag,
+      Object tag,
       int tagsStartBytes,
       Map<String, Integer> tagOffsetBytes,
       int intTagsStartBytes,
@@ -387,17 +391,16 @@ public class GEBWriter {
         doubleTagOffsetBytes);
   }
 
-  private static void writeTag(DataOutputStream writer,
-      Tag tag,
-      int tagsStartBytes,
-      Map<String, Integer> tagOffsetBytes,
-      int intTagsStartBytes,
-      Map<Integer, Integer> intTagOffsetBytes,
-      int doubleTagsStartBytes,
-      Map<Double, Integer> doubleTagOffsetBytes) throws IOException {
-    TagType t = tag.getType();
+  private static TagType getTagType(Object tag) {
+    TagType t = TagType.TEXT;
 
-    if (t == TagType.TEXT) {
+    if (tag instanceof Integer) {
+      t = TagType.INT;
+    } else if (tag instanceof Number) {
+      t = TagType.DOUBLE;
+    } else {
+      t = TagType.TEXT;
+
       String s = tag.toString();
 
       if (TextUtils.isInt(s)) {
@@ -409,15 +412,36 @@ public class GEBWriter {
       }
     }
 
+    return t;
+  }
+
+  private static void writeTag(DataOutputStream writer,
+      Object tag,
+      int tagsStartBytes,
+      Map<String, Integer> tagOffsetBytes,
+      int intTagsStartBytes,
+      Map<Integer, Integer> intTagOffsetBytes,
+      int doubleTagsStartBytes,
+      Map<Double, Integer> doubleTagOffsetBytes) throws IOException {
+    TagType t = getTagType(tag);
+
     writer.write(TagType.byteRep(t));
 
     switch (t) {
     case INT:
-      writer.writeInt(intTagsStartBytes + intTagOffsetBytes.get(tag.toInt()));
+      if (tag instanceof Integer) {
+        writer.writeInt(intTagsStartBytes + intTagOffsetBytes.get((int)tag));
+      } else {
+        writer.writeInt(intTagsStartBytes + intTagOffsetBytes.get(Integer.parseInt(tag.toString())));
+      }
       break;
     case DOUBLE:
-      writer.writeInt(
-          doubleTagsStartBytes + doubleTagOffsetBytes.get(tag.toDouble()));
+      if (tag instanceof Double) {
+        writer.writeInt(intTagsStartBytes + doubleTagOffsetBytes.get((double)tag));
+      } else {
+        writer.writeInt(
+            doubleTagsStartBytes + doubleTagOffsetBytes.get(Double.parseDouble(tag.toString())));
+      }
       break;
     default:
       writer.writeInt(tagsStartBytes + tagOffsetBytes.get(tag.toString()));
@@ -448,7 +472,7 @@ public class GEBWriter {
     // 1 byte for number of ids and each id needs 1 byte for type and 2 ints
     // (key, value) location
     s += 1 + Math.min(g.getPropertyCount(), GEBReader.MAX_TAGS)
-        * (1 + 2 * GEBReader.INT_BYTES);
+    * (1 + 2 * GEBReader.INT_BYTES);
 
     /*
      * for (Entry<String, String> id : g.getIds()) { // 1 byte for length of
@@ -461,7 +485,7 @@ public class GEBWriter {
 
     // number of tags (must be fewer than 256)
     s += 1 + Math.min(g.getTagCount(), GEBReader.MAX_TAGS)
-        * (1 + GEBReader.INT_BYTES);
+    * (1 + GEBReader.INT_BYTES);
 
     /*
      * for (String tag : g.getTags()) { // 1 byte for length of tag plus that
@@ -475,7 +499,7 @@ public class GEBWriter {
 
     int size = 0;
 
-    for (String childType : g.getChildTypes()) {
+    for (GenomicType childType : g.getChildTypes()) {
       for (GenomicElement child : g.getChildren(childType)) {
         s += elementSizeBytes(child);
 
@@ -539,25 +563,23 @@ public class GEBWriter {
     while (!stack.isEmpty()) {
       GenomicElement f = stack.pop();
 
-      String v = f.getType();
+      String v = f.getType().toString();
       sizeMap.put(v, varcharSize(v));
 
       v = f.getChr().toString();
       sizeMap.put(v, varcharSize(v));
 
-      for (Entry<String, Tag> item : f.getProperties()) {
-        String k = item.getKey();
-
+      for (String k : f.getPropertyNames()) {
         sizeMap.put(k, varcharSize(k));
 
-        tagSizeBytes(item.getValue(), sizeMap, intSizeMap, doubleSizeMap);
+        tagSizeBytes(f.getProperty(k), sizeMap, intSizeMap, doubleSizeMap);
       }
 
-      for (Tag t : f.getTags()) {
+      for (String t : f.getTags()) {
         tagSizeBytes(t, sizeMap, intSizeMap, doubleSizeMap);
       }
 
-      for (String t : f.getChildTypes()) {
+      for (GenomicType t : f.getChildTypes()) {
         for (GenomicElement c : f.getChildren(t)) {
           // tagSizesBytes(c, sizeMap, intSizeMap, doubleSizeMap);
           stack.push(c);
@@ -566,21 +588,17 @@ public class GEBWriter {
     }
   }
 
-  private static void tagSizeBytes(Tag tag,
+  private static void tagSizeBytes(Object tag,
       Map<String, Integer> sizeMap,
       Map<Integer, Integer> intSizeMap,
       Map<Double, Integer> doubleSizeMap) {
 
-    String v;
-    switch (tag.getType()) {
-    case INT:
-      intSizeMap.put(tag.toInt(), GEBReader.INT_BYTES);
-      break;
-    case DOUBLE:
-      doubleSizeMap.put(tag.toDouble(), GEBReader.DOUBLE_BYTES);
-      break;
-    default:
-      v = tag.toString();
+    if (tag instanceof Integer) {
+      intSizeMap.put((int)tag, GEBReader.INT_BYTES);
+    } else if (tag instanceof Double) {
+      doubleSizeMap.put((double)tag, GEBReader.DOUBLE_BYTES);
+    } else {
+      String v = tag.toString();
 
       if (TextUtils.isInt(v)) {
         intSizeMap.put(Integer.parseInt(v), GEBReader.INT_BYTES);
@@ -589,8 +607,6 @@ public class GEBWriter {
       } else {
         sizeMap.put(v, varcharSize(v));
       }
-
-      break;
     }
   }
 
@@ -637,36 +653,29 @@ public class GEBWriter {
 
     writer.close();
   }
-  
-  
+
   private void writeIndex() throws IOException {
     Path file = mDir.resolve(GEBReader.getIndexFileName(mPrefix)); // PathUtils.getPath(mGenome
-    
+
     JsonObject root = new JsonObject();
-    
+
     root.add("name", mPrefix);
     root.add("window", mWindow);
-    
+
     JsonObject go = new JsonObject();
     go.add("name", "Human");
     go.add("build", "hg19");
     root.add("genome", go);
-    
-    Json.prettyWrite(root, file);
-    
-    
 
-    
-    
-    
-    //BufferedWriter writer = FileUtils.newBufferedWriter(file);
-    
-    //writer.write(mPrefix);
-    //writer.newLine();
-    
-    //writer.close();
+    Json.prettyWrite(root, file);
+
+    // BufferedWriter writer = FileUtils.newBufferedWriter(file);
+
+    // writer.write(mPrefix);
+    // writer.newLine();
+
+    // writer.close();
   }
-    
 
   private void writeBins(Chromosome chr,
       IterMap<Integer, List<GenomicElement>> binsMap,
@@ -738,7 +747,7 @@ public class GEBWriter {
     for (Entry<Integer, List<GenomicElement>> item : binsMap) {
       binOffsetBytes.put(item.getKey(), offset);
 
-      offset += GEBReader.INT_BYTES; //binSizeBytes.get(item.getKey());
+      offset += GEBReader.INT_BYTES; // binSizeBytes.get(item.getKey());
     }
 
     Deque<BTreeNode<GenomicElement>> q = new ArrayDeque<BTreeNode<GenomicElement>>();
@@ -768,8 +777,8 @@ public class GEBWriter {
       for (GenomicElement be : binsMap.get(bins.get(node.getIndex()))) {
         node.add(be);
       }
-      
-      //System.err.println("node " + node.getIndex());
+
+      // System.err.println("node " + node.getIndex());
 
       if (node.getIndex() < e) {
         int ni = node.getIndex() + 1;
@@ -782,8 +791,9 @@ public class GEBWriter {
         indexStack.push(e);
         indexStack.push(ni);
 
-        //System.err.println("> " + node.getIndex() + " " + child.getIndex() + " "
-        //    + ni + " " + e);
+        // System.err.println("> " + node.getIndex() + " " + child.getIndex() +
+        // " "
+        // + ni + " " + e);
       }
 
       // if we the same as s, then there is nothing to be done
@@ -799,8 +809,9 @@ public class GEBWriter {
         indexStack.push(ni);
         indexStack.push(s);
 
-        //System.err.println("< " + node.getIndex() + " " + child.getIndex() + " "
-        //    + s + " " + ni);
+        // System.err.println("< " + node.getIndex() + " " + child.getIndex() +
+        // " "
+        // + s + " " + ni);
       }
     }
 
@@ -827,7 +838,7 @@ public class GEBWriter {
       BTreeNode<GenomicElement> node = q.pop();
 
       int bin = bins.get(node.getIndex());
-      
+
       writer.writeInt(bin);
 
       // Write address to bin
@@ -892,7 +903,7 @@ public class GEBWriter {
 
     // Addresses of two children
     s += BTreeReader.BTREE_CHILD_ADDRESSES_BYTES; // node.getChildCount() *
-                                                  // BTreeReader.BTREE_TREE_PREFIX_BYTES;
+    // BTreeReader.BTREE_TREE_PREFIX_BYTES;
 
     // address of bin
     // s += GEBReader.INT_BYTES * (1 + node.getObjectCount());
@@ -923,14 +934,14 @@ public class GEBWriter {
         // root.add(Integer.toString(e.getEnd()), e);
 
         // Index properties
-        for (Entry<String, Tag> item : e.getProperties()) {
-          String v = item.getValue().toString();
+        for (String item : e.getPropertyNames()) {
+          String v = e.getProperty(item);
 
           root.add(v, e);
         }
 
         // Tags
-        for (Tag tag : e.getTags()) {
+        for (String tag : e.getTags()) {
           root.add(tag.toString(), e);
         }
       }

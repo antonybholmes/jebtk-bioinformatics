@@ -1,12 +1,10 @@
 package org.jebtk.bioinformatics.genomic;
 
 public enum TagType {
-  TEXT, 
-  INT, 
-  DOUBLE;
+  TEXT, INT, DOUBLE;
 
   public static byte byteRep(TagType type) {
-    switch(type) {
+    switch (type) {
     case INT:
       return 1;
     case DOUBLE:
@@ -18,7 +16,7 @@ public enum TagType {
   }
 
   public static TagType parse(int b) {
-    switch(b) {
+    switch (b) {
     case 2:
       return DOUBLE;
     case 1:

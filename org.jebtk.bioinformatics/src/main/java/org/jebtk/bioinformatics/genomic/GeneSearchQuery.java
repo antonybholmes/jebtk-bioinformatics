@@ -11,13 +11,13 @@ import org.jebtk.core.search.SearchQuery;
 public class GeneSearchQuery extends SearchQuery<GenomicElement> {
 
   private GFBGenes mGenes;
-  private String mType;
+  private GenomicType mType;
 
   public GeneSearchQuery(GFBGenes genes) {
-    this(genes, GenomicEntity.GENE);
+    this(genes, GenomicType.GENE);
   }
 
-  public GeneSearchQuery(GFBGenes genes, String type) {
+  public GeneSearchQuery(GFBGenes genes, GenomicType type) {
     mGenes = genes;
     mType = type;
   }
@@ -67,7 +67,7 @@ public class GeneSearchQuery extends SearchQuery<GenomicElement> {
     for (GenomicElement gene : genes) {
       boolean found = false;
 
-      for (Entry<String, Tag> e : gene.getProperties()) {
+      for (Entry<String, Object> e : gene.getProperties()) {
         if (e.getValue().toString().toLowerCase().equals(s)) {
           found = true;
           break;

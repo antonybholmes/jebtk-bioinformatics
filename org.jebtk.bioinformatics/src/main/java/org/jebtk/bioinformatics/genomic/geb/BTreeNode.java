@@ -38,8 +38,8 @@ public class BTreeNode<T>
   /**
    * The member objects.
    */
-  //private List<T> mObjects = new UniqueArrayList<T>();
-  
+  // private List<T> mObjects = new UniqueArrayList<T>();
+
   private Set<T> mObjects = new TreeSet<T>();
 
   /**
@@ -52,7 +52,6 @@ public class BTreeNode<T>
    * The member c.
    */
   private int mBin;
-  
 
   /**
    * Instantiates a new radix object node.
@@ -76,15 +75,15 @@ public class BTreeNode<T>
   public void setC1(BTreeNode<T> c) {
     mC1 = c;
   }
-  
+
   public void setC2(BTreeNode<T> c) {
     mC2 = c;
   }
-  
+
   public BTreeNode<T> getC1() {
     return mC1;
   }
-  
+
   public BTreeNode<T> getC2() {
     return mC2;
   }
@@ -108,11 +107,10 @@ public class BTreeNode<T>
     return getChild(this, bin);
   }
 
-  private static <TT> BTreeNode<TT> getChild(BTreeNode<TT> root,
-      int bin) {
-    while(root != null) {
+  private static <TT> BTreeNode<TT> getChild(BTreeNode<TT> root, int bin) {
+    while (root != null) {
       int b = root.getIndex();
-      
+
       if (b == bin) {
         return root;
       } else if (bin < b) {
@@ -124,7 +122,7 @@ public class BTreeNode<T>
 
     return null;
   }
-  
+
   public void add(T v) {
     add(mBin, v);
   }
@@ -141,7 +139,7 @@ public class BTreeNode<T>
       mObjects.add(v);
     } else {
       BTreeNode<T> ret = new BTreeNode<T>(bin);
-      
+
       if (bin < mBin) {
         setC1(ret);
       } else {

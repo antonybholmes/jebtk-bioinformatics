@@ -26,6 +26,7 @@ import org.jebtk.bioinformatics.genomic.Genome;
 import org.jebtk.bioinformatics.genomic.GenomicElement;
 import org.jebtk.bioinformatics.genomic.GenomicElementsDB;
 import org.jebtk.bioinformatics.genomic.GenomicRegion;
+import org.jebtk.bioinformatics.genomic.GenomicType;
 import org.jebtk.bioinformatics.genomic.Strand;
 import org.jebtk.core.NameProperty;
 import org.jebtk.core.collections.CollectionUtils;
@@ -50,26 +51,24 @@ public class GEBReader extends GenomicElementsDB implements NameProperty {
 
   /** The Constant VERSION_OFFSET. */
   public static final int VERSION_BYTE_OFFSET = INT_BYTES;
-  
+
   public static final int WINDOW_BYTE_OFFSET = VERSION_BYTE_OFFSET + 1;
 
   /** The Constant WINDOW_BYTE_OFFSET. */
   public static final int GENES_BYTES_OFFSET = VERSION_BYTE_OFFSET + 1;
-
 
   public static final int GENOMIC_TYPE_GENE = 1;
   public static final int GENOMIC_TYPE_TRANSCRIPT = 2;
   public static final int GENOMIC_TYPE_EXON = 4;
 
   public static final int DOUBLE_BYTES = 8;
-  
+
   public static final int BLOCK_SEPARATOR = 255;
-  
+
   // 2^16 - 1
   public static final int MAX_CHILDREN = 65535;
   public static final int MAX_TAGS = 255;
   public static final int MAX_VARCHAR_LENGTH = 255;
-
 
   private Genome mGenome;
 
@@ -77,9 +76,9 @@ public class GEBReader extends GenomicElementsDB implements NameProperty {
 
   private ElementReader mElementReader;
 
-  //private BinReader mBinReader = null;
+  // private BinReader mBinReader = null;
   private BTreeReader mBTreeReader = null;
-  
+
   private RadixReader mRadixReader;
   private Path mDir;
   private int mWindow;
@@ -92,30 +91,32 @@ public class GEBReader extends GenomicElementsDB implements NameProperty {
    * @param genome the genome
    * @param window the window
    * @param dir the dir
-   * @throws IOException 
+   * @throws IOException
    */
-  public GEBReader(Path dir, String prefix, Genome genome, int window) throws IOException {
-    
-    //mBinReader = new BinReader(dir, genome, window);
+  public GEBReader(Path dir, String prefix, Genome genome, int window)
+      throws IOException {
+
+    // mBinReader = new BinReader(dir, genome, window);
     mRadixReader = new RadixReader(dir, prefix, genome, window);
     mDataReader = new DataReader(dir, prefix, genome, window);
-    mElementReader = new ElementReader(mDataReader, dir, prefix, genome, window);
-    
+    mElementReader = new ElementReader(mDataReader, dir, prefix, genome,
+        window);
+
     mDir = dir;
     mPrefix = prefix;
     mGenome = genome;
     mWindow = window;
   }
-  
+
   @Override
   public String getName() {
     return mPrefix;
   }
-  
+
   public Path getDir() {
     return mDir;
   }
-  
+
   @Override
   public Iterable<Genome> getGenomes() {
     return CollectionUtils.asList(mGenome);
@@ -123,9 +124,8 @@ public class GEBReader extends GenomicElementsDB implements NameProperty {
 
   @Override
   public List<GenomicElement> find(Genome genome,
-      GenomicRegion region, 
-      String type)
-      throws IOException {
+      GenomicRegion region,
+      GenomicType type) throws IOException {
     List<GenomicElement> elements = _find(region, type);
 
     return overlapping(region, elements);
@@ -144,54 +144,53 @@ public class GEBReader extends GenomicElementsDB implements NameProperty {
    * @return
    * @throws IOException
    */
-  private List<GenomicElement> _find(GenomicRegion region,
-      String type) throws IOException {
-    
+  private List<GenomicElement> _find(GenomicRegion region, GenomicType type)
+      throws IOException {
+
     if (mChr == null || !region.mChr.equals(mChr)) {
-      //if (mBinReader != null) {
-      //  mBinReader.close();
-      //}
-      
+      // if (mBinReader != null) {
+      // mBinReader.close();
+      // }
+
       if (mBTreeReader != null) {
         mBTreeReader.close();
       }
-      
-      //mBinReader = new BinReader(mDir, mPrefix, mGenome, chr, mWindow);
-      mBTreeReader = new BTreeReader(mDir, mPrefix, mGenome, region.mChr, mWindow);
+
+      // mBinReader = new BinReader(mDir, mPrefix, mGenome, chr, mWindow);
+      mBTreeReader = new BTreeReader(mDir, mPrefix, mGenome, region.mChr,
+          mWindow);
       mChr = region.mChr;
     }
-    
-    //List<Integer> elementAddresses = mBinReader
-    //    .elementAddresses(chr, start, end);
-    
+
+    // List<Integer> elementAddresses = mBinReader
+    // .elementAddresses(chr, start, end);
+
     List<Integer> elementAddresses = mBTreeReader
         .elementAddresses(region.mChr, region.mStart, region.mEnd);
-    
-    List<GenomicElement> elements = mElementReader.readElements(elementAddresses,
-        type);
+
+    List<GenomicElement> elements = mElementReader
+        .readElements(elementAddresses, type);
 
     return elements;
   }
-  
+
   @Override
-  public List<GenomicElement> getElements(Genome genome, String search, String type)
-      throws IOException {
+  public List<GenomicElement> getElements(Genome genome,
+      String search,
+      GenomicType type) throws IOException {
     return getElements(search, type, false);
   }
-  
-  public List<GenomicElement> getElements(String id, String type, boolean exact)
-      throws IOException {
+
+  public List<GenomicElement> getElements(String id,
+      GenomicType type,
+      boolean exact) throws IOException {
     List<Integer> elementAddresses = mRadixReader.elementAddresses(id, exact);
 
-    List<GenomicElement> elements = mElementReader.readElements(elementAddresses,
-        type);
+    List<GenomicElement> elements = mElementReader
+        .readElements(elementAddresses, type);
 
     return elements;
   }
-
-
-
-
 
   /**
    * Gets the overlapping genes.
@@ -232,31 +231,26 @@ public class GEBReader extends GenomicElementsDB implements NameProperty {
 
     return ret;
   }
-  
+
   @Override
   public void add(GenomicElement element) {
     // Do nothing
   }
 
-
   public static final Path getFileName(String type, String prefix) {
-    return PathUtils.getPath(Join.on('.')
-        .values(prefix, type, "geb")
-        .toString());
+    return PathUtils
+        .getPath(Join.on('.').values(prefix, type, "geb").toString());
   }
-  
+
   public static final Path getFileName(String type,
       String prefix,
       Chromosome chr) {
-    return PathUtils.getPath(Join.on('.')
-        .values(prefix, type, chr, "geb")
-        .toString());
+    return PathUtils
+        .getPath(Join.on('.').values(prefix, type, chr, "geb").toString());
   }
-  
+
   public static final Path getIndexFileName(String prefix) {
-    return PathUtils.getPath(Join.on('.')
-        .values(prefix, "gei")
-        .toString());
+    return PathUtils.getPath(Join.on('.').values(prefix, "gei").toString());
   }
 
   public static byte getStrand(Strand strand) {
@@ -276,17 +270,15 @@ public class GEBReader extends GenomicElementsDB implements NameProperty {
    */
   public static GEBReader loadGEI(Path file) throws IOException {
     Path dir = PathUtils.getDir(file);
-    
+
     Json json = new JsonParser().parse(file);
-    
-    //Settings settings = new Settings().loadIniSettings(file);
-    
-    Genome genome = new Genome(json.get("genome").getString("name"), 
+
+    // Settings settings = new Settings().loadIniSettings(file);
+
+    Genome genome = new Genome(json.get("genome").getString("name"),
         json.get("genome").getString("build"));
-    
-    return new GEBReader(dir, 
-        json.getString("name"), 
-        genome, 
+
+    return new GEBReader(dir, json.getString("name"), genome,
         json.getInt("window"));
   }
 }

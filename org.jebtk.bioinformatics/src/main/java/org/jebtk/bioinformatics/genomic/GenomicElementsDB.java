@@ -49,15 +49,16 @@ public abstract class GenomicElementsDB {
     }
 
     @Override
-    public List<GenomicElement> getElements(Genome g, String search, String type)
-        throws IOException {
+    public List<GenomicElement> getElements(Genome g,
+        String search,
+        GenomicType type) throws IOException {
       return Collections.emptyList();
     }
 
     @Override
     public List<GenomicElement> find(Genome genome,
         GenomicRegion region,
-        String type) throws IOException {
+        GenomicType type) throws IOException {
       return Collections.emptyList();
     }
 
@@ -68,7 +69,7 @@ public abstract class GenomicElementsDB {
   };
 
   public abstract void add(GenomicElement element);
-  
+
   /**
    * Lookup a gene by either symbol or refseq.
    *
@@ -79,9 +80,12 @@ public abstract class GenomicElementsDB {
   // public abstract GenomicElement lookup(String genome, String id) throws
   // IOException;
 
-  public GenomicElement getElement(Genome genome, String search, String type) throws IOException {
-    System.err.println("Searching for genes in " + genome + " " + this.getClass());
-    
+  public GenomicElement getElement(Genome genome,
+      String search,
+      GenomicType type) throws IOException {
+    System.err
+    .println("Searching for genes in " + genome + " " + this.getClass());
+
     List<GenomicElement> genes = getElements(genome, search, type);
 
     if (genes.size() > 0) {
@@ -91,22 +95,27 @@ public abstract class GenomicElementsDB {
     }
   }
 
-  public abstract List<GenomicElement> getElements(Genome g, String search, String type) throws IOException;
+  public List<GenomicElement> getElements(Genome g,
+      String search,
+      GenomicType type) throws IOException {
+    return Collections.emptyList();
+  }
 
   public List<GenomicElement> getElements() throws IOException {
     return Collections.emptyList();
   }
 
-  public List<GenomicElement> find(Genome genome, String region, String type)
-      throws IOException {
+  public List<GenomicElement> find(Genome genome,
+      String region,
+      GenomicType type) throws IOException {
     return find(genome, GenomicRegion.parse(genome, region), type);
   }
 
-  public List<GenomicElement> find(GenomicRegion region,
-      String type) throws IOException {
+  public List<GenomicElement> find(GenomicRegion region, GenomicType type)
+      throws IOException {
     return find(null, region, type);
   }
-  
+
   /**
    * Find genes.
    *
@@ -114,9 +123,9 @@ public abstract class GenomicElementsDB {
    * @return the list
    * @throws IOException
    */
-  public abstract List<GenomicElement> find(Genome genome, 
+  public abstract List<GenomicElement> find(Genome genome,
       GenomicRegion region,
-      String type) throws IOException;
+      GenomicType type) throws IOException;
 
   /**
    * Find closest genes.
@@ -125,24 +134,22 @@ public abstract class GenomicElementsDB {
    * @return the list
    * @throws IOException
    */
-  public List<GenomicElement> closest(Genome genome, 
-      GenomicRegion region, 
-      String type) throws IOException {
+  public List<GenomicElement> closest(Genome genome,
+      GenomicRegion region,
+      GenomicType type) throws IOException {
 
     List<GenomicElement> elements = find(genome, region, type);
 
     return closest(region, elements);
   }
-  
-  public List<List<GenomicElement>> getClosestFeatures(Genome genome,
+
+  public List<List<GenomicElement>> nthClosest(Genome genome,
       GenomicRegion region,
       int n,
-      String type) {
+      GenomicType type) {
     return Collections.emptyList();
   }
-  
 
-  
   /**
    * Find closest genes by tss.
    *
@@ -152,7 +159,7 @@ public abstract class GenomicElementsDB {
    */
   public List<GenomicElement> closestByTss(Genome genome,
       GenomicRegion region,
-      String type) throws IOException {
+      GenomicType type) throws IOException {
     Collection<GenomicElement> genes = closest(genome, region, type); // findGenes(region);
 
     List<GenomicElement> ret = new ArrayList<GenomicElement>();
@@ -220,16 +227,16 @@ public abstract class GenomicElementsDB {
   public static GTB2Parser gtb2Parser() {
     return new GTB2Parser();
   }
-  
+
   public List<GenomicElement> overlapping(Genome genome,
       GenomicRegion region,
-      String type) throws IOException {
+      GenomicType type) throws IOException {
     return overlapping(genome, region, type, 1);
   }
 
   public List<GenomicElement> overlapping(Genome genome,
       GenomicRegion region,
-      String type,
+      GenomicType type,
       int minBp) throws IOException {
     List<GenomicElement> ret = new ArrayList<GenomicElement>();
 
@@ -240,7 +247,7 @@ public abstract class GenomicElementsDB {
 
   public void overlapping(Genome genome,
       GenomicRegion region,
-      String type,
+      GenomicType type,
       int minBp,
       List<GenomicElement> ret) throws IOException {
     List<GenomicElement> elements = find(genome, region, type);
@@ -257,8 +264,8 @@ public abstract class GenomicElementsDB {
       }
     }
   }
-  
-  private static List<GenomicElement> closest(GenomicRegion region, 
+
+  private static List<GenomicElement> closest(GenomicRegion region,
       List<GenomicElement> elements) {
 
     List<GenomicElement> ret = new ArrayList<GenomicElement>(elements.size());

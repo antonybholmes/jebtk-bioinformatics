@@ -40,7 +40,7 @@ import org.jebtk.core.text.TextUtils;
  * @author Antony Holmes
  */
 public class Chromosome
-implements Comparable<Chromosome>, IdProperty, NameProperty {
+    implements Comparable<Chromosome>, IdProperty, NameProperty {
 
   public static final Pattern CHR_REGEX = Pattern
       .compile("chr(?:[1-9][0-9]?|[XYM])");
@@ -59,7 +59,8 @@ implements Comparable<Chromosome>, IdProperty, NameProperty {
   /**
    * Represents an invalid chromosome.
    */
-  public static final Chromosome NO_CHR = new Chromosome(-1, "chrU", "U", null, -1);
+  public static final Chromosome NO_CHR = new Chromosome(-1, "chrU", "U", null,
+      -1);
 
   public static final ChrParser DEFAULT_PARSER = new ChrParser();
 
@@ -85,13 +86,14 @@ implements Comparable<Chromosome>, IdProperty, NameProperty {
 
   /**
    * 
-   * @param id          Numerical id of chr (for fast sorting).
-   * @param chr         Chromosome string, e.g. "chr10".
-   * @param shortName   Chromosome name without chr prefix, e.g "10".
-   * @param genome      Genome which this chromosome belongs.
-   * @param size        Size of chromosome in bp.
+   * @param id Numerical id of chr (for fast sorting).
+   * @param chr Chromosome string, e.g. "chr10".
+   * @param shortName Chromosome name without chr prefix, e.g "10".
+   * @param genome Genome which this chromosome belongs.
+   * @param size Size of chromosome in bp.
    */
-  private Chromosome(int id, String chr, String shortName, Genome genome, int size) {
+  private Chromosome(int id, String chr, String shortName, Genome genome,
+      int size) {
     // mSpecies = parser.getSpecies();
 
     // The suffix of the chromosome without the chr prefix.
@@ -187,11 +189,11 @@ implements Comparable<Chromosome>, IdProperty, NameProperty {
     // } else {
     // Sort by id so that chr2 comes before chr10
 
-    //if (mId != -1 && c.mId != -1) {
+    // if (mId != -1 && c.mId != -1) {
     // Compare by id for numerical sorting
 
-    if ((mId < MAX_NUM_CHR && c.mId < MAX_NUM_CHR) || 
-        (mId >= MAX_NUM_CHR && c.mId >= MAX_NUM_CHR)) {
+    if ((mId < MAX_NUM_CHR && c.mId < MAX_NUM_CHR)
+        || (mId >= MAX_NUM_CHR && c.mId >= MAX_NUM_CHR)) {
 
       // If both ids are in the lower 24 bits (numerical chr) or the upper 8
       // bits (X, Y, M etc) then do simple numerical comparison.
@@ -210,11 +212,11 @@ implements Comparable<Chromosome>, IdProperty, NameProperty {
       // This chr is a letter so c is numerical so should come second.
       return 1;
     }
-    //} else {
+    // } else {
     // If chr has a non numerical suffix (e.g. chrX), do a conventional
     // text comparison
-    //  return mChr.compareTo(c.mChr);
-    //}
+    // return mChr.compareTo(c.mChr);
+    // }
   }
 
   /*
@@ -255,7 +257,6 @@ implements Comparable<Chromosome>, IdProperty, NameProperty {
     return CHR_REGEX.matcher(s).matches(); // value.toLowerCase().startsWith("chr");
   }
 
-
   public static String search(String s) {
     if (s == null) {
       return null;
@@ -279,7 +280,7 @@ implements Comparable<Chromosome>, IdProperty, NameProperty {
    */
   public static String getShortName(String chr) {
     return chr.toUpperCase()
-        //.replace("CHROMOSOME", TextUtils.EMPTY_STRING)
+        // .replace("CHROMOSOME", TextUtils.EMPTY_STRING)
         .replace("CHR_", TextUtils.EMPTY_STRING)
         .replace("CHR-", TextUtils.EMPTY_STRING)
         .replace("CHR", TextUtils.EMPTY_STRING);
@@ -311,7 +312,10 @@ implements Comparable<Chromosome>, IdProperty, NameProperty {
     return newChr(chr, genome, size, MOUSE_PARSER);
   }
 
-  public static Chromosome newChr(String chr, Genome genome, int size, ChrParser parser) {
+  public static Chromosome newChr(String chr,
+      Genome genome,
+      int size,
+      ChrParser parser) {
     String shortName = getShortName(chr);
     int id = parser.getId(shortName);
     chr = "chr" + shortName;

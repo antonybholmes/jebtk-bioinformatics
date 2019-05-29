@@ -38,6 +38,7 @@ import org.jebtk.bioinformatics.genomic.Genome;
 import org.jebtk.bioinformatics.genomic.GenomeService;
 import org.jebtk.bioinformatics.genomic.GenomicElement;
 import org.jebtk.bioinformatics.genomic.GenomicRegion;
+import org.jebtk.bioinformatics.genomic.GenomicType;
 import org.jebtk.bioinformatics.genomic.Strand;
 import org.jebtk.core.NameProperty;
 import org.jebtk.core.text.TextUtils;
@@ -54,13 +55,13 @@ public class BedElement extends GenomicElement implements NameProperty {
    * 
    */
   private static final long serialVersionUID = 1L;
-  
+
   /**
    * Instantiates a new bed region.
    *
    * @param region the region
    */
-  public BedElement(String type, GenomicRegion region) {
+  public BedElement(GenomicType type, GenomicRegion region) {
     this(type, region, Color.BLACK);
   }
 
@@ -73,17 +74,18 @@ public class BedElement extends GenomicElement implements NameProperty {
    * @param end the end
    * @param name the name
    */
-  public BedElement(String type, GenomicRegion r, Color color) {
+  public BedElement(GenomicType type, GenomicRegion r, Color color) {
     this(type, TextUtils.EMPTY_STRING, r, color);
   }
-  
-  public BedElement(String type, String name, GenomicRegion r) {
+
+  public BedElement(GenomicType type, String name, GenomicRegion r) {
     this(type, name, r, Color.BLACK);
   }
-  
-  public BedElement(String type, String name, GenomicRegion r, Color color) {
+
+  public BedElement(GenomicType type, String name, GenomicRegion r,
+      Color color) {
     super(type, r);
-    
+
     setColor(color);
 
     setProperty("name", name);
@@ -96,7 +98,7 @@ public class BedElement extends GenomicElement implements NameProperty {
    */
   @Override
   public String getName() {
-    return getProp("name");
+    return getProperty("name");
   }
 
   /*
@@ -112,14 +114,15 @@ public class BedElement extends GenomicElement implements NameProperty {
     buffer.append(getName());
   }
 
-
   /**
    * Parses the.
    *
    * @param line the line
    * @return the bed region
    */
-  public static GenomicElement parse(String type, Genome genome, String line) {
+  public static GenomicElement parse(GenomicType type,
+      Genome genome,
+      String line) {
     // System.err.println("bed: " + line);
 
     List<String> tokens = TextUtils.tabSplit(line);
@@ -147,9 +150,9 @@ public class BedElement extends GenomicElement implements NameProperty {
         color = UCSCTrack.parseColor(matcher);
       }
 
-      GenomicElement bed = new BedElement(type, new GenomicRegion(chr, start, end, strand))
-          .setProperty("name", name)
-          .setColor(color);
+      GenomicElement bed = new BedElement(type,
+          new GenomicRegion(chr, start, end, strand)).setProperty("name", name)
+              .setColor(color);
 
       if (tokens.size() > 11) {
         // blocks mode
@@ -171,7 +174,8 @@ public class BedElement extends GenomicElement implements NameProperty {
     } else if (tokens.size() > 3) {
       String name = tokens.get(3);
 
-      return new BedElement(type, new GenomicRegion(chr, start, end)).setProperty("name", name);
+      return new BedElement(type, new GenomicRegion(chr, start, end))
+          .setProperty("name", name);
     } else {
       return new BedElement(type, new GenomicRegion(chr, start, end));
     }
@@ -183,7 +187,7 @@ public class BedElement extends GenomicElement implements NameProperty {
    * @param region the region
    * @return the bed region
    */
-  public static BedElement create(String type, GenomicRegion region) {
+  public static BedElement create(GenomicType type, GenomicRegion region) {
     return new BedElement(type, region);
   }
 

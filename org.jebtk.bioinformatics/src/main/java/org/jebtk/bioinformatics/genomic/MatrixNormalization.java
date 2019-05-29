@@ -68,7 +68,8 @@ public class MatrixNormalization {
   }
 
   public static DataFrame rpm(final DataFrame m) {
-    double[] counts = m.getColumnHeader().getAnnotation("total-reads").rowToDouble(0);
+    double[] counts = m.getColumnHeader().getAnnotation("total-reads")
+        .rowToDouble(0);
 
     return rpm(m, counts);
   }

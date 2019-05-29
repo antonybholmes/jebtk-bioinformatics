@@ -1,6 +1,5 @@
 package org.jebtk.bioinformatics.genomic;
 
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -15,7 +14,7 @@ public abstract class Tag implements Comparable<Tag> {
   public int toInt() {
     return Integer.MIN_VALUE;
   }
-  
+
   @JsonIgnore
   public double toDouble() {
     return Double.MIN_VALUE;
@@ -23,21 +22,21 @@ public abstract class Tag implements Comparable<Tag> {
 
   @JsonIgnore
   public abstract TagType getType();
-  
+
   @Override
   @JsonGetter("value")
   public String toString() {
     return super.toString();
   }
-  
+
   @Override
   public int compareTo(Tag p) {
     int ret = getType().compareTo(p.getType());
-    
+
     if (ret != 0) {
       return ret;
     }
-    
+
     return compareValue(p);
   }
 
@@ -61,11 +60,11 @@ public abstract class Tag implements Comparable<Tag> {
 
   public static List<Tag> toTags(Collection<String> tags) {
     ArrayList<Tag> ret = new ArrayList<Tag>();
-    
+
     for (String tag : tags) {
       ret.add(toTag(tag));
     }
-    
+
     return ret;
   }
 

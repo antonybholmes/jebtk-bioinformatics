@@ -163,7 +163,7 @@ public class FixedGapSearch<T> extends GapSearch<T> {
   public boolean contains(Chromosome chr) {
     return mFeatures.containsKey(chr);
   }
-  
+
   public IterMap<Integer, GappedSearchFeatures<T>> get(Chromosome chr) {
     return mFeatures.get(chr);
   }
@@ -269,7 +269,7 @@ public class FixedGapSearch<T> extends GapSearch<T> {
 
     return range;
   }
-  
+
   /**
    * Return the nth closest features.
    * 
@@ -283,7 +283,7 @@ public class FixedGapSearch<T> extends GapSearch<T> {
         region.getEnd(),
         n);
   }
-  
+
   public List<List<T>> getClosestFeatures(Chromosome chr,
       int start,
       int end,
@@ -292,61 +292,62 @@ public class FixedGapSearch<T> extends GapSearch<T> {
     int be = getBin(end);
 
     Map<Integer, GappedSearchFeatures<T>> features = mFeatures.get(chr);
-    
+
     List<Integer> bins = CollectionUtils.sortKeys(features);
-    
+
     int is = bins.indexOf(bs);
     int ie = bins.indexOf(be);
-    
+
     int l = bins.size() - 1;
-    
+
     List<GappedSearchFeatures<T>> bf = null;
-    
+
     SysUtils.err().println(bs, be, is, ie);
-    
+
     int mid = (start + end) / 2;
-    
+
     while (is >= 0 || ie < bins.size()) {
       bs = bins.get(is);
       be = bins.get(ie);
-      
+
       // Keep expanding bin search area around location until we find enough
       // items to order by 1st, 2nd, 3rd... closest.
-      
+
       bf = getFeaturesByBin(chr, bs, be);
-      
+
       //
       // Count
       //
-  
-      IterMap<Integer, List<T>> closestMap = 
-          DefaultTreeMap.create(new ArrayListCreator<T>());
-      
+
+      IterMap<Integer, List<T>> closestMap = DefaultTreeMap
+          .create(new ArrayListCreator<T>());
+
       for (GappedSearchFeatures<T> gsf : bf) {
         for (GenomicRegion region : gsf) {
           // distance from item to
           int d;
-          
+
           if (Strand.isSense(region.getStrand())) {
             d = Math.abs(region.getStart() - mid);
           } else {
             d = Math.abs(region.getEnd() - mid);
           }
-          
+
           for (T item : gsf.getValues(region)) {
             closestMap.get(d).add(item);
-            
-            //SysUtils.err().println("closest", n, d, item, mid, region.getStart());
+
+            // SysUtils.err().println("closest", n, d, item, mid,
+            // region.getStart());
           }
-          
+
           if (closestMap.size() == n) {
             // Once we have enough closest genes, assemble and return
             List<List<T>> ret = new ArrayList<List<T>>(n);
-            
+
             for (Entry<Integer, List<T>> entry : closestMap) {
               ret.add(entry.getValue());
             }
-            
+
             return ret;
           }
         }
@@ -355,12 +356,12 @@ public class FixedGapSearch<T> extends GapSearch<T> {
       //
       //
       //
-      
+
       // Expand search region
       is = Math.max(0, is - 1);
       ie = Math.min(ie + 1, l);
     }
-    
+
     return Collections.emptyList();
   }
 
@@ -448,5 +449,4 @@ public class FixedGapSearch<T> extends GapSearch<T> {
     return ret;
   }
 
-  
 }

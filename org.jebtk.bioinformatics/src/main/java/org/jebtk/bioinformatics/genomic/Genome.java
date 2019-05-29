@@ -27,11 +27,17 @@
  */
 package org.jebtk.bioinformatics.genomic;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
 import org.jebtk.core.AppService;
 import org.jebtk.core.NameProperty;
+import org.jebtk.core.collections.DefaultTreeMap;
+import org.jebtk.core.collections.DefaultTreeMapCreator;
+import org.jebtk.core.collections.IterMap;
+import org.jebtk.core.collections.IterTreeMap;
+import org.jebtk.core.collections.TreeMapCreator;
 import org.jebtk.core.text.Join;
 import org.jebtk.core.text.Splitter;
 import org.jebtk.core.text.TextUtils;
@@ -80,14 +86,14 @@ public class Genome implements NameProperty, Comparable<Genome> {
   private String mS;
 
   public Genome(String name, String build) {
-    this(name, build, TextUtils.EMPTY_STRING);
+    this(name, build, TextUtils.NA);
   }
 
   /**
    * 
-   * @param name      e.g. 'human'
-   * @param build     e.g. 'grch38'
-   * @param track     e.g. 'gencode'
+   * @param name e.g. 'human'
+   * @param build e.g. 'grch38'
+   * @param track e.g. 'gencode'
    */
   public Genome(String name, String build, String track) {
     mName = TextUtils.sentenceCase(name);
@@ -108,7 +114,7 @@ public class Genome implements NameProperty, Comparable<Genome> {
   /**
    * Returns the assembly.
    * 
-   * @return    e.g. grch38
+   * @return e.g. grch38
    */
   @JsonGetter("assembly")
   public String getAssembly() {
@@ -210,26 +216,28 @@ public class Genome implements NameProperty, Comparable<Genome> {
 
   /**
    * Create a genome from a colon separated id e.g. human:grch38:gencode
+   * 
    * @param g
    * @return
    */
   public static Genome fromId(String g) {
-    List<String> tokens = Splitter.onColon().text(g); //TextUtils.fastSplit(g, TextUtils.COLON_DELIMITER);
-    
+    List<String> tokens = Splitter.onColon().text(g); // TextUtils.fastSplit(g,
+                                                      // TextUtils.COLON_DELIMITER);
+
     switch (tokens.size()) {
     case 2:
-        return new Genome(tokens.get(0), tokens.get(1));
+      return new Genome(tokens.get(0), tokens.get(1));
     case 3:
       return new Genome(tokens.get(0), tokens.get(1), tokens.get(2));
     default:
       return null;
     }
   }
-  
+
   public static String genomeId(String name, String assembly) {
-    return genomeId(name, assembly, TextUtils.EMPTY_STRING);
+    return genomeId(name, assembly, TextUtils.NA);
   }
-  
+
   /**
    * Create a genome id from the genome name parts.
    * 
@@ -240,5 +248,23 @@ public class Genome implements NameProperty, Comparable<Genome> {
    */
   public static String genomeId(String name, String assembly, String track) {
     return Join.onColon().values(name, assembly, track).toString();
+  }
+  
+  /**
+   * Sort genomes by name, assembly, track to put in alphabetical order
+   * @param genomes
+   * @return
+   * @throws IOException
+   */
+  public static IterMap<String, IterMap<String, IterMap<String, Genome>>> sort(Iterable<Genome> genomes) {
+    IterMap<String, IterMap<String, IterMap<String, Genome>>> genomeMap = DefaultTreeMap
+        .create(
+            new DefaultTreeMapCreator<String, IterMap<String, Genome>>(new TreeMapCreator<String, Genome>()));
+    
+    for (Genome genome : genomes) {
+      genomeMap.get(genome.getName()).get(genome.getAssembly()).put(genome.getTrack(), genome);
+    }
+    
+    return genomeMap;
   }
 }

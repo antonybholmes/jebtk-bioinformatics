@@ -183,7 +183,6 @@ public class SamUtils {
     return count;
   }
 
-
   public static int countReads(Path file, GenomicRegion r) throws IOException {
     SamReader sam = SamReaderFactory.makeDefault().open(file.toFile());
 
@@ -206,9 +205,9 @@ public class SamUtils {
    * @return
    * @throws IOException
    */
-  public static List<Integer> countReads(Path file, Collection<GenomicRegion> regions) throws IOException {
+  public static List<Integer> countReads(Path file,
+      Collection<GenomicRegion> regions) throws IOException {
     List<Integer> ret = new ArrayList<Integer>();
-
 
     SamReader sam = SamReaderFactory.makeDefault().open(file.toFile());
 
@@ -231,18 +230,20 @@ public class SamUtils {
    * @return the read length from bam
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static int countReads(SamReader sam, GenomicRegion r) throws IOException {
+  public static int countReads(SamReader sam, GenomicRegion r)
+      throws IOException {
     int ret = 0;
 
-    //System.err.println("Counting from " + r);
-    
-    SAMRecordIterator iter = sam.queryOverlapping(r.mChr.toString(), r.mStart, r.mEnd);
-    
+    // System.err.println("Counting from " + r);
+
+    SAMRecordIterator iter = sam
+        .queryOverlapping(r.mChr.toString(), r.mStart, r.mEnd);
+
     while (iter.hasNext()) {
       ++ret;
       iter.next();
     }
-    
+
     iter.close();
 
     return ret;

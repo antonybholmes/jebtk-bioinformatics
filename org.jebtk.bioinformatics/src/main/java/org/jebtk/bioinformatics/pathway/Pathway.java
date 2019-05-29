@@ -57,10 +57,10 @@ public class Pathway {
    * The constant LOG.
    */
   private static final Logger LOG = LoggerFactory.getLogger(Pathway.class);
-  
+
   // Match genepattern
-  private static final int TOTAL_GENES = 
-      SettingsService.getInstance().getInt("bioinformatics.pathway.total-genes");
+  private static final int TOTAL_GENES = SettingsService.getInstance()
+      .getInt("bioinformatics.pathway.total-genes");
 
   /**
    * Analysis.
@@ -160,7 +160,7 @@ public class Pathway {
       }
     }
 
-    int totalGenes = TOTAL_GENES; //conversion.getSymbolCount();
+    int totalGenes = TOTAL_GENES; // conversion.getSymbolCount();
 
     LOG.info("Gene universe = {}", totalGenes);
 
@@ -207,7 +207,7 @@ public class Pathway {
       if (overlap > 1) {
         p = 1 - hyperg
             .cdf(overlap - 2, geneSet.size(), validSymbols.size(), totalGenes);
-        
+
         p = Mathematics.bound(p, 0, 1);
       }
 

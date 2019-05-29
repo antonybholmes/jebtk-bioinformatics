@@ -65,6 +65,6 @@ public class RdfGene extends Gene {
    * @return the rdf
    */
   public String getRdf() {
-    return getProp("rdf");
+    return getProperty("rdf");
   }
 }

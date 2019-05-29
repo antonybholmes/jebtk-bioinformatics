@@ -33,7 +33,9 @@ import java.util.List;
 import org.jebtk.bioinformatics.genomic.Chromosome;
 import org.jebtk.bioinformatics.genomic.Genome;
 import org.jebtk.bioinformatics.genomic.GenomeService;
+import org.jebtk.bioinformatics.genomic.GenomicElement;
 import org.jebtk.bioinformatics.genomic.GenomicRegion;
+import org.jebtk.bioinformatics.genomic.GenomicType;
 import org.jebtk.core.text.TextUtils;
 
 /**
@@ -42,7 +44,7 @@ import org.jebtk.core.text.TextUtils;
  * @author Antony Holmes
  *
  */
-public class Cytoband extends BedElement {
+public class Cytoband extends GenomicElement {
 
   /**
    * 
@@ -63,9 +65,10 @@ public class Cytoband extends BedElement {
    * @param stain the stain
    */
   public Cytoband(GenomicRegion r, String name, String stain) {
-    super(name, r);
+    super(GenomicType.CYTOBAND, r);
 
-    mStain = stain;
+    setProperty("name", name);
+    setProperty("stain", stain);
   }
 
   /**
@@ -74,7 +77,7 @@ public class Cytoband extends BedElement {
    * @return the stain
    */
   public String getStain() {
-    return mStain;
+    return getProperty("stain");
   }
 
   /*

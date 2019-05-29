@@ -4,8 +4,6 @@ import java.util.regex.Matcher;
 
 public class ChrParser {
 
-
-
   /**
    * Look for the numerical part of the chromosome to give it a numerical order.
    * 

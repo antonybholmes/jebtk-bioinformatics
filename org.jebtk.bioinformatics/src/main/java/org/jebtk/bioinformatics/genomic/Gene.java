@@ -46,7 +46,7 @@ public class Gene extends GenomicEntity {
   }
 
   public Gene(GenomicRegion l, Strand s) {
-    super(GENE, l, s);
+    super(GenomicType.GENE, l, s);
   }
 
   public Gene(String name, GenomicRegion l) {
@@ -63,7 +63,7 @@ public class Gene extends GenomicEntity {
 
   @JsonGetter("transcripts")
   public Iterable<GenomicElement> getTranscripts() {
-    return getChildren(TRANSCRIPT);
+    return getChildren(GenomicType.TRANSCRIPT);
   }
 
   /**

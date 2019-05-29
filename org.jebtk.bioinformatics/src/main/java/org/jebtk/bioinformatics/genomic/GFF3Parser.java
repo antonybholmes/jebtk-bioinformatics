@@ -39,11 +39,11 @@ import org.jebtk.core.text.TextUtils;
  * The Class GFF.
  */
 public class GFF3Parser extends GeneParser {
-  
+
   public static final String LEVEL_GENE = "gene";
   public static final String LEVEL_TRANSCRIPT = "transcript";
   public static final String LEVEL_EXON = "exon";
-  
+
   public GFF3Parser() {
     // _setKeepExons(false);
   }
@@ -94,17 +94,17 @@ public class GFF3Parser extends GeneParser {
 
         switch (type) {
         case GENE:
-          gene = addAttributes(GenomicEntity.GENE, region, attributeMap);
+          gene = addAttributes(GenomicType.GENE, region, attributeMap);
 
           genes.add(gene);
-          
+
           break;
         case TRANSCRIPT:
           // Gene
           // gene = new Gene(region).setSymbol(name);
 
-          transcript = addAttributes(GenomicEntity.TRANSCRIPT, 
-              region, 
+          transcript = addAttributes(GenomicType.TRANSCRIPT,
+              region,
               attributeMap);
 
           if (gene != null) {
@@ -114,12 +114,12 @@ public class GFF3Parser extends GeneParser {
 
             transcript.setParent(gene);
           }
-          
+
           genes.add(transcript);
 
           break;
         case EXON:
-          GenomicEntity exon = addAttributes(GenomicEntity.EXON,
+          GenomicEntity exon = addAttributes(GenomicType.EXON,
               region,
               attributeMap);
 
@@ -297,28 +297,40 @@ public class GFF3Parser extends GeneParser {
     return new GFF3Parser(parser);
   }
 
-  public static List<String> gff3IdTypes(Path file, String level) throws IOException {
+  public static List<String> gff3IdTypes(Path gff3, GenomicType type)
+      throws IOException {
 
-    BufferedReader reader = FileUtils.newBufferedReader(file);
+    BufferedReader reader = FileUtils.newBufferedReader(gff3);
 
     List<String> ret = new ArrayList<String>(20);
 
     String line;
 
+    List<String> tokens;
+
+    Splitter splitter = Splitter.onTab();
+
+    GenomicType t;
+
     try {
-      while((line = reader.readLine()) != null) {
-        if (line.contains(level)) {
-          Map<String, String> attributes = parseGFF3Attributes(TextUtils.tabSplit(line));
+      while ((line = reader.readLine()) != null) {
+        tokens = splitter.text(line);
+
+        t = GenomicType.parse(tokens.get(2));
+
+        if (t == type) {
+          Map<String, String> attributes = parseGFF3Attributes(
+              TextUtils.tabSplit(line));
 
           for (String attribute : CollectionUtils.sortKeys(attributes)) {
-            
+
             // Skip some predefined fields that will not be of interest to the
             // user
             if (attribute.contains("Parent")) {
               continue;
             }
-            
-            ret.add(attribute); //formatAttributeName(attribute));
+
+            ret.add(attribute); // formatAttributeName(attribute));
           }
 
           break;

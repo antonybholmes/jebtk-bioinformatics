@@ -65,7 +65,9 @@ public class WebGenes extends GenesDB {
   }
 
   @Override
-  public List<GenomicElement> find(Genome genome, GenomicRegion region, String type) {
+  public List<GenomicElement> find(Genome genome,
+      GenomicRegion region,
+      GenomicType type) {
     UrlBuilder url = mFindUrl.param("genome", genome.getName())
         .param("assembly", genome.getAssembly())
         .param("track", genome.getTrack()).param("chr", region.mChr.toString())
@@ -77,7 +79,9 @@ public class WebGenes extends GenesDB {
   }
 
   @Override
-  public List<GenomicElement> getElements(Genome genome, String search, String type) {
+  public List<GenomicElement> getElements(Genome genome,
+      String search,
+      GenomicType type) {
     UrlBuilder url = mSearchUrl.param("genome", genome.getName())
         .param("assembly", genome.getAssembly())
         .param("track", genome.getTrack()).param("s", search);
@@ -103,8 +107,11 @@ public class WebGenes extends GenesDB {
       for (int i = 0; i < json.size(); ++i) {
         Json dbJson = json.get(i);
 
-        Genome genome = Genome.changeTrack(GenomeService.getInstance().guessGenome(
-            dbJson.getString("assembly")), dbJson.getString("track"));
+        Genome genome = Genome
+            .changeTrack(
+                GenomeService.getInstance()
+                    .guessGenome(dbJson.getString("assembly")),
+                dbJson.getString("track"));
 
         ret.add(genome);
       }
@@ -116,11 +123,12 @@ public class WebGenes extends GenesDB {
   }
 
   @Override
-  public List<GenomicElement> closest(Genome genome, GenomicRegion region, String type)
-      throws IOException {
+  public List<GenomicElement> closest(Genome genome,
+      GenomicRegion region,
+      GenomicType type) throws IOException {
     return Collections.emptyList();
   }
-  
+
   @Override
   public void add(GenomicElement element) {
     // Do nothing
@@ -131,8 +139,7 @@ public class WebGenes extends GenesDB {
       gene.setProperty(name, json.getString(name));
     }
   }
-  
-  
+
   private static List<GenomicElement> parse(Genome genome, UrlBuilder url) {
     List<GenomicElement> ret = new ArrayList<GenomicElement>();
 
@@ -171,10 +178,10 @@ public class WebGenes extends GenesDB {
 
         Json idsJson = geneJson.get("ids");
 
-        addId(GenomicEntity.GENE_ID_TYPE, idsJson, gene);
-        addId(GenomicEntity.TRANSCRIPT_ID_TYPE, idsJson, gene);
+        addId(GenomicEntity.GENE_ID, idsJson, gene);
+        addId(GenomicEntity.TRANSCRIPT_ID, idsJson, gene);
         // addId("symbol", idJson, gene);
-        addId(GenomicEntity.GENE_NAME_TYPE, idsJson, gene);
+        addId(GenomicEntity.GENE_NAME, idsJson, gene);
 
         ret.add(gene);
       }

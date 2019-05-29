@@ -22,6 +22,7 @@ import org.jebtk.bioinformatics.genomic.GFBGenes;
 import org.jebtk.bioinformatics.genomic.Genome;
 import org.jebtk.bioinformatics.genomic.GenomicElement;
 import org.jebtk.bioinformatics.genomic.GenomicEntity;
+import org.jebtk.bioinformatics.genomic.GenomicType;
 import org.jebtk.core.io.PathUtils;
 import org.junit.Test;
 
@@ -56,12 +57,12 @@ public class DecodeTest {
     
 	  //GeneSearchQuery query = new GeneSearchQuery(genes);
     
-    List<GenomicElement> r = genes.getGenes(search, GenomicEntity.TRANSCRIPT);
+    List<GenomicElement> r = genes.getGenes(search, GenomicType.TRANSCRIPT);
     
     for (GenomicElement gene : r) { 
       System.err.println("blo " + gene + " " + gene.getType() + " " + gene.getChildTypes());
       
-      for (GenomicElement e : gene.getChildren(GenomicEntity.EXON)) {
+      for (GenomicElement e : gene.getChildren(GenomicType.EXON)) {
         System.err.println(e);
       }
     }

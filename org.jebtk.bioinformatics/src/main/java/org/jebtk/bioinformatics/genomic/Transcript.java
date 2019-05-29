@@ -49,7 +49,7 @@ public class Transcript extends GenomicEntity {
   private static final long serialVersionUID = 1L;
 
   public Transcript(GenomicRegion l) {
-    super(TRANSCRIPT, l);
+    super(GenomicType.TRANSCRIPT, l);
   }
 
   /**
@@ -65,7 +65,7 @@ public class Transcript extends GenomicEntity {
   }
 
   public Transcript(GenomicRegion l, Strand s) {
-    super(TRANSCRIPT, l, s);
+    super(GenomicType.TRANSCRIPT, l, s);
   }
 
   /**
@@ -76,7 +76,7 @@ public class Transcript extends GenomicEntity {
   public void addExon(GenomicRegion exon) {
     addChild(new Exon(exon));
   }
-  
+
   public void addExon(Exon exon) {
     addChild(exon);
   }
@@ -91,17 +91,17 @@ public class Transcript extends GenomicEntity {
 
   @JsonIgnore
   public Iterable<GenomicElement> get3pUtrs() {
-    return getChildren(UTR_3P);
+    return getChildren(GenomicType.UTR_3P);
   }
 
   @JsonIgnore
   public Iterable<GenomicElement> get5pUtrs() {
-    return getChildren(UTR_5P);
+    return getChildren(GenomicType.UTR_5P);
   }
 
   @JsonGetter("exons")
   public Iterable<GenomicElement> getExons() {
-    return getChildren(EXON);
+    return getChildren(GenomicType.EXON);
   }
 
   /*

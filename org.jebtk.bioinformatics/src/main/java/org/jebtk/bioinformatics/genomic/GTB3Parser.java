@@ -105,7 +105,7 @@ public class GTB3Parser extends GTBParser {
 
         // Create the gene
 
-        GenomicEntity gene = addAttributes(GenomicEntity.TRANSCRIPT,
+        GenomicEntity gene = addAttributes(GenomicType.TRANSCRIPT,
             GenomicRegion.create(chr, start, end, strand),
             attributeMap);
 
@@ -125,7 +125,7 @@ public class GTB3Parser extends GTBParser {
             GenomicRegion region = GenomicRegion
                 .create(chr, starts.get(i), ends.get(i), strand);
 
-            GenomicEntity exon = addAttributes(GenomicEntity.EXON,
+            GenomicEntity exon = addAttributes(GenomicType.EXON,
                 region,
                 attributeMap);
 
@@ -144,21 +144,11 @@ public class GTB3Parser extends GTBParser {
         }
 
         if (has5pUtrLevel) {
-          processUTR(tokens,
-              gene,
-              attributeMap,
-              7,
-              GenomicEntity.UTR_5P,
-              genes);
+          processUTR(tokens, gene, attributeMap, 7, GenomicType.UTR_5P, genes);
         }
 
         if (has3pUtrLevel) {
-          processUTR(tokens,
-              gene,
-              attributeMap,
-              10,
-              GenomicEntity.UTR_3P,
-              genes);
+          processUTR(tokens, gene, attributeMap, 10, GenomicType.UTR_3P, genes);
         }
       }
     });
@@ -168,7 +158,7 @@ public class GTB3Parser extends GTBParser {
       GenomicEntity gene,
       IterMap<String, String> attributeMap,
       int offset,
-      String type,
+      GenomicType type,
       GenesDB ret) {
 
     int count = Integer.parseInt(tokens.get(offset));

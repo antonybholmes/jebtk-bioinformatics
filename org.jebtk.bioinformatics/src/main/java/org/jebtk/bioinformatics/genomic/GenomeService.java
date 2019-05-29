@@ -31,9 +31,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Iterator;
 
-import org.jebtk.core.collections.DefaultHashMap;
-import org.jebtk.core.collections.DefaultHashMapCreator;
-import org.jebtk.core.collections.HashMapCreator;
 import org.jebtk.core.collections.IterMap;
 import org.jebtk.core.collections.IterTreeMap;
 import org.jebtk.core.io.FileUtils;
@@ -71,8 +68,10 @@ public class GenomeService extends GenomeDirs implements Iterable<Genome> {
 
   // private static final String EXT2 = "genome.txt.gz";
 
-  //private IterMap<String, IterMap<String, IterMap<String, Genome>>> mGenomeCacheMap =
-  //    DefaultHashMap.create(new DefaultHashMapCreator<String, IterMap<String, Genome>>(new HashMapCreator<String, Genome>()));
+  // private IterMap<String, IterMap<String, IterMap<String, Genome>>>
+  // mGenomeCacheMap =
+  // DefaultHashMap.create(new DefaultHashMapCreator<String, IterMap<String,
+  // Genome>>(new HashMapCreator<String, Genome>()));
 
   // private IterMap<String, Genome> mGenomeMap = new IterTreeMap<String,
   // Genome>();
@@ -135,6 +134,7 @@ public class GenomeService extends GenomeDirs implements Iterable<Genome> {
 
           for (Path genomeDir : FileUtils.lsdir(dir)) {
             System.err.println(genomeDir);
+            
             if (FileUtils.isDirectory(genomeDir)) {
               String g = PathUtils.getName(genomeDir); // TextUtils.sentenceCase(PathUtils.getName(genomeDir));
 
@@ -159,7 +159,6 @@ public class GenomeService extends GenomeDirs implements Iterable<Genome> {
           }
         }
       }
-
     }
   }
 

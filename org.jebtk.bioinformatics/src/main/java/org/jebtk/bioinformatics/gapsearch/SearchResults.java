@@ -88,10 +88,10 @@ public class SearchResults<T> implements Iterable<GenomicRegion> {
   public int size() {
     return mFeatures.size();
   }
-  
+
   public int itemCount() {
     int ret = 0;
-    
+
     for (GenomicRegion r : this) {
       ret += getValues(r).size();
     }

@@ -44,16 +44,18 @@ public class LazyGenes extends FixedGapGenes {
    */
 
   @Override
-  public List<GenomicElement> getElements(Genome genome, String id, String type)
-      throws IOException {
+  public List<GenomicElement> getElements(Genome genome,
+      String id,
+      GenomicType type) throws IOException {
     autoLoad();
 
     return super.getElements(genome, id, type);
   }
 
   @Override
-  public List<GenomicElement> find(Genome genome, GenomicRegion region, String type)
-      throws IOException {
+  public List<GenomicElement> find(Genome genome,
+      GenomicRegion region,
+      GenomicType type) throws IOException {
     autoLoad();
 
     return super.find(genome, region, type);
@@ -62,7 +64,7 @@ public class LazyGenes extends FixedGapGenes {
   @Override
   public List<GenomicElement> closest(Genome genome,
       GenomicRegion region,
-      String type) throws IOException {
+      GenomicType type) throws IOException {
     autoLoad();
 
     return super.closest(genome, region, type);
@@ -71,7 +73,7 @@ public class LazyGenes extends FixedGapGenes {
   @Override
   public List<GenomicElement> closestByTss(Genome genome,
       GenomicRegion region,
-      String type) throws IOException {
+      GenomicType type) throws IOException {
     autoLoad();
 
     return super.closestByTss(genome, region, type);

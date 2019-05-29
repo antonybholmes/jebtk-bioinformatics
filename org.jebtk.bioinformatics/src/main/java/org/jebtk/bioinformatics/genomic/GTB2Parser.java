@@ -78,11 +78,11 @@ public class GTB2Parser extends GTBParser {
         // Because of the UCSC using zero based start and one
         // based end, we need to increment the start by 1
 
-        List<Tag> tags = getTags(splitter, tokens);
+        List<String> tags = getTags(splitter, tokens);
 
         if (mExcludeTags.size() > 0) {
-          for (Tag tag : tags) {
-            if (mExcludeTags.contains(tag.toString())) {
+          for (String tag : tags) {
+            if (mExcludeTags.contains(tag)) {
               add = false;
               break;
             }
@@ -92,8 +92,8 @@ public class GTB2Parser extends GTBParser {
         if (mMatchTags.size() > 0) {
           add = false;
 
-          for (Tag tag : tags) {
-            if (mMatchTags.contains(tag.toString())) {
+          for (String tag : tags) {
+            if (mMatchTags.contains(tag)) {
               add = true;
               break;
             }
@@ -108,7 +108,7 @@ public class GTB2Parser extends GTBParser {
 
         // Create the gene
 
-        GenomicEntity gene = addAttributes(GenomicEntity.TRANSCRIPT,
+        GenomicEntity gene = addAttributes(GenomicType.TRANSCRIPT,
             GenomicRegion.create(chr, start, end, strand),
             attributeMap);
 
@@ -128,7 +128,7 @@ public class GTB2Parser extends GTBParser {
             GenomicRegion region = GenomicRegion
                 .create(chr, starts.get(i), ends.get(i), strand);
 
-            GenomicEntity exon = addAttributes(GenomicEntity.EXON,
+            GenomicEntity exon = addAttributes(GenomicType.EXON,
                 region,
                 attributeMap);
 
@@ -147,21 +147,11 @@ public class GTB2Parser extends GTBParser {
         }
 
         if (has5pUtrLevel) {
-          processUTR(tokens,
-              gene,
-              attributeMap,
-              7,
-              GenomicEntity.UTR_5P,
-              genes);
+          processUTR(tokens, gene, attributeMap, 7, GenomicType.UTR_5P, genes);
         }
 
         if (has3pUtrLevel) {
-          processUTR(tokens,
-              gene,
-              attributeMap,
-              10,
-              GenomicEntity.UTR_3P,
-              genes);
+          processUTR(tokens, gene, attributeMap, 10, GenomicType.UTR_3P, genes);
         }
       }
     });
@@ -171,7 +161,7 @@ public class GTB2Parser extends GTBParser {
       GenomicEntity gene,
       IterMap<String, String> attributeMap,
       int offset,
-      String type,
+      GenomicType type,
       GenesDB genes) {
 
     int count = Integer.parseInt(tokens.get(offset));
@@ -242,11 +232,11 @@ public class GTB2Parser extends GTBParser {
         continue;
       }
 
-      List<Tag> tags = getTags(splitter, tokens);
+      List<String> tags = getTags(splitter, tokens);
 
       if (mExcludeTags.size() > 0) {
-        for (Tag tag : tags) {
-          if (mExcludeTags.contains(tag.toString())) {
+        for (String tag : tags) {
+          if (mExcludeTags.contains(tag)) {
             add = false;
             break;
           }
@@ -256,8 +246,8 @@ public class GTB2Parser extends GTBParser {
       if (mMatchTags.size() > 0) {
         add = false;
 
-        for (Tag tag : tags) {
-          if (mMatchTags.contains(tag.toString())) {
+        for (String tag : tags) {
+          if (mMatchTags.contains(tag)) {
             add = true;
             break;
           }
@@ -294,9 +284,9 @@ public class GTB2Parser extends GTBParser {
     return getAttributes(splitter, tokens.get(13));
   }
 
-  private static List<Tag> getTags(Splitter splitter,
+  private static List<String> getTags(Splitter splitter,
       final List<String> tokens) {
-    return Tag.toTags(TextUtils.removeNA(splitter.text(tokens.get(14))));
+    return TextUtils.removeNA(splitter.text(tokens.get(14)));
   }
 
   public static GenomicEntity parse(Genome genome, final String line) {
@@ -327,13 +317,13 @@ public class GTB2Parser extends GTBParser {
     // Because of the UCSC using zero based start and one
     // based end, we need to increment the start by 1
 
-    List<Tag> tags = getTags(splitter, tokens);
+    List<String> tags = getTags(splitter, tokens);
 
     IterMap<String, String> attributeMap = getAttributes(splitter, tokens);
 
     // Create the gene
 
-    GenomicEntity transcript = addAttributes(GenomicEntity.TRANSCRIPT,
+    GenomicEntity transcript = addAttributes(GenomicType.TRANSCRIPT,
         GenomicRegion.create(chr, start, end, strand),
         attributeMap);
 
@@ -350,7 +340,7 @@ public class GTB2Parser extends GTBParser {
       GenomicRegion region = GenomicRegion
           .create(chr, starts.get(i), ends.get(i), strand);
 
-      GenomicEntity exon = addAttributes(GenomicEntity.EXON,
+      GenomicEntity exon = addAttributes(GenomicType.EXON,
           region,
           attributeMap);
 
@@ -360,14 +350,9 @@ public class GTB2Parser extends GTBParser {
       exon.setParent(transcript);
     }
 
-    processUTR(tokens, transcript, attributeMap, 7, GenomicEntity.UTR_5P, null);
+    processUTR(tokens, transcript, attributeMap, 7, GenomicType.UTR_5P, null);
 
-    processUTR(tokens,
-        transcript,
-        attributeMap,
-        10,
-        GenomicEntity.UTR_3P,
-        null);
+    processUTR(tokens, transcript, attributeMap, 10, GenomicType.UTR_3P, null);
 
     return transcript;
   }

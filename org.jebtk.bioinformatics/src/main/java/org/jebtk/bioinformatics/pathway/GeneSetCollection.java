@@ -151,10 +151,9 @@ public class GeneSetCollection extends ListModel<GeneSet>
    * @return the gene set collection
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static GeneSetCollection parseGMT(Path file)
-      throws IOException {
+  public static GeneSetCollection parseGMT(Path file) throws IOException {
     String name = getGeneSetName(file);
-    
+
     GeneSetCollection collection = new GeneSetCollection(name);
 
     BufferedReader reader = FileUtils.newBufferedReader(file);

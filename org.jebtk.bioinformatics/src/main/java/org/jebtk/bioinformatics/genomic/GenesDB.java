@@ -42,14 +42,11 @@ public abstract class GenesDB extends GenomicElementsDB {
    * @return the ref seq ids
    */
   public Iterable<String> getRefSeqIds() {
-    return getIds(Gene.REFSEQ_TYPE);
+    return getIds(Gene.REFSEQ_ID);
   }
 
   public Iterable<String> getNames() throws IOException {
-    return getIds(Gene.GENE_NAME_TYPE);
+    return getIds(Gene.GENE_NAME);
   }
 
-
-
-  
 }

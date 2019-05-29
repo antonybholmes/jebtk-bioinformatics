@@ -60,9 +60,6 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @JsonPropertyOrder({ "loc", "strand" })
 public class GenomicRegion extends Region {
 
-  /**
-   * 
-   */
   private static final long serialVersionUID = 1L;
 
   private static final String CHR_REGEX = "(chr[a-zA-Z0-9\\-\\_]+)";
@@ -176,6 +173,38 @@ public class GenomicRegion extends Region {
   @JsonIgnore
   public String getFormattedLocation() {
     return formattedLocation(mChr, mStart, mEnd);
+  }
+  
+  /**
+   * Returns the start considering the strand orientation. Reverse strand
+   * elements return their end as their start. Relevant when comparing
+   * distances between elements and closest starts.
+   * 
+   * @return
+   */
+  @JsonIgnore
+  public int getStrStart() {
+    if (mStrand == Strand.SENSE) {
+      return mStart;
+    } else {
+      return mEnd;
+    }
+  }
+  
+  /**
+   * Returns the end considering the strand orientation. Reverse strand
+   * elements return their end as their start. Relevant when comparing
+   * distances between elements and closest starts.
+   * 
+   * @return
+   */
+  @JsonIgnore
+  public int getStrEnd() {
+    if (mStrand == Strand.SENSE) {
+      return mEnd;
+    } else {
+      return mStart;
+    }
   }
 
   /**
@@ -376,7 +405,7 @@ public class GenomicRegion extends Region {
       return null;
     }
   }
-  
+
   public static GenomicRegion parse(Genome genome,
       String chr,
       int start,
@@ -1122,23 +1151,24 @@ public class GenomicRegion extends Region {
         Strand.oppositeStrand(region.mStrand));
   }
 
-  public static List<GenomicRegion> parseRegions(Genome genome, Path file) throws IOException {
+  public static List<GenomicRegion> parseRegions(Genome genome, Path file)
+      throws IOException {
     BufferedReader reader = FileUtils.newBufferedReader(file);
-    
+
     List<GenomicRegion> ret = new ArrayList<GenomicRegion>();
-    
+
     String line;
-    
+
     try {
       reader.readLine();
-      
+
       while ((line = reader.readLine()) != null) {
         ret.add(parse(genome, line));
       }
     } finally {
       reader.close();
     }
-    
+
     return ret;
   }
 }

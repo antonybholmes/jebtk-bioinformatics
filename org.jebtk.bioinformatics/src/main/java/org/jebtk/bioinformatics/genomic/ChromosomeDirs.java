@@ -281,7 +281,7 @@ public class ChromosomeDirs extends GenomeDirs implements Iterable<Chromosome> {
 
     Genome g = ret.getGenome();
     String species = g.getName().toLowerCase();
-    
+
     LOG.info("Loading chrs from {} {}...", file, g);
 
     BufferedReader reader = FileUtils.newBufferedReader(file);
@@ -308,8 +308,8 @@ public class ChromosomeDirs extends GenomeDirs implements Iterable<Chromosome> {
         int size = Integer.parseInt(tokens.get(2));
 
         Chromosome chr;
-        
-        switch(species) {
+
+        switch (species) {
         case "human":
           chr = Chromosome.newHumanChr(name, g, size);
           break;
@@ -320,7 +320,7 @@ public class ChromosomeDirs extends GenomeDirs implements Iterable<Chromosome> {
           chr = Chromosome.newChr(name, g, size);
           break;
         }
-      
+
         // System.err.println(name + " " + chr);
 
         ret.add(chr);

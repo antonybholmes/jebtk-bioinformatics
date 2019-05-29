@@ -31,15 +31,17 @@ import java.awt.Color;
 import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Deque;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
+import org.jebtk.core.collections.DefaultHashMap;
 import org.jebtk.core.collections.DefaultTreeMap;
+import org.jebtk.core.collections.IterHashMap;
 import org.jebtk.core.collections.IterMap;
-import org.jebtk.core.collections.IterTreeMap;
 import org.jebtk.core.collections.TreeSetCreator;
 import org.jebtk.core.collections.UniqueArrayListCreator;
 import org.jebtk.core.text.TextUtils;
@@ -64,14 +66,13 @@ public class GenomicElement extends GenomicRegion {
   private static final long serialVersionUID = 1L;
 
   /** The m id map. */
-  protected IterMap<String, Tag> mPropertyMap = 
-      new IterTreeMap<String, Tag>();
+  protected IterMap<String, Object> mPropertyMap = new IterHashMap<String, Object>();
 
   /** The m tags. */
-  private Set<Tag> mTags = new TreeSet<Tag>();
+  private Set<String> mTags = new TreeSet<String>();
 
   /** The m elem map. */
-  private IterMap<String, List<GenomicElement>> mElemMap = DefaultTreeMap
+  private IterMap<GenomicType, List<GenomicElement>> mElemMap = DefaultHashMap
       .create(new UniqueArrayListCreator<GenomicElement>());
 
   /** The m utr 5 p. */
@@ -85,7 +86,7 @@ public class GenomicElement extends GenomicRegion {
 
   /** The m type. */
   @JsonIgnore
-  public final String mType;
+  public final GenomicType mType;
 
   private Color mColor = Color.BLACK;
 
@@ -95,7 +96,7 @@ public class GenomicElement extends GenomicRegion {
    * @param type the type
    * @param l the l
    */
-  public GenomicElement(String type, GenomicRegion l) {
+  public GenomicElement(GenomicType type, GenomicRegion l) {
     super(l);
 
     mType = type;
@@ -108,17 +109,17 @@ public class GenomicElement extends GenomicRegion {
    * @param l the l
    * @param s the s
    */
-  public GenomicElement(String type, GenomicRegion l, Strand s) {
+  public GenomicElement(GenomicType type, GenomicRegion l, Strand s) {
     super(l, s);
 
     mType = type;
   }
 
-  public GenomicElement(String type, Chromosome chr, int start, int end) {
+  public GenomicElement(GenomicType type, Chromosome chr, int start, int end) {
     this(type, chr, start, end, Strand.SENSE);
   }
 
-  public GenomicElement(String type, Chromosome chr, int start, int end,
+  public GenomicElement(GenomicType type, Chromosome chr, int start, int end,
       Strand strand) {
     super(chr, start, end, strand);
 
@@ -131,7 +132,7 @@ public class GenomicElement extends GenomicRegion {
    * @return the type
    */
   @JsonGetter("type")
-  public String getType() {
+  public GenomicType getType() {
     return mType;
   }
 
@@ -143,7 +144,7 @@ public class GenomicElement extends GenomicRegion {
   public GenomicElement setColor(Color color) {
     return setColor(color, true);
   }
-  
+
   public GenomicElement setColor(Color color, boolean propogate) {
     setColor(this, color, propogate);
 
@@ -185,8 +186,8 @@ public class GenomicElement extends GenomicRegion {
    * @return the child types
    */
   @JsonIgnore
-  public Iterable<String> getChildTypes() {
-    return mElemMap.keySet();
+  public Iterable<GenomicType> getChildTypes() {
+    return mElemMap.keySet().stream().sorted().collect(Collectors.toList());
   }
 
   /**
@@ -196,12 +197,12 @@ public class GenomicElement extends GenomicRegion {
    * @return the children
    */
   @JsonIgnore
-  public Iterable<GenomicElement> getChildren(String type) {
+  public Iterable<GenomicElement> getChildren(GenomicType type) {
     return mElemMap.get(type);
   }
-  
+
   @JsonIgnore
-  public Set<Entry<String, List<GenomicElement>>> getChildren() {
+  public Set<Entry<GenomicType, List<GenomicElement>>> getChildren() {
     return mElemMap.entrySet();
   }
 
@@ -212,9 +213,13 @@ public class GenomicElement extends GenomicRegion {
    * @return the child count
    */
   @JsonIgnore
-  public int getChildCount(String type) {
+  public int getChildCount(GenomicType type) {
     return mElemMap.get(type).size();
   }
+
+  //public Iterable<Entry<String, String>> getPropertyNames() {
+  //  return mPropertyMap;
+  //}
 
   /**
    * Sets the id.
@@ -224,39 +229,36 @@ public class GenomicElement extends GenomicRegion {
    * @return the genomic entity
    */
   public GenomicElement setProperty(String name, String value) {
-    return setProperty(name, new TextTag(value));
+    mPropertyMap.put(name, value);
+
+    return this;
   }
-  
+
   public GenomicElement setProperty(String name, int value) {
-    return setProperty(name, new IntTag(value));
+    mPropertyMap.put(name, value);
+
+    return this;
   }
-  
+
   public GenomicElement setProperty(String name, double value) {
-    return setProperty(name, new DoubleTag(value));
+    mPropertyMap.put(name, value);
+
+    return this;
   }
-  
+
+  /*
   public GenomicElement setProperty(String name, Tag property) {
     if (TextUtils.isNullOrEmpty(name)) {
       return this;
     }
-    
+
     name = Tag.format(name);
-    
+
     mPropertyMap.put(name, property);
-    
+
     return this;
   }
-
-
-  /**
-   * Gets the ids.
-   *
-   * @return the ids
    */
-  @JsonGetter("properties")
-  public IterMap<String, Tag> getProperties() {
-    return mPropertyMap;
-  }
 
   /**
    * Returns true if the entity contains an id with a given name.
@@ -277,7 +279,11 @@ public class GenomicElement extends GenomicRegion {
    */
   @JsonIgnore
   public Iterable<String> getPropertyNames() {
-    return mPropertyMap.keySet();
+    return mPropertyMap.entrySet()
+        .stream()
+        .sorted(Map.Entry.comparingByKey())
+        .map(e -> e.getKey())
+        .collect(Collectors.toList());
   }
 
   /**
@@ -297,38 +303,40 @@ public class GenomicElement extends GenomicRegion {
    * @return the id
    */
   @JsonIgnore
-  public Tag getProperty(GeneIdType type) {
+  public String getProperty(GeneIdType type) {
     return getProperty(type.toString());
   }
 
   /**
    * Return a property. If the property does not exist, a property with the
-   * string value of 'n/a' will be automatically created so that a null is
-   * never returned.
+   * string value of 'n/a' will be automatically created so that a null is never
+   * returned.
    *
    * @param type the type
    * @return the id
    */
-  public Tag getProperty(String name) {
+  private Object _getProperty(String name) {
     name = Tag.format(name);
-    
-    //System.err.println("tag:" + name);
-    
+
+    // System.err.println("tag:" + name);
+
     if (!mPropertyMap.containsKey(name)) {
       setProperty(name, TextUtils.NA);
     }
-    
+
     return mPropertyMap.get(name);
   }
-  
-  /**
-   * Return a string version of the property.
-   * 
-   * @param name
-   * @return
-   */
-  public String getProp(String name) {
-    return getProperty(name).toString();
+
+  public String getProperty(String name) {
+    return _getProperty(name).toString();
+  }
+
+  public int getInt(String name) {
+    return (Integer) _getProperty(name);
+  }
+
+  public double getDouble(String name) {
+    return (Double) _getProperty(name);
   }
 
   /**
@@ -339,26 +347,22 @@ public class GenomicElement extends GenomicRegion {
    * @return
    */
   public GenomicElement addTag(String tag) {
-    mTags.add(new TextTag(tag));
+    mTags.add(tag);
 
     return this;
   }
-  
+
   public GenomicElement addTag(int tag) {
-    mTags.add(new IntTag(tag));
-
-    return this;
+    return addTag(Integer.toString(tag));
   }
-  
+
   public GenomicElement addTag(double tag) {
-    mTags.add(new DoubleTag(tag));
-
-    return this;
+    return addTag(Double.toString(tag));
   }
-  
-  public GenomicElement addTags(Collection<Tag> tags) {
+
+  public GenomicElement addTags(Collection<String> tags) {
     mTags.addAll(tags);
-    
+
     return this;
   }
 
@@ -368,7 +372,7 @@ public class GenomicElement extends GenomicRegion {
    * @return the tags
    */
   @JsonGetter("tags")
-  public Set<Tag> getTags() {
+  public Iterable<String> getTags() {
     return mTags;
   }
 
@@ -382,9 +386,9 @@ public class GenomicElement extends GenomicRegion {
     return mTags.size();
   }
 
-
   /**
-   * Gets the tss.
+   * Returns the element with the start and end based on orientation so that
+   * the start may be after the end
    *
    * @return the tss
    */
@@ -392,7 +396,7 @@ public class GenomicElement extends GenomicRegion {
   public GenomicRegion getTss() {
     return tssRegion(this);
   }
-  
+
   /*
    * @Override public boolean equals(Object o) { if (o instanceof GenomicEntity)
    * { return toString().equals(((GenomicEntity) o).toString()); } else { return
@@ -437,24 +441,15 @@ public class GenomicElement extends GenomicRegion {
       buffer.append(getType());
       buffer.append(" ").append(super.toString());
       buffer.append(" ").append(getStrand());
+      buffer.append(" [");
 
-      if (mPropertyMap.size() > 0) {
-        buffer.append(" [");
+      buffer.append(mPropertyMap.entrySet()
+          .stream()
+          .sorted(Map.Entry.comparingByKey())
+          .map(entry -> entry.getKey() + "=" + entry.getValue())
+          .collect(Collectors.joining(", ")));
 
-        Iterator<Entry<String, Tag>> iter = mPropertyMap.iterator();
-
-        while (iter.hasNext()) {
-          String id = iter.next().getKey();
-
-          buffer.append(id).append("=").append(getProperty(id));
-
-          if (iter.hasNext()) {
-            buffer.append(", ");
-          }
-        }
-
-        buffer.append("]");
-      }
+      buffer.append("]");
 
       mText = buffer.toString();
     }
@@ -467,7 +462,9 @@ public class GenomicElement extends GenomicRegion {
   //
 
   /**
-   * Tss region.
+   * Returns the correct start based on the strand. Coordinates are stored
+   * on the forward strand, so elements on the reverse strand must return
+   * their end as their start.
    *
    * @param gene the gene
    * @return the genomic region
@@ -516,12 +513,14 @@ public class GenomicElement extends GenomicRegion {
 
   /**
    * To map.
+   * 
    * @param <T>
    *
    * @param genes the genes
    * @return the iter map
    */
-  public static <T extends GenomicElement> IterMap<Chromosome, Set<GenomicElement>> toMap(Collection<T> genes) {
+  public static <T extends GenomicElement> IterMap<Chromosome, Set<GenomicElement>> toMap(
+      Collection<T> genes) {
     IterMap<Chromosome, Set<GenomicElement>> ret = DefaultTreeMap
         .create(new TreeSetCreator<GenomicElement>());
 
@@ -543,17 +542,18 @@ public class GenomicElement extends GenomicRegion {
       Color color,
       boolean propogate) {
     Deque<GenomicElement> stack = new ArrayDeque<GenomicElement>();
-    
+
     stack.push(element);
-    
+
     GenomicElement e;
-    
+
     while (!stack.isEmpty()) {
       e = stack.pop();
       e.mColor = color;
-      
+
       if (propogate) {
-        for (Entry<String, List<GenomicElement>> item : element.getChildren()) {
+        for (Entry<GenomicType, List<GenomicElement>> item : element
+            .getChildren()) {
           for (GenomicElement c : item.getValue()) {
             stack.push(c);
           }
@@ -562,7 +562,6 @@ public class GenomicElement extends GenomicRegion {
     }
   }
 
-  
   /**
    * Get the distance from the mid point of a region to a gene accounting for
    * the strand.
@@ -592,4 +591,12 @@ public class GenomicElement extends GenomicRegion {
       return gene.getEnd() - mid;
     }
   }
+
+  public Iterable<Entry<String, Object>> getProperties() {
+    return mPropertyMap.entrySet().stream()
+        .sorted(Map.Entry.comparingByKey())
+        .collect(Collectors.toList());
+  }
+
+
 }

@@ -47,6 +47,7 @@ import org.jebtk.bioinformatics.genomic.Genome;
 import org.jebtk.bioinformatics.genomic.GenomeService;
 import org.jebtk.bioinformatics.genomic.GenomicElement;
 import org.jebtk.bioinformatics.genomic.GenomicRegion;
+import org.jebtk.bioinformatics.genomic.GenomicType;
 import org.jebtk.core.io.FileUtils;
 import org.jebtk.core.io.Io;
 import org.jebtk.core.io.PathUtils;
@@ -141,7 +142,8 @@ public class Bed extends UCSCTrack {
    * @throws IOException Signals that an I/O exception has occurred.
    * @throws ParseException the parse exception
    */
-  public static UCSCTrack parseTrack(String type, Path file) throws IOException {
+  public static UCSCTrack parseTrack(GenomicType type, Path file)
+      throws IOException {
     return parseTracks(type, file).get(0);
   }
 
@@ -152,7 +154,8 @@ public class Bed extends UCSCTrack {
    * @return the list
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static List<UCSCTrack> parseTracks(String type, Path file) throws IOException {
+  public static List<UCSCTrack> parseTracks(GenomicType type, Path file)
+      throws IOException {
     LOG.info("Parsing BED file {}...", file);
 
     BufferedReader reader = FileUtils.newBufferedReader(file);
@@ -171,7 +174,7 @@ public class Bed extends UCSCTrack {
    * @return the list
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static List<UCSCTrack> parseTracks(String type,
+  public static List<UCSCTrack> parseTracks(GenomicType type,
       Genome genome,
       String defaultName,
       BufferedReader reader) throws IOException {
@@ -293,7 +296,8 @@ public class Bed extends UCSCTrack {
    * @return the bed
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static Bed parseBedGraph(String type, Path file) throws IOException {
+  public static Bed parseBedGraph(GenomicType type, Path file)
+      throws IOException {
     return parseBedGraphs(type, file).get(0);
   }
 
@@ -304,7 +308,8 @@ public class Bed extends UCSCTrack {
    * @return the list
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static List<Bed> parseBedGraphs(String type, Path file) throws IOException {
+  public static List<Bed> parseBedGraphs(GenomicType type, Path file)
+      throws IOException {
     LOG.info("Parsing Bedgraph as BED file {}...", file);
 
     BufferedReader reader = Files.newBufferedReader(file,
@@ -547,7 +552,9 @@ public class Bed extends UCSCTrack {
    * @param regions the regions
    * @return the bed
    */
-  public static Bed create(String type, String name, Collection<GenomicRegion> regions) {
+  public static Bed create(GenomicType type,
+      String name,
+      Collection<GenomicRegion> regions) {
 
     Bed bed = new Bed(name);
 

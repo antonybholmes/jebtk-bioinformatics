@@ -149,7 +149,7 @@ public class GTB1Parser extends GTBParser {
 
       // Create the gene
 
-      gene = addAttributes(GenomicEntity.TRANSCRIPT,
+      gene = addAttributes(GenomicType.TRANSCRIPT,
           GenomicRegion.create(chr, start, end, strand),
           attributeMap);
 
@@ -163,7 +163,7 @@ public class GTB1Parser extends GTBParser {
           GenomicRegion region = GenomicRegion
               .create(chr, starts.get(i) + 1, ends.get(i), strand);
 
-          GenomicEntity exon = addAttributes(GenomicEntity.EXON,
+          GenomicEntity exon = addAttributes(GenomicType.EXON,
               region,
               attributeMap);
 

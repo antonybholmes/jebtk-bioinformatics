@@ -10,16 +10,16 @@ import org.jebtk.bioinformatics.genomic.Chromosome;
 import org.jebtk.bioinformatics.genomic.Genome;
 
 public class RadixReader extends BinaryReader {
-  public static final int HEADER_BYTES_OFFSET = GEBReader.WINDOW_BYTE_OFFSET + GEBReader.INT_BYTES;
-  
+  public static final int HEADER_BYTES_OFFSET = GEBReader.WINDOW_BYTE_OFFSET
+      + GEBReader.INT_BYTES;
+
   public static final int RADIX_TREE_PREFIX_BYTES = 1 + GEBReader.INT_BYTES;
 
-  
   public RadixReader(Path dir, String prefix, Genome genome, int window)
       throws IOException {
     super(dir, prefix, genome, window);
   }
-  
+
   @Override
   protected Path getFileName(Chromosome chr) {
     return getFileName(mPrefix);
@@ -28,7 +28,7 @@ public class RadixReader extends BinaryReader {
   public List<Integer> elementAddresses(String id) throws IOException {
     return elementAddresses(id, false);
   }
-  
+
   public List<Integer> elementAddresses(String id, boolean exact)
       throws IOException {
 
@@ -42,8 +42,8 @@ public class RadixReader extends BinaryReader {
     int n = 0;
 
     boolean found = false;
-    
-    //int m = 0;
+
+    // int m = 0;
 
     for (char c : ca) {
 
@@ -56,7 +56,7 @@ public class RadixReader extends BinaryReader {
       for (int i = 0; i < n; ++i) {
         leafc = (char) read(); // readByte();
         address = readInt();
-        
+
         if (leafc == c) {
           // we did find a match so keep going
           found = true;
@@ -69,7 +69,7 @@ public class RadixReader extends BinaryReader {
         break;
       }
     }
-    
+
     if (!found) {
       return Collections.emptyList();
     }
@@ -89,20 +89,20 @@ public class RadixReader extends BinaryReader {
     // the gene addressses so we can get them
 
     n = readInt();
-    
+
     List<Integer> ret = new ArrayList<Integer>(n);
 
     for (int i = 0; i < n; ++i) {
       ret.add(readInt());
     }
-    
+
     if (exact) {
       return ret;
     }
-    
+
     // Add the partial
     n = readInt();
-    
+
     for (int i = 0; i < n; ++i) {
       ret.add(readInt());
     }
@@ -110,9 +110,8 @@ public class RadixReader extends BinaryReader {
     // Return the number of genes we found
     return ret;
   }
-  
+
   public static final Path getFileName(String prefix) {
     return GEBReader.getFileName("radix", prefix);
   }
 }
-

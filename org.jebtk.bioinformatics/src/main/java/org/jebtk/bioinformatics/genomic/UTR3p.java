@@ -8,6 +8,6 @@ public class UTR3p extends GenomicEntity {
   private static final long serialVersionUID = 1L;
 
   public UTR3p(GenomicRegion region) {
-    super(UTR_3P, region);
+    super(GenomicType.UTR_3P, region);
   }
 }

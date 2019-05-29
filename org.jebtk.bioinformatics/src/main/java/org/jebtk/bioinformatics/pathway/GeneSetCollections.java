@@ -94,24 +94,20 @@ public class GeneSetCollections extends SetModel<GeneSetCollection> {
   }
 
   /*
-  public static GeneSetCollections loadFromResources() throws IOException {
-    GeneSetCollections model = new GeneSetCollections();
-
-    for (String res : Resources.getInstance()) {
-      if (!res.contains(".gmt")) {
-        continue;
-      }
-
-      String name = res.toLowerCase().replaceFirst("^.+\\/", "")
-          .replaceFirst("\\.symbols.+", "");
-
-      GeneSetCollection collection = GeneSetCollection
-          .parseGMT(Resources.getResInputStream(res), name);
-
-      model.add(collection);
-    }
-
-    return model;
-  }
-  */
+   * public static GeneSetCollections loadFromResources() throws IOException {
+   * GeneSetCollections model = new GeneSetCollections();
+   * 
+   * for (String res : Resources.getInstance()) { if (!res.contains(".gmt")) {
+   * continue; }
+   * 
+   * String name = res.toLowerCase().replaceFirst("^.+\\/", "")
+   * .replaceFirst("\\.symbols.+", "");
+   * 
+   * GeneSetCollection collection = GeneSetCollection
+   * .parseGMT(Resources.getResInputStream(res), name);
+   * 
+   * model.add(collection); }
+   * 
+   * return model; }
+   */
 }

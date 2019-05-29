@@ -237,8 +237,7 @@ public class ResMatrix extends DataFrame {
       for (int i = 0; i < matrix.getRows(); ++i) {
         writer.write(matrix.getIndex().getText(names.get(0), i));
         writer.write(TextUtils.TAB_DELIMITER);
-        writer
-            .write(matrix.getIndex().getText(names.get(names.size() - 1), i));
+        writer.write(matrix.getIndex().getText(names.get(names.size() - 1), i));
 
         for (int j = 0; j < matrix.getCols(); ++j) {
           if (i > 0) {
