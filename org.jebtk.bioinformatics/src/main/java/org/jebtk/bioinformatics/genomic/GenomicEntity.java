@@ -87,13 +87,13 @@ public class GenomicEntity extends GenomicElement implements NameProperty {
     super(type, l, s);
   }
 
-  public GenomicEntity(GenomicType type, Chromosome chr, int start, int end) {
-    this(type, chr, start, end, Strand.SENSE);
+  public GenomicEntity(GenomicType type, Genome genome, Chromosome chr, int start, int end) {
+    this(type, genome, chr, start, end, Strand.SENSE);
   }
 
-  public GenomicEntity(GenomicType type, Chromosome chr, int start, int end,
+  public GenomicEntity(GenomicType type, Genome genome, Chromosome chr, int start, int end,
       Strand strand) {
-    super(type, chr, start, end, strand);
+    super(type, genome, chr, start, end, strand);
   }
 
   /**

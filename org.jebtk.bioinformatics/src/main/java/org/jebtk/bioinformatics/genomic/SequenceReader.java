@@ -89,9 +89,9 @@ public abstract class SequenceReader implements NameProperty {
    * @return the sequence
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public SequenceRegion getSequence(Chromosome chr, int start, int end)
+  public SequenceRegion getSequence(Genome genome, Chromosome chr, int start, int end)
       throws IOException {
-    return getSequence(chr, start, end, true, RepeatMaskType.UPPERCASE);
+    return getSequence(genome, chr, start, end, true, RepeatMaskType.UPPERCASE);
   }
 
   /**
@@ -106,12 +106,13 @@ public abstract class SequenceReader implements NameProperty {
    * @return the sequence
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public SequenceRegion getSequence(Chromosome chr,
+  public SequenceRegion getSequence(Genome genome,
+      Chromosome chr,
       int start,
       int end,
       boolean displayUpper,
       RepeatMaskType repeatMaskType) throws IOException {
-    return getSequence(new GenomicRegion(chr, start, end),
+    return getSequence(new GenomicRegion(genome, chr, start, end),
         displayUpper,
         repeatMaskType);
   }

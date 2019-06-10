@@ -115,13 +115,13 @@ public class GenomicElement extends GenomicRegion {
     mType = type;
   }
 
-  public GenomicElement(GenomicType type, Chromosome chr, int start, int end) {
-    this(type, chr, start, end, Strand.SENSE);
+  public GenomicElement(GenomicType type, Genome genome, Chromosome chr, int start, int end) {
+    this(type, genome, chr, start, end, Strand.SENSE);
   }
 
-  public GenomicElement(GenomicType type, Chromosome chr, int start, int end,
+  public GenomicElement(GenomicType type, Genome genome, Chromosome chr, int start, int end,
       Strand strand) {
-    super(chr, start, end, strand);
+    super(genome, chr, start, end, strand);
 
     mType = type;
   }
@@ -475,9 +475,9 @@ public class GenomicElement extends GenomicRegion {
     }
 
     if (gene.mStrand == Strand.SENSE) {
-      return new GenomicRegion(gene.mChr, gene.mStart, gene.mStart);
+      return new GenomicRegion(gene.mGenome, gene.mChr, gene.mStart, gene.mStart);
     } else {
-      return new GenomicRegion(gene.mChr, gene.mEnd, gene.mEnd);
+      return new GenomicRegion(gene.mGenome, gene.mChr, gene.mEnd, gene.mEnd);
     }
   }
 

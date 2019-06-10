@@ -106,6 +106,6 @@ public class BedGraphElement extends GenomicElement {
     int end = Integer.parseInt(tokens.get(2));
     double value = Double.parseDouble(tokens.get(3));
 
-    return new BedGraphElement(type, new GenomicRegion(chr, start, end), value);
+    return new BedGraphElement(type, new GenomicRegion(genome, chr, start, end), value);
   }
 }

@@ -146,7 +146,7 @@ public class ChromosomeDirs extends GenomeDirs implements Iterable<Chromosome> {
     String fc = formatKey(chr);
 
     if (!mChrMap.containsKey(fc)) {
-      add(Chromosome.newChr(chr, mGenome));
+      add(Chromosome.newChr(chr));
     }
 
     Chromosome ret = mChrMap.get(fc);
@@ -311,13 +311,13 @@ public class ChromosomeDirs extends GenomeDirs implements Iterable<Chromosome> {
 
         switch (species) {
         case "human":
-          chr = Chromosome.newHumanChr(name, g, size);
+          chr = Chromosome.newHumanChr(name, size);
           break;
         case "mouse":
-          chr = Chromosome.newMouseChr(name, g, size);
+          chr = Chromosome.newMouseChr(name, size);
           break;
         default:
-          chr = Chromosome.newChr(name, g, size);
+          chr = Chromosome.newChr(name, size);
           break;
         }
 

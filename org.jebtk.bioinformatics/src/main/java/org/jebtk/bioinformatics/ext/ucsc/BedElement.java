@@ -129,6 +129,8 @@ public class BedElement extends GenomicElement implements NameProperty {
 
     // convert first part to chromosome (replacing x,y and m) {
     Chromosome chr = GenomeService.getInstance().chr(genome, tokens.get(0));
+    
+    //System.err.println(chr + " " + chr.mId);
 
     if (chr == null) {
       return null;
@@ -151,7 +153,7 @@ public class BedElement extends GenomicElement implements NameProperty {
       }
 
       GenomicElement bed = new BedElement(type,
-          new GenomicRegion(chr, start, end, strand)).setProperty("name", name)
+          new GenomicRegion(genome, chr, start, end, strand)).setProperty("name", name)
               .setColor(color);
 
       if (tokens.size() > 11) {
@@ -165,7 +167,7 @@ public class BedElement extends GenomicElement implements NameProperty {
             .toInt(TextUtils.commaSplit(tokens.get(11)));
 
         for (int i = 0; i < count; ++i) {
-          bed.addChild(new Exon(chr, start + starts.get(i),
+          bed.addChild(new Exon(genome, chr, start + starts.get(i),
               start + starts.get(i) + sizes.get(i)));
         }
       }
@@ -174,10 +176,10 @@ public class BedElement extends GenomicElement implements NameProperty {
     } else if (tokens.size() > 3) {
       String name = tokens.get(3);
 
-      return new BedElement(type, new GenomicRegion(chr, start, end))
+      return new BedElement(type, new GenomicRegion(genome, chr, start, end))
           .setProperty("name", name);
     } else {
-      return new BedElement(type, new GenomicRegion(chr, start, end));
+      return new BedElement(type, new GenomicRegion(genome, chr, start, end));
     }
   }
 

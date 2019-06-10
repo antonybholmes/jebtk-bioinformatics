@@ -90,7 +90,7 @@ public class GFF3Parser extends GeneParser {
 
         attributeMap = parseAttributes(tokens.get(8));
 
-        GenomicRegion region = GenomicRegion.create(chr, start, end, strand);
+        GenomicRegion region = GenomicRegion.create(genome, chr, start, end, strand);
 
         switch (type) {
         case GENE:

@@ -59,8 +59,7 @@ public class Chromosome
   /**
    * Represents an invalid chromosome.
    */
-  public static final Chromosome NO_CHR = new Chromosome(-1, "chrU", "U", null,
-      -1);
+  public static final Chromosome NO_CHR = new Chromosome(-1, "chrU", "U", -1);
 
   public static final ChrParser DEFAULT_PARSER = new ChrParser();
 
@@ -82,7 +81,7 @@ public class Chromosome
 
   public final int mSize;
 
-  public final Genome mGenome;
+  //public final Genome mGenome;
 
   /**
    * 
@@ -92,8 +91,7 @@ public class Chromosome
    * @param genome Genome which this chromosome belongs.
    * @param size Size of chromosome in bp.
    */
-  private Chromosome(int id, String chr, String shortName, Genome genome,
-      int size) {
+  private Chromosome(int id, String chr, String shortName, int size) {
     // mSpecies = parser.getSpecies();
 
     // The suffix of the chromosome without the chr prefix.
@@ -102,7 +100,7 @@ public class Chromosome
     mShortName = shortName;
     mSize = size;
 
-    mGenome = genome;
+    //mGenome = genome;
   }
 
   /*
@@ -138,9 +136,9 @@ public class Chromosome
     return mShortName;
   }
 
-  public Genome getGenome() {
-    return mGenome;
-  }
+  //public Genome getGenome() {
+  //  return mGenome;
+  //}
 
   /**
    * Returns the size of the chromosome in bp or -1 if this has not been
@@ -174,13 +172,13 @@ public class Chromosome
 
     // Check if genomes match and if not sort by genome
 
-    if (mGenome != null && c.mGenome != null) {
-      int ret = mGenome.compareTo(c.mGenome);
-
-      if (ret != 0) {
-        return ret;
-      }
-    }
+//    if (mGenome != null && c.mGenome != null) {
+//      int ret = mGenome.compareTo(c.mGenome);
+//
+//      if (ret != 0) {
+//        return ret;
+//      }
+//    }
 
     // ret = mChr.compareTo(c.mChr);
 
@@ -192,26 +190,34 @@ public class Chromosome
     // if (mId != -1 && c.mId != -1) {
     // Compare by id for numerical sorting
 
-    if ((mId < MAX_NUM_CHR && c.mId < MAX_NUM_CHR)
-        || (mId >= MAX_NUM_CHR && c.mId >= MAX_NUM_CHR)) {
-
-      // If both ids are in the lower 24 bits (numerical chr) or the upper 8
-      // bits (X, Y, M etc) then do simple numerical comparison.
-
-      if (mId > c.mId) {
-        return 1;
-      } else if (mId < c.mId) {
-        return -1;
-      } else {
-        return 0;
-      }
-    } else if (mId < MAX_NUM_CHR) {
-      // c is a letter so this chr is numerical and should come first.
+    if (mId > c.mId) {
+      return 1;
+    } else if (mId < c.mId) {
       return -1;
     } else {
-      // This chr is a letter so c is numerical so should come second.
-      return 1;
+      return mChr.compareTo(c.mChr);
     }
+    
+//    if ((mId < MAX_NUM_CHR && c.mId < MAX_NUM_CHR)
+//        || (mId >= MAX_NUM_CHR && c.mId >= MAX_NUM_CHR)) {
+//
+//      // If both ids are in the lower 24 bits (numerical chr) or the upper 8
+//      // bits (X, Y, M etc) then do simple numerical comparison.
+//
+//      if (mId > c.mId) {
+//        return 1;
+//      } else if (mId < c.mId) {
+//        return -1;
+//      } else {
+//        return 0;
+//      }
+//    } else if (mId < MAX_NUM_CHR) {
+//      // c is a letter so this chr is numerical and should come first.
+//      return -1;
+//    } else {
+//      // This chr is a letter so c is numerical so should come second.
+//      return 1;
+//    }
     // } else {
     // If chr has a non numerical suffix (e.g. chrX), do a conventional
     // text comparison
@@ -279,48 +285,46 @@ public class Chromosome
    * @return the short name
    */
   public static String getShortName(String chr) {
-    return chr.toUpperCase()
+    String ret = chr.toUpperCase()
         // .replace("CHROMOSOME", TextUtils.EMPTY_STRING)
         .replace("CHR_", TextUtils.EMPTY_STRING)
         .replace("CHR-", TextUtils.EMPTY_STRING)
         .replace("CHR", TextUtils.EMPTY_STRING);
     // .replaceFirst("P.*", TextUtils.EMPTY_STRING)
     // .replaceFirst("Q.*", TextUtils.EMPTY_STRING);
+    
+    if (TextUtils.isNumber(ret)) {
+      // In case someone writes 'chr1.0', attempt to convert floats to ints
+      ret = Integer.toString((int)Double.parseDouble(ret));
+    }
+    
+    return ret;
   }
-
+  
   public static Chromosome newChr(String chr) {
-    return newChr(chr, null);
-  }
-
-  public static Chromosome newChr(String chr, Genome genome) {
-    return newChr(chr, genome, -1);
+    return newChr(chr, -1);
   }
 
   public static Chromosome newChr(String chr, int size) {
-    return newChr(chr, null, size);
+    return newHumanChr(chr, size);
   }
 
-  public static Chromosome newChr(String chr, Genome genome, int size) {
-    return newChr(chr, genome, size, DEFAULT_PARSER);
+  public static Chromosome newHumanChr(String chr, int size) {
+    return newChr(chr, size, HUMAN_PARSER);
   }
 
-  public static Chromosome newHumanChr(String chr, Genome genome, int size) {
-    return newChr(chr, genome, size, HUMAN_PARSER);
-  }
-
-  public static Chromosome newMouseChr(String chr, Genome genome, int size) {
-    return newChr(chr, genome, size, MOUSE_PARSER);
+  public static Chromosome newMouseChr(String chr, int size) {
+    return newChr(chr, size, MOUSE_PARSER);
   }
 
   public static Chromosome newChr(String chr,
-      Genome genome,
       int size,
       ChrParser parser) {
     String shortName = getShortName(chr);
     int id = parser.getId(shortName);
     chr = "chr" + shortName;
 
-    return new Chromosome(id, chr, shortName, genome, size);
+    return new Chromosome(id, chr, shortName, size);
 
   }
 }

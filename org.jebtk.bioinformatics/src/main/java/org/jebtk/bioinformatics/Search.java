@@ -32,6 +32,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jebtk.bioinformatics.genomic.Chromosome;
+import org.jebtk.bioinformatics.genomic.Genome;
 import org.jebtk.bioinformatics.search.Feature;
 import org.jebtk.core.TableData;
 
@@ -428,9 +430,11 @@ public class Search {
         }
 
         Feature feature = new Feature(
-            featureColumn != -1 ? row.get(featureColumn) : null, null,
-            Integer.parseInt(row.get(startColumn)),
-            Integer.parseInt(row.get(endColumn)));
+            featureColumn != -1 ? row.get(featureColumn) : null, 
+                Genome.NO_GENOME,
+                Chromosome.NO_CHR,
+                Integer.parseInt(row.get(startColumn)),
+                Integer.parseInt(row.get(endColumn)));
 
         // if (group == 13) {
         // System.out.println("Feature: " + Feature.start + " " + Feature.end +

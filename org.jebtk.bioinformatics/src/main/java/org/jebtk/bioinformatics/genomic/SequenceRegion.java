@@ -40,6 +40,11 @@ import org.jebtk.core.text.TextUtils;
  */
 public class SequenceRegion extends GenomicRegion {
 
+  /**
+   * 
+   */
+  private static final long serialVersionUID = 1L;
+  
   /** The m sequence. */
   private Sequence mSequence;
 
@@ -51,8 +56,8 @@ public class SequenceRegion extends GenomicRegion {
    * @param end the end
    * @param sequence the sequence
    */
-  public SequenceRegion(Chromosome chr, int start, int end, Sequence sequence) {
-    this(new GenomicRegion(chr, start, end), sequence);
+  public SequenceRegion(Genome genome, Chromosome chr, int start, int end, Sequence sequence) {
+    this(new GenomicRegion(genome, chr, start, end), sequence);
   }
 
   /**

@@ -41,6 +41,7 @@ import org.jebtk.core.collections.CollectionUtils;
 import org.jebtk.core.collections.IterHashMap;
 import org.jebtk.core.collections.IterMap;
 import org.jebtk.core.collections.UniqueArrayList;
+import org.jebtk.core.sys.SysUtils;
 
 /**
  * An extension of the fixed gap search that can perform a binary search on to
@@ -124,12 +125,13 @@ public class BinaryGapSearch<T> extends FixedGapSearch<T> {
     Map<Integer, GappedSearchFeatures<T>> features = mFeatures.get(chr);
     List<Integer> bins = mBins.get(chr);
 
+
+    //SysUtils.err().println("bins", chr, mBins.keySet());
+
+    
     if (features == null || features.size() == 0) {
       return Collections.emptyList();
     }
-
-    // System.err.println("chr " + chr + " " + start + " " + end + " " +
-    // features.size());
 
     int bs = start / mBinSize;
     int be = end / mBinSize;

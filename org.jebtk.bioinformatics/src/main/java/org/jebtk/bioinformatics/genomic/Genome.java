@@ -36,7 +36,6 @@ import org.jebtk.core.NameProperty;
 import org.jebtk.core.collections.DefaultTreeMap;
 import org.jebtk.core.collections.DefaultTreeMapCreator;
 import org.jebtk.core.collections.IterMap;
-import org.jebtk.core.collections.IterTreeMap;
 import org.jebtk.core.collections.TreeMapCreator;
 import org.jebtk.core.text.Join;
 import org.jebtk.core.text.Splitter;
@@ -51,6 +50,8 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @JsonPropertyOrder({ "name", "build", "source" })
 public class Genome implements NameProperty, Comparable<Genome> {
 
+  public static final Genome NO_GENOME = new Genome(TextUtils.NA, TextUtils.NA);
+  
   /**
    * The H g18.
    */

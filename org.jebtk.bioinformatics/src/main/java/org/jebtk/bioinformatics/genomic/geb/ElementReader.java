@@ -153,7 +153,7 @@ public class ElementReader extends BinaryReader {
     int start = readInt();
     int end = readInt();
 
-    return GenomicRegion.create(chr, start, end);
+    return GenomicRegion.create(mGenome, chr, start, end);
   }
 
   private Chromosome readChr() throws IOException {

@@ -113,6 +113,6 @@ public class Cytoband extends GenomicElement {
     String name = tokens.get(3);
     String stain = tokens.get(4);
 
-    return new Cytoband(new GenomicRegion(chromosome, start, end), name, stain);
+    return new Cytoband(new GenomicRegion(genome, chromosome, start, end), name, stain);
   }
 }

@@ -59,7 +59,7 @@ public class WebChromReader implements ChromosomeReader {
         chrJson = json.get(i);
 
         Chromosome chr = Chromosome
-            .newChr(chrJson.getString("chr"), mGenome, chrJson.getInt("bp"));
+            .newChr(chrJson.getString("chr"), chrJson.getInt("bp"));
 
         mChrs.add(chr);
       }

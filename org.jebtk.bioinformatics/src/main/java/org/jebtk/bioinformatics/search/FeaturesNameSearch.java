@@ -100,6 +100,7 @@ public class FeaturesNameSearch implements Iterable<Feature> {
           List<String> row = TextUtils.fastSplitRemoveQuotes(line);
 
           Feature feature = new Feature(row.get(0),
+              GenomeService.getInstance().guessGenome(file),
               GenomeService.getInstance().guessChr(file, row.get(1)),
               Integer.parseInt(row.get(2)), Integer.parseInt(row.get(3)));
 

@@ -14,11 +14,11 @@ public class Exon extends GenomicEntity {
     super(GenomicType.EXON, region, strand);
   }
 
-  public Exon(Chromosome chr, int start, int end) {
-    super(GenomicType.EXON, chr, start, end);
+  public Exon(Genome genome, Chromosome chr, int start, int end) {
+    super(GenomicType.EXON, genome, chr, start, end);
   }
 
-  public Exon(Chromosome chr, int start, int end, Strand strand) {
-    super(GenomicType.EXON, chr, start, end, strand);
+  public Exon(Genome genome, Chromosome chr, int start, int end, Strand strand) {
+    super(GenomicType.EXON, genome, chr, start, end, strand);
   }
 }

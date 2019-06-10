@@ -618,12 +618,12 @@ public class GFBGenes extends SingleGenesDB {
 
   private GenomicRegion readLocation(RandomAccessFile reader)
       throws IOException {
-    Chromosome chr = Chromosome.newChr(readVarchar(reader), mGenome);
+    Chromosome chr = Chromosome.newChr(readVarchar(reader));
 
     int start = reader.readInt();
     int end = reader.readInt();
 
-    return GenomicRegion.create(chr, start, end);
+    return GenomicRegion.create(mGenome, chr, start, end);
   }
 
   private Strand readStrand(RandomAccessFile reader) throws IOException {

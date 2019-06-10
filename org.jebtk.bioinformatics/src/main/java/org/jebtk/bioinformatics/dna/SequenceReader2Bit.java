@@ -38,6 +38,7 @@ import org.jebtk.bioinformatics.gapsearch.BinaryGapSearch;
 import org.jebtk.bioinformatics.gapsearch.BinarySearch;
 import org.jebtk.bioinformatics.gapsearch.GappedSearchFeatures;
 import org.jebtk.bioinformatics.genomic.Chromosome;
+import org.jebtk.bioinformatics.genomic.Genome;
 import org.jebtk.bioinformatics.genomic.GenomicRegion;
 import org.jebtk.bioinformatics.genomic.RepeatMaskType;
 import org.jebtk.bioinformatics.genomic.Sequence;
@@ -99,14 +100,15 @@ public class SequenceReader2Bit extends ChrSequenceReader {
 
       mFileMap.put(chr, file);
 
-      loadMaskData(chr, file);
+      loadMaskData(region.mGenome, chr, file);
     }
 
     return new SequenceRegion(region,
         getSequence2Bit(mFileMap.get(chr),
+            region.mGenome, 
             chr,
-            region.getStart(),
-            region.getEnd(),
+            region.mStart,
+            region.mEnd,
             mOffsetMap.get(chr),
             displayUpper,
             repeatMaskType));
@@ -119,7 +121,7 @@ public class SequenceReader2Bit extends ChrSequenceReader {
    * @param file the file
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  private void loadMaskData(Chromosome chr, Path file) throws IOException {
+  private void loadMaskData(Genome genome, Chromosome chr, Path file) throws IOException {
     // TODO Auto-generated method stub
 
     DataInputStream in = FileUtils.newDataInputStream(file);
@@ -134,7 +136,7 @@ public class SequenceReader2Bit extends ChrSequenceReader {
       int nc = in.readInt();
 
       for (int i = 0; i < nc; ++i) {
-        GenomicRegion region = new GenomicRegion(chr, in.readInt(),
+        GenomicRegion region = new GenomicRegion(genome, chr, in.readInt(),
             in.readInt());
 
         mNMap.add(region, region);
@@ -143,7 +145,7 @@ public class SequenceReader2Bit extends ChrSequenceReader {
       int mc = in.readInt();
 
       for (int i = 0; i < mc; ++i) {
-        GenomicRegion region = new GenomicRegion(chr, in.readInt(),
+        GenomicRegion region = new GenomicRegion(genome, chr, in.readInt(),
             in.readInt());
 
         mMaskMap.add(region, region);
@@ -169,6 +171,7 @@ public class SequenceReader2Bit extends ChrSequenceReader {
    * @throws IOException Signals that an I/O exception has occurred.
    */
   public Sequence getSequence2Bit(Path Path,
+      Genome genome,
       Chromosome chr,
       int start,
       int end,
@@ -219,7 +222,7 @@ public class SequenceReader2Bit extends ChrSequenceReader {
 
       char c = toChar(v); // , repeatMaskType);
 
-      GenomicRegion testRegion = new GenomicRegion(chr, s, s);
+      GenomicRegion testRegion = new GenomicRegion(genome, chr, s, s);
 
       //
       // Determine if N

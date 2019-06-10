@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.jebtk.bioinformatics.genomic.Chromosome;
+import org.jebtk.bioinformatics.genomic.Genome;
 import org.jebtk.bioinformatics.genomic.GenomicRegion;
 import org.jebtk.bioinformatics.genomic.Strand;
 
@@ -111,7 +112,8 @@ public class SamUtils {
    * @return the list
    * @throws ParseException the parse exception
    */
-  public static List<GenomicRegion> parseCigar(Chromosome chr,
+  public static List<GenomicRegion> parseCigar(Genome genome,
+      Chromosome chr,
       int start,
       final String cigar) {
 
@@ -129,7 +131,7 @@ public class SamUtils {
         // current start
         end = start + Integer.parseInt(buffer.toString()) - 1;
 
-        locations.add(GenomicRegion.create(chr, start, end));
+        locations.add(GenomicRegion.create(genome, chr, start, end));
 
         // The new start is advanced one beyond the end
         start = end + 1;

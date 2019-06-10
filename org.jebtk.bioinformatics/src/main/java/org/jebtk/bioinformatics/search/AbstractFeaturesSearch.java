@@ -48,7 +48,7 @@ public abstract class AbstractFeaturesSearch {
   /**
    * The feature by name.
    */
-  protected Map<String, Feature> featureByName = new HashMap<String, Feature>();
+  protected Map<String, Feature> mFeatureByName = new HashMap<String, Feature>();
 
   /**
    * The member name.
@@ -238,12 +238,12 @@ public abstract class AbstractFeaturesSearch {
    * @return the feature
    */
   public final Feature getFeature(String name) {
-    if (featureByName.size() == 0) {
+    if (mFeatureByName.size() == 0) {
       cacheFeatures();
     }
 
-    if (featureByName.containsKey(name)) {
-      return featureByName.get(name);
+    if (mFeatureByName.containsKey(name)) {
+      return mFeatureByName.get(name);
     }
 
     return null;
@@ -258,9 +258,9 @@ public abstract class AbstractFeaturesSearch {
   public List<Feature> getFeatures(String s) {
     List<Feature> features = new ArrayList<Feature>();
 
-    for (String name : this.featureByName.keySet()) {
+    for (String name : this.mFeatureByName.keySet()) {
       if (name.toLowerCase().indexOf(s) != -1) {
-        features.add(this.featureByName.get(name));
+        features.add(this.mFeatureByName.get(name));
       }
     }
 
@@ -273,7 +273,7 @@ public abstract class AbstractFeaturesSearch {
   public void freeMemory() {
     System.out.println("Unloading " + this.mName);
 
-    featureByName.clear();
+    mFeatureByName.clear();
   }
 
   /**

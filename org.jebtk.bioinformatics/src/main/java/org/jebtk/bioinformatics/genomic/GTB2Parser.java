@@ -109,7 +109,7 @@ public class GTB2Parser extends GTBParser {
         // Create the gene
 
         GenomicEntity gene = addAttributes(GenomicType.TRANSCRIPT,
-            GenomicRegion.create(chr, start, end, strand),
+            GenomicRegion.create(genome, chr, start, end, strand),
             attributeMap);
 
         if (containsLevel(GenomicType.TRANSCRIPT)) {
@@ -126,7 +126,7 @@ public class GTB2Parser extends GTBParser {
           for (int i = 0; i < starts.size(); ++i) {
             // Again correct for the ucsc
             GenomicRegion region = GenomicRegion
-                .create(chr, starts.get(i), ends.get(i), strand);
+                .create(genome, chr, starts.get(i), ends.get(i), strand);
 
             GenomicEntity exon = addAttributes(GenomicType.EXON,
                 region,
@@ -147,17 +147,18 @@ public class GTB2Parser extends GTBParser {
         }
 
         if (has5pUtrLevel) {
-          processUTR(tokens, gene, attributeMap, 7, GenomicType.UTR_5P, genes);
+          processUTR(tokens, genome, gene, attributeMap, 7, GenomicType.UTR_5P, genes);
         }
 
         if (has3pUtrLevel) {
-          processUTR(tokens, gene, attributeMap, 10, GenomicType.UTR_3P, genes);
+          processUTR(tokens, genome, gene, attributeMap, 10, GenomicType.UTR_3P, genes);
         }
       }
     });
   }
 
   private static void processUTR(List<String> tokens,
+      Genome genome,
       GenomicEntity gene,
       IterMap<String, String> attributeMap,
       int offset,
@@ -184,7 +185,7 @@ public class GTB2Parser extends GTBParser {
 
     for (int i = 0; i < starts.size(); ++i) {
       GenomicRegion region = GenomicRegion
-          .create(gene.mChr, starts.get(i), ends.get(i), gene.mStrand);
+          .create(genome, gene.mChr, starts.get(i), ends.get(i), gene.mStrand);
 
       GenomicEntity g = addAttributes(type, region, attributeMap);
 
@@ -324,7 +325,7 @@ public class GTB2Parser extends GTBParser {
     // Create the gene
 
     GenomicEntity transcript = addAttributes(GenomicType.TRANSCRIPT,
-        GenomicRegion.create(chr, start, end, strand),
+        GenomicRegion.create(genome, chr, start, end, strand),
         attributeMap);
 
     transcript.addTags(tags);
@@ -338,7 +339,7 @@ public class GTB2Parser extends GTBParser {
     for (int i = 0; i < starts.size(); ++i) {
       // Again correct for the ucsc
       GenomicRegion region = GenomicRegion
-          .create(chr, starts.get(i), ends.get(i), strand);
+          .create(genome, chr, starts.get(i), ends.get(i), strand);
 
       GenomicEntity exon = addAttributes(GenomicType.EXON,
           region,
@@ -350,9 +351,9 @@ public class GTB2Parser extends GTBParser {
       exon.setParent(transcript);
     }
 
-    processUTR(tokens, transcript, attributeMap, 7, GenomicType.UTR_5P, null);
+    processUTR(tokens, genome,  transcript, attributeMap, 7, GenomicType.UTR_5P, null);
 
-    processUTR(tokens, transcript, attributeMap, 10, GenomicType.UTR_3P, null);
+    processUTR(tokens, genome, transcript, attributeMap, 10, GenomicType.UTR_3P, null);
 
     return transcript;
   }
