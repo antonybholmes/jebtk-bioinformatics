@@ -72,8 +72,7 @@ public class DirZipSequenceReader extends GenomeSequenceReader {
       List<Path> files = FileUtils.endsWith(dir, "dna.zip");
 
       for (Path file : files) {
-        ret.add(GenomeService.getInstance()
-            .guessGenome(PathUtils.namePrefix(file)));
+        ret.add(GenomeService.getInstance().guessGenome(PathUtils.namePrefix(file)));
       }
     }
 

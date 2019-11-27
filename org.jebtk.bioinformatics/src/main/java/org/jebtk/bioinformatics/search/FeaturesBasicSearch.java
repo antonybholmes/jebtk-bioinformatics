@@ -35,6 +35,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.jebtk.bioinformatics.Search;
 import org.jebtk.bioinformatics.genomic.Chromosome;
+import org.jebtk.bioinformatics.genomic.ChromosomeService;
 import org.jebtk.bioinformatics.genomic.GenomeService;
 import org.jebtk.core.io.FileUtils;
 import org.jebtk.core.io.Io;
@@ -106,7 +107,7 @@ public class FeaturesBasicSearch extends AbstractFeaturesSearch {
 
           Feature feature = new Feature(row.get(0),
               GenomeService.getInstance().guessGenome(mFile),
-              GenomeService.getInstance().guessChr(mFile, row.get(1)),
+              ChromosomeService.getInstance().guessChr(mFile, row.get(1)),
               Integer.parseInt(row.get(2)), Integer.parseInt(row.get(3)));
           // feature.type = type;
 

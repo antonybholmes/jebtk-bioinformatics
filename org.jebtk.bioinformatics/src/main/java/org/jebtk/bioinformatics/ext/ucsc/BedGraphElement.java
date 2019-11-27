@@ -31,8 +31,8 @@ import java.io.IOException;
 import java.util.List;
 
 import org.jebtk.bioinformatics.genomic.Chromosome;
+import org.jebtk.bioinformatics.genomic.ChromosomeService;
 import org.jebtk.bioinformatics.genomic.Genome;
-import org.jebtk.bioinformatics.genomic.GenomeService;
 import org.jebtk.bioinformatics.genomic.GenomicElement;
 import org.jebtk.bioinformatics.genomic.GenomicRegion;
 import org.jebtk.bioinformatics.genomic.GenomicType;
@@ -98,7 +98,7 @@ public class BedGraphElement extends GenomicElement {
     List<String> tokens = TextUtils.fastSplit(line, TextUtils.TAB_DELIMITER);
 
     // convert first part to chromosome (replacing x,y and m) {
-    Chromosome chr = GenomeService.getInstance().chr(genome, tokens.get(0));
+    Chromosome chr = ChromosomeService.getInstance().chr(genome, tokens.get(0));
 
     // Per UCSC convention, coordinates are zero based in the file
     // but we shall convert them to one based for consistency

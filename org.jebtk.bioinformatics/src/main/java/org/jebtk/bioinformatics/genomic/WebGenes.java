@@ -109,8 +109,7 @@ public class WebGenes extends GenesDB {
 
         Genome genome = Genome
             .changeTrack(
-                GenomeService.getInstance()
-                    .guessGenome(dbJson.getString("assembly")),
+                GenomeService.getInstance().guessGenome(dbJson.getString("assembly")),
                 dbJson.getString("track"));
 
         ret.add(genome);

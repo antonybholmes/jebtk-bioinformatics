@@ -29,7 +29,9 @@ package org.jebtk.bioinformatics.genomic;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.jebtk.core.AppService;
 import org.jebtk.core.NameProperty;
@@ -47,32 +49,42 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 /**
  * The enum Genome.
  */
-@JsonPropertyOrder({ "name", "build", "source" })
+@JsonPropertyOrder({ "name", "assembly", "source" })
 public class Genome implements NameProperty, Comparable<Genome> {
 
   public static final Genome NO_GENOME = new Genome(TextUtils.NA, TextUtils.NA);
-  
-  /**
-   * The H g18.
-   */
-  public static final Genome HG18 = new Genome("human", "hg18");
 
-  /** The Constant HG19. */
-  public static final Genome HG19 = new Genome("human", "hg19");
+  private static final String GENCODE = "gencode";
 
-  public static final Genome GRCH38 = new Genome("human", "grch38");
+  private static final String REFSEQ = "refseq";
+
+  public static final Genome HUMAN_HG18_UCSC = new Genome("Human", "hg18", REFSEQ);
+  public static final Genome HUMAN_HG19_UCSC = new Genome("Human", "hg19", REFSEQ);
+
+  public static final Genome HUMAN_HG18_REFSEQ = new Genome("Human", "hg18", REFSEQ);
+  public static final Genome HUMAN_HG19_REFSEQ = new Genome("Human", "hg19", REFSEQ);
+
+  public static final Genome HUMAN_GRCH37_REFSEQ = new Genome("Human", "hg18", GENCODE);
+  public static final Genome HUMAN_GRCH38_REFSEQ = new Genome("Human", "hg19", GENCODE);
+
+  public static final Genome HG18 = new Genome("Human", "hg18"); //HUMAN_HG18_REFSEQ;
+  public static final Genome HG19 = new Genome("Human", "hg19"); //HUMAN_HG19_REFSEQ;
+
+  public static final Genome GRCH37 = HUMAN_GRCH37_REFSEQ;
+
+  public static final Genome GRCH38 = HUMAN_GRCH38_REFSEQ;
 
   /** The Constant MM10. */
-  public static final Genome MM10 = new Genome("mouse", "mm10");
+  public static final Genome MM10 = new Genome("mouse", "mm10", REFSEQ);
 
-  public static final Genome GRCM38 = new Genome("mouse", "grcm38");
+  public static final Genome GRCM38 = new Genome("mouse", "grcm38", GENCODE);
 
   public static final Path GENOME_HOME = AppService.RES_HOME.resolve("genomes");
 
   /** Local genome dir of app */
   public static final Path GENOME_DIR = AppService.RES_DIR.resolve("genomes");
 
-  private static final String GENCODE = "gencode";
+
 
   // private List<Path> mDirs = new ArrayList<Path>();
 
@@ -86,19 +98,23 @@ public class Genome implements NameProperty, Comparable<Genome> {
 
   private String mS;
 
-  public Genome(String name, String build) {
-    this(name, build, TextUtils.NA);
+  public Genome(String name) {
+    this(name, TextUtils.NA);
+  }
+
+  public Genome(String name, String assembly) {
+    this(name, assembly, TextUtils.NA);
   }
 
   /**
    * 
    * @param name e.g. 'human'
-   * @param build e.g. 'grch38'
+   * @param assembly e.g. 'grch38'
    * @param track e.g. 'gencode'
    */
-  public Genome(String name, String build, String track) {
+  public Genome(String name, String assembly, String track) {
     mName = TextUtils.sentenceCase(name);
-    mAssembly = build;
+    mAssembly = assembly;
     mTrack = track;
   }
 
@@ -109,6 +125,11 @@ public class Genome implements NameProperty, Comparable<Genome> {
   @Override
   @JsonGetter("name")
   public String getName() {
+    return getGenome();
+  }
+
+  @JsonGetter("genome")
+  public String getGenome() {
     return mName;
   }
 
@@ -175,17 +196,13 @@ public class Genome implements NameProperty, Comparable<Genome> {
   public int compareTo(Genome g) {
     int ret = mName.compareTo(g.mName);
 
-    if (ret != 0) {
-      return ret;
+    if (ret == 0 && !mAssembly.equals(TextUtils.NA)) {
+      ret = mAssembly.compareTo(g.mAssembly);
+
+      if (ret == 0 && !mTrack.equals(TextUtils.NA)) {
+        ret = mTrack.compareTo(g.mTrack);
+      }
     }
-
-    ret = mAssembly.compareTo(g.mAssembly);
-
-    if (ret != 0) {
-      return ret;
-    }
-
-    ret = mTrack.compareTo(g.mTrack);
 
     return ret;
   }
@@ -223,7 +240,7 @@ public class Genome implements NameProperty, Comparable<Genome> {
    */
   public static Genome fromId(String g) {
     List<String> tokens = Splitter.onColon().text(g); // TextUtils.fastSplit(g,
-                                                      // TextUtils.COLON_DELIMITER);
+    // TextUtils.COLON_DELIMITER);
 
     switch (tokens.size()) {
     case 2:
@@ -231,7 +248,7 @@ public class Genome implements NameProperty, Comparable<Genome> {
     case 3:
       return new Genome(tokens.get(0), tokens.get(1), tokens.get(2));
     default:
-      return null;
+      return new Genome(tokens.get(0));
     }
   }
 
@@ -248,9 +265,25 @@ public class Genome implements NameProperty, Comparable<Genome> {
    * @return
    */
   public static String genomeId(String name, String assembly, String track) {
-    return Join.onColon().values(name, assembly, track).toString();
+    List<String> ret = new ArrayList<String>(3);
+    
+    ret.add(name);
+    
+    if (!assembly.equals(TextUtils.NA)) {
+      ret.add(assembly);
+      
+      if (!track.equals(TextUtils.NA)) {
+        ret.add(track);
+      }
+    }
+    
+    //return Join.onColon().values(ret).toString();
+    
+    return ret.stream() 
+        .map(String::valueOf) 
+        .collect(Collectors.joining(":")); 
   }
-  
+
   /**
    * Sort genomes by name, assembly, track to put in alphabetical order
    * @param genomes
@@ -261,11 +294,37 @@ public class Genome implements NameProperty, Comparable<Genome> {
     IterMap<String, IterMap<String, IterMap<String, Genome>>> genomeMap = DefaultTreeMap
         .create(
             new DefaultTreeMapCreator<String, IterMap<String, Genome>>(new TreeMapCreator<String, Genome>()));
-    
+
     for (Genome genome : genomes) {
       genomeMap.get(genome.getName()).get(genome.getAssembly()).put(genome.getTrack(), genome);
     }
-    
+
     return genomeMap;
+  }
+  
+  public static IterMap<String, IterMap<String, Genome>> sortByAssembly(Iterable<Genome> genomes) {
+    IterMap<String, IterMap<String, Genome>> genomeMap = DefaultTreeMap
+        .create(new TreeMapCreator<String, Genome>());
+
+    for (Genome genome : genomes) {
+      genomeMap.get(genome.getName()).put(genome.getAssembly(), genome);
+    }
+
+    return genomeMap;
+  }
+
+  /**
+   * Return a genome containing only the assembly information. This is useful
+   * for chr lookups where the information will not be tied to a track.
+   * 
+   * @param genome
+   * @return
+   */
+  public static Genome assembly(Genome genome) {
+    return assembly(genome.mName, genome.mAssembly);
+  }
+
+  public static Genome assembly(String name, String assembly) {
+    return new Genome(name, assembly);
   }
 }

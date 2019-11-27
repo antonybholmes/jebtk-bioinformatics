@@ -29,7 +29,6 @@ package org.jebtk.bioinformatics.conservation;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,8 +37,6 @@ import java.util.Map;
 import org.jebtk.bioinformatics.genomic.Chromosome;
 import org.jebtk.bioinformatics.genomic.FileSequenceReader;
 import org.jebtk.bioinformatics.genomic.GenomicRegion;
-import org.jebtk.core.io.PathUtils;
-import org.jebtk.math.statistics.Statistics;
 
 /**
  * Fast search of genome sequence files to get get actual genomic data. This

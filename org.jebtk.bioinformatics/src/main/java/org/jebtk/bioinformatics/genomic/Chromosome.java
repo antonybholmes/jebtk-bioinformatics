@@ -51,6 +51,9 @@ public class Chromosome
   public static final Pattern CHR_NUM_GROUP_REGEX = Pattern
       .compile("([1-9][0-9]*)");
 
+  private static final Pattern CHR_PARTS_REGEX = Pattern
+      .compile("(?:chr)?(\\d+|[A-Z])(?:_(.+))?");
+
   /**
    * Max number of a numerical chr (2^24)
    */
@@ -59,7 +62,7 @@ public class Chromosome
   /**
    * Represents an invalid chromosome.
    */
-  public static final Chromosome NO_CHR = new Chromosome(-1, "chrU", "U", -1);
+  public static final Chromosome NO_CHR = new Chromosome(-1, "U", -1);
 
   public static final ChrParser DEFAULT_PARSER = new ChrParser();
 
@@ -70,7 +73,7 @@ public class Chromosome
   /**
    * The member chr.
    */
-  public final String mChr;
+  //public final String mChr;
 
   /** The m short name. */
   public final String mShortName;
@@ -81,7 +84,9 @@ public class Chromosome
 
   public final int mSize;
 
-  //public final Genome mGenome;
+  public final boolean mRandom;
+
+  // public final Genome mGenome;
 
   /**
    * 
@@ -91,16 +96,18 @@ public class Chromosome
    * @param genome Genome which this chromosome belongs.
    * @param size Size of chromosome in bp.
    */
-  private Chromosome(int id, String chr, String shortName, int size) {
+  private Chromosome(int id, String shortName, int size) {
     // mSpecies = parser.getSpecies();
 
     // The suffix of the chromosome without the chr prefix.
     mId = id;
-    mChr = chr;
     mShortName = shortName;
     mSize = size;
 
-    //mGenome = genome;
+    //mChr = "chr" + shortName;
+    mRandom = mShortName.contains("_");
+
+    // mGenome = genome;
   }
 
   /*
@@ -124,11 +131,11 @@ public class Chromosome
    */
   @Override
   public String getName() {
-    return mChr;
+    return "chr" + getShortName();
   }
 
   /**
-   * Gets the short name.
+   * Gets the chrosome short name (with the chr prefix).
    *
    * @return the short name
    */
@@ -136,9 +143,9 @@ public class Chromosome
     return mShortName;
   }
 
-  //public Genome getGenome() {
-  //  return mGenome;
-  //}
+  // public Genome getGenome() {
+  // return mGenome;
+  // }
 
   /**
    * Returns the size of the chromosome in bp or -1 if this has not been
@@ -150,6 +157,10 @@ public class Chromosome
     return mSize;
   }
 
+  public boolean isRandom() {
+    return mRandom;
+  }
+
   /*
    * (non-Javadoc)
    * 
@@ -157,7 +168,7 @@ public class Chromosome
    */
   @Override
   public String toString() {
-    return mChr;
+    return getName();
   }
 
   /*
@@ -172,13 +183,13 @@ public class Chromosome
 
     // Check if genomes match and if not sort by genome
 
-//    if (mGenome != null && c.mGenome != null) {
-//      int ret = mGenome.compareTo(c.mGenome);
-//
-//      if (ret != 0) {
-//        return ret;
-//      }
-//    }
+    // if (mGenome != null && c.mGenome != null) {
+    // int ret = mGenome.compareTo(c.mGenome);
+    //
+    // if (ret != 0) {
+    // return ret;
+    // }
+    // }
 
     // ret = mChr.compareTo(c.mChr);
 
@@ -195,29 +206,36 @@ public class Chromosome
     } else if (mId < c.mId) {
       return -1;
     } else {
-      return mChr.compareTo(c.mChr);
+      if (mRandom && !c.mRandom) {
+        // If we are random e.g chr6_Rand vs chr6, order ourselves after
+        return 1;
+      } else if (!mRandom && c.mRandom) {
+        return -1;
+      } else {
+        return mShortName.compareTo(c.mShortName);
+      }
     }
-    
-//    if ((mId < MAX_NUM_CHR && c.mId < MAX_NUM_CHR)
-//        || (mId >= MAX_NUM_CHR && c.mId >= MAX_NUM_CHR)) {
-//
-//      // If both ids are in the lower 24 bits (numerical chr) or the upper 8
-//      // bits (X, Y, M etc) then do simple numerical comparison.
-//
-//      if (mId > c.mId) {
-//        return 1;
-//      } else if (mId < c.mId) {
-//        return -1;
-//      } else {
-//        return 0;
-//      }
-//    } else if (mId < MAX_NUM_CHR) {
-//      // c is a letter so this chr is numerical and should come first.
-//      return -1;
-//    } else {
-//      // This chr is a letter so c is numerical so should come second.
-//      return 1;
-//    }
+
+    // if ((mId < MAX_NUM_CHR && c.mId < MAX_NUM_CHR)
+    // || (mId >= MAX_NUM_CHR && c.mId >= MAX_NUM_CHR)) {
+    //
+    // // If both ids are in the lower 24 bits (numerical chr) or the upper 8
+    // // bits (X, Y, M etc) then do simple numerical comparison.
+    //
+    // if (mId > c.mId) {
+    // return 1;
+    // } else if (mId < c.mId) {
+    // return -1;
+    // } else {
+    // return 0;
+    // }
+    // } else if (mId < MAX_NUM_CHR) {
+    // // c is a letter so this chr is numerical and should come first.
+    // return -1;
+    // } else {
+    // // This chr is a letter so c is numerical so should come second.
+    // return 1;
+    // }
     // } else {
     // If chr has a non numerical suffix (e.g. chrX), do a conventional
     // text comparison
@@ -246,7 +264,7 @@ public class Chromosome
    */
   @Override
   public int hashCode() {
-    return mChr.hashCode();
+    return mShortName.hashCode();
   }
 
   /**
@@ -292,15 +310,23 @@ public class Chromosome
         .replace("CHR", TextUtils.EMPTY_STRING);
     // .replaceFirst("P.*", TextUtils.EMPTY_STRING)
     // .replaceFirst("Q.*", TextUtils.EMPTY_STRING);
-    
+
     if (TextUtils.isNumber(ret)) {
       // In case someone writes 'chr1.0', attempt to convert floats to ints
-      ret = Integer.toString((int)Double.parseDouble(ret));
+      ret = Integer.toString((int) Double.parseDouble(ret));
     }
-    
+
+    // Matcher matcher = CHR_PARTS_REGEX.matcher(chr.toUpperCase());
+
+    // shortName = matcher.group(1);
+
+    // matcher.group(2);
+
+    // matcher.matches();
+
     return ret;
   }
-  
+
   public static Chromosome newChr(String chr) {
     return newChr(chr, -1);
   }
@@ -317,14 +343,10 @@ public class Chromosome
     return newChr(chr, size, MOUSE_PARSER);
   }
 
-  public static Chromosome newChr(String chr,
-      int size,
-      ChrParser parser) {
+  public static Chromosome newChr(String chr, int size, ChrParser parser) {
     String shortName = getShortName(chr);
     int id = parser.getId(shortName);
-    chr = "chr" + shortName;
 
-    return new Chromosome(id, chr, shortName, size);
-
+    return new Chromosome(id, shortName, size);
   }
 }

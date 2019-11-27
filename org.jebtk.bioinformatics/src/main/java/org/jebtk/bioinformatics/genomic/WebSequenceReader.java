@@ -34,11 +34,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jebtk.bioinformatics.DataSource;
-import org.jebtk.bioinformatics.genomic.SequenceReader;
-import org.jebtk.bioinformatics.genomic.GenomicRegion;
-import org.jebtk.bioinformatics.genomic.RepeatMaskType;
-import org.jebtk.bioinformatics.genomic.Sequence;
-import org.jebtk.bioinformatics.genomic.SequenceRegion;
 import org.jebtk.core.http.UrlBuilder;
 import org.jebtk.core.json.Json;
 import org.jebtk.core.json.JsonParser;

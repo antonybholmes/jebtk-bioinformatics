@@ -76,7 +76,7 @@ public class GFF3Parser extends GeneParser {
 
         tokens = splitter.text(line);
 
-        Chromosome chr = GenomeService.getInstance().chr(genome, tokens.get(0));
+        Chromosome chr = ChromosomeService.getInstance().chr(genome, tokens.get(0));
 
         type = GenomicType.parse(tokens.get(2));
         start = Integer.parseInt(tokens.get(3));

@@ -10,6 +10,7 @@ public class HumanChrParser extends ChrParser {
    * @param name
    * @return
    */
+  @Override
   public int getId(String name) {
     Matcher matcher = Chromosome.CHR_NUM_GROUP_REGEX.matcher(name);
 

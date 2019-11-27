@@ -31,8 +31,8 @@ import java.io.IOException;
 import java.util.List;
 
 import org.jebtk.bioinformatics.genomic.Chromosome;
+import org.jebtk.bioinformatics.genomic.ChromosomeService;
 import org.jebtk.bioinformatics.genomic.Genome;
-import org.jebtk.bioinformatics.genomic.GenomeService;
 import org.jebtk.bioinformatics.genomic.GenomicElement;
 import org.jebtk.bioinformatics.genomic.GenomicRegion;
 import org.jebtk.bioinformatics.genomic.GenomicType;
@@ -104,7 +104,7 @@ public class Cytoband extends GenomicElement {
     List<String> tokens = TextUtils.fastSplit(line, TextUtils.TAB_DELIMITER);
 
     // convert first part to chromosome (replacing x,y and m) {
-    Chromosome chromosome = GenomeService.getInstance().chr(genome,
+    Chromosome chromosome = ChromosomeService.getInstance().chr(genome,
         tokens.get(0));
 
     // ucsc convention

@@ -41,7 +41,6 @@ import org.jebtk.core.collections.CollectionUtils;
 import org.jebtk.core.collections.IterHashMap;
 import org.jebtk.core.collections.IterMap;
 import org.jebtk.core.collections.UniqueArrayList;
-import org.jebtk.core.sys.SysUtils;
 
 /**
  * An extension of the fixed gap search that can perform a binary search on to

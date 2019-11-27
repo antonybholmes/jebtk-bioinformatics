@@ -33,9 +33,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 
 import org.jebtk.bioinformatics.genomic.Chromosome;
+import org.jebtk.bioinformatics.genomic.ChromosomeService;
 import org.jebtk.bioinformatics.genomic.Exon;
 import org.jebtk.bioinformatics.genomic.Genome;
-import org.jebtk.bioinformatics.genomic.GenomeService;
 import org.jebtk.bioinformatics.genomic.GenomicElement;
 import org.jebtk.bioinformatics.genomic.GenomicRegion;
 import org.jebtk.bioinformatics.genomic.GenomicType;
@@ -128,7 +128,7 @@ public class BedElement extends GenomicElement implements NameProperty {
     List<String> tokens = TextUtils.tabSplit(line);
 
     // convert first part to chromosome (replacing x,y and m) {
-    Chromosome chr = GenomeService.getInstance().chr(genome, tokens.get(0));
+    Chromosome chr = ChromosomeService.getInstance().chr(genome, tokens.get(0));
     
     //System.err.println(chr + " " + chr.mId);
 

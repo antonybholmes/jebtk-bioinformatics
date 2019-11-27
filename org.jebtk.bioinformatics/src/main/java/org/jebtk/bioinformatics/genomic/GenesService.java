@@ -128,6 +128,7 @@ public class GenesService implements Iterable<Entry<Genome, GenesDB>> {
 
     mGenomeMap.get(g.getName()).add(g);
     mGenomeMap.get(g.getAssembly()).add(g);
+    mGenomeMap.get(g.getTrack()).add(g);
 
     mCurrentDb = g;
   }

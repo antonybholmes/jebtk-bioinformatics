@@ -62,7 +62,7 @@ public class GTB2Parser extends GTBParser {
 
         boolean add = true;
 
-        Chromosome chr = GenomeService.getInstance().chr(genome, tokens.get(0));
+        Chromosome chr = ChromosomeService.getInstance().chr(genome, tokens.get(0));
 
         // Skip random and unofficial chromosomes
         if (chr.toString().contains("_")) {
@@ -226,7 +226,7 @@ public class GTB2Parser extends GTBParser {
 
       tokens = Splitter.onTab().text(line);
 
-      Chromosome chr = GenomeService.getInstance().chr(genome, tokens.get(0));
+      Chromosome chr = ChromosomeService.getInstance().chr(genome, tokens.get(0));
 
       // Skip random and unofficial chromosomes
       if (chr.toString().contains("_")) {
@@ -307,7 +307,7 @@ public class GTB2Parser extends GTBParser {
       final List<String> tokens) {
     final Splitter splitter = Splitter.on(';');
 
-    Chromosome chr = GenomeService.getInstance().chr(genome, tokens.get(0));
+    Chromosome chr = ChromosomeService.getInstance().chr(genome, tokens.get(0));
 
     Strand strand = Strand.parse(tokens.get(1));
     int start = Integer.parseInt(tokens.get(2));

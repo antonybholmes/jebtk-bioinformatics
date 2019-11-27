@@ -33,6 +33,8 @@ public class GenomeGuess {
       return Genome.GRCH38;
     } else if (lid.contains("hg18")) {
       return Genome.HG18;
+    } else if (lid.contains("hg19")) {
+      return Genome.HG19;
     } else if (lid.contains("mm10")) {
       return Genome.MM10;
     } else if (lid.contains("grcm38")) {
@@ -40,7 +42,7 @@ public class GenomeGuess {
     } else if (lid.contains("mouse")) {
       return Genome.MM10;
     } else {
-      return Genome.HG19;
+      return Genome.NO_GENOME;
     }
   }
 }

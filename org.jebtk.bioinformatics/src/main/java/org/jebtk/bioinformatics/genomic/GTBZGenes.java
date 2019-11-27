@@ -50,7 +50,7 @@ public class GTBZGenes extends FixedGapGenes {
             @Override
             public void parse(final List<String> tokens) {
               String name = GenesDB.sanitize(tokens.get(0));
-              Chromosome chr = GenomeService.getInstance().guessChr(mFile,
+              Chromosome chr = ChromosomeService.getInstance().guessChr(mFile,
                   tokens.get(1));
 
               mGeneMap.put(name, chr);

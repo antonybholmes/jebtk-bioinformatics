@@ -28,21 +28,14 @@
 package org.jebtk.bioinformatics;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.jebtk.bioinformatics.genomic.Sequence;
-import org.jebtk.core.collections.CollectionUtils;
 import org.jebtk.core.io.FileUtils;
 import org.jebtk.core.io.Io;
 import org.jebtk.core.sys.SysUtils;
-import org.jebtk.core.text.TextUtils;
 
 /**
  * The class Fasta.

@@ -59,7 +59,7 @@ public class GTB3Parser extends GTBParser {
 
         boolean add = true;
 
-        Chromosome chr = GenomeService.getInstance().chr(genome, tokens.get(0));
+        Chromosome chr = ChromosomeService.getInstance().chr(genome, tokens.get(0));
 
         // Skip random and unofficial chromosomes
         if (chr.toString().contains("_")) {
@@ -212,7 +212,7 @@ public class GTB3Parser extends GTBParser {
 
       tokens = Splitter.onTab().text(line);
 
-      Chromosome chr = GenomeService.getInstance().guessChr(file,
+      Chromosome chr = ChromosomeService.getInstance().guessChr(file,
           tokens.get(0));
 
       // Skip random and unofficial chromosomes

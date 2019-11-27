@@ -533,8 +533,11 @@ public class Bed extends UCSCTrack {
         // UCSC convention
         ret.set(r, 1, Integer.parseInt(tokens.get(1)) + 1);
         ret.set(r, 2, Integer.parseInt(tokens.get(2)));
-        ret.set(r, 3, tokens.get(3));
-
+        
+        if (tokens.size() > 3) {
+          ret.set(r, 3, tokens.get(3));
+        }
+        
         ++r;
 
       }

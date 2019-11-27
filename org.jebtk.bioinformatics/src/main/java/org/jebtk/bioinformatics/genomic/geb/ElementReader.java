@@ -11,8 +11,8 @@ import org.jebtk.bioinformatics.genomic.Genome;
 import org.jebtk.bioinformatics.genomic.GenomicElement;
 import org.jebtk.bioinformatics.genomic.GenomicRegion;
 import org.jebtk.bioinformatics.genomic.GenomicType;
-import org.jebtk.bioinformatics.genomic.TagType;
 import org.jebtk.bioinformatics.genomic.Strand;
+import org.jebtk.bioinformatics.genomic.TagType;
 
 public class ElementReader extends BinaryReader {
   public static final int N_BYTES_OFFSET = GEBReader.WINDOW_BYTE_OFFSET
