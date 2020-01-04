@@ -28,7 +28,7 @@ import org.jebtk.bioinformatics.genomic.GenomicElementsDB;
 import org.jebtk.bioinformatics.genomic.GenomicRegion;
 import org.jebtk.bioinformatics.genomic.GenomicType;
 import org.jebtk.bioinformatics.genomic.Strand;
-import org.jebtk.core.NameProperty;
+import org.jebtk.core.NameGetter;
 import org.jebtk.core.collections.CollectionUtils;
 import org.jebtk.core.io.PathUtils;
 import org.jebtk.core.json.Json;
@@ -40,7 +40,7 @@ import org.jebtk.core.text.Join;
  *
  * @author Antony Holmes
  */
-public class GEBReader extends GenomicElementsDB implements NameProperty {
+public class GEBReader extends GenomicElementsDB implements NameGetter {
   public static final int CHECK = 42;
   public static final byte VERSION = 1;
 

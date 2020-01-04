@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.jebtk.core.http.UrlBuilder;
+import org.jebtk.core.http.URLPath;
 import org.jebtk.core.json.Json;
 import org.jebtk.core.json.JsonParser;
 
@@ -45,30 +45,30 @@ import org.jebtk.core.json.JsonParser;
 public class WebGenes extends GenesDB {
 
   // private UrlBuilder mUrl;
-  private UrlBuilder mFindUrl;
-  private UrlBuilder mSearchUrl;
-  private UrlBuilder mGeneDbsUrl;
+  private URLPath mFindUrl;
+  private URLPath mSearchUrl;
+  private URLPath mGeneDbsUrl;
 
   public WebGenes(URL url) {
-    this(new UrlBuilder(url));
+    this(URLPath.fromUrl(url));
   }
 
-  public WebGenes(UrlBuilder url) {
+  public WebGenes(URLPath url) {
     // mUrl = url;
 
     // UrlBuilder genesUrl = url.resolve("genes");
     // Default to returning transcripts
-    mFindUrl = url.resolve("find").param("t", "t");
+    mFindUrl = url.join("find").param("t", "t");
     // mClosestUrl = mGenesUrl.resolve("closest");
-    mSearchUrl = url.resolve("search").param("t", "t");
-    mGeneDbsUrl = url.resolve("databases");
+    mSearchUrl = url.join("search").param("t", "t");
+    mGeneDbsUrl = url.join("databases");
   }
 
   @Override
   public List<GenomicElement> find(Genome genome,
       GenomicRegion region,
       GenomicType type) {
-    UrlBuilder url = mFindUrl.param("genome", genome.getName())
+    URLPath url = mFindUrl.param("genome", genome.getName())
         .param("assembly", genome.getAssembly())
         .param("track", genome.getTrack()).param("chr", region.mChr.toString())
         .param("s", region.mStart).param("e", region.mEnd);
@@ -82,7 +82,7 @@ public class WebGenes extends GenesDB {
   public List<GenomicElement> getElements(Genome genome,
       String search,
       GenomicType type) {
-    UrlBuilder url = mSearchUrl.param("genome", genome.getName())
+    URLPath url = mSearchUrl.param("genome", genome.getName())
         .param("assembly", genome.getAssembly())
         .param("track", genome.getTrack()).param("s", search);
 
@@ -96,7 +96,7 @@ public class WebGenes extends GenesDB {
     return getGeneDBs(mGeneDbsUrl);
   }
 
-  private static List<Genome> getGeneDBs(UrlBuilder url) {
+  private static List<Genome> getGeneDBs(URLPath url) {
     List<Genome> ret = new ArrayList<Genome>();
 
     JsonParser parser = new JsonParser();
@@ -139,7 +139,7 @@ public class WebGenes extends GenesDB {
     }
   }
 
-  private static List<GenomicElement> parse(Genome genome, UrlBuilder url) {
+  private static List<GenomicElement> parse(Genome genome, URLPath url) {
     List<GenomicElement> ret = new ArrayList<GenomicElement>();
 
     JsonParser parser = new JsonParser();

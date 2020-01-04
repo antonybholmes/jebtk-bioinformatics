@@ -27,7 +27,7 @@
  */
 package org.jebtk.bioinformatics.genomic;
 
-import org.jebtk.core.NameProperty;
+import org.jebtk.core.NameGetter;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -39,7 +39,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * with different annotation databases such as Refseq and Ensembl where
  * different ids and nomenclature are used.
  */
-public class GenomicEntity extends GenomicElement implements NameProperty {
+public class GenomicEntity extends GenomicElement implements NameGetter {
   private static final long serialVersionUID = 1L;
 
   /** The Constant SYMBOL_TYPE. */

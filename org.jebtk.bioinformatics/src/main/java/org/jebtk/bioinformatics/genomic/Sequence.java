@@ -40,7 +40,7 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.jebtk.core.NameProperty;
+import org.jebtk.core.NameGetter;
 import org.jebtk.core.io.FileUtils;
 import org.jebtk.core.io.Io;
 import org.jebtk.core.text.CharIterator;
@@ -55,7 +55,7 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class Sequence
-    implements Comparable<Sequence>, NameProperty, Iterable<Character> {
+    implements Comparable<Sequence>, NameGetter, Iterable<Character> {
 
   /**
    * The header pattern.

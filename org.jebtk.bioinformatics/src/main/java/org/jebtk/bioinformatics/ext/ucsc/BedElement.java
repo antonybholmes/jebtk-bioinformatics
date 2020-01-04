@@ -40,7 +40,7 @@ import org.jebtk.bioinformatics.genomic.GenomicElement;
 import org.jebtk.bioinformatics.genomic.GenomicRegion;
 import org.jebtk.bioinformatics.genomic.GenomicType;
 import org.jebtk.bioinformatics.genomic.Strand;
-import org.jebtk.core.NameProperty;
+import org.jebtk.core.NameGetter;
 import org.jebtk.core.text.TextUtils;
 
 /**
@@ -49,7 +49,7 @@ import org.jebtk.core.text.TextUtils;
  * @author Antony Holmes
  *
  */
-public class BedElement extends GenomicElement implements NameProperty {
+public class BedElement extends GenomicElement implements NameGetter {
 
   /**
    * 

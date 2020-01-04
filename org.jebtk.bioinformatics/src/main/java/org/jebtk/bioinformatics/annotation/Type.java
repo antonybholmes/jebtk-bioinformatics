@@ -15,7 +15,7 @@
  */
 package org.jebtk.bioinformatics.annotation;
 
-import org.jebtk.core.NameProperty;
+import org.jebtk.core.NameGetter;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -24,7 +24,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
  * The Class Type.
  */
 @JsonPropertyOrder({ "id", "n" })
-public class Type extends Entity implements NameProperty {
+public class Type extends Entity implements NameGetter {
 
   /** The m name. */
   public final String mName;

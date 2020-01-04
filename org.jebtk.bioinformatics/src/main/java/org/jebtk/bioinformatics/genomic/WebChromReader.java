@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.jebtk.core.http.UrlBuilder;
+import org.jebtk.core.http.URLPath;
 import org.jebtk.core.json.Json;
 import org.jebtk.core.json.JsonParser;
 
@@ -39,14 +39,14 @@ public class WebChromReader implements ChromosomeReader {
 
   private boolean mAutoLoad = true;
 
-  private UrlBuilder mUrl;
+  private URLPath mUrl;
 
   private Json chrJson;
 
-  public WebChromReader(UrlBuilder url, Genome genome) {
+  public WebChromReader(URLPath url, Genome genome) {
     mGenome = genome;
 
-    mUrl = url.resolve("genomes").resolve(genome).resolve("chrs");
+    mUrl = url.join("genomes").join(genome).join("chrs");
   }
 
   private void autoLoad() throws IOException {

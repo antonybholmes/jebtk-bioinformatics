@@ -43,7 +43,7 @@ import java.util.regex.Pattern;
 import org.jebtk.bioinformatics.genomic.Chromosome;
 import org.jebtk.bioinformatics.genomic.GenomicElement;
 import org.jebtk.bioinformatics.genomic.GenomicElementsMap;
-import org.jebtk.core.NameProperty;
+import org.jebtk.core.NameGetter;
 import org.jebtk.core.Resources;
 import org.jebtk.core.collections.CollectionUtils;
 import org.jebtk.core.event.ChangeListeners;
@@ -54,7 +54,7 @@ import org.jebtk.core.text.TextUtils;
 /**
  * The class UCSCTrack.
  */
-public class UCSCTrack extends ChangeListeners implements NameProperty {
+public class UCSCTrack extends ChangeListeners implements NameGetter {
 
   /**
    * The constant serialVersionUID.

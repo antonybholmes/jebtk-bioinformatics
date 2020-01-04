@@ -34,7 +34,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.jebtk.bioinformatics.DataSource;
-import org.jebtk.core.NameProperty;
+import org.jebtk.core.NameGetter;
 
 /**
  * Read sequence data from a data source (such as a file) an extract sequences
@@ -42,7 +42,7 @@ import org.jebtk.core.NameProperty;
  *
  * @author Antony Holmes
  */
-public abstract class SequenceReader implements NameProperty {
+public abstract class SequenceReader implements NameGetter {
   /**
    * Process a sequence of the form chrN:X-Y.
    *

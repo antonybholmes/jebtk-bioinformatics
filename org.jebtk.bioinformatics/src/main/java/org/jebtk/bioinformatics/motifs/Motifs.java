@@ -31,7 +31,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import org.jebtk.core.NameProperty;
+import org.jebtk.core.NameGetter;
 import org.jebtk.core.collections.CollectionUtils;
 
 /**
@@ -41,7 +41,7 @@ import org.jebtk.core.collections.CollectionUtils;
  * @author Antony Holmes
  *
  */
-public class Motifs implements NameProperty, Iterable<Motif> {
+public class Motifs implements NameGetter, Iterable<Motif> {
 
   /** The m name. */
   private String mName;

@@ -34,7 +34,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.jebtk.core.AppService;
-import org.jebtk.core.NameProperty;
+import org.jebtk.core.NameGetter;
 import org.jebtk.core.collections.DefaultTreeMap;
 import org.jebtk.core.collections.DefaultTreeMapCreator;
 import org.jebtk.core.collections.IterMap;
@@ -50,7 +50,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
  * The enum Genome.
  */
 @JsonPropertyOrder({ "name", "assembly", "source" })
-public class Genome implements NameProperty, Comparable<Genome> {
+public class Genome implements NameGetter, Comparable<Genome> {
 
   public static final Genome NO_GENOME = new Genome(TextUtils.NA, TextUtils.NA);
 

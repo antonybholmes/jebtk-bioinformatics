@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jebtk.bioinformatics.DataSource;
-import org.jebtk.core.http.UrlBuilder;
+import org.jebtk.core.http.URLPath;
 import org.jebtk.core.json.Json;
 import org.jebtk.core.json.JsonParser;
 
@@ -48,7 +48,7 @@ public class WebSequenceReader extends SequenceReader {
   /**
    * The member url.
    */
-  private UrlBuilder mUrl;
+  private URLPath mUrl;
 
   /**
    * The member parser.
@@ -56,10 +56,10 @@ public class WebSequenceReader extends SequenceReader {
   private JsonParser mParser;
 
   /** The m genomes url. */
-  private UrlBuilder mGenomesUrl;
+  private URLPath mGenomesUrl;
 
   /** The m dna url. */
-  private UrlBuilder mDnaUrl;
+  private URLPath mDnaUrl;
 
   /**
    * Instantiates a new genome assembly web.
@@ -68,10 +68,10 @@ public class WebSequenceReader extends SequenceReader {
    * @throws IOException Signals that an I/O exception has occurred.
    */
   public WebSequenceReader(URL url) throws IOException {
-    mUrl = new UrlBuilder(url);
+    mUrl = URLPath.fromUrl(url);
 
-    mDnaUrl = mUrl.resolve("dna");
-    mGenomesUrl = mUrl.resolve("genomes");
+    mDnaUrl = mUrl.join("dna");
+    mGenomesUrl = mUrl.join("genomes");
 
     mParser = new JsonParser();
   }
@@ -96,9 +96,9 @@ public class WebSequenceReader extends SequenceReader {
     URL url;
 
     try {
-      UrlBuilder tmpUrl = mDnaUrl.resolve(region.getGenome())
-          .resolve(region.getChr().toString()).resolve(region.getStart())
-          .resolve(region.getEnd()).param("strand", "s")
+      URLPath tmpUrl = mDnaUrl.join(region.getGenome())
+          .join(region.getChr().toString()).join(region.getStart())
+          .join(region.getEnd()).param("strand", "s")
           .param("display", displayUpper ? "u" : "l");
 
       switch (repeatMaskType) {

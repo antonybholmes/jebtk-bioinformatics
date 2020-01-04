@@ -31,7 +31,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.jebtk.core.IdProperty;
-import org.jebtk.core.NameProperty;
+import org.jebtk.core.NameGetter;
 import org.jebtk.core.text.TextUtils;
 
 /**
@@ -40,7 +40,7 @@ import org.jebtk.core.text.TextUtils;
  * @author Antony Holmes
  */
 public class Chromosome
-    implements Comparable<Chromosome>, IdProperty, NameProperty {
+    implements Comparable<Chromosome>, IdProperty, NameGetter {
 
   public static final Pattern CHR_REGEX = Pattern
       .compile("chr(?:[1-9][0-9]?|[XYM])");

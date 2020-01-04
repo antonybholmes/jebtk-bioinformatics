@@ -35,7 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jebtk.bioinformatics.genomic.GenomicRegion;
-import org.jebtk.core.http.UrlBuilder;
+import org.jebtk.core.http.URLPath;
 import org.jebtk.core.json.Json;
 import org.jebtk.core.json.JsonParser;
 
@@ -49,12 +49,12 @@ public class ConservationAssemblyWeb extends ConservationAssembly {
   /**
    * The member url.
    */
-  private UrlBuilder mUrl;
+  private URLPath mUrl;
 
   /**
    * The member score url.
    */
-  private UrlBuilder mScoreUrl;
+  private URLPath mScoreUrl;
 
   /**
    * The member parser.
@@ -68,9 +68,9 @@ public class ConservationAssemblyWeb extends ConservationAssembly {
    * @throws IOException Signals that an I/O exception has occurred.
    */
   public ConservationAssemblyWeb(URL url) throws IOException {
-    mUrl = new UrlBuilder(url);
+    mUrl = URLPath.fromUrl(url);
 
-    mScoreUrl = new UrlBuilder(mUrl).resolve("scores");
+    mScoreUrl = mUrl.join("scores");
 
     mParser = new JsonParser();
   }
@@ -86,23 +86,19 @@ public class ConservationAssemblyWeb extends ConservationAssembly {
       throws IOException, ParseException {
     List<Double> scores = new ArrayList<Double>();
 
-    try {
-      URL url = new UrlBuilder(mScoreUrl).resolve(region.getChr().toString())
-          .resolve(region.getStart()).resolve(region.getEnd()).toURL();
+    URLPath url = mScoreUrl.join(region.getChr().toString())
+        .join(region.getStart()).join(region.getEnd());
 
-      // System.err.println(url);
+    // System.err.println(url);
 
-      Json json = mParser.parse(url);
+    Json json = mParser.parse(url);
 
-      Json scoresJson = json.get(0).get("scores");
+    Json scoresJson = json.get(0).get("scores");
 
-      for (int i = 0; i < scoresJson.size(); ++i) {
-        scores.add(scoresJson.get(i).getDouble());
-      }
-
-    } catch (MalformedURLException e) {
-      e.printStackTrace();
+    for (int i = 0; i < scoresJson.size(); ++i) {
+      scores.add(scoresJson.get(i).getDouble());
     }
+
 
     return scores;
   }
