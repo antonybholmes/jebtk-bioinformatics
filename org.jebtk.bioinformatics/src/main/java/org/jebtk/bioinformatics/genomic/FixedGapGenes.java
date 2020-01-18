@@ -99,7 +99,6 @@ public class FixedGapGenes extends SingleGenesDB {
   // private Map<String, Gene> mRefSeqMap =
   // new HashMap<String, Gene>();
 
-  private boolean mFindMainVariants = true;
 
   public FixedGapGenes(Genome genome) {
     super(genome);
@@ -193,16 +192,8 @@ public class FixedGapGenes extends SingleGenesDB {
       GenomicType type) throws IOException {
     List<GenomicElement> features = mSearch.getOverlappingFeatures(region, 10)
         .toList();
-
-    List<GenomicElement> ret = new ArrayList<GenomicElement>(features.size());
-
-    for (GenomicElement feature : features) {
-      if (feature.mType.equals(type)) {
-        ret.add(feature);
-      }
-    }
-
-    return ret;
+    
+    return filterByType(features, type);
   }
 
   /**
@@ -216,7 +207,9 @@ public class FixedGapGenes extends SingleGenesDB {
   public List<GenomicElement> closest(Genome genome,
       GenomicRegion region,
       GenomicType type) throws IOException {
-    return mSearch.getClosestFeatures(region);
+    List<GenomicElement> features = mSearch.getClosestFeatures(region);
+    
+    return filterByType(features, type);
   }
 
   @Override

@@ -4,21 +4,24 @@ public enum GenomicType {
   GENE, TRANSCRIPT, EXON, UTR_5P, UTR_3P, CYTOBAND, SUPER_ENHANCER, ENHANCER, PEAK, REGION;
 
   public static GenomicType parse(String s) {
-    if (s.startsWith("gene")) {
+    switch(s.toLowerCase()) {
+    case "gene":
       return GENE;
-    } else if (s.startsWith("transcript")) {
+    case "transcript":
       return TRANSCRIPT;
-    } else if (s.startsWith("exon")) {
+    case "CDS":
+      return TRANSCRIPT;
+    case "exon":
       return EXON;
-    } else if (s.startsWith("5p_utr")) {
+    case "5p_utr":
       return UTR_5P;
-    } else if (s.startsWith("3p_utr")) {
+    case "3p_utr":
       return UTR_3P;
-    } else if (s.startsWith("super_enhancer")) {
+    case "super_enhancer":
       return SUPER_ENHANCER;
-    } else if (s.startsWith("peak")) {
+    case "peak":
       return PEAK;
-    } else {
+    default:
       return REGION;
     }
   }

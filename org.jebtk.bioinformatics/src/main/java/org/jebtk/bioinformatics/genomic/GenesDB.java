@@ -28,6 +28,8 @@
 package org.jebtk.bioinformatics.genomic;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Genes lookup to m.
@@ -47,6 +49,27 @@ public abstract class GenesDB extends GenomicElementsDB {
 
   public Iterable<String> getNames() throws IOException {
     return getIds(Gene.GENE_NAME);
+  }
+  
+  /**
+   * Filter a list of gene elements to match a given type.
+   * 
+   * @param features
+   * @param type
+   * @return
+   * @throws IOException
+   */
+  public List<GenomicElement> filterByType(List<GenomicElement> features,
+      GenomicType type) throws IOException {
+    List<GenomicElement> ret = new ArrayList<GenomicElement>(features.size());
+
+    for (GenomicElement feature : features) {
+      if (feature.mType.equals(type)) {
+        ret.add(feature);
+      }
+    }
+
+    return ret;
   }
 
 }

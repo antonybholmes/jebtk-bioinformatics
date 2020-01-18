@@ -52,7 +52,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @JsonPropertyOrder({ "name", "assembly", "source" })
 public class Genome implements NameGetter, Comparable<Genome> {
 
-  public static final Genome NO_GENOME = new Genome(TextUtils.NA, TextUtils.NA);
+  public static final Genome NO_GENOME = new Genome(TextUtils.NA);
 
   private static final String GENCODE = "gencode";
 
