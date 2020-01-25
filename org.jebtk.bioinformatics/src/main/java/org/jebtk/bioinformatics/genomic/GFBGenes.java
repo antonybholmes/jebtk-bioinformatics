@@ -129,13 +129,15 @@ public class GFBGenes extends SingleGenesDB {
    * @return the list
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public List<GenomicElement> findGenes(String region) throws IOException {
-    return findGenes(region, GenomicType.TRANSCRIPT);
+  public List<GenomicElement> findGenes(String region, int minBp) throws IOException {
+    return findGenes(region, GenomicType.TRANSCRIPT, minBp);
   }
 
-  public List<GenomicElement> findGenes(String region, GenomicType type)
+  public List<GenomicElement> findGenes(String region, 
+      GenomicType type, 
+      int minBp)
       throws IOException {
-    return find(null, GenomicRegion.parse(mGenome, region), type);
+    return find(null, GenomicRegion.parse(mGenome, region), type, minBp);
   }
 
   /**
@@ -148,7 +150,8 @@ public class GFBGenes extends SingleGenesDB {
   @Override
   public List<GenomicElement> find(Genome genome,
       GenomicRegion region,
-      GenomicType type) throws IOException {
+      GenomicType type,
+      int minBp) throws IOException {
     return findGenes(region.mChr, region.mStart, region.mEnd, type);
   }
 
@@ -267,35 +270,40 @@ public class GFBGenes extends SingleGenesDB {
   @Override
   public List<GenomicElement> closest(Genome genome,
       GenomicRegion region,
-      GenomicType type) throws IOException {
-    return findClosestGenes(region, type);
+      GenomicType type,
+      int minBp) throws IOException {
+    return findClosestGenes(region, type, minBp);
   }
 
   public List<GenomicElement> findClosestGenes(GenomicRegion region,
-      GenomicType type) throws IOException {
-    return findClosestGenes(region.mChr, region.mStart, region.mEnd, type);
-  }
-
-  public List<GenomicElement> findClosestGenes(Chromosome chr,
-      int start,
-      int end) throws IOException {
-    return findClosestGenes(chr, start, end, GenomicType.TRANSCRIPT);
+      GenomicType type,
+      int minBp) throws IOException {
+    return findClosestGenes(region.mChr, region.mStart, region.mEnd, type, minBp);
   }
 
   public List<GenomicElement> findClosestGenes(Chromosome chr,
       int start,
       int end,
-      GenomicType type) throws IOException {
+      int minBp) throws IOException {
+    return findClosestGenes(chr, start, end, GenomicType.TRANSCRIPT, minBp);
+  }
+
+  public List<GenomicElement> findClosestGenes(Chromosome chr,
+      int start,
+      int end,
+      GenomicType type,
+      int minBp) throws IOException {
 
     int n = _findGenes(chr, start, end, type);
 
-    return findClosestGenes(chr, start, end, n);
+    return findClosestGenes(chr, start, end, n, minBp);
   }
 
   private List<GenomicElement> findClosestGenes(Chromosome chr,
       int start,
       int end,
-      int n) {
+      int n,
+      int minBp) {
     if (n < 1) {
       return Collections.emptyList();
     }

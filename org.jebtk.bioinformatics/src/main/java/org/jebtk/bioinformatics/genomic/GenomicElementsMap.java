@@ -63,7 +63,8 @@ public class GenomicElementsMap extends GenomicElementsDB
   @Override
   public List<GenomicElement> find(Genome genome,
       GenomicRegion region,
-      GenomicType type) throws IOException {
+      GenomicType type,
+      int minBp) throws IOException {
     return GenomicRegions.getFixedGapSearch(mElementMap.get(region.mChr))
         .getFeatureSet(region);
   }

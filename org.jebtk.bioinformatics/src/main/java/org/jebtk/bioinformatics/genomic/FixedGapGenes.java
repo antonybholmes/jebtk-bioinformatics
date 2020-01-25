@@ -189,8 +189,9 @@ public class FixedGapGenes extends SingleGenesDB {
   @Override
   public List<GenomicElement> find(Genome genome,
       GenomicRegion region,
-      GenomicType type) throws IOException {
-    List<GenomicElement> features = mSearch.getOverlappingFeatures(region, 10)
+      GenomicType type,
+      int minBp) throws IOException {
+    List<GenomicElement> features = mSearch.getOverlappingFeatures(region, minBp)
         .toList();
     
     return filterByType(features, type);
@@ -206,7 +207,8 @@ public class FixedGapGenes extends SingleGenesDB {
   @Override
   public List<GenomicElement> closest(Genome genome,
       GenomicRegion region,
-      GenomicType type) throws IOException {
+      GenomicType type,
+      int minBp) throws IOException {
     List<GenomicElement> features = mSearch.getClosestFeatures(region);
     
     return filterByType(features, type);

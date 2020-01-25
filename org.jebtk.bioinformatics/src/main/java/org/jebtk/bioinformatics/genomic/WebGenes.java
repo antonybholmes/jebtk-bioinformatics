@@ -67,7 +67,8 @@ public class WebGenes extends GenesDB {
   @Override
   public List<GenomicElement> find(Genome genome,
       GenomicRegion region,
-      GenomicType type) {
+      GenomicType type,
+      int minBp) {
     URLPath url = mFindUrl.param("genome", genome.getName())
         .param("assembly", genome.getAssembly())
         .param("track", genome.getTrack()).param("chr", region.mChr.toString())
@@ -124,7 +125,8 @@ public class WebGenes extends GenesDB {
   @Override
   public List<GenomicElement> closest(Genome genome,
       GenomicRegion region,
-      GenomicType type) throws IOException {
+      GenomicType type,
+      int minBp) throws IOException {
     return Collections.emptyList();
   }
 

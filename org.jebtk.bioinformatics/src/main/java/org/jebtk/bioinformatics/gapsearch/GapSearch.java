@@ -156,12 +156,10 @@ public abstract class GapSearch<T> implements Iterable<Chromosome> {
       for (GenomicRegion r : features) {
         GenomicRegion overlap = GenomicRegion.overlap(region, r);
 
-        if (overlap == null || (minBp != -1 && overlap.getLength() < minBp)) {
-          continue;
-        }
-
-        for (T item : features.getValues(r)) {
-          ret.add(r, item);
+        if (overlap != null && overlap.getLength() >= minBp) {
+          for (T item : features.getValues(r)) {
+            ret.add(r, item);
+          }
         }
       }
     }

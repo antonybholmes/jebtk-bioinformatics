@@ -33,6 +33,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.jebtk.core.sys.SysUtils;
+
 /**
  * Genes lookup to m.
  *
@@ -58,7 +60,8 @@ public abstract class GenomicElementsDB {
     @Override
     public List<GenomicElement> find(Genome genome,
         GenomicRegion region,
-        GenomicType type) throws IOException {
+        GenomicType type,
+        int minBp) throws IOException {
       return Collections.emptyList();
     }
 
@@ -107,13 +110,16 @@ public abstract class GenomicElementsDB {
 
   public List<GenomicElement> find(Genome genome,
       String region,
-      GenomicType type) throws IOException {
-    return find(genome, GenomicRegion.parse(genome, region), type);
+      GenomicType type,
+      int minBp) throws IOException {
+    return find(genome, GenomicRegion.parse(genome, region), type, minBp);
   }
 
-  public List<GenomicElement> find(GenomicRegion region, GenomicType type)
+  public List<GenomicElement> find(GenomicRegion region, 
+      GenomicType type,
+      int minBp)
       throws IOException {
-    return find(null, region, type);
+    return find(null, region, type, minBp);
   }
 
   /**
@@ -125,7 +131,8 @@ public abstract class GenomicElementsDB {
    */
   public abstract List<GenomicElement> find(Genome genome,
       GenomicRegion region,
-      GenomicType type) throws IOException;
+      GenomicType type,
+      int minBp) throws IOException;
 
   /**
    * Find closest genes.
@@ -136,9 +143,10 @@ public abstract class GenomicElementsDB {
    */
   public List<GenomicElement> closest(Genome genome,
       GenomicRegion region,
-      GenomicType type) throws IOException {
+      GenomicType type,
+      int minBp) throws IOException {
 
-    List<GenomicElement> elements = find(genome, region, type);
+    List<GenomicElement> elements = find(genome, region, type, minBp);
 
     return closest(region, elements);
   }
@@ -159,8 +167,9 @@ public abstract class GenomicElementsDB {
    */
   public List<GenomicElement> closestByTss(Genome genome,
       GenomicRegion region,
-      GenomicType type) throws IOException {
-    Collection<GenomicElement> genes = closest(genome, region, type); // findGenes(region);
+      GenomicType type,
+      int minBp) throws IOException {
+    Collection<GenomicElement> genes = closest(genome, region, type, minBp); // findGenes(region);
 
     List<GenomicElement> ret = new ArrayList<GenomicElement>();
 
@@ -250,7 +259,7 @@ public abstract class GenomicElementsDB {
       GenomicType type,
       int minBp,
       List<GenomicElement> ret) throws IOException {
-    List<GenomicElement> elements = find(genome, region, type);
+    List<GenomicElement> elements = find(genome, region, type, minBp);
 
     if (elements.size() == 0) {
       return;
@@ -258,8 +267,10 @@ public abstract class GenomicElementsDB {
 
     for (GenomicElement g : elements) {
       GenomicRegion overlap = GenomicRegion.overlap(region, g);
-
-      if (overlap != null && overlap.getLength() > minBp) {
+      
+      //SysUtils.err().println("overlap", overlap.getLength(), region, g);
+      
+      if (overlap != null && overlap.getLength() >= minBp) {
         ret.add(g);
       }
     }

@@ -121,28 +121,31 @@ public class GTBZGenes extends FixedGapGenes {
   @Override
   public List<GenomicElement> find(Genome genome,
       GenomicRegion region,
-      GenomicType type) throws IOException {
+      GenomicType type,
+      int minBp) throws IOException {
     autoLoad(region.mChr);
 
-    return super.find(genome, region, type);
+    return super.find(genome, region, type, minBp);
   }
 
   @Override
   public List<GenomicElement> closest(Genome genome,
       GenomicRegion region,
-      GenomicType type) throws IOException {
+      GenomicType type,
+      int minBp) throws IOException {
     autoLoad(region.mChr);
 
-    return super.closest(genome, region, type);
+    return super.closest(genome, region, type, minBp);
   }
 
   @Override
   public List<GenomicElement> closestByTss(Genome genome,
       GenomicRegion region,
-      GenomicType type) throws IOException {
+      GenomicType type,
+      int minBp) throws IOException {
     autoLoad(region.mChr);
 
-    return super.closestByTss(genome, region, type);
+    return super.closestByTss(genome, region, type, minBp);
   }
 
   /*

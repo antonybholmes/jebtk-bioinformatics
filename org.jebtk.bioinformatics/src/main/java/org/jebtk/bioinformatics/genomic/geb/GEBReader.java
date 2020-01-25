@@ -125,7 +125,8 @@ public class GEBReader extends GenomicElementsDB implements NameGetter {
   @Override
   public List<GenomicElement> find(Genome genome,
       GenomicRegion region,
-      GenomicType type) throws IOException {
+      GenomicType type,
+      int minBp) throws IOException {
     List<GenomicElement> elements = _find(region, type);
 
     return overlapping(region, elements);

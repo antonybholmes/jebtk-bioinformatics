@@ -469,7 +469,7 @@ public class GenomicElement extends GenomicRegion {
    * @param gene the gene
    * @return the genomic region
    */
-  public static GenomicRegion tssRegion(GenomicElement gene) {
+  public static GenomicRegion tssRegion(GenomicRegion gene) {
     if (gene == null) {
       return null;
     }
