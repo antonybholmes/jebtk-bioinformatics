@@ -86,6 +86,11 @@ public class BedGraphElement extends GenomicElement {
     buffer.append(Double.toString(getValue()));
   }
 
+  public static BedGraphElement parse(Genome genome,
+      String line) {
+    return parse(GenomicType.REGION, genome, line);
+  }
+  
   /**
    * Parses the.
    *
@@ -106,6 +111,6 @@ public class BedGraphElement extends GenomicElement {
     int end = Integer.parseInt(tokens.get(2));
     double value = Double.parseDouble(tokens.get(3));
 
-    return new BedGraphElement(type, new GenomicRegion(genome, chr, start, end), value);
+    return new BedGraphElement(type, new GenomicRegion(chr, start, end), value);
   }
 }

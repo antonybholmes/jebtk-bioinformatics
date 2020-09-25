@@ -28,6 +28,7 @@
 package org.jebtk.bioinformatics.gapsearch;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -127,6 +128,25 @@ public class FixedGapSearch<T> extends GapSearch<T> {
 
     ++mSize;
   }
+  
+  public void addAll(GenomicRegion region, Collection<T> features) {
+    int startBin = getBin(region.getStart());
+    int endBin = getBin(region.getEnd());
+
+    Chromosome chr = region.getChr();
+
+    for (int bin = startBin; bin <= endBin; ++bin) {
+      if (!mFeatures.get(chr).containsKey(bin)) {
+        mFeatures.get(chr).put(bin, new GappedSearchFeatures<T>(bin));
+      }
+      
+      for (T feature : features) {
+        mFeatures.get(chr).get(bin).add(region, feature);
+      }
+    }
+
+    ++mSize;
+  }
 
   public int getBin(int x) {
     return x / mBinSize;
@@ -182,12 +202,10 @@ public class FixedGapSearch<T> extends GapSearch<T> {
       IterMap<Integer, GappedSearchFeatures<T>> starts = f.getValue();
 
       for (Entry<Integer, GappedSearchFeatures<T>> e : starts) {
-        GappedSearchFeatures<T> r = e.getValue();
+        GappedSearchFeatures<T> sf = e.getValue();
 
-        for (GenomicRegion region : r) {
-          for (T item : r.getValues(region)) {
-            ret.add(item);
-          }
+        for (Entry<GenomicRegion, List<T>> r : sf) {
+          ret.addAll(r.getValue());
         }
       }
 
@@ -213,10 +231,8 @@ public class FixedGapSearch<T> extends GapSearch<T> {
     List<T> ret = new UniqueArrayList<T>();
 
     for (Entry<Integer, GappedSearchFeatures<T>> f : mFeatures.get(chr)) {
-      for (GenomicRegion region : f.getValue()) {
-        for (T item : f.getValue().getValues(region)) {
-          ret.add(item);
-        }
+      for (Entry<GenomicRegion, List<T>> r : f.getValue()) {
+        ret.addAll(r.getValue());
       }
     }
 
@@ -323,22 +339,19 @@ public class FixedGapSearch<T> extends GapSearch<T> {
           .create(new ArrayListCreator<T>());
 
       for (GappedSearchFeatures<T> gsf : bf) {
-        for (GenomicRegion region : gsf) {
+        for (Entry<GenomicRegion, List<T>> r : gsf) {
           // distance from item to
           int d;
-
+          GenomicRegion region = r.getKey();
+          
           if (Strand.isSense(region.getStrand())) {
             d = Math.abs(region.getStart() - mid);
           } else {
             d = Math.abs(region.getEnd() - mid);
           }
 
-          for (T item : gsf.getValues(region)) {
-            closestMap.get(d).add(item);
+          closestMap.get(d).addAll(r.getValue());
 
-            // SysUtils.err().println("closest", n, d, item, mid,
-            // region.getStart());
-          }
 
           if (closestMap.size() == n) {
             // Once we have enough closest genes, assemble and return
@@ -385,10 +398,8 @@ public class FixedGapSearch<T> extends GapSearch<T> {
       for (Entry<Integer, GappedSearchFeatures<T>> f2 : f1.getValue()) {
         GappedSearchFeatures<T> search = f2.getValue();
 
-        for (GenomicRegion region : search) {
-          for (T item : search.getValues(region)) {
-            add(region, item);
-          }
+        for (Entry<GenomicRegion, List<T>> r : search) {
+          addAll(r.getKey(), r.getValue());
         }
       }
 
@@ -440,10 +451,8 @@ public class FixedGapSearch<T> extends GapSearch<T> {
 
     List<T> ret = new UniqueArrayList<T>();
 
-    for (GenomicRegion r : minF) {
-      for (T item : minF.getValues(r)) {
-        ret.add(item);
-      }
+    for (Entry<GenomicRegion, List<T>> r : minF) {
+      ret.addAll(r.getValue());
     }
 
     return ret;

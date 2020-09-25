@@ -33,17 +33,21 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.jebtk.core.sys.SysUtils;
+import org.jebtk.core.event.ChangeListeners;
 
 /**
  * Genes lookup to m.
  *
  * @author Antony Holmes
  */
-public abstract class GenomicElementsDB {
+public abstract class GenomicElementsDB extends ChangeListeners {
 
+  private static final long serialVersionUID = 1L;
+  
   /** Empty gene set that can be used as a placeholder */
   public static final GenomicElementsDB EMPTY = new GenomicElementsDB() {
+
+    private static final long serialVersionUID = 1L;
 
     @Override
     public Iterable<Genome> getGenomes() {
@@ -53,7 +57,7 @@ public abstract class GenomicElementsDB {
     @Override
     public List<GenomicElement> getElements(Genome g,
         String search,
-        GenomicType type) throws IOException {
+        GenomicType type) {
       return Collections.emptyList();
     }
 
@@ -61,7 +65,7 @@ public abstract class GenomicElementsDB {
     public List<GenomicElement> find(Genome genome,
         GenomicRegion region,
         GenomicType type,
-        int minBp) throws IOException {
+        int minBp) {
       return Collections.emptyList();
     }
 
@@ -86,8 +90,7 @@ public abstract class GenomicElementsDB {
   public GenomicElement getElement(Genome genome,
       String search,
       GenomicType type) throws IOException {
-    System.err
-    .println("Searching for genes in " + genome + " " + this.getClass());
+    System.err.println("Searching for genes in " + genome + " " + this.getClass());
 
     List<GenomicElement> genes = getElements(genome, search, type);
 
@@ -100,26 +103,28 @@ public abstract class GenomicElementsDB {
 
   public List<GenomicElement> getElements(Genome g,
       String search,
-      GenomicType type) throws IOException {
+      GenomicType type) {
     return Collections.emptyList();
   }
 
-  public List<GenomicElement> getElements() throws IOException {
+  public List<GenomicElement> getElements() {
     return Collections.emptyList();
   }
-
-  public List<GenomicElement> find(Genome genome,
-      String region,
-      GenomicType type,
-      int minBp) throws IOException {
-    return find(genome, GenomicRegion.parse(genome, region), type, minBp);
+  
+  public List<GenomicElement> getElements(Chromosome chr) {
+    return Collections.emptyList();
+  }
+  
+  public List<GenomicElement> find(GenomicRegion region) {
+    return find(Genome.NO_GENOME, region);
   }
 
-  public List<GenomicElement> find(GenomicRegion region, 
-      GenomicType type,
-      int minBp)
-      throws IOException {
-    return find(null, region, type, minBp);
+  public List<GenomicElement> find(Genome genome, GenomicRegion region) {
+    return find(genome, region, GenomicType.REGION);
+  }
+
+  public List<GenomicElement> find(Genome genome, GenomicRegion region, GenomicType type) {
+    return find(genome, region, type, 1);
   }
 
   /**
@@ -132,7 +137,7 @@ public abstract class GenomicElementsDB {
   public abstract List<GenomicElement> find(Genome genome,
       GenomicRegion region,
       GenomicType type,
-      int minBp) throws IOException;
+      int minBp);
 
   /**
    * Find closest genes.
@@ -193,6 +198,16 @@ public abstract class GenomicElementsDB {
 
     return ret;
   }
+  
+  /*
+  public List<GenomicElement> search(GenomicRegion region) {
+    List<GenomicElement> elements = GenomicRegions
+          .getFixedGapSearch(getElements(region.mChr))
+          .getValues(region);
+      
+     return elements;
+  }
+  */
 
   /**
    * Return the set of ids (e.g. RefSeq ids) associated with a given id type.

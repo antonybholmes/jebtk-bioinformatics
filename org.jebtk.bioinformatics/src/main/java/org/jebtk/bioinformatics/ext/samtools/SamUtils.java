@@ -131,7 +131,7 @@ public class SamUtils {
         // current start
         end = start + Integer.parseInt(buffer.toString()) - 1;
 
-        locations.add(GenomicRegion.create(genome, chr, start, end));
+        locations.add(GenomicRegion.create(chr, start, end));
 
         // The new start is advanced one beyond the end
         start = end + 1;
@@ -277,7 +277,7 @@ public class SamUtils {
 
   public static GenomicRegion getRegion(String genome, SAMRecord r) {
     return GenomicRegion
-        .create(genome, r.getReferenceName(), r.getStart(), r.getEnd());
+        .create(r.getReferenceName(), r.getStart(), r.getEnd());
   }
 
   /**

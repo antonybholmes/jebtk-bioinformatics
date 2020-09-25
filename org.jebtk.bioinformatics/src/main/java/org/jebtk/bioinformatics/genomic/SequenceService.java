@@ -367,11 +367,10 @@ public class SequenceService extends SequenceReader
    * org.jebtk.bioinformatics.genome.RepeatMaskType)
    */
   @Override
-  public SequenceRegion getSequence(GenomicRegion region,
+  public SequenceRegion getSequence(Genome genome,
+      GenomicRegion region,
       boolean displayUpper,
       RepeatMaskType repeatMaskType) {
-
-    Genome genome = region.getGenome();
 
     // Iterate over all assemblies until one works.
 
@@ -384,7 +383,7 @@ public class SequenceService extends SequenceReader
     SequenceRegion ret = null;
 
     try {
-      ret = a.getSequence(region, displayUpper, repeatMaskType);
+      ret = a.getSequence(genome, region, displayUpper, repeatMaskType);
     } catch (IOException e) {
       e.printStackTrace();
     }

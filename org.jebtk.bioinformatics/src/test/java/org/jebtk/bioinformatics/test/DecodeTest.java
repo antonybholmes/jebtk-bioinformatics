@@ -19,9 +19,8 @@ import java.io.IOException;
 import java.util.List;
 
 import org.jebtk.bioinformatics.genomic.GFBGenes;
-import org.jebtk.bioinformatics.genomic.Genome;
+import org.jebtk.bioinformatics.genomic.GenomeService;
 import org.jebtk.bioinformatics.genomic.GenomicElement;
-import org.jebtk.bioinformatics.genomic.GenomicEntity;
 import org.jebtk.bioinformatics.genomic.GenomicType;
 import org.jebtk.core.io.PathUtils;
 import org.junit.Test;
@@ -53,7 +52,7 @@ public class DecodeTest {
 
 	  String search = "bcl6";
 	  
-	  GFBGenes genes = new GFBGenes(new Genome("human", "grch38"), 1000, PathUtils.getPath("/home/antony/Desktop/gff/gfb/grch38/"));
+	  GFBGenes genes = new GFBGenes(GenomeService.getInstance().get("human", "grch38"), 1000, PathUtils.getPath("/home/antony/Desktop/gff/gfb/grch38/"));
     
 	  //GeneSearchQuery query = new GeneSearchQuery(genes);
     

@@ -44,6 +44,8 @@ import org.jebtk.core.json.JsonParser;
  */
 public class WebGenes extends GenesDB {
 
+  private static final long serialVersionUID = 1L;
+  
   // private UrlBuilder mUrl;
   private URLPath mFindUrl;
   private URLPath mSearchUrl;

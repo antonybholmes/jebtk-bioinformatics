@@ -90,13 +90,14 @@ public class WebSequenceReader extends SequenceReader {
    * edu.columbia.rdf.lib.bioinformatics.genome.RepeatMaskType)
    */
   @Override
-  public SequenceRegion getSequence(GenomicRegion region,
+  public SequenceRegion getSequence(Genome genome,
+      GenomicRegion region,
       boolean displayUpper,
       RepeatMaskType repeatMaskType) throws IOException {
     URL url;
 
     try {
-      URLPath tmpUrl = mDnaUrl.join(region.getGenome())
+      URLPath tmpUrl = mDnaUrl.join(genome)
           .join(region.getChr().toString()).join(region.getStart())
           .join(region.getEnd()).param("strand", "s")
           .param("display", displayUpper ? "u" : "l");

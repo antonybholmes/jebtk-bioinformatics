@@ -62,7 +62,7 @@ public class Chromosome
   /**
    * Represents an invalid chromosome.
    */
-  public static final Chromosome NO_CHR = new Chromosome(-1, "U", -1);
+  public static final Chromosome NO_CHR = new Chromosome(-1, "U");
 
   public static final ChrParser DEFAULT_PARSER = new ChrParser();
 
@@ -82,8 +82,6 @@ public class Chromosome
   /** The m id. */
   public final int mId;
 
-  public final int mSize;
-
   public final boolean mRandom;
 
   // public final Genome mGenome;
@@ -96,13 +94,13 @@ public class Chromosome
    * @param genome Genome which this chromosome belongs.
    * @param size Size of chromosome in bp.
    */
-  private Chromosome(int id, String shortName, int size) {
+  private Chromosome(int id, 
+      String shortName) {
     // mSpecies = parser.getSpecies();
 
     // The suffix of the chromosome without the chr prefix.
     mId = id;
     mShortName = shortName;
-    mSize = size;
 
     //mChr = "chr" + shortName;
     mRandom = mShortName.contains("_");
@@ -141,20 +139,6 @@ public class Chromosome
    */
   public String getShortName() {
     return mShortName;
-  }
-
-  // public Genome getGenome() {
-  // return mGenome;
-  // }
-
-  /**
-   * Returns the size of the chromosome in bp or -1 if this has not been
-   * specified.
-   * 
-   * @return
-   */
-  public int getSize() {
-    return mSize;
   }
 
   public boolean isRandom() {
@@ -328,25 +312,21 @@ public class Chromosome
   }
 
   public static Chromosome newChr(String chr) {
-    return newChr(chr, -1);
+    return newHumanChr(chr);
   }
 
-  public static Chromosome newChr(String chr, int size) {
-    return newHumanChr(chr, size);
+  public static Chromosome newHumanChr(String chr) {
+    return newChr(chr, HUMAN_PARSER);
   }
 
-  public static Chromosome newHumanChr(String chr, int size) {
-    return newChr(chr, size, HUMAN_PARSER);
+  public static Chromosome newMouseChr(String chr) {
+    return newChr(chr, MOUSE_PARSER);
   }
 
-  public static Chromosome newMouseChr(String chr, int size) {
-    return newChr(chr, size, MOUSE_PARSER);
-  }
-
-  public static Chromosome newChr(String chr, int size, ChrParser parser) {
+  public static Chromosome newChr(String chr, ChrParser parser) {
     String shortName = getShortName(chr);
     int id = parser.getId(shortName);
 
-    return new Chromosome(id, shortName, size);
+    return new Chromosome(id, shortName);
   }
 }

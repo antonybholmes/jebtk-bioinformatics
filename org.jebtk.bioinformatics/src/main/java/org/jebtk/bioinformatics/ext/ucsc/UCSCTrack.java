@@ -32,10 +32,11 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -43,8 +44,10 @@ import java.util.regex.Pattern;
 import org.jebtk.bioinformatics.genomic.Chromosome;
 import org.jebtk.bioinformatics.genomic.GenomicElement;
 import org.jebtk.bioinformatics.genomic.GenomicElementsMap;
+import org.jebtk.bioinformatics.genomic.GenomicRegion;
 import org.jebtk.core.NameGetter;
 import org.jebtk.core.Resources;
+import org.jebtk.core.SizeGetter;
 import org.jebtk.core.collections.CollectionUtils;
 import org.jebtk.core.event.ChangeListeners;
 import org.jebtk.core.io.FileUtils;
@@ -54,7 +57,8 @@ import org.jebtk.core.text.TextUtils;
 /**
  * The class UCSCTrack.
  */
-public class UCSCTrack extends ChangeListeners implements NameGetter {
+public class UCSCTrack extends ChangeListeners implements NameGetter, SizeGetter,
+Iterable<Entry<Chromosome, List<GenomicElement>>> {
 
   /**
    * The constant serialVersionUID.
@@ -230,8 +234,15 @@ public class UCSCTrack extends ChangeListeners implements NameGetter {
   }
 
   public UCSCTrack add(GenomicElement e) {
-    getElements().add(e);
+    mRegions.add(e);
 
+    return this;
+  }
+  
+
+  public UCSCTrack addAll(Collection<GenomicElement> elements) {
+    mRegions.addAll(elements);
+    
     return this;
   }
 
@@ -240,8 +251,26 @@ public class UCSCTrack extends ChangeListeners implements NameGetter {
    *
    * @return the regions
    */
-  public GenomicElementsMap getElements() {
-    return mRegions;
+  public List<GenomicElement> getElements() {
+    return mRegions.getElements();
+  }
+  
+  public List<GenomicElement> getElements(Chromosome chr) {
+    return mRegions.getElements(chr);
+  }
+  
+  public List<GenomicElement> find(GenomicRegion region) {
+    return mRegions.find(region);
+  }
+  
+  @Override
+  public Iterator<Entry<Chromosome, List<GenomicElement>>> iterator() {
+    return mRegions.iterator();
+  }
+
+  @Override
+  public int size() {
+    return mRegions.size();
   }
 
   /*
@@ -288,7 +317,7 @@ public class UCSCTrack extends ChangeListeners implements NameGetter {
 
     buffer.append(TextUtils.NEW_LINE);
 
-    for (Entry<Chromosome, Set<GenomicElement>> item : mRegions) {
+    for (Entry<Chromosome, List<GenomicElement>> item : mRegions) {
       for (GenomicElement region : item.getValue()) {
         region.formattedTxt(buffer);
         buffer.append(TextUtils.NEW_LINE);
@@ -497,8 +526,7 @@ public class UCSCTrack extends ChangeListeners implements NameGetter {
         writer.write(track.getHeader(priority));
         writer.newLine();
 
-        for (Entry<Chromosome, Set<GenomicElement>> item : track
-            .getElements()) {
+        for (Entry<Chromosome, List<GenomicElement>> item : track) {
           for (GenomicElement e : item.getValue()) {
             writer.write(e.toString());
             writer.newLine();
@@ -680,4 +708,6 @@ public class UCSCTrack extends ChangeListeners implements NameGetter {
 
     return color;
   }
+
+  
 }

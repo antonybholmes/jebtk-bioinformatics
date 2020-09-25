@@ -58,8 +58,8 @@ public class Feature extends GenomicRegion {
    * @param start the start
    * @param end the end
    */
-  public Feature(String name, Genome genome, Chromosome chromosome, int start, int end) {
-    super(genome, chromosome, start, end);
+  public Feature(String name, Chromosome chromosome, int start, int end) {
+    super(chromosome, start, end);
 
     mName = name;
   }

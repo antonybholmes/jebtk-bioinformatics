@@ -37,9 +37,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.jebtk.bioinformatics.genomic.GenomeService;
-import org.jebtk.bioinformatics.genomic.GenomicType;
+import org.jebtk.bioinformatics.genomic.GenomicRegion;
 import org.jebtk.core.io.FileUtils;
 import org.jebtk.core.io.Io;
+import org.jebtk.core.io.PathUtils;
 import org.jebtk.core.text.TextUtils;
 import org.jebtk.math.matrix.DataFrame;
 import org.slf4j.Logger;
@@ -72,13 +73,21 @@ public class BedGraph extends UCSCTrack {
   /**
    * The constant DEFAULT_BEDGRAPH_COLOR.
    */
-  private static final Color DEFAULT_BEDGRAPH_COLOR = Color.RED;
+  protected static final Color DEFAULT_BEDGRAPH_COLOR = Color.RED;
 
   /**
    * The constant TRACK_TYPE.
    */
   private static final String TRACK_TYPE = "bedGraph";
 
+  public BedGraph(String name) {
+    this(name, name);
+  }
+  
+  public BedGraph(String name, String description) {
+    this(name, description, DEFAULT_BEDGRAPH_COLOR, DEFAULT_HEIGHT);
+  }
+  
   /**
    * Instantiates a new bed graph.
    *
@@ -127,17 +136,17 @@ public class BedGraph extends UCSCTrack {
    * @return the list
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static List<UCSCTrack> parse(Path file) throws IOException {
-    LOG.info("Parsing BED file {}...", file);
+  public static List<BedGraph> parse(Path file) throws IOException {
+    LOG.info("Parsing BedGraph file {}...", file);
 
     BufferedReader reader = FileUtils.newBufferedReader(file);
 
-    BedGraph bed = null;
+    BedGraph bedgraph = new BedGraph(PathUtils.getNameNoExt(file));
 
     String line;
     Matcher matcher;
 
-    List<UCSCTrack> tracks = new ArrayList<UCSCTrack>();
+    List<BedGraph> tracks = new ArrayList<BedGraph>();
 
     try {
       while ((line = reader.readLine()) != null) {
@@ -176,22 +185,26 @@ public class BedGraph extends UCSCTrack {
             height = Integer.parseInt(matcher.group(2));
           }
 
-          bed = new BedGraph(name, description, color, height);
+          bedgraph = new BedGraph(name, description, color, height);
 
-          tracks.add(bed);
+          tracks.add(bedgraph);
         } else {
-          BedGraphElement region = BedGraphElement.parse(GenomicType.REGION,
+          BedGraphElement region = BedGraphElement.parse(
               GenomeService.getInstance().guessGenome(file),
               line);
 
-          bed.add(region);
+          bedgraph.add(region);
         }
       }
     } finally {
       reader.close();
     }
+    
+    if (tracks.size() == 0) {
+      tracks.add(bedgraph);
+    }
 
-    LOG.info("BED {} ({} peaks).", bed.getName(), bed.getElements().size());
+    LOG.info("BED {} ({} peaks).", bedgraph.getName(), bedgraph.size());
 
     return tracks;
   }
@@ -269,4 +282,13 @@ public class BedGraph extends UCSCTrack {
 
     return ret;
   }
+  
+  public BedGraph getBedGraph(GenomicRegion region) {
+    BedGraph ret = new BedGraph(mName, mDescription, mColor, mHeight);
+    
+    ret.addAll(find(region));
+    
+    return ret;
+  }
+
 }

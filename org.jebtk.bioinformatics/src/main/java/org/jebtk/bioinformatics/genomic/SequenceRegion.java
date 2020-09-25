@@ -56,8 +56,8 @@ public class SequenceRegion extends GenomicRegion {
    * @param end the end
    * @param sequence the sequence
    */
-  public SequenceRegion(Genome genome, Chromosome chr, int start, int end, Sequence sequence) {
-    this(new GenomicRegion(genome, chr, start, end), sequence);
+  public SequenceRegion(Chromosome chr, int start, int end, Sequence sequence) {
+    this(new GenomicRegion(chr, start, end), sequence);
   }
 
   /**

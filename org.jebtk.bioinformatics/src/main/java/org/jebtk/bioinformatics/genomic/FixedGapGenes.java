@@ -54,6 +54,8 @@ import org.slf4j.LoggerFactory;
 public class FixedGapGenes extends SingleGenesDB {
   // private static final GeneService INSTANCE = new GeneService();
 
+  private static final long serialVersionUID = 1L;
+
   /**
    * The constant DEFAULT_RES.
    */
@@ -175,7 +177,7 @@ public class FixedGapGenes extends SingleGenesDB {
 //  }
 
   @Override
-  public List<GenomicElement> getElements() throws IOException {
+  public List<GenomicElement> getElements() {
     return mSearch.getFeatures();
   }
 
@@ -190,9 +192,8 @@ public class FixedGapGenes extends SingleGenesDB {
   public List<GenomicElement> find(Genome genome,
       GenomicRegion region,
       GenomicType type,
-      int minBp) throws IOException {
-    List<GenomicElement> features = mSearch.getOverlappingFeatures(region, minBp)
-        .toList();
+      int minBp) {
+    List<GenomicElement> features = mSearch.find(region, minBp);
     
     return filterByType(features, type);
   }
@@ -274,10 +275,11 @@ public class FixedGapGenes extends SingleGenesDB {
           .create(new ArrayListCreator<GenomicElement>());
 
       for (GappedSearchFeatures<GenomicElement> gsf : bf) {
-        for (GenomicRegion region : gsf) {
+        for (Entry<GenomicRegion, List<GenomicElement>> r : gsf) {
           // distance from item to
 
           int d;
+          GenomicRegion region = r.getKey();
 
           if (Strand.isSense(region.getStrand())) {
             d = Math.abs(region.getStart() - mid);
@@ -285,7 +287,7 @@ public class FixedGapGenes extends SingleGenesDB {
             d = Math.abs(region.getEnd() - mid);
           }
 
-          for (GenomicElement item : gsf.getValues(region)) {
+          for (GenomicElement item : r.getValue()) {
             if (item.mType.equals(type)) {
               closestMap.get(d).add(item);
             }

@@ -68,14 +68,21 @@ public class ElementReader extends BinaryReader {
       GenomicType type) throws IOException {
     List<GenomicElement> ret = new ArrayList<GenomicElement>(addresses.size());
 
+    readElements(addresses, type, ret);
+
+    return ret;
+  }
+  
+  public void readElements(Collection<Integer> addresses,
+      GenomicType type,
+      List<GenomicElement> ret) throws IOException {
+
     for (int address : addresses) {
       // System.err.println("seeking " + address + " in " +
       // getFileName((Chromosome)null));
       seek(address);
       readElement(type, ret);
     }
-
-    return ret;
   }
 
   private void readElement(GenomicType type, List<GenomicElement> ret)
@@ -153,7 +160,7 @@ public class ElementReader extends BinaryReader {
     int start = readInt();
     int end = readInt();
 
-    return GenomicRegion.create(mGenome, chr, start, end);
+    return GenomicRegion.create(chr, start, end);
   }
 
   private Chromosome readChr() throws IOException {

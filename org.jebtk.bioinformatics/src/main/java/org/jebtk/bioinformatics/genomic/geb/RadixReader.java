@@ -28,8 +28,17 @@ public class RadixReader extends BinaryReader {
   public List<Integer> elementAddresses(String id) throws IOException {
     return elementAddresses(id, false);
   }
-
+  
   public List<Integer> elementAddresses(String id, boolean exact)
+      throws IOException {
+    List<Integer> ret = new ArrayList<Integer>();
+    
+    elementAddresses(id, exact, ret);
+    
+    return ret;
+  }
+
+  public void elementAddresses(String id, boolean exact, List<Integer> ret)
       throws IOException {
 
     char[] ca = id.toLowerCase().toCharArray();
@@ -71,7 +80,7 @@ public class RadixReader extends BinaryReader {
     }
 
     if (!found) {
-      return Collections.emptyList();
+      return;
     }
 
     // This means we kept finding a child matching the prefix so the seek
@@ -90,14 +99,12 @@ public class RadixReader extends BinaryReader {
 
     n = readInt();
 
-    List<Integer> ret = new ArrayList<Integer>(n);
-
     for (int i = 0; i < n; ++i) {
       ret.add(readInt());
     }
 
     if (exact) {
-      return ret;
+      return;
     }
 
     // Add the partial
@@ -106,9 +113,6 @@ public class RadixReader extends BinaryReader {
     for (int i = 0; i < n; ++i) {
       ret.add(readInt());
     }
-
-    // Return the number of genes we found
-    return ret;
   }
 
   public static final Path getFileName(String prefix) {

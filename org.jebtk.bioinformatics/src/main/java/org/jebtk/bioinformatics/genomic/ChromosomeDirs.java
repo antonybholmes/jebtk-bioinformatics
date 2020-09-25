@@ -21,8 +21,10 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.jebtk.core.Mathematics;
 import org.jebtk.core.collections.CollectionUtils;
@@ -38,7 +40,7 @@ import org.slf4j.LoggerFactory;
 /**
  * The Class ChromosomeParser.
  */
-public class ChromosomeDirs extends GenomeDirs implements Iterable<Chromosome> {
+public class ChromosomeDirs extends GenomeDirs implements ChromosomeReader, Iterable<Chromosome> {
 
   private static final Logger LOG = LoggerFactory
       .getLogger(ChromosomeDirs.class);
@@ -52,6 +54,8 @@ public class ChromosomeDirs extends GenomeDirs implements Iterable<Chromosome> {
   private IterMap<String, Chromosome> mChrMap = new IterHashMap<String, Chromosome>();
 
   private List<Chromosome> mChrs = new ArrayList<Chromosome>();
+  
+  private Map<Chromosome, Integer> mSizeMap = new HashMap<Chromosome, Integer>(); 
 
   private boolean mAutoLoad = true;
 
@@ -134,6 +138,7 @@ public class ChromosomeDirs extends GenomeDirs implements Iterable<Chromosome> {
     return mChrs.iterator();
   }
 
+  @Override
   public Chromosome chr(String chr) {
     // LOG.info("Request {} {}", chr, getMapId(chr));
 
@@ -143,7 +148,7 @@ public class ChromosomeDirs extends GenomeDirs implements Iterable<Chromosome> {
       e.printStackTrace();
     }
 
-    String fc = formatKey(chr);
+    String fc = Chromosome.getShortName(chr);
 
     if (!mChrMap.containsKey(fc)) {
       add(Chromosome.newChr(chr));
@@ -171,6 +176,17 @@ public class ChromosomeDirs extends GenomeDirs implements Iterable<Chromosome> {
 
     return mChrIdMap.get(id);
   }
+  
+  @Override
+  public int size(Chromosome chr) {
+    try {
+      autoLoad();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    
+    return mSizeMap.getOrDefault(chr, -1);
+  }
 
   protected void add(Chromosome chr) {
     mChrIdMap.put(chr.getId(), chr);
@@ -186,6 +202,7 @@ public class ChromosomeDirs extends GenomeDirs implements Iterable<Chromosome> {
    * 
    * @return
    */
+  @Override
   public Genome getGenome() {
     return mGenome;
   }
@@ -255,8 +272,10 @@ public class ChromosomeDirs extends GenomeDirs implements Iterable<Chromosome> {
 
     Json json = new JsonParser().parse(file);
 
-    ChromosomeDirs ret = new ChromosomeDirs(
-        GenomeService.getInstance().guessGenome(json.getString("genome")));
+    Genome genome = 
+        GenomeService.getInstance().guessGenome(json.getString("genome"));
+    
+    ChromosomeDirs ret = new ChromosomeDirs(genome);
 
     Json chrsJson = json.get("chromosomes");
 
@@ -267,11 +286,12 @@ public class ChromosomeDirs extends GenomeDirs implements Iterable<Chromosome> {
       String name = chrJson.getString("name");
       int size = chrJson.getInt("size");
 
-      Chromosome chr = Chromosome.newChr(name, size);
+      Chromosome chr = Chromosome.newChr(name);
 
       ret.mChrIdMap.put(id, chr);
       ret.mChrMap.put(Integer.toString(id), chr);
       ret.mChrMap.put(chr.getShortName().toUpperCase(), chr);
+      ret.mSizeMap.put(chr, size);
     }
 
     return ret;
@@ -311,18 +331,18 @@ public class ChromosomeDirs extends GenomeDirs implements Iterable<Chromosome> {
 
         switch (species) {
         case "human":
-          chr = Chromosome.newHumanChr(name, size);
+          chr = Chromosome.newHumanChr(name);
           break;
         case "mouse":
-          chr = Chromosome.newMouseChr(name, size);
+          chr = Chromosome.newMouseChr(name);
           break;
         default:
-          chr = Chromosome.newChr(name, size);
+          chr = Chromosome.newChr(name);
           break;
         }
 
         // System.err.println(name + " " + chr);
-
+        ret.mSizeMap.put(chr, size);
         ret.add(chr);
       }
     } finally {
@@ -330,10 +350,6 @@ public class ChromosomeDirs extends GenomeDirs implements Iterable<Chromosome> {
     }
 
     LOG.info("Finished.");
-  }
-
-  private static final String formatKey(String chr) {
-    return Chromosome.getShortName(chr); // .toUpperCase();
   }
 
 }

@@ -39,6 +39,8 @@ public class GenomeGuess {
       return Genome.MM10;
     } else if (lid.contains("grcm38")) {
       return Genome.GRCM38;
+    } else if (lid.contains("human")) {
+      return Genome.GRCH38;
     } else if (lid.contains("mouse")) {
       return Genome.MM10;
     } else {

@@ -11,6 +11,9 @@ import java.util.List;
  *
  */
 public class LazyGenes extends FixedGapGenes {
+  
+  private static final long serialVersionUID = 1L;
+  
   private GeneParser mParser;
   private boolean mAutoLoad = true;
   private Path mFile;
@@ -46,7 +49,7 @@ public class LazyGenes extends FixedGapGenes {
   @Override
   public List<GenomicElement> getElements(Genome genome,
       String id,
-      GenomicType type) throws IOException {
+      GenomicType type) {
     autoLoad();
 
     return super.getElements(genome, id, type);
@@ -56,7 +59,7 @@ public class LazyGenes extends FixedGapGenes {
   public List<GenomicElement> find(Genome genome,
       GenomicRegion region,
       GenomicType type,
-      int minBp) throws IOException {
+      int minBp) {
     autoLoad();
 
     return super.find(genome, region, type, minBp);

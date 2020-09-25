@@ -38,6 +38,8 @@ import java.util.List;
  */
 public abstract class GenesDB extends GenomicElementsDB {
 
+  private static final long serialVersionUID = 1L;
+
   /**
    * Return the RefSeq ids used to index these genes.
    *
@@ -60,7 +62,7 @@ public abstract class GenesDB extends GenomicElementsDB {
    * @throws IOException
    */
   public List<GenomicElement> filterByType(List<GenomicElement> features,
-      GenomicType type) throws IOException {
+      GenomicType type) {
     List<GenomicElement> ret = new ArrayList<GenomicElement>(features.size());
 
     for (GenomicElement feature : features) {
