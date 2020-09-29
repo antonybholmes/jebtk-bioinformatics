@@ -41,7 +41,7 @@ public abstract class Tag implements Comparable<Tag> {
   }
 
   /**
-   * Order properties by their value if the names are not sufficient.
+   * Order Props by their value if the names are not sufficient.
    * 
    * @param p
    * @return
