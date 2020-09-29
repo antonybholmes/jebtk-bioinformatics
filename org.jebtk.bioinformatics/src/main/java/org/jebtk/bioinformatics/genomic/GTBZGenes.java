@@ -19,6 +19,8 @@ import org.jebtk.core.io.TokenFunction;
  *
  */
 public class GTBZGenes extends FixedGapGenes {
+  private static final long serialVersionUID = 1L;
+  
   private GeneParser mParser = new GTB2Parser();
   private final Path mFile;
   private final Map<String, Chromosome> mGeneMap = new HashMap<String, Chromosome>();
@@ -112,7 +114,7 @@ public class GTBZGenes extends FixedGapGenes {
   @Override
   public List<GenomicElement> getElements(Genome genome,
       String id,
-      GenomicType type) throws IOException {
+      GenomicType type) {
     autoLoad(id);
 
     return super.getElements(genome, id, type);
@@ -122,7 +124,7 @@ public class GTBZGenes extends FixedGapGenes {
   public List<GenomicElement> find(Genome genome,
       GenomicRegion region,
       GenomicType type,
-      int minBp) throws IOException {
+      int minBp) {
     autoLoad(region.mChr);
 
     return super.find(genome, region, type, minBp);

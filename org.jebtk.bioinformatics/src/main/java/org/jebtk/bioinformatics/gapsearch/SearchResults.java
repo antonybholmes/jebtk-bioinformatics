@@ -27,14 +27,15 @@
  */
 package org.jebtk.bioinformatics.gapsearch;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.Map.Entry;
 
 import org.jebtk.bioinformatics.genomic.GenomicRegion;
+import org.jebtk.core.collections.ArrayListCreator;
 import org.jebtk.core.collections.DefaultTreeMap;
-import org.jebtk.core.collections.TreeSetCreator;
+import org.jebtk.core.collections.IterMap;
 import org.jebtk.core.collections.UniqueArrayList;
 
 /**
@@ -42,7 +43,7 @@ import org.jebtk.core.collections.UniqueArrayList;
  *
  * @param <T> the generic type
  */
-public class SearchResults<T> implements Iterable<GenomicRegion> {
+public class SearchResults<T> implements Iterable<Entry<GenomicRegion, List<T>>> {
 
   public static final SearchResults<Object> EMPTY_RESULTS = new SearchResults<Object>();
 
@@ -54,8 +55,8 @@ public class SearchResults<T> implements Iterable<GenomicRegion> {
   /**
    * The member features.
    */
-  private Map<GenomicRegion, Set<T>> mFeatures = DefaultTreeMap
-      .create(new TreeSetCreator<T>());
+  private IterMap<GenomicRegion, List<T>> mFeatures = DefaultTreeMap
+      .create(new ArrayListCreator<T>());
 
   /**
    * Adds the.
@@ -66,7 +67,7 @@ public class SearchResults<T> implements Iterable<GenomicRegion> {
     mFeatures.get(region).add(feature);
   }
 
-  public Set<T> getValues(GenomicRegion region) {
+  public List<T> getValues(GenomicRegion region) {
     return mFeatures.get(region);
   }
 
@@ -76,8 +77,8 @@ public class SearchResults<T> implements Iterable<GenomicRegion> {
    * @see java.lang.Iterable#iterator()
    */
   @Override
-  public Iterator<GenomicRegion> iterator() {
-    return mFeatures.keySet().iterator();
+  public Iterator<Entry<GenomicRegion, List<T>>> iterator() {
+    return mFeatures.iterator();
   }
 
   /**
@@ -92,8 +93,8 @@ public class SearchResults<T> implements Iterable<GenomicRegion> {
   public int itemCount() {
     int ret = 0;
 
-    for (GenomicRegion r : this) {
-      ret += getValues(r).size();
+    for (Entry<GenomicRegion, List<T>> r : this) {
+      ret += r.getValue().size();
     }
 
     return ret;
@@ -102,18 +103,20 @@ public class SearchResults<T> implements Iterable<GenomicRegion> {
   public List<T> toList() {
     List<T> ret = new UniqueArrayList<T>(mFeatures.size());
 
-    for (GenomicRegion r : this) {
-      for (T t : this.getValues(r)) {
-        ret.add(t);
-      }
+    for (Entry<GenomicRegion, List<T>> r : this) {
+      ret.addAll(r.getValue());
     }
 
     return ret;
   }
 
   public void addAll(SearchResults<T> s) {
-    for (GenomicRegion r : s) {
-      mFeatures.get(r).addAll(s.mFeatures.get(r));
+    for (Entry<GenomicRegion, List<T>> r : s) {
+      addAll(r.getKey(), r.getValue());
     }
+  }
+
+  public void addAll(GenomicRegion r, Collection<T> values) {
+    mFeatures.get(r).addAll(values);
   }
 }

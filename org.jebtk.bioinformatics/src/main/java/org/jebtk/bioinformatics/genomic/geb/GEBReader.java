@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.jebtk.bioinformatics.genomic.Chromosome;
 import org.jebtk.bioinformatics.genomic.Genome;
+import org.jebtk.bioinformatics.genomic.GenomeService;
 import org.jebtk.bioinformatics.genomic.GenomicElement;
 import org.jebtk.bioinformatics.genomic.GenomicElementsDB;
 import org.jebtk.bioinformatics.genomic.GenomicRegion;
@@ -41,6 +42,9 @@ import org.jebtk.core.text.Join;
  * @author Antony Holmes
  */
 public class GEBReader extends GenomicElementsDB implements NameGetter {
+  
+  private static final long serialVersionUID = 1L;
+  
   public static final int CHECK = 42;
   public static final byte VERSION = 1;
 
@@ -126,8 +130,14 @@ public class GEBReader extends GenomicElementsDB implements NameGetter {
   public List<GenomicElement> find(Genome genome,
       GenomicRegion region,
       GenomicType type,
-      int minBp) throws IOException {
-    List<GenomicElement> elements = _find(region, type);
+      int minBp) {
+    List<GenomicElement> elements = new ArrayList<GenomicElement>();
+    
+    try {
+      _find(region, type, elements);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
 
     return overlapping(region, elements);
   }
@@ -145,14 +155,11 @@ public class GEBReader extends GenomicElementsDB implements NameGetter {
    * @return
    * @throws IOException
    */
-  private List<GenomicElement> _find(GenomicRegion region, GenomicType type)
-      throws IOException {
+  private void _find(GenomicRegion region, 
+      GenomicType type, 
+      List<GenomicElement> ret) throws IOException {
 
     if (mChr == null || !region.mChr.equals(mChr)) {
-      // if (mBinReader != null) {
-      // mBinReader.close();
-      // }
-
       if (mBTreeReader != null) {
         mBTreeReader.close();
       }
@@ -169,26 +176,29 @@ public class GEBReader extends GenomicElementsDB implements NameGetter {
     List<Integer> elementAddresses = mBTreeReader
         .elementAddresses(region.mChr, region.mStart, region.mEnd);
 
-    List<GenomicElement> elements = mElementReader
-        .readElements(elementAddresses, type);
-
-    return elements;
+    mElementReader.readElements(elementAddresses, type, ret);
   }
 
   @Override
   public List<GenomicElement> getElements(Genome genome,
       String search,
-      GenomicType type) throws IOException {
+      GenomicType type) {
     return getElements(search, type, false);
   }
 
   public List<GenomicElement> getElements(String id,
       GenomicType type,
-      boolean exact) throws IOException {
-    List<Integer> elementAddresses = mRadixReader.elementAddresses(id, exact);
-
-    List<GenomicElement> elements = mElementReader
-        .readElements(elementAddresses, type);
+      boolean exact) {
+    List<Integer> elementAddresses = new ArrayList<Integer>();
+    
+    List<GenomicElement> elements = new ArrayList<GenomicElement>();
+    
+    try {
+      mRadixReader.elementAddresses(id, exact, elementAddresses);
+      mElementReader.readElements(elementAddresses, type, elements);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
 
     return elements;
   }
@@ -276,7 +286,7 @@ public class GEBReader extends GenomicElementsDB implements NameGetter {
 
     // Settings settings = new Settings().loadIniSettings(file);
 
-    Genome genome = new Genome(json.get("genome").getString("name"),
+    Genome genome = GenomeService.getInstance().get(json.get("genome").getString("name"),
         json.get("genome").getString("build"));
 
     return new GEBReader(dir, json.getString("name"), genome,

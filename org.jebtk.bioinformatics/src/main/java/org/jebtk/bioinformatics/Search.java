@@ -431,7 +431,6 @@ public class Search {
 
         Feature feature = new Feature(
             featureColumn != -1 ? row.get(featureColumn) : null, 
-                Genome.NO_GENOME,
                 Chromosome.NO_CHR,
                 Integer.parseInt(row.get(startColumn)),
                 Integer.parseInt(row.get(endColumn)));

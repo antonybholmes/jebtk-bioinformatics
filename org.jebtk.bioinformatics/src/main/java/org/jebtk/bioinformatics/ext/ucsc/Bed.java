@@ -39,7 +39,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.regex.Matcher;
 
 import org.jebtk.bioinformatics.genomic.Chromosome;
@@ -125,7 +124,7 @@ public class Bed extends UCSCTrack {
   @Override
   public void setColor(Color color) {
     // Override the color preferences for all segments
-    for (Entry<Chromosome, Set<GenomicElement>> item : mRegions) {
+    for (Entry<Chromosome, List<GenomicElement>> item : mRegions) {
       for (GenomicElement r : item.getValue()) {
         ((BedElement) r).setColor(color);
       }
@@ -233,7 +232,7 @@ public class Bed extends UCSCTrack {
       reader.close();
     }
 
-    LOG.info("BED {} ({} peaks).", bed.getName(), bed.getElements().size());
+    LOG.info("BED {} ({} peaks).", bed.getName(), bed.size());
 
     return tracks;
   }

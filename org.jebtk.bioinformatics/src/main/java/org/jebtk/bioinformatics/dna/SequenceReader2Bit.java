@@ -33,6 +33,7 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.jebtk.bioinformatics.gapsearch.BinaryGapSearch;
 import org.jebtk.bioinformatics.gapsearch.BinarySearch;
@@ -90,7 +91,8 @@ public class SequenceReader2Bit extends ChrSequenceReader {
    * edu.columbia.rdf.lib.bioinformatics.genome.RepeatMaskType)
    */
   @Override
-  public final SequenceRegion getSequence(GenomicRegion region,
+  public final SequenceRegion getSequence(Genome genome,
+      GenomicRegion region,
       boolean displayUpper,
       RepeatMaskType repeatMaskType) throws IOException {
     Chromosome chr = region.getChr();
@@ -100,12 +102,12 @@ public class SequenceReader2Bit extends ChrSequenceReader {
 
       mFileMap.put(chr, file);
 
-      loadMaskData(region.mGenome, chr, file);
+      loadMaskData(genome, chr, file);
     }
 
     return new SequenceRegion(region,
         getSequence2Bit(mFileMap.get(chr),
-            region.mGenome, 
+            genome, 
             chr,
             region.mStart,
             region.mEnd,
@@ -136,7 +138,7 @@ public class SequenceReader2Bit extends ChrSequenceReader {
       int nc = in.readInt();
 
       for (int i = 0; i < nc; ++i) {
-        GenomicRegion region = new GenomicRegion(genome, chr, in.readInt(),
+        GenomicRegion region = new GenomicRegion(chr, in.readInt(),
             in.readInt());
 
         mNMap.add(region, region);
@@ -145,7 +147,7 @@ public class SequenceReader2Bit extends ChrSequenceReader {
       int mc = in.readInt();
 
       for (int i = 0; i < mc; ++i) {
-        GenomicRegion region = new GenomicRegion(genome, chr, in.readInt(),
+        GenomicRegion region = new GenomicRegion(chr, in.readInt(),
             in.readInt());
 
         mMaskMap.add(region, region);
@@ -222,7 +224,7 @@ public class SequenceReader2Bit extends ChrSequenceReader {
 
       char c = toChar(v); // , repeatMaskType);
 
-      GenomicRegion testRegion = new GenomicRegion(genome, chr, s, s);
+      GenomicRegion testRegion = new GenomicRegion(chr, s, s);
 
       //
       // Determine if N
@@ -276,8 +278,8 @@ public class SequenceReader2Bit extends ChrSequenceReader {
         .getFeatures(testRegion);
 
     for (GappedSearchFeatures<GenomicRegion> feature : allFeatures) {
-      for (GenomicRegion region : feature) {
-        if (GenomicRegion.overlaps(region, testRegion)) {
+      for (Entry<GenomicRegion, List<GenomicRegion>> r : feature) {
+        if (GenomicRegion.overlaps(r.getKey(), testRegion)) {
           return true;
         }
       }

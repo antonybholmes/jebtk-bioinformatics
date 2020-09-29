@@ -40,6 +40,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import org.jebtk.bioinformatics.genomic.Chromosome;
+import org.jebtk.bioinformatics.genomic.Genome;
 import org.jebtk.bioinformatics.genomic.GenomicRegion;
 import org.jebtk.bioinformatics.genomic.RepeatMaskType;
 import org.jebtk.bioinformatics.genomic.Sequence;
@@ -136,7 +137,8 @@ public class ZipSequenceReader extends DNASequenceReader {
   }
 
   @Override
-  public List<SequenceRegion> getSequences(Collection<GenomicRegion> regions,
+  public List<SequenceRegion> getSequences(Genome genome,
+      Collection<GenomicRegion> regions,
       boolean displayUpper,
       RepeatMaskType repeatMaskType) throws IOException {
 
@@ -151,7 +153,7 @@ public class ZipSequenceReader extends DNASequenceReader {
 
     for (Entry<Chromosome, List<GenomicRegion>> f : chrMap) {
       for (GenomicRegion region : f.getValue()) {
-        SequenceRegion sequence = getSequence(region,
+        SequenceRegion sequence = getSequence(genome, region,
             displayUpper,
             repeatMaskType);
 
@@ -177,7 +179,8 @@ public class ZipSequenceReader extends DNASequenceReader {
    * edu.columbia.rdf.lib.bioinformatics.genome.RepeatMaskType)
    */
   @Override
-  public final SequenceRegion getSequence(GenomicRegion region,
+  public final SequenceRegion getSequence(Genome genome,
+      GenomicRegion region,
       boolean displayUpper,
       RepeatMaskType repeatMaskType) throws IOException {
     return new SequenceRegion(region,

@@ -42,13 +42,13 @@ public class GenomicRegionModel extends ItemModel<GenomicRegion> {
    */
   private static final long serialVersionUID = 1L;
 
-  public void set(Genome genome, Chromosome chr, int start, int end) {
-    update(new GenomicRegion(genome, chr, start, end));
+  public void set(Chromosome chr, int start, int end) {
+    update(new GenomicRegion(chr, start, end));
 
     fireChanged();
   }
 
-  public void update(Genome genome, Chromosome chr, int start, int end) {
-    update(new GenomicRegion(genome, chr, start, end));
+  public void update(Chromosome chr, int start, int end) {
+    update(new GenomicRegion(chr, start, end));
   }
 }

@@ -28,8 +28,11 @@
 package org.jebtk.bioinformatics.genomic;
 
 import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.jebtk.core.io.PathUtils;
+import org.jebtk.core.text.TextUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,12 +65,61 @@ public class GenomeService  {
       .getLogger(GenomeService.class);
 
   private GenomeGuess mGenomeGuess = new GenomeGuess();
+  
+  private Map<String, Genome> mGenomeMap = new HashMap<String, Genome>();
 
   /**
    * Instantiates a new chromosomes.
    */
   private GenomeService() {
-    // Do nothing
+    mGenomeMap.put(Genome.HG19.toString(), Genome.HG19);
+    mGenomeMap.put(Genome.HUMAN_HG19_REFSEQ.toString(), Genome.HG19);
+    mGenomeMap.put(Genome.GRCH37.toString(), Genome.GRCH37);
+    mGenomeMap.put(Genome.GRCH38.toString(), Genome.GRCH38);
+    mGenomeMap.put(Genome.MM10.toString(), Genome.MM10);
+  }
+  
+  public void add(Genome genome) {
+    mGenomeMap.put(genome.toString(), genome);
+  }
+  
+  /**
+   * Returns a given genome object.
+   * 
+   * @param name
+   * @return
+   */
+  public Genome get(String name) {
+    return get(name, TextUtils.NA, TextUtils.NA);
+  }
+  
+  /**
+   * Returns a given genome object.
+   * 
+   * @param name
+   * @param assembly
+   * @return
+   */
+  public Genome get(String name, String assembly) {
+    return get(name, assembly, TextUtils.NA);
+  }
+  
+  /**
+   * Returns a given genome.
+   * 
+   * @param name
+   * @param assembly
+   * @param track
+   * @return
+   */
+  public Genome get(String name, String assembly, String track) {
+    String id = Genome.genomeId(name, assembly, track);
+    
+    if (!mGenomeMap.containsKey(id)) {
+      mGenomeMap.put(id, new Genome(name, assembly, track));
+    }
+    
+    return mGenomeMap.get(id);
   }
 
 

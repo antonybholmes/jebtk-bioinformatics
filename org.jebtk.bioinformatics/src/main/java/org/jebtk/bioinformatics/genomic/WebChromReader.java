@@ -18,9 +18,13 @@ package org.jebtk.bioinformatics.genomic;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
+import org.jebtk.core.collections.IterHashMap;
+import org.jebtk.core.collections.IterMap;
 import org.jebtk.core.http.URLPath;
 import org.jebtk.core.json.Json;
 import org.jebtk.core.json.JsonParser;
@@ -36,6 +40,11 @@ public class WebChromReader implements ChromosomeReader {
   private Genome mGenome;
 
   private List<Chromosome> mChrs = new ArrayList<Chromosome>();
+  
+  private Map<Chromosome, Integer> mSizeMap = 
+      new HashMap<Chromosome, Integer>();
+  
+  private IterMap<String, Chromosome> mChrMap = new IterHashMap<String, Chromosome>();
 
   private boolean mAutoLoad = true;
 
@@ -58,10 +67,11 @@ public class WebChromReader implements ChromosomeReader {
       for (int i = 0; i < json.size(); ++i) {
         chrJson = json.get(i);
 
-        Chromosome chr = Chromosome
-            .newChr(chrJson.getString("chr"), chrJson.getInt("bp"));
+        Chromosome chr = Chromosome.newChr(chrJson.getString("chr"));
 
         mChrs.add(chr);
+        mChrMap.put(chrJson.getString("chr"), chr);
+        mSizeMap.put(chr, chrJson.getInt("bp"));
       }
 
       Collections.sort(mChrs);
@@ -89,5 +99,40 @@ public class WebChromReader implements ChromosomeReader {
   @Override
   public Genome getGenome() {
     return mGenome;
+  }
+
+  @Override
+  public int size(Chromosome chr) {
+    return mSizeMap.getOrDefault(chr, -1);
+  }
+
+  @Override
+  public Chromosome chr(String chr) {
+    // LOG.info("Request {} {}", chr, getMapId(chr));
+
+    try {
+      autoLoad();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    String fc = Chromosome.getShortName(chr);
+
+    Chromosome ret = mChrMap.get(fc);
+
+    // if (ret.getName().contains("_")) {
+    // LOG.info("Request _ {} {} {}", chr, fc, ret);
+    // }
+
+    // if (ret.getShortName().contains("_")) {
+    // LOG.info("Short Request _ {} {} {}", chr, fc, ret);
+    // }
+
+    return ret;
+  }
+
+  @Override
+  public Chromosome randChr() {
+    return null;
   }
 }

@@ -57,27 +57,31 @@ public class Genome implements NameGetter, Comparable<Genome> {
   private static final String GENCODE = "gencode";
 
   private static final String REFSEQ = "refseq";
+  
+  public static final String HUMAN = "Human";
+  public static final String MOUSE = "Mouse";
 
-  public static final Genome HUMAN_HG18_UCSC = new Genome("Human", "hg18", REFSEQ);
-  public static final Genome HUMAN_HG19_UCSC = new Genome("Human", "hg19", REFSEQ);
 
-  public static final Genome HUMAN_HG18_REFSEQ = new Genome("Human", "hg18", REFSEQ);
-  public static final Genome HUMAN_HG19_REFSEQ = new Genome("Human", "hg19", REFSEQ);
+  public static final Genome HUMAN_HG18_UCSC = new Genome(HUMAN, "hg18", REFSEQ);
+  public static final Genome HUMAN_HG19_UCSC = new Genome(HUMAN, "hg19", REFSEQ);
 
-  public static final Genome HUMAN_GRCH37_REFSEQ = new Genome("Human", "hg18", GENCODE);
-  public static final Genome HUMAN_GRCH38_REFSEQ = new Genome("Human", "hg19", GENCODE);
+  public static final Genome HUMAN_HG18_REFSEQ = new Genome(HUMAN, "hg18", REFSEQ);
+  public static final Genome HUMAN_HG19_REFSEQ = new Genome(HUMAN, "hg19", REFSEQ);
 
-  public static final Genome HG18 = new Genome("Human", "hg18"); //HUMAN_HG18_REFSEQ;
-  public static final Genome HG19 = new Genome("Human", "hg19"); //HUMAN_HG19_REFSEQ;
+  public static final Genome HUMAN_GRCH37_GENCODE = new Genome(HUMAN, "GRCh37", GENCODE);
+  public static final Genome HUMAN_GRCH38_GENCODE = new Genome(HUMAN, "GRCh38", GENCODE);
 
-  public static final Genome GRCH37 = HUMAN_GRCH37_REFSEQ;
+  public static final Genome HG18 = new Genome(HUMAN, "hg18"); //HUMAN_HG18_REFSEQ;
+  public static final Genome HG19 = new Genome(HUMAN, "hg19"); //HUMAN_HG19_REFSEQ;
 
-  public static final Genome GRCH38 = HUMAN_GRCH38_REFSEQ;
+  public static final Genome GRCH37 = new Genome(HUMAN, "GRCh37");;
+
+  public static final Genome GRCH38 = new Genome(HUMAN, "GRCh38");
 
   /** The Constant MM10. */
-  public static final Genome MM10 = new Genome("mouse", "mm10", REFSEQ);
+  public static final Genome MM10 = new Genome(MOUSE, "mm10", REFSEQ);
 
-  public static final Genome GRCM38 = new Genome("mouse", "grcm38", GENCODE);
+  public static final Genome GRCM38 = new Genome(MOUSE, "GRCm38", GENCODE);
 
   public static final Path GENOME_HOME = AppService.RES_HOME.resolve("genomes");
 
@@ -98,11 +102,11 @@ public class Genome implements NameGetter, Comparable<Genome> {
 
   private String mS;
 
-  public Genome(String name) {
+  Genome(String name) {
     this(name, TextUtils.NA);
   }
 
-  public Genome(String name, String assembly) {
+  Genome(String name, String assembly) {
     this(name, assembly, TextUtils.NA);
   }
 
@@ -112,7 +116,7 @@ public class Genome implements NameGetter, Comparable<Genome> {
    * @param assembly e.g. 'grch38'
    * @param track e.g. 'gencode'
    */
-  public Genome(String name, String assembly, String track) {
+  Genome(String name, String assembly, String track) {
     mName = TextUtils.sentenceCase(name);
     mAssembly = assembly;
     mTrack = track;
@@ -194,13 +198,13 @@ public class Genome implements NameGetter, Comparable<Genome> {
 
   @Override
   public int compareTo(Genome g) {
-    int ret = mName.compareTo(g.mName);
+    int ret = mName.toLowerCase().compareTo(g.mName.toLowerCase());
 
     if (ret == 0 && !mAssembly.equals(TextUtils.NA)) {
-      ret = mAssembly.compareTo(g.mAssembly);
+      ret = mAssembly.toLowerCase().compareTo(g.mAssembly.toLowerCase());
 
       if (ret == 0 && !mTrack.equals(TextUtils.NA)) {
-        ret = mTrack.compareTo(g.mTrack);
+        ret = mTrack.toLowerCase().compareTo(g.mTrack.toLowerCase());
       }
     }
 
@@ -267,13 +271,13 @@ public class Genome implements NameGetter, Comparable<Genome> {
   public static String genomeId(String name, String assembly, String track) {
     List<String> ret = new ArrayList<String>(3);
     
-    ret.add(name);
+    ret.add(name.toLowerCase());
     
     if (!assembly.equals(TextUtils.NA)) {
-      ret.add(assembly);
+      ret.add(assembly.toLowerCase());
       
       if (!track.equals(TextUtils.NA)) {
-        ret.add(track);
+        ret.add(track.toLowerCase());
       }
     }
     

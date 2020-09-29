@@ -153,7 +153,7 @@ public class BedElement extends GenomicElement implements NameGetter {
       }
 
       GenomicElement bed = new BedElement(type,
-          new GenomicRegion(genome, chr, start, end, strand)).setProperty("name", name)
+          new GenomicRegion(chr, start, end, strand)).setProperty("name", name)
               .setColor(color);
 
       if (tokens.size() > 11) {
@@ -176,10 +176,10 @@ public class BedElement extends GenomicElement implements NameGetter {
     } else if (tokens.size() > 3) {
       String name = tokens.get(3);
 
-      return new BedElement(type, new GenomicRegion(genome, chr, start, end))
+      return new BedElement(type, new GenomicRegion(chr, start, end))
           .setProperty("name", name);
     } else {
-      return new BedElement(type, new GenomicRegion(genome, chr, start, end));
+      return new BedElement(type, new GenomicRegion(chr, start, end));
     }
   }
 

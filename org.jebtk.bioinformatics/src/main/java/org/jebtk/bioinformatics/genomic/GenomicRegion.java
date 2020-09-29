@@ -85,8 +85,8 @@ public class GenomicRegion extends Region {
   @JsonIgnore
   public final Strand mStrand;
 
-  @JsonIgnore
-  public final Genome mGenome;
+  //@JsonIgnore
+  //public final Genome mGenome;
 
   // protected final String mType;
 
@@ -100,44 +100,31 @@ public class GenomicRegion extends Region {
   }
 
   public GenomicRegion(GenomicRegion region, Strand strand) {
-    this(region.mGenome, region.mChr, region.mStart, region.mEnd, strand);
+    this(region.mChr, region.mStart, region.mEnd, strand);
   }
 
   public GenomicRegion(GenomicRegion region, int start, int end) {
-    this(region.mGenome, region.mChr, start, end, region.mStrand);
+    this(region.mChr, start, end, region.mStrand);
   }
   
   public GenomicRegion(Chromosome chr, int start, int end) {
-    this(Genome.NO_GENOME, chr, start, end);
+    this(chr, start, end, Strand.SENSE);
   }
-
-  public GenomicRegion(Genome genome, Chromosome chr, int start, int end) {
-    this(genome, chr, start, end, Strand.SENSE);
-  }
-
-  public GenomicRegion(Genome genome, Chromosome chr, int start, int end,
+  
+  public GenomicRegion(Chromosome chr, int start, int end,
       Strand strand) {
     super(start, end);
 
-    mGenome = genome;
     mChr = chr;
     mStrand = strand;
   }
 
   public GenomicRegion(Genome genome, String chr, int start, int end) {
-    this(genome, ChromosomeService.getInstance().chr(genome, chr), start, end);
+    this(ChromosomeService.getInstance().chr(genome, chr), start, end);
   }
 
-  /**
-   * Clone a genomic region, but change its genome.
-   * 
-   * @param genome
-   * @param r
-   */
-  public GenomicRegion(Genome genome, GenomicRegion r) {
-    this(genome, ChromosomeService.getInstance().chr(genome, r.mChr), r.mStart,
-        r.mEnd);
-  }
+
+  
 
   /**
    * Gets the strand.
@@ -229,17 +216,6 @@ public class GenomicRegion extends Region {
   @JsonIgnore
   public Chromosome getChr() {
     return mChr;
-  }
-
-  /**
-   * Returns the genome associated with this region. Equivalent to calling
-   * <code>getChr().getGenome()</code>.
-   * 
-   * @return the genome.
-   */
-  @JsonIgnore
-  public Genome getGenome() {
-    return mGenome; // mChr.getGenome();
   }
 
   /*
@@ -368,10 +344,9 @@ public class GenomicRegion extends Region {
     Matcher matcher = CHR_ONLY_PATTERN.matcher(location);
 
     if (matcher.find()) {
-      Chromosome chromosome = ChromosomeService.getInstance().chr(genome,
-          matcher.group(1));
+      Chromosome chr = ChromosomeService.getInstance().chr(matcher.group(1));
 
-      if (chromosome == null) {
+      if (chr == null) {
         return null;
       }
 
@@ -384,7 +359,7 @@ public class GenomicRegion extends Region {
         start = TextUtils.parseInt(matcher.group(1));
       } else {
         // Just the name, return the full chromosome
-        return new GenomicRegion(genome, chromosome, 1, chromosome.getSize());
+        return new GenomicRegion(chr, 1, ChromosomeService.getInstance().size(genome, chr));
       }
 
       if (matcher.find()) {
@@ -394,7 +369,7 @@ public class GenomicRegion extends Region {
         end = start;
       }
 
-      return new GenomicRegion(genome, chromosome, start, end);
+      return new GenomicRegion(chr, start, end);
     } else if (isRegion(location)) {
       location = region(location);
 
@@ -442,8 +417,7 @@ public class GenomicRegion extends Region {
       return null;
     }
 
-    return overlap(region1.mGenome,
-        region1.mChr,
+    return overlap(region1.mChr,
         region1.mStart,
         region1.mEnd,
         region2.mStart,
@@ -467,8 +441,7 @@ public class GenomicRegion extends Region {
       return null;
     }
 
-    return overlap(region2.mGenome,
-        chr,
+    return overlap(chr,
         start1,
         end1,
         region2.mStart,
@@ -485,8 +458,7 @@ public class GenomicRegion extends Region {
    * @param end2 the end 2
    * @return the genomic region
    */
-  public static GenomicRegion overlap(Genome genome,
-      Chromosome chr,
+  public static GenomicRegion overlap(Chromosome chr,
       int start1,
       int end1,
       int start2,
@@ -498,7 +470,7 @@ public class GenomicRegion extends Region {
     int start = Math.max(start1, start2);
     int end = Math.min(end1, end2);
 
-    return new GenomicRegion(genome, chr, start, end);
+    return new GenomicRegion(chr, start, end);
   }
 
   /**
@@ -633,7 +605,7 @@ public class GenomicRegion extends Region {
 
     int mid = mid(region);
 
-    return new GenomicRegion(region.mGenome, region.mChr, mid, mid);
+    return new GenomicRegion(region.mChr, mid, mid);
   }
 
   /**
@@ -744,7 +716,7 @@ public class GenomicRegion extends Region {
   public static GenomicRegion extend(GenomicRegion region,
       int startOffset,
       int endOffset) {
-    return new GenomicRegion(region.mGenome, region.mChr,
+    return new GenomicRegion(region.mChr,
         region.mStart - Math.abs(startOffset),
         region.mEnd + Math.abs(endOffset));
   }
@@ -763,7 +735,7 @@ public class GenomicRegion extends Region {
       int start,
       int startOffset,
       int endOffset) {
-    return new GenomicRegion(genome, chr, start - Math.abs(startOffset),
+    return new GenomicRegion(chr, start - Math.abs(startOffset),
         start + Math.abs(endOffset));
   }
 
@@ -777,7 +749,7 @@ public class GenomicRegion extends Region {
    * @throws IOException Signals that an I/O exception has occurred.
    * @throws ParseException the parse exception
    */
-  public static List<SequenceRegion> getSequences(String genome,
+  public static List<SequenceRegion> getSequences(Genome genome,
       List<GenomicRegion> regions,
       SequenceReader genomeAssembly) throws IOException, ParseException {
     return getSequences(genome,
@@ -799,7 +771,7 @@ public class GenomicRegion extends Region {
    * @throws IOException Signals that an I/O exception has occurred.
    * @throws ParseException the parse exception
    */
-  public static List<SequenceRegion> getSequences(String genome,
+  public static List<SequenceRegion> getSequences(Genome genome,
       Collection<GenomicRegion> regions,
       boolean displayUpper,
       RepeatMaskType repeatMaskType,
@@ -811,7 +783,7 @@ public class GenomicRegion extends Region {
           "Getting sequence for region " + region.getLocation() + "...");
 
       sequences.add(
-          genomeAssembly.getSequence(region, displayUpper, repeatMaskType));
+          genomeAssembly.getSequence(genome, region, displayUpper, repeatMaskType));
     }
 
     return sequences;
@@ -907,23 +879,24 @@ public class GenomicRegion extends Region {
    * @param sizes the sizes
    * @return the genomic region
    */
-  public static GenomicRegion shift(GenomicRegion region, int shift) {
+  public static GenomicRegion shift(Genome genome, GenomicRegion region, int shift) {
 
-    return shift(region, shift, 0);
+    return shift(genome, region, shift, 0);
 
   }
 
-  public static GenomicRegion shift(GenomicRegion region,
+  public static GenomicRegion shift(Genome genome,
+      GenomicRegion region,
       int shift,
       int minSep) {
 
-    int size = region.mChr.getSize();
+    int size = ChromosomeService.getInstance().size(genome, region.mChr);
 
     // bound the positions so they dont exceed the chromosome bounds
     int start = Math.min(size, Math.max(1, region.mStart + shift));
     int end = Math.min(size, Math.max(start + minSep, region.mEnd + shift));
 
-    return new GenomicRegion(region.mGenome, region.mChr, start, end);
+    return new GenomicRegion(region.mChr, start, end);
 
   }
 
@@ -938,7 +911,7 @@ public class GenomicRegion extends Region {
     int start = Math.max(1, region.mStart + shift);
     int end = Math.max(start + minSep, region.mEnd + shift);
 
-    return new GenomicRegion(region.mGenome, region.mChr, start, end);
+    return new GenomicRegion(region.mChr, start, end);
 
   }
 
@@ -1029,7 +1002,7 @@ public class GenomicRegion extends Region {
    * @return A genomic region with an invalid chromosome.
    */
   public static GenomicRegion create(int start, int end) {
-    return create(Genome.NO_GENOME, Chromosome.NO_CHR, start, end);
+    return create(Chromosome.NO_CHR, start, end);
   }
 
   /*
@@ -1056,40 +1029,18 @@ public class GenomicRegion extends Region {
    * return create(genome, chr, start, end); }
    */
 
-  public static GenomicRegion create(String genome,
-      String chr,
+  public static GenomicRegion create(String chr,
       String start,
       String end) {
-    return create(genome,
-        chr,
+    return create(chr,
         TextUtils.parseInt(start),
         TextUtils.parseInt(end));
   }
 
-  /**
-   * Creates the.
-   *
-   * @param chr the chr
-   * @param start the start
-   * @param end the end
-   * @return the genomic region
-   */
-  public static GenomicRegion create(String genome,
-      String chr,
+  public static GenomicRegion create(String chr,
       int start,
       int end) {
-    return create(GenomeService.getInstance().guessGenome(genome),
-        chr,
-        start,
-        end);
-  }
-
-  public static GenomicRegion create(Genome genome,
-      String chr,
-      int start,
-      int end) {
-    return create(genome,
-        ChromosomeService.getInstance().chr(genome, chr),
+    return create(ChromosomeService.getInstance().chr(chr),
         start,
         end);
   }
@@ -1102,11 +1053,10 @@ public class GenomicRegion extends Region {
    * @param end the end
    * @return the genomic region
    */
-  public static GenomicRegion create(Genome genome,
-      Chromosome chr,
+  public static GenomicRegion create(Chromosome chr,
       int start,
       int end) {
-    return create(genome, chr, start, end, Strand.SENSE);
+    return create(chr, start, end, Strand.SENSE);
   }
 
   /**
@@ -1118,12 +1068,11 @@ public class GenomicRegion extends Region {
    * @param strand the strand
    * @return the genomic region
    */
-  public static GenomicRegion create(Genome genome,
-      Chromosome chr,
+  public static GenomicRegion create(Chromosome chr,
       int start,
       int end,
       Strand strand) {
-    return new GenomicRegion(genome, chr, start, end, strand);
+    return new GenomicRegion(chr, start, end, strand);
   }
 
   /**
@@ -1151,7 +1100,7 @@ public class GenomicRegion extends Region {
   public static GenomicRegion center(GenomicRegion region) {
     int mid = mid(region);
 
-    return new GenomicRegion(region.mGenome, region.mChr, mid, mid);
+    return new GenomicRegion(region.mChr, mid, mid);
   }
 
   public static GenomicRegion randomRegion(Genome genome, int length)
@@ -1160,10 +1109,10 @@ public class GenomicRegion extends Region {
 
     Chromosome chr = ChromosomeService.getInstance().randChr(genome);
 
-    int start = rand.nextInt(chr.getSize() - length);
+    int start = rand.nextInt(ChromosomeService.getInstance().size(genome, chr) - length);
     int end = start + length - 1;
 
-    return new GenomicRegion(genome, chr, start, end);
+    return new GenomicRegion(chr, start, end);
   }
 
   /**
@@ -1173,12 +1122,12 @@ public class GenomicRegion extends Region {
    * @return
    */
   public static GenomicRegion oppositeStrand(GenomicRegion region) {
-    return new GenomicRegion(region.mGenome, region.mChr, region.mStart,
+    return new GenomicRegion(region.mChr, region.mStart,
         region.mEnd, Strand.oppositeStrand(region.mStrand));
   }
 
   public static GenomicRegion reverseCompliment(GenomicRegion region) {
-    return new GenomicRegion(region.mGenome, region.mChr, region.mEnd,
+    return new GenomicRegion(region.mChr, region.mEnd,
         region.mStart, Strand.oppositeStrand(region.mStrand));
   }
 

@@ -33,22 +33,19 @@ public class GeneSearchQuery extends SearchQuery<GenomicElement> {
 
     // System.err.println("qs " + s);
 
-    try {
-      List<GenomicElement> genes = mGenes.getGenes(ls, mType);
+    List<GenomicElement> genes = mGenes.getGenes(ls, mType);
 
-      // if (!include) {
-      // Add all the genes not in this list of genes
-      // genes = CollectionUtils.compliment(mGenes.getGenes(), genes);
-      // }
+    // if (!include) {
+    // Add all the genes not in this list of genes
+    // genes = CollectionUtils.compliment(mGenes.getGenes(), genes);
+    // }
 
-      if (exact) {
-        genes = exact(ls, genes);
-      }
-
-      ret.addAll(genes);
-    } catch (IOException e) {
-      e.printStackTrace();
+    if (exact) {
+      genes = exact(ls, genes);
     }
+
+    ret.addAll(genes);
+    
 
     return ret;
   }

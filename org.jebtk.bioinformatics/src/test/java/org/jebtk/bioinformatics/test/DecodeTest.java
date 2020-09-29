@@ -19,9 +19,8 @@ import java.io.IOException;
 import java.util.List;
 
 import org.jebtk.bioinformatics.genomic.GFBGenes;
-import org.jebtk.bioinformatics.genomic.Genome;
+import org.jebtk.bioinformatics.genomic.GenomeService;
 import org.jebtk.bioinformatics.genomic.GenomicElement;
-import org.jebtk.bioinformatics.genomic.GenomicEntity;
 import org.jebtk.bioinformatics.genomic.GenomicType;
 import org.jebtk.core.io.PathUtils;
 import org.junit.Test;
@@ -30,6 +29,7 @@ public class DecodeTest {
 	@Test
 	public void posTest() throws IOException {
 
+<<<<<<< HEAD
 		/*
 		 * GFBGenes g = new GFBGenes("gencode", "grch38", 1000,
 		 * PathUtils.getPath("/home/antony/Desktop/gff/gfb/grch38/"));
@@ -45,6 +45,23 @@ public class DecodeTest {
 		 * for (GenomicEntity e : gene.getChildren(GenomicType.TRANSCRIPT)) {
 		 * System.err.println("exon " + e); } }
 		 */
+=======
+	  String search = "bcl6";
+	  
+	  GFBGenes genes = new GFBGenes(GenomeService.getInstance().get("human", "grch38"), 1000, PathUtils.getPath("/home/antony/Desktop/gff/gfb/grch38/"));
+    
+	  //GeneSearchQuery query = new GeneSearchQuery(genes);
+    
+    List<GenomicElement> r = genes.getGenes(search, GenomicType.TRANSCRIPT);
+    
+    for (GenomicElement gene : r) { 
+      System.err.println("blo " + gene + " " + gene.getType() + " " + gene.getChildTypes());
+      
+      for (GenomicElement e : gene.getChildren(GenomicType.EXON)) {
+        System.err.println(e);
+      }
+    }
+>>>>>>> 685e5675db07722a8f0a3558b9e58fc03103e352
 	}
 
 //	@Test

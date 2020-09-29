@@ -39,7 +39,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.jebtk.bioinformatics.genomic.Chromosome;
 import org.jebtk.bioinformatics.genomic.ChromosomeService;
-import org.jebtk.bioinformatics.genomic.GenomeService;
 import org.jebtk.core.io.FileUtils;
 import org.jebtk.core.io.Io;
 import org.jebtk.core.io.PathUtils;
@@ -190,7 +189,6 @@ public class FeaturesCommonRegionBinarySearch extends AbstractFeaturesSearch {
           List<String> row = TextUtils.tabSplit(line);
 
           Feature feature = new Feature(row.get(0),
-              GenomeService.getInstance().guessGenome(mFeatureFile),
               ChromosomeService.getInstance().guessChr(mFeatureFile, row.get(1)),
               Integer.parseInt(row.get(2)), Integer.parseInt(row.get(3)));
 

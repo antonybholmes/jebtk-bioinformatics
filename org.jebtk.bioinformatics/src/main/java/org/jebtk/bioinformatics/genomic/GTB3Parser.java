@@ -106,7 +106,7 @@ public class GTB3Parser extends GTBParser {
         // Create the gene
 
         GenomicEntity gene = addAttributes(GenomicType.TRANSCRIPT,
-            GenomicRegion.create(genome, chr, start, end, strand),
+            GenomicRegion.create(chr, start, end, strand),
             attributeMap);
 
         if (containsLevel(GenomicType.TRANSCRIPT)) {
@@ -123,7 +123,7 @@ public class GTB3Parser extends GTBParser {
           for (int i = 0; i < starts.size(); ++i) {
             // Again correct for the ucsc
             GenomicRegion region = GenomicRegion
-                .create(genome, chr, starts.get(i), ends.get(i), strand);
+                .create(chr, starts.get(i), ends.get(i), strand);
 
             GenomicEntity exon = addAttributes(GenomicType.EXON,
                 region,
@@ -175,7 +175,7 @@ public class GTB3Parser extends GTBParser {
 
     for (int i = 0; i < starts.size(); ++i) {
       GenomicRegion region = GenomicRegion
-          .create(gene.mGenome, gene.mChr, starts.get(i), ends.get(i), gene.mStrand);
+          .create(gene.mChr, starts.get(i), ends.get(i), gene.mStrand);
 
       GenomicEntity g = addAttributes(type, region, attributeMap);
 

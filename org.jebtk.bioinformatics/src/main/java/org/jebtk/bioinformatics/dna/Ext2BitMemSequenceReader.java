@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.jebtk.bioinformatics.genomic.Chromosome;
+import org.jebtk.bioinformatics.genomic.Genome;
 import org.jebtk.bioinformatics.genomic.GenomicRegion;
 import org.jebtk.bioinformatics.genomic.RepeatMaskType;
 import org.jebtk.bioinformatics.genomic.Sequence;
@@ -138,7 +139,8 @@ public class Ext2BitMemSequenceReader extends ChrSequenceReader {
   }
 
   @Override
-  public List<SequenceRegion> getSequences(Collection<GenomicRegion> regions,
+  public List<SequenceRegion> getSequences(Genome genome,
+      Collection<GenomicRegion> regions,
       boolean displayUpper,
       RepeatMaskType repeatMaskType) throws IOException {
 
@@ -153,7 +155,7 @@ public class Ext2BitMemSequenceReader extends ChrSequenceReader {
 
     for (Chromosome chr : chrMap.keySet()) {
       for (GenomicRegion region : chrMap.get(chr)) {
-        SequenceRegion sequence = getSequence(region,
+        SequenceRegion sequence = getSequence(genome, region,
             displayUpper,
             repeatMaskType);
 
@@ -179,7 +181,8 @@ public class Ext2BitMemSequenceReader extends ChrSequenceReader {
    * edu.columbia.rdf.lib.bioinformatics.genome.RepeatMaskType)
    */
   @Override
-  public final SequenceRegion getSequence(GenomicRegion region,
+  public final SequenceRegion getSequence(Genome genome,
+      GenomicRegion region,
       boolean displayUpper,
       RepeatMaskType repeatMaskType) throws IOException {
     Chromosome chr = region.getChr();

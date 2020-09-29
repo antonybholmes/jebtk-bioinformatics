@@ -598,7 +598,7 @@ public class Sequence
       RepeatMaskType repeatMaskType) throws IOException {
     GenomicRegion region = GenomicRegion.randomRegion(genome, length);
 
-    return assembly.getSequence(region, uppercase, repeatMaskType);
+    return assembly.getSequence(genome, region, uppercase, repeatMaskType);
   }
 
   /**

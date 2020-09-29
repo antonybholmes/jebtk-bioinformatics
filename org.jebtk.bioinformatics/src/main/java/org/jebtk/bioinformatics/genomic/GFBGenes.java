@@ -40,6 +40,8 @@ import org.jebtk.core.text.TextUtils;
  */
 public class GFBGenes extends SingleGenesDB {
 
+  private static final long serialVersionUID = 1L;
+
   /** The buffer. */
   private final byte[] mBuffer = new byte[256];
 
@@ -136,7 +138,7 @@ public class GFBGenes extends SingleGenesDB {
   public List<GenomicElement> findGenes(String region, 
       GenomicType type, 
       int minBp)
-      throws IOException {
+          throws IOException {
     return find(null, GenomicRegion.parse(mGenome, region), type, minBp);
   }
 
@@ -151,7 +153,7 @@ public class GFBGenes extends SingleGenesDB {
   public List<GenomicElement> find(Genome genome,
       GenomicRegion region,
       GenomicType type,
-      int minBp) throws IOException {
+      int minBp) {
     return findGenes(region.mChr, region.mStart, region.mEnd, type);
   }
 
@@ -167,7 +169,7 @@ public class GFBGenes extends SingleGenesDB {
   public List<GenomicElement> findGenes(Chromosome chr,
       int start,
       int end,
-      GenomicType type) throws IOException {
+      GenomicType type) {
 
     int n = _findGenes(chr, start, end, type);
 
@@ -187,8 +189,7 @@ public class GFBGenes extends SingleGenesDB {
    * @return
    * @throws IOException
    */
-  private int _findGenes(Chromosome chr, int start, int end, GenomicType type)
-      throws IOException {
+  private int _findGenes(Chromosome chr, int start, int end, GenomicType type) {
     int sb = start / mWindow;
     int eb = end / mWindow;
 
@@ -198,40 +199,47 @@ public class GFBGenes extends SingleGenesDB {
 
     Path file = mDir.resolve(getFileName(mGenome, chr, mWindow));
 
-    RandomAccessFile reader = FileUtils.newRandomAccess(file);
-
+    RandomAccessFile reader;
+    
     try {
-      // System.err.println(getVersion(reader));
-      // System.err.println(getDescription(reader));
-      // System.err.println(getWindow(reader));
-      // System.err.println(getBins(reader));
+      reader = FileUtils.newRandomAccess(file);
 
-      n = binAddressesFromBins(reader, bins);
+      try {
+        n = binAddressesFromBins(reader, bins);
 
-      n = geneAddressesFromBins(reader, n);
+        n = geneAddressesFromBins(reader, n);
 
-      n = genesFromGeneAddresses(reader, n, type);
-    } finally {
-      reader.close();
+        n = genesFromGeneAddresses(reader, n, type);
+
+      } finally {
+        reader.close();
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
     }
 
     return n;
   }
 
   @Override
-  public List<GenomicElement> getElements() throws IOException {
+  public List<GenomicElement> getElements() {  
     Path file = mDir.resolve(getRadixFileName(mGenome));
 
-    RandomAccessFile reader = FileUtils.newRandomAccess(file);
-
     int n = 0;
-
+    
+    RandomAccessFile reader;
     try {
-      int address = readGenesAddress(reader);
+      reader = FileUtils.newRandomAccess(file);
+      
+      try {
+        int address = readGenesAddress(reader);
 
-      n = readAllGenes(reader, address, GenomicType.GENE);
-    } finally {
-      reader.close();
+        n = readAllGenes(reader, address, GenomicType.GENE);
+      } finally {
+        reader.close();
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
     }
 
     return ArrayUtils.toList(mGenes, n);
@@ -244,24 +252,29 @@ public class GFBGenes extends SingleGenesDB {
   @Override
   public List<GenomicElement> getElements(Genome genome,
       String search,
-      GenomicType type) throws IOException {
+      GenomicType type) {
     return getGenes(search, GenomicType.TRANSCRIPT);
   }
 
-  public List<GenomicElement> getGenes(String search, GenomicType type)
-      throws IOException {
+  public List<GenomicElement> getGenes(String search, GenomicType type) {
     Path file = mDir.resolve(getRadixFileName(mGenome));
 
-    RandomAccessFile reader = FileUtils.newRandomAccess(file);
-
     int n = 0;
-
+    
+    RandomAccessFile reader;
     try {
-      n = geneAddressesFromRadix(reader, search);
+      reader = FileUtils.newRandomAccess(file);
+      
+      try {
+        n = geneAddressesFromRadix(reader, search);
 
-      n = genesFromGeneAddresses(reader, n, type);
-    } finally {
-      reader.close();
+        n = genesFromGeneAddresses(reader, n, type);
+      } finally {
+        reader.close();
+      }
+      
+    } catch (IOException e) {
+      e.printStackTrace();
     }
 
     return ArrayUtils.toList(mGenes, n);
@@ -631,7 +644,7 @@ public class GFBGenes extends SingleGenesDB {
     int start = reader.readInt();
     int end = reader.readInt();
 
-    return GenomicRegion.create(mGenome, chr, start, end);
+    return GenomicRegion.create(chr, start, end);
   }
 
   private Strand readStrand(RandomAccessFile reader) throws IOException {

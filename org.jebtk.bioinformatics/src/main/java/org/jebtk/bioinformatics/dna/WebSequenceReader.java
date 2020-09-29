@@ -35,6 +35,7 @@ import java.util.List;
 
 import org.jebtk.bioinformatics.DataSource;
 import org.jebtk.bioinformatics.genomic.Genome;
+import org.jebtk.bioinformatics.genomic.GenomeService;
 import org.jebtk.bioinformatics.genomic.GenomicRegion;
 import org.jebtk.bioinformatics.genomic.RepeatMaskType;
 import org.jebtk.bioinformatics.genomic.Sequence;
@@ -96,15 +97,16 @@ public class WebSequenceReader extends SequenceReader {
    * edu.columbia.rdf.lib.bioinformatics.genome.RepeatMaskType)
    */
   @Override
-  public SequenceRegion getSequence(GenomicRegion region,
+  public SequenceRegion getSequence(Genome genome,
+      GenomicRegion region,
       boolean displayUpper,
       RepeatMaskType repeatMaskType) throws IOException {
     URL url;
 
     try {
       URLPath tmpUrl = mDnaUrl
-          .param("n", region.getGenome().getName().toLowerCase())
-          .param("a", region.getGenome().getAssembly())
+          .param("n", genome.getName().toLowerCase())
+          .param("a", genome.getAssembly())
           //.param("t", region.getGenome().getTrack())
           .param("chr", region.getChr().toString())
           .param("s", region.getStart()).param("e", region.getEnd())
@@ -165,7 +167,7 @@ public class WebSequenceReader extends SequenceReader {
         
         System.err.println("web " + e.getString());
         
-        ret.add(new Genome(e.getString("name"), e.getString("assembly")));
+        ret.add(GenomeService.getInstance().get(e.getString("name"), e.getString("assembly")));
         
         //GenomeService.getInstance().guessGenome(json.get(i).getString()));
       }

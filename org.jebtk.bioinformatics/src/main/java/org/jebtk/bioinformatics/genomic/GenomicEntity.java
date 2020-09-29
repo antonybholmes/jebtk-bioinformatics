@@ -93,7 +93,7 @@ public class GenomicEntity extends GenomicElement implements NameGetter {
 
   public GenomicEntity(GenomicType type, Genome genome, Chromosome chr, int start, int end,
       Strand strand) {
-    super(type, genome, chr, start, end, strand);
+    super(type, chr, start, end, strand);
   }
 
   /**
