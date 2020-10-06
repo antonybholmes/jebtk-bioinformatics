@@ -67,7 +67,7 @@ public class ResMatrix extends DataFrame {
   /**
    * Instantiates a new res matrix.
    *
-   * @param rows the rows
+   * @param rows    the rows
    * @param columns the columns
    */
   public ResMatrix(int rows, int columns) {
@@ -181,26 +181,24 @@ public class ResMatrix extends DataFrame {
   /**
    * Parses the matrix.
    *
-   * @param file the file
+   * @param file         the file
    * @param keepCallCols the keep call cols
    * @return the annotation matrix
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static DataFrame parseMatrix(Path file, boolean keepCallCols)
-      throws IOException {
+  public static DataFrame parseMatrix(Path file, boolean keepCallCols) throws IOException {
     return new ResMatrixParser(keepCallCols).parse(file);
   }
 
   /**
    * Write a simple expression matrix in GCT format.
    *
-   * @param <T> the generic type
+   * @param <T>    the generic type
    * @param matrix the matrix
-   * @param file the file
+   * @param file   the file
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static <T> void writeResMatrix(DataFrame matrix, Path file)
-      throws IOException {
+  public static <T> void writeResMatrix(DataFrame matrix, Path file) throws IOException {
     BufferedWriter writer = FileUtils.newBufferedWriter(file);
 
     try {
@@ -258,7 +256,7 @@ public class ResMatrix extends DataFrame {
   /**
    * Format text value.
    *
-   * @param <T> the generic type
+   * @param <T>   the generic type
    * @param value the value
    * @return the string
    */
@@ -273,7 +271,7 @@ public class ResMatrix extends DataFrame {
   /**
    * Creates the mixed res matrix.
    *
-   * @param rows the rows
+   * @param rows    the rows
    * @param columns the columns
    * @return the res matrix
    */
@@ -284,7 +282,7 @@ public class ResMatrix extends DataFrame {
   /**
    * Creates the res matrix.
    *
-   * @param rows the rows
+   * @param rows    the rows
    * @param columns the columns
    * @return the res matrix
    */

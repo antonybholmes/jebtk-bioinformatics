@@ -66,14 +66,13 @@ public abstract class FileSequenceReader extends SequenceReader {
   /**
    * Gets the sequence.
    *
-   * @param file the file
+   * @param file  the file
    * @param start the start
-   * @param end the end
+   * @param end   the end
    * @return the sequence
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static String getSequence(Path file, int start, int end)
-      throws IOException {
+  public static String getSequence(Path file, int start, int end) throws IOException {
 
     byte[] buf = getBytes(file, start - 1, end - 1);
 
@@ -83,14 +82,13 @@ public abstract class FileSequenceReader extends SequenceReader {
   /**
    * Gets the bytes.
    *
-   * @param file the file
+   * @param file  the file
    * @param start the start
-   * @param end the end
+   * @param end   the end
    * @return the bytes
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static byte[] getBytes(Path file, int start, int end)
-      throws IOException {
+  public static byte[] getBytes(Path file, int start, int end) throws IOException {
 
     // System.err.println(file + " " + FileUtils.exists(file));
 

@@ -45,7 +45,7 @@ import org.jebtk.core.json.JsonParser;
 public class WebGenes extends GenesDB {
 
   private static final long serialVersionUID = 1L;
-  
+
   // private UrlBuilder mUrl;
   private URLPath mFindUrl;
   private URLPath mSearchUrl;
@@ -67,14 +67,10 @@ public class WebGenes extends GenesDB {
   }
 
   @Override
-  public List<GenomicElement> find(Genome genome,
-      GenomicRegion region,
-      GenomicType type,
-      int minBp) {
-    URLPath url = mFindUrl.param("genome", genome.getName())
-        .param("assembly", genome.getAssembly())
-        .param("track", genome.getTrack()).param("chr", region.mChr.toString())
-        .param("s", region.mStart).param("e", region.mEnd);
+  public List<GenomicElement> find(Genome genome, GenomicRegion region, GenomicType type, int minBp) {
+    URLPath url = mFindUrl.param("genome", genome.getName()).param("assembly", genome.getAssembly())
+        .param("track", genome.getTrack()).param("chr", region.mChr.toString()).param("s", region.mStart)
+        .param("e", region.mEnd);
 
     List<GenomicElement> ret = parse(genome, url);
 
@@ -82,11 +78,8 @@ public class WebGenes extends GenesDB {
   }
 
   @Override
-  public List<GenomicElement> getElements(Genome genome,
-      String search,
-      GenomicType type) {
-    URLPath url = mSearchUrl.param("genome", genome.getName())
-        .param("assembly", genome.getAssembly())
+  public List<GenomicElement> getElements(Genome genome, String search, GenomicType type) {
+    URLPath url = mSearchUrl.param("genome", genome.getName()).param("assembly", genome.getAssembly())
         .param("track", genome.getTrack()).param("s", search);
 
     List<GenomicElement> ret = parse(genome, url);
@@ -110,10 +103,8 @@ public class WebGenes extends GenesDB {
       for (int i = 0; i < json.size(); ++i) {
         Json dbJson = json.get(i);
 
-        Genome genome = Genome
-            .changeTrack(
-                GenomeService.getInstance().guessGenome(dbJson.getString("assembly")),
-                dbJson.getString("track"));
+        Genome genome = Genome.changeTrack(GenomeService.getInstance().guessGenome(dbJson.getString("assembly")),
+            dbJson.getString("track"));
 
         ret.add(genome);
       }
@@ -125,10 +116,8 @@ public class WebGenes extends GenesDB {
   }
 
   @Override
-  public List<GenomicElement> closest(Genome genome,
-      GenomicRegion region,
-      GenomicType type,
-      int minBp) throws IOException {
+  public List<GenomicElement> closest(Genome genome, GenomicRegion region, GenomicType type, int minBp)
+      throws IOException {
     return Collections.emptyList();
   }
 
@@ -163,8 +152,7 @@ public class WebGenes extends GenesDB {
       for (int i = 0; i < json.size(); ++i) {
         Json geneJson = json.get(i);
 
-        GenomicRegion l = GenomicRegion.parse(genome,
-            geneJson.getString("loc"));
+        GenomicRegion l = GenomicRegion.parse(genome, geneJson.getString("loc"));
 
         Strand s = Strand.parse(geneJson.getString("strand"));
 
@@ -173,8 +161,7 @@ public class WebGenes extends GenesDB {
         Json exonsJson = geneJson.get("exons");
 
         for (int j = 0; j < exonsJson.size(); ++j) {
-          GenomicRegion exon = GenomicRegion.parse(genome,
-              exonsJson.get(j).getString("loc"));
+          GenomicRegion exon = GenomicRegion.parse(genome, exonsJson.get(j).getString("loc"));
 
           gene.addExon(exon);
         }

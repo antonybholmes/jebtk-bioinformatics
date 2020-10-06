@@ -57,8 +57,7 @@ public class BinaryGapSearch<T> extends FixedGapSearch<T> {
   protected boolean mAutoSorted = false;
 
   /** The m bins. */
-  protected IterMap<Chromosome, List<Integer>> mBins = new IterHashMap<Chromosome, List<Integer>>(
-      25);
+  protected IterMap<Chromosome, List<Integer>> mBins = new IterHashMap<Chromosome, List<Integer>>(25);
 
   /**
    * Instantiates a new binary gap search.
@@ -79,8 +78,7 @@ public class BinaryGapSearch<T> extends FixedGapSearch<T> {
   /*
    * (non-Javadoc)
    * 
-   * @see
-   * edu.columbia.rdf.lib.bioinformatics.gapsearch.GapSearch#addFeature(edu.
+   * @see edu.columbia.rdf.lib.bioinformatics.gapsearch.GapSearch#addFeature(edu.
    * columbia.rdf.lib.bioinformatics.genome.Chromosome, int, int,
    * java.lang.Object)
    */
@@ -110,24 +108,19 @@ public class BinaryGapSearch<T> extends FixedGapSearch<T> {
   /*
    * (non-Javadoc)
    * 
-   * @see
-   * edu.columbia.rdf.lib.bioinformatics.gapsearch.GapSearch#getFeatures(edu.
+   * @see edu.columbia.rdf.lib.bioinformatics.gapsearch.GapSearch#getFeatures(edu.
    * columbia.rdf.lib.bioinformatics.genome.Chromosome, int, int)
    */
   @Override
-  public List<GappedSearchFeatures<T>> getFeatures(Chromosome chr,
-      int start,
-      int end) {
+  public List<GappedSearchFeatures<T>> getFeatures(Chromosome chr, int start, int end) {
     // Make sure everything is sorted before doing anything
     organize();
 
     Map<Integer, GappedSearchFeatures<T>> features = mFeatures.get(chr);
     List<Integer> bins = mBins.get(chr);
 
+    // SysUtils.err().println("bins", chr, mBins.keySet());
 
-    //SysUtils.err().println("bins", chr, mBins.keySet());
-
-    
     if (features == null || features.size() == 0) {
       return Collections.emptyList();
     }
@@ -159,8 +152,8 @@ public class BinaryGapSearch<T> extends FixedGapSearch<T> {
   }
 
   /**
-   * public List<T> getClosestFeatures(GenomicRegion region, int n) { // Make
-   * sure everything is sorted before doing anything organize();
+   * public List<T> getClosestFeatures(GenomicRegion region, int n) { // Make sure
+   * everything is sorted before doing anything organize();
    * 
    * Map<Integer, GappedSearchFeatures<T>> features =
    * mFeatures.get(region.getChr());
@@ -189,8 +182,8 @@ public class BinaryGapSearch<T> extends FixedGapSearch<T> {
    * // Sort the closest n points around this index to find 1st, 2nd, 3rd // etc
    * closest. Map<Integer, Integer> dMap = new HashMap<Integer, Integer>();
    * 
-   * for (int i = 0; i <= n; ++i) { //System.err.println("c " + closestIndex + "
-   * " + i + " " + n);
+   * for (int i = 0; i <= n; ++i) { //System.err.println("c " + closestIndex + " "
+   * + i + " " + n);
    * 
    * int it = closestIndex - i;
    * 
@@ -200,8 +193,8 @@ public class BinaryGapSearch<T> extends FixedGapSearch<T> {
    * it = closestIndex + i;
    * 
    * if (it < features.size()) {
-   * dMap.put(Math.abs(features.get(bins.get(it)).getPosition() - closestP),
-   * it); } }
+   * dMap.put(Math.abs(features.get(bins.get(it)).getPosition() - closestP), it);
+   * } }
    * 
    * // If n = 0, thats the closest, n = 1, is the second closest int
    * closestIndexN = dMap.get(CollectionUtils.sort(dMap.keySet()).get(n));
@@ -215,12 +208,12 @@ public class BinaryGapSearch<T> extends FixedGapSearch<T> {
    * 
    * return ret; }
    *
-   * @param <TT> the generic type
+   * @param <TT>         the generic type
    * @param closestIndex the closest index
-   * @param features the features
-   * @param bins the bins
-   * @param used the used
-   * @param ret the ret
+   * @param features     the features
+   * @param bins         the bins
+   * @param used         the used
+   * @param ret          the ret
    * @return the int
    */
 
@@ -234,11 +227,8 @@ public class BinaryGapSearch<T> extends FixedGapSearch<T> {
    * @param ret
    * @return
    */
-  private static final <TT> int addFeatures(int closestIndex,
-      Map<Integer, GappedSearchFeatures<TT>> features,
-      List<Integer> bins,
-      Set<TT> used,
-      List<List<TT>> ret) {
+  private static final <TT> int addFeatures(int closestIndex, Map<Integer, GappedSearchFeatures<TT>> features,
+      List<Integer> bins, Set<TT> used, List<List<TT>> ret) {
     int closestBin = bins.get(closestIndex);
 
     GappedSearchFeatures<TT> closestFeatures = features.get(closestBin);
@@ -262,10 +252,10 @@ public class BinaryGapSearch<T> extends FixedGapSearch<T> {
   /**
    * Gets the start index in a list of ordered bins.
    *
-   * @param bins the bins
+   * @param bins  the bins
    * @param start the start
-   * @return The start index in the list of bins that is closest (or contains)
-   *         to the start.
+   * @return The start index in the list of bins that is closest (or contains) to
+   *         the start.
    */
   public static int getStartIndex(List<Integer> bins, int start) {
     if (bins.size() < 2) {
@@ -328,7 +318,7 @@ public class BinaryGapSearch<T> extends FixedGapSearch<T> {
    * index of features just outside this point.
    *
    * @param bins the features
-   * @param end the end
+   * @param end  the end
    * @return the end index
    */
   public static int getEndIndex(List<Integer> bins, int end) {
@@ -407,7 +397,7 @@ public class BinaryGapSearch<T> extends FixedGapSearch<T> {
    * Gets the features at.
    *
    * @param chr the chr
-   * @param i the i
+   * @param i   the i
    * @return the features at
    */
   public GappedSearchFeatures<T> getFeaturesAt(Chromosome chr, int i) {
@@ -427,16 +417,13 @@ public class BinaryGapSearch<T> extends FixedGapSearch<T> {
   /**
    * Return the nth closest features by bin.
    *
-   * @param chr the chr
+   * @param chr   the chr
    * @param start the start
-   * @param end the end
-   * @param n the n
+   * @param end   the end
+   * @param n     the n
    * @return the closest features
    */
-  public List<List<T>> getClosestFeatures(Chromosome chr,
-      int start,
-      int end,
-      int n) {
+  public List<List<T>> getClosestFeatures(Chromosome chr, int start, int end, int n) {
     // Make sure everything is sorted before doing anything
     organize();
 
@@ -594,12 +581,12 @@ public class BinaryGapSearch<T> extends FixedGapSearch<T> {
      * 
      * int bin = bins.get(it);
      * 
-     * for (T item : features.get(bin)) { if (used.contains(item)) { add =
-     * false; break; } }
+     * for (T item : features.get(bin)) { if (used.contains(item)) { add = false;
+     * break; } }
      * 
-     * // Essentially look for the closest unique genes ranked by distance // We
-     * do not want the same gene listed x times because it // occupies multiple
-     * bins if (add) { // Log the absolute position
+     * // Essentially look for the closest unique genes ranked by distance // We do
+     * not want the same gene listed x times because it // occupies multiple bins if
+     * (add) { // Log the absolute position
      * dMap.put(Math.abs(features.get(bin).getPosition() - closestP), it);
      * 
      * for (T item : features.get(bin)) { used.add(item); }
@@ -612,8 +599,8 @@ public class BinaryGapSearch<T> extends FixedGapSearch<T> {
      * 
      * i = 0; c = 0;
      * 
-     * while (c <= n) { //System.err.println("c " + closestIndex + " " + i + " "
-     * + n);
+     * while (c <= n) { //System.err.println("c " + closestIndex + " " + i + " " +
+     * n);
      * 
      * int it = closestIndex + i;
      * 
@@ -623,8 +610,8 @@ public class BinaryGapSearch<T> extends FixedGapSearch<T> {
      * 
      * int bin = bins.get(it);
      * 
-     * for (T item : features.get(bin)) { if (used.contains(item)) { add =
-     * false; break; } }
+     * for (T item : features.get(bin)) { if (used.contains(item)) { add = false;
+     * break; } }
      * 
      * if (add) { dMap.put(Math.abs(features.get(bin).getPosition() - closestP),
      * it);
@@ -657,18 +644,15 @@ public class BinaryGapSearch<T> extends FixedGapSearch<T> {
 
   /**
    * Get the closest features distance n from location. For example if n = 0,
-   * return the closest, n = 1, return the second closest, n = 3 the third
-   * closest etc.
+   * return the closest, n = 1, return the second closest, n = 3 the third closest
+   * etc.
    *
    * @param region the region
-   * @param n the n
+   * @param n      the n
    * @return the closest features
    */
   public List<List<T>> getClosestFeatures(GenomicRegion region, int n) {
-    return getClosestFeatures(region.getChr(),
-        region.getStart(),
-        region.getEnd(),
-        n);
+    return getClosestFeatures(region.getChr(), region.getStart(), region.getEnd(), n);
   }
 
 }

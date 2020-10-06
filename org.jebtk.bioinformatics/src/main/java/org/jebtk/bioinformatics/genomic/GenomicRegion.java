@@ -65,13 +65,11 @@ public class GenomicRegion extends Region {
   private static final String CHR_REGEX = "(chr[a-zA-Z0-9\\-\\_]+)";
 
   /** The Constant GENOMIC_REGEX. */
-  private static final Pattern GENOMIC_PATTERN = Pattern
-      .compile(CHR_REGEX + ":(\\d+(?:,\\d+)*)"); // Pattern.compile("chr.+?:(?:\\d+(?:,\\d+)*)(?:-\\d+(?:,\\d+)*)?");
+  private static final Pattern GENOMIC_PATTERN = Pattern.compile(CHR_REGEX + ":(\\d+(?:,\\d+)*)"); // Pattern.compile("chr.+?:(?:\\d+(?:,\\d+)*)(?:-\\d+(?:,\\d+)*)?");
 
   public static final Pattern CHR_ONLY_PATTERN = Pattern.compile(CHR_REGEX);
 
-  private static final Pattern GENOMIC_NUM_PATTERN = Pattern
-      .compile("[\\-\\+\\t\\=\\: ](\\d+(?:,\\d+)*)");
+  private static final Pattern GENOMIC_NUM_PATTERN = Pattern.compile("[\\-\\+\\t\\=\\: ](\\d+(?:,\\d+)*)");
 
   /**
    * The member chr.
@@ -85,8 +83,8 @@ public class GenomicRegion extends Region {
   @JsonIgnore
   public final Strand mStrand;
 
-  //@JsonIgnore
-  //public final Genome mGenome;
+  // @JsonIgnore
+  // public final Genome mGenome;
 
   // protected final String mType;
 
@@ -106,13 +104,12 @@ public class GenomicRegion extends Region {
   public GenomicRegion(GenomicRegion region, int start, int end) {
     this(region.mChr, start, end, region.mStrand);
   }
-  
+
   public GenomicRegion(Chromosome chr, int start, int end) {
     this(chr, start, end, Strand.SENSE);
   }
-  
-  public GenomicRegion(Chromosome chr, int start, int end,
-      Strand strand) {
+
+  public GenomicRegion(Chromosome chr, int start, int end, Strand strand) {
     super(start, end);
 
     mChr = chr;
@@ -122,9 +119,6 @@ public class GenomicRegion extends Region {
   public GenomicRegion(Genome genome, String chr, int start, int end) {
     this(ChromosomeService.getInstance().chr(genome, chr), start, end);
   }
-
-
-  
 
   /**
    * Gets the strand.
@@ -177,9 +171,9 @@ public class GenomicRegion extends Region {
   }
 
   /**
-   * Returns the start considering the strand orientation. Reverse strand
-   * elements return their end as their start. Relevant when comparing distances
-   * between elements and closest starts.
+   * Returns the start considering the strand orientation. Reverse strand elements
+   * return their end as their start. Relevant when comparing distances between
+   * elements and closest starts.
    * 
    * @return
    */
@@ -305,8 +299,7 @@ public class GenomicRegion extends Region {
    * @return the list
    * @throws ParseException the parse exception
    */
-  public static List<GenomicRegion> parse(Genome genome,
-      List<String> locations) {
+  public static List<GenomicRegion> parse(Genome genome, List<String> locations) {
     List<GenomicRegion> ret = new ArrayList<GenomicRegion>();
 
     for (String location : locations) {
@@ -396,10 +389,7 @@ public class GenomicRegion extends Region {
     }
   }
 
-  public static GenomicRegion parse(Genome genome,
-      String chr,
-      int start,
-      int end) {
+  public static GenomicRegion parse(Genome genome, String chr, int start, int end) {
     return new GenomicRegion(genome, chr, start, end);
   }
 
@@ -411,58 +401,42 @@ public class GenomicRegion extends Region {
    * @param region2 the region2
    * @return the genomic region
    */
-  public static GenomicRegion overlap(GenomicRegion region1,
-      GenomicRegion region2) {
+  public static GenomicRegion overlap(GenomicRegion region1, GenomicRegion region2) {
     if (!region1.mChr.equals(region2.mChr)) {
       return null;
     }
 
-    return overlap(region1.mChr,
-        region1.mStart,
-        region1.mEnd,
-        region2.mStart,
-        region2.mEnd);
+    return overlap(region1.mChr, region1.mStart, region1.mEnd, region2.mStart, region2.mEnd);
   }
 
   /**
    * Overlap.
    *
-   * @param chr the chr
-   * @param start1 the start 1
-   * @param end1 the end 1
+   * @param chr     the chr
+   * @param start1  the start 1
+   * @param end1    the end 1
    * @param region2 the region 2
    * @return the genomic region
    */
-  public static GenomicRegion overlap(Chromosome chr,
-      int start1,
-      int end1,
-      GenomicRegion region2) {
+  public static GenomicRegion overlap(Chromosome chr, int start1, int end1, GenomicRegion region2) {
     if (!chr.equals(region2.mChr)) {
       return null;
     }
 
-    return overlap(chr,
-        start1,
-        end1,
-        region2.mStart,
-        region2.mEnd);
+    return overlap(chr, start1, end1, region2.mStart, region2.mEnd);
   }
 
   /**
    * Overlap.
    *
-   * @param chr the chr
+   * @param chr    the chr
    * @param start1 the start 1
-   * @param end1 the end 1
+   * @param end1   the end 1
    * @param start2 the start 2
-   * @param end2 the end 2
+   * @param end2   the end 2
    * @return the genomic region
    */
-  public static GenomicRegion overlap(Chromosome chr,
-      int start1,
-      int end1,
-      int start2,
-      int end2) {
+  public static GenomicRegion overlap(Chromosome chr, int start1, int end1, int start2, int end2) {
     if (end1 < start2 || end2 < start1) {
       return null;
     }
@@ -480,34 +454,25 @@ public class GenomicRegion extends Region {
    * @param region2 the region 2
    * @return the overlap type
    */
-  public static OverlapType overlapType(GenomicRegion region1,
-      GenomicRegion region2) {
+  public static OverlapType overlapType(GenomicRegion region1, GenomicRegion region2) {
     if (!region1.mChr.equals(region2.mChr)) {
       return OverlapType.NONE;
     }
 
-    return overlapType(region1.mChr,
-        region1.mStart,
-        region1.mEnd,
-        region2.mStart,
-        region2.mEnd);
+    return overlapType(region1.mChr, region1.mStart, region1.mEnd, region2.mStart, region2.mEnd);
   }
 
   /**
    * Overlap type.
    *
-   * @param chr the chr
+   * @param chr    the chr
    * @param start1 the start 1
-   * @param end1 the end 1
+   * @param end1   the end 1
    * @param start2 the start 2
-   * @param end2 the end 2
+   * @param end2   the end 2
    * @return the overlap type
    */
-  public static OverlapType overlapType(Chromosome chr,
-      int start1,
-      int end1,
-      int start2,
-      int end2) {
+  public static OverlapType overlapType(Chromosome chr, int start1, int end1, int start2, int end2) {
     if (end1 < start2 || end2 < start1) {
       return OverlapType.NONE;
     }
@@ -524,21 +489,15 @@ public class GenomicRegion extends Region {
   /**
    * Overlaps.
    *
-   * @param chr the chr
+   * @param chr    the chr
    * @param start1 the start 1
-   * @param end1 the end 1
+   * @param end1   the end 1
    * @param start2 the start 2
-   * @param end2 the end 2
+   * @param end2   the end 2
    * @return true, if successful
    */
-  public static boolean overlaps(Chromosome chr,
-      int start1,
-      int end1,
-      int start2,
-      int end2) {
-    return (start1 >= start2 && start1 < end2)
-        || (end1 >= start2 && end1 < end2)
-        || (start2 >= start1 && start2 < end1)
+  public static boolean overlaps(Chromosome chr, int start1, int end1, int start2, int end2) {
+    return (start1 >= start2 && start1 < end2) || (end1 >= start2 && end1 < end2) || (start2 >= start1 && start2 < end1)
         || (end2 >= start1 && end2 < end1);
   }
 
@@ -546,15 +505,12 @@ public class GenomicRegion extends Region {
    * Use only if start1 is before start2.
    *
    * @param start1 the start 1
-   * @param end1 the end 1
+   * @param end1   the end 1
    * @param start2 the start 2
-   * @param end2 the end 2
+   * @param end2   the end 2
    * @return true, if successful
    */
-  public static boolean overlapOrdereds(int start1,
-      int end1,
-      int start2,
-      int end2) {
+  public static boolean overlapOrdereds(int start1, int end1, int start2, int end2) {
     return end1 >= start2;
   }
 
@@ -584,7 +540,7 @@ public class GenomicRegion extends Region {
    * Mid.
    *
    * @param start the start
-   * @param end the end
+   * @param end   the end
    * @return the int
    */
   public static int mid(int start, int end) {
@@ -592,8 +548,8 @@ public class GenomicRegion extends Region {
   }
 
   /**
-   * Return the mid point of a region i.e. the start and end will be the same
-   * mid point of the genomic region.
+   * Return the mid point of a region i.e. the start and end will be the same mid
+   * point of the genomic region.
    *
    * @param region the region
    * @return the genomic region
@@ -632,8 +588,8 @@ public class GenomicRegion extends Region {
   }
 
   /**
-   * Returns true if the string is of the form chrX:A-B where X is either a
-   * number or letter and A and B are numbers.
+   * Returns true if the string is of the form chrX:A-B where X is either a number
+   * or letter and A and B are numbers.
    *
    * @param text the text
    * @return true, if is region
@@ -677,7 +633,7 @@ public class GenomicRegion extends Region {
   /**
    * Returns true if a point is within a region.
    *
-   * @param start the start
+   * @param start  the start
    * @param region the region
    * @return true, if successful
    */
@@ -688,14 +644,12 @@ public class GenomicRegion extends Region {
   /**
    * Extend.
    *
-   * @param regions the regions
+   * @param regions     the regions
    * @param startOffset the start offset
-   * @param endOffset the end offset
+   * @param endOffset   the end offset
    * @return the list
    */
-  public static List<GenomicRegion> extend(List<GenomicRegion> regions,
-      int startOffset,
-      int endOffset) {
+  public static List<GenomicRegion> extend(List<GenomicRegion> regions, int startOffset, int endOffset) {
     List<GenomicRegion> ret = new ArrayList<GenomicRegion>();
 
     for (GenomicRegion region : regions) {
@@ -708,82 +662,64 @@ public class GenomicRegion extends Region {
   /**
    * Extend.
    *
-   * @param region the region
+   * @param region      the region
    * @param startOffset the start offset
-   * @param endOffset the end offset
+   * @param endOffset   the end offset
    * @return the genomic region
    */
-  public static GenomicRegion extend(GenomicRegion region,
-      int startOffset,
-      int endOffset) {
-    return new GenomicRegion(region.mChr,
-        region.mStart - Math.abs(startOffset),
-        region.mEnd + Math.abs(endOffset));
+  public static GenomicRegion extend(GenomicRegion region, int startOffset, int endOffset) {
+    return new GenomicRegion(region.mChr, region.mStart - Math.abs(startOffset), region.mEnd + Math.abs(endOffset));
   }
 
   /**
    * Extend around a position.
    *
-   * @param chr the chr
-   * @param start the start
+   * @param chr         the chr
+   * @param start       the start
    * @param startOffset the start offset
-   * @param endOffset the end offset
+   * @param endOffset   the end offset
    * @return the genomic region
    */
-  public static GenomicRegion extend(Genome genome,
-      Chromosome chr,
-      int start,
-      int startOffset,
-      int endOffset) {
-    return new GenomicRegion(chr, start - Math.abs(startOffset),
-        start + Math.abs(endOffset));
+  public static GenomicRegion extend(Genome genome, Chromosome chr, int start, int startOffset, int endOffset) {
+    return new GenomicRegion(chr, start - Math.abs(startOffset), start + Math.abs(endOffset));
   }
 
   /**
    * Return the sequences for a set of regions.
    *
-   * @param genome the genome
-   * @param regions the regions
+   * @param genome         the genome
+   * @param regions        the regions
    * @param genomeAssembly the genome assembly
    * @return the sequences
-   * @throws IOException Signals that an I/O exception has occurred.
+   * @throws IOException    Signals that an I/O exception has occurred.
    * @throws ParseException the parse exception
    */
-  public static List<SequenceRegion> getSequences(Genome genome,
-      List<GenomicRegion> regions,
+  public static List<SequenceRegion> getSequences(Genome genome, List<GenomicRegion> regions,
       SequenceReader genomeAssembly) throws IOException, ParseException {
-    return getSequences(genome,
-        regions,
-        true,
-        RepeatMaskType.UPPERCASE,
-        genomeAssembly);
+    return getSequences(genome, regions, true, RepeatMaskType.UPPERCASE, genomeAssembly);
   }
 
   /**
    * Gets the sequences.
    *
-   * @param genome the genome
-   * @param regions the regions
-   * @param displayUpper the display upper
+   * @param genome         the genome
+   * @param regions        the regions
+   * @param displayUpper   the display upper
    * @param repeatMaskType the repeat mask type
    * @param genomeAssembly the genome assembly
    * @return the sequences
-   * @throws IOException Signals that an I/O exception has occurred.
+   * @throws IOException    Signals that an I/O exception has occurred.
    * @throws ParseException the parse exception
    */
-  public static List<SequenceRegion> getSequences(Genome genome,
-      Collection<GenomicRegion> regions,
-      boolean displayUpper,
-      RepeatMaskType repeatMaskType,
-      SequenceReader genomeAssembly) throws IOException, ParseException {
+  public static List<SequenceRegion> getSequences(Genome genome, Collection<GenomicRegion> regions,
+      boolean displayUpper, RepeatMaskType repeatMaskType, SequenceReader genomeAssembly)
+      throws IOException, ParseException {
     List<SequenceRegion> sequences = new ArrayList<SequenceRegion>();
 
     for (GenomicRegion region : regions) {
-      System.err.println(
-          "Getting sequence for region " + region.getLocation() + "...");
+      System.err.println("Getting sequence for region " + region.getLocation() + "...");
 
-      sequences.add(
-          genomeAssembly.getSequence(genome, region, displayUpper, repeatMaskType));
+      sequences.add(genomeAssembly.getSequence(genome, region, displayUpper, repeatMaskType));
     }
 
     return sequences;
@@ -792,12 +728,11 @@ public class GenomicRegion extends Region {
   /**
    * Sort regions by start and group by chromosome.
    *
-   * @param <T> the generic type
+   * @param <T>     the generic type
    * @param regions the regions
    * @return the map
    */
-  public static <T extends GenomicRegion> Map<Chromosome, List<T>> sortByStart(
-      Iterable<T> regions) {
+  public static <T extends GenomicRegion> Map<Chromosome, List<T>> sortByStart(Iterable<T> regions) {
     Map<Chromosome, Map<Integer, T>> map = new HashMap<Chromosome, Map<Integer, T>>();
 
     for (T region : regions) {
@@ -822,15 +757,14 @@ public class GenomicRegion extends Region {
   }
 
   /**
-   * Sorts the regions on the assumption they are on the same chromosome. Thus
-   * it returns a list with the regions sorted by start.
+   * Sorts the regions on the assumption they are on the same chromosome. Thus it
+   * returns a list with the regions sorted by start.
    *
-   * @param <T> the generic type
+   * @param <T>     the generic type
    * @param regions the regions
    * @return the list
    */
-  public static <T extends GenomicRegion> List<T> sortByStartSingleChr(
-      List<T> regions) {
+  public static <T extends GenomicRegion> List<T> sortByStartSingleChr(List<T> regions) {
     Map<Integer, T> map = new TreeMap<Integer, T>();
 
     for (T region : regions) {
@@ -849,12 +783,11 @@ public class GenomicRegion extends Region {
   /**
    * Sort single chr.
    *
-   * @param <T> the generic type
+   * @param <T>     the generic type
    * @param regions the regions
    * @return the list
    */
-  public static <T extends GenomicRegion> List<T> sortSingleChr(
-      List<T> regions) {
+  public static <T extends GenomicRegion> List<T> sortSingleChr(List<T> regions) {
     Map<Integer, T> map = new TreeMap<Integer, T>();
 
     for (T region : regions) {
@@ -875,8 +808,8 @@ public class GenomicRegion extends Region {
    * Shift a region by a number of bases.
    *
    * @param region the region
-   * @param shift the shift
-   * @param sizes the sizes
+   * @param shift  the shift
+   * @param sizes  the sizes
    * @return the genomic region
    */
   public static GenomicRegion shift(Genome genome, GenomicRegion region, int shift) {
@@ -885,10 +818,7 @@ public class GenomicRegion extends Region {
 
   }
 
-  public static GenomicRegion shift(Genome genome,
-      GenomicRegion region,
-      int shift,
-      int minSep) {
+  public static GenomicRegion shift(Genome genome, GenomicRegion region, int shift, int minSep) {
 
     int size = ChromosomeService.getInstance().size(genome, region.mChr);
 
@@ -916,8 +846,7 @@ public class GenomicRegion extends Region {
   }
 
   /**
-   * Returns true if region1 is within region2 (does not extend outside
-   * boundary).
+   * Returns true if region1 is within region2 (does not extend outside boundary).
    *
    * @param region1 the region1
    * @param region2 the region2
@@ -928,8 +857,7 @@ public class GenomicRegion extends Region {
       return false;
     }
 
-    return region1.mChr.equals(region2.mChr) && region1.mStart >= region2.mStart
-        && region1.mEnd <= region2.mEnd;
+    return region1.mChr.equals(region2.mChr) && region1.mStart >= region2.mStart && region1.mEnd <= region2.mEnd;
   }
 
   /**
@@ -940,8 +868,7 @@ public class GenomicRegion extends Region {
    * @return the int
    */
   public static int minAbsDist(GenomicRegion region1, GenomicRegion region2) {
-    return Math.min(Math.abs(minDist(region1, region2)),
-        Math.abs(minDist(region2, region1)));
+    return Math.min(Math.abs(minDist(region1, region2)), Math.abs(minDist(region2, region1)));
   }
 
   /**
@@ -969,9 +896,9 @@ public class GenomicRegion extends Region {
   /**
    * To location.
    *
-   * @param chr the chr
+   * @param chr   the chr
    * @param start the start
-   * @param end the end
+   * @param end   the end
    * @return the string
    */
   public static String toLocation(Chromosome chr, int start, int end) {
@@ -981,9 +908,9 @@ public class GenomicRegion extends Region {
   /**
    * Formatted location.
    *
-   * @param chr the chr
+   * @param chr   the chr
    * @param start the start
-   * @param end the end
+   * @param end   the end
    * @return the string
    */
   public static String formattedLocation(Chromosome chr, int start, int end) {
@@ -994,11 +921,11 @@ public class GenomicRegion extends Region {
 
   /**
    * Creates a special kind of genomic region with no chromosome. Should be used
-   * in situations where the chromosome is irrelevent, but the method call
-   * expects it.
+   * in situations where the chromosome is irrelevent, but the method call expects
+   * it.
    *
    * @param start the start
-   * @param end the end
+   * @param end   the end
    * @return A genomic region with an invalid chromosome.
    */
   public static GenomicRegion create(int start, int end) {
@@ -1006,8 +933,8 @@ public class GenomicRegion extends Region {
   }
 
   /*
-   * public static GenomicRegion create(String genome, String region) { int s =
-   * 0; int e = region.indexOf(':');
+   * public static GenomicRegion create(String genome, String region) { int s = 0;
+   * int e = region.indexOf(':');
    * 
    * String chr = region.substring(0, e);
    * 
@@ -1029,49 +956,36 @@ public class GenomicRegion extends Region {
    * return create(genome, chr, start, end); }
    */
 
-  public static GenomicRegion create(String chr,
-      String start,
-      String end) {
-    return create(chr,
-        TextUtils.parseInt(start),
-        TextUtils.parseInt(end));
+  public static GenomicRegion create(String chr, String start, String end) {
+    return create(chr, TextUtils.parseInt(start), TextUtils.parseInt(end));
   }
 
-  public static GenomicRegion create(String chr,
-      int start,
-      int end) {
-    return create(ChromosomeService.getInstance().chr(chr),
-        start,
-        end);
+  public static GenomicRegion create(String chr, int start, int end) {
+    return create(ChromosomeService.getInstance().chr(chr), start, end);
   }
 
   /**
    * Creates the.
    *
-   * @param chr the chr
+   * @param chr   the chr
    * @param start the start
-   * @param end the end
+   * @param end   the end
    * @return the genomic region
    */
-  public static GenomicRegion create(Chromosome chr,
-      int start,
-      int end) {
+  public static GenomicRegion create(Chromosome chr, int start, int end) {
     return create(chr, start, end, Strand.SENSE);
   }
 
   /**
    * Creates the.
    *
-   * @param chr the chr
-   * @param start the start
-   * @param end the end
+   * @param chr    the chr
+   * @param start  the start
+   * @param end    the end
    * @param strand the strand
    * @return the genomic region
    */
-  public static GenomicRegion create(Chromosome chr,
-      int start,
-      int end,
-      Strand strand) {
+  public static GenomicRegion create(Chromosome chr, int start, int end, Strand strand) {
     return new GenomicRegion(chr, start, end, strand);
   }
 
@@ -1103,8 +1017,7 @@ public class GenomicRegion extends Region {
     return new GenomicRegion(region.mChr, mid, mid);
   }
 
-  public static GenomicRegion randomRegion(Genome genome, int length)
-      throws IOException {
+  public static GenomicRegion randomRegion(Genome genome, int length) throws IOException {
     Random rand = new Random();
 
     Chromosome chr = ChromosomeService.getInstance().randChr(genome);
@@ -1122,17 +1035,14 @@ public class GenomicRegion extends Region {
    * @return
    */
   public static GenomicRegion oppositeStrand(GenomicRegion region) {
-    return new GenomicRegion(region.mChr, region.mStart,
-        region.mEnd, Strand.oppositeStrand(region.mStrand));
+    return new GenomicRegion(region.mChr, region.mStart, region.mEnd, Strand.oppositeStrand(region.mStrand));
   }
 
   public static GenomicRegion reverseCompliment(GenomicRegion region) {
-    return new GenomicRegion(region.mChr, region.mEnd,
-        region.mStart, Strand.oppositeStrand(region.mStrand));
+    return new GenomicRegion(region.mChr, region.mEnd, region.mStart, Strand.oppositeStrand(region.mStrand));
   }
 
-  public static List<GenomicRegion> parseRegions(Genome genome, Path file)
-      throws IOException {
+  public static List<GenomicRegion> parseRegions(Genome genome, Path file) throws IOException {
     BufferedReader reader = FileUtils.newBufferedReader(file);
 
     List<GenomicRegion> ret = new ArrayList<GenomicRegion>();

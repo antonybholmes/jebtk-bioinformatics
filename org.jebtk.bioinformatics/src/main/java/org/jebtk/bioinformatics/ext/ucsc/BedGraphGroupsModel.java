@@ -43,8 +43,7 @@ import org.jebtk.core.event.ChangeListeners;
  * @author Antony Holmes
  *
  */
-public class BedGraphGroupsModel extends ChangeListeners
-    implements ChangeListener, Iterable<BedGraphGroupModel> {
+public class BedGraphGroupsModel extends ChangeListeners implements ChangeListener, Iterable<BedGraphGroupModel> {
 
   /**
    * The constant serialVersionUID.
@@ -78,7 +77,7 @@ public class BedGraphGroupsModel extends ChangeListeners
   /**
    * Adds the.
    *
-   * @param group the group
+   * @param group    the group
    * @param bedGraph the bed graph
    */
   public void add(String group, UCSCTrack bedGraph) {
@@ -106,8 +105,7 @@ public class BedGraphGroupsModel extends ChangeListeners
   /*
    * (non-Javadoc)
    * 
-   * @see
-   * org.abh.lib.event.ChangeListener#changed(org.abh.lib.event.ChangeEvent)
+   * @see org.abh.lib.event.ChangeListener#changed(org.abh.lib.event.ChangeEvent)
    */
   @Override
   public void changed(ChangeEvent e) {

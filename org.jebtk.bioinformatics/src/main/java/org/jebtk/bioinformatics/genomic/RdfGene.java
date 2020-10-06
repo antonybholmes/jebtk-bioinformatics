@@ -40,17 +40,16 @@ public class RdfGene extends Gene {
   /**
    * Instantiates a new rdf gene.
    *
-   * @param rdf the rdf
+   * @param rdf    the rdf
    * @param refseq the refseq
    * @param entrez the entrez
-   * @param name the symbol
-   * @param chr the chr
-   * @param start the start
-   * @param end the end
+   * @param name   the symbol
+   * @param chr    the chr
+   * @param start  the start
+   * @param end    the end
    * @param strand the strand
    */
-  public RdfGene(String rdf, String refseq, String entrez, String name,
-      GenomicRegion region) {
+  public RdfGene(String rdf, String refseq, String entrez, String name, GenomicRegion region) {
     super(region);
 
     setGeneName(name);

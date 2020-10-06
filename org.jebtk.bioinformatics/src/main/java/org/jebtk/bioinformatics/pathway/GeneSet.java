@@ -60,7 +60,7 @@ public class GeneSet implements Comparable<GeneSet>, Iterable<String> {
   /**
    * Instantiates a new gene set.
    *
-   * @param name the name
+   * @param name           the name
    * @param collectionName the collection name
    */
   public GeneSet(String name, String collectionName) {
@@ -72,9 +72,9 @@ public class GeneSet implements Comparable<GeneSet>, Iterable<String> {
   /**
    * Instantiates a new gene set.
    *
-   * @param name the name
+   * @param name           the name
    * @param collectionName the collection name
-   * @param genes the genes
+   * @param genes          the genes
    */
   public GeneSet(String name, String collectionName, Collection<String> genes) {
     this(name, collectionName);

@@ -52,9 +52,9 @@ public class BedGraphElement extends GenomicElement {
    * Create a new region. Coordinates are one based.
    *
    * @param chromosome the chromosome
-   * @param start the start
-   * @param end the end
-   * @param value the value
+   * @param start      the start
+   * @param end        the end
+   * @param value      the value
    */
   public BedGraphElement(GenomicType type, GenomicRegion r, double value) {
     super(type, r);
@@ -71,8 +71,6 @@ public class BedGraphElement extends GenomicElement {
     return getDouble("value");
   }
 
-  
-
   /*
    * (non-Javadoc)
    * 
@@ -86,20 +84,17 @@ public class BedGraphElement extends GenomicElement {
     buffer.append(Double.toString(getValue()));
   }
 
-  public static BedGraphElement parse(Genome genome,
-      String line) {
+  public static BedGraphElement parse(Genome genome, String line) {
     return parse(GenomicType.REGION, genome, line);
   }
-  
+
   /**
    * Parses the.
    *
    * @param line the line
    * @return the bed graph region
    */
-  public static BedGraphElement parse(GenomicType type,
-      Genome genome,
-      String line) {
+  public static BedGraphElement parse(GenomicType type, Genome genome, String line) {
     List<String> tokens = TextUtils.fastSplit(line, TextUtils.TAB_DELIMITER);
 
     // convert first part to chromosome (replacing x,y and m) {

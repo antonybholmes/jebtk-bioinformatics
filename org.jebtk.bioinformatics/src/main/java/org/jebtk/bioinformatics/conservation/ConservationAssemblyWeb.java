@@ -28,7 +28,6 @@
 package org.jebtk.bioinformatics.conservation;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -82,12 +81,10 @@ public class ConservationAssemblyWeb extends ConservationAssembly {
    * getScores(edu.columbia.rdf.lib.bioinformatics.genome.GenomicRegion)
    */
   @Override
-  public List<Double> getScores(GenomicRegion region)
-      throws IOException, ParseException {
+  public List<Double> getScores(GenomicRegion region) throws IOException, ParseException {
     List<Double> scores = new ArrayList<Double>();
 
-    URLPath url = mScoreUrl.join(region.getChr().toString())
-        .join(region.getStart()).join(region.getEnd());
+    URLPath url = mScoreUrl.join(region.getChr().toString()).join(region.getStart()).join(region.getEnd());
 
     // System.err.println(url);
 
@@ -98,7 +95,6 @@ public class ConservationAssemblyWeb extends ConservationAssembly {
     for (int i = 0; i < scoresJson.size(); ++i) {
       scores.add(scoresJson.get(i).getDouble());
     }
-
 
     return scores;
   }

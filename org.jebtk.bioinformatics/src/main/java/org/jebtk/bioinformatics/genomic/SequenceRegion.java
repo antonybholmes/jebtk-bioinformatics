@@ -44,16 +44,16 @@ public class SequenceRegion extends GenomicRegion {
    * 
    */
   private static final long serialVersionUID = 1L;
-  
+
   /** The m sequence. */
   private Sequence mSequence;
 
   /**
    * Instantiates a new sequence region.
    *
-   * @param chr the chr
-   * @param start the start
-   * @param end the end
+   * @param chr      the chr
+   * @param start    the start
+   * @param end      the end
    * @param sequence the sequence
    */
   public SequenceRegion(Chromosome chr, int start, int end, Sequence sequence) {
@@ -63,7 +63,7 @@ public class SequenceRegion extends GenomicRegion {
   /**
    * Instantiates a new sequence region.
    *
-   * @param region the region
+   * @param region   the region
    * @param sequence the sequence
    */
   public SequenceRegion(GenomicRegion region, String dna) {
@@ -91,8 +91,7 @@ public class SequenceRegion extends GenomicRegion {
    * @param sequences the sequences
    * @return the list
    */
-  public static List<SequenceRegion> reverseComplementRegion(
-      List<SequenceRegion> sequences) {
+  public static List<SequenceRegion> reverseComplementRegion(List<SequenceRegion> sequences) {
     List<SequenceRegion> ret = new ArrayList<SequenceRegion>(sequences.size());
 
     for (SequenceRegion sequence : sequences) {
@@ -109,19 +108,17 @@ public class SequenceRegion extends GenomicRegion {
    * @return the sequence region
    */
   public static SequenceRegion reverseComplement(SequenceRegion sequence) {
-    return new SequenceRegion(GenomicRegion.oppositeStrand(sequence),
-        Sequence.reverseComplement(sequence.mSequence));
+    return new SequenceRegion(GenomicRegion.oppositeStrand(sequence), Sequence.reverseComplement(sequence.mSequence));
   }
 
   /**
    * Seq to index seq.
    *
-   * @param <X> the generic type
+   * @param <X>  the generic type
    * @param seqs the seqs
    * @return the char[][]
    */
-  public static <X extends SequenceRegion> char[][] seqToIndexSeq(
-      List<X> seqs) {
+  public static <X extends SequenceRegion> char[][] seqToIndexSeq(List<X> seqs) {
     char[][] ret = new char[seqs.size()][];
 
     for (int i = 0; i < seqs.size(); ++i) {
@@ -134,7 +131,7 @@ public class SequenceRegion extends GenomicRegion {
   /**
    * To index.
    *
-   * @param <X> the generic type
+   * @param <X>  the generic type
    * @param seqs the seqs
    * @return the byte[][]
    */
@@ -154,7 +151,6 @@ public class SequenceRegion extends GenomicRegion {
    * @return
    */
   public String toFasta() {
-    return new StringBuilder(">").append(toString()).append(TextUtils.NEW_LINE)
-        .append(getSequence()).toString();
+    return new StringBuilder(">").append(toString()).append(TextUtils.NEW_LINE).append(getSequence()).toString();
   }
 }

@@ -20,7 +20,7 @@ import org.jebtk.core.io.TokenFunction;
  */
 public class GTBZGenes extends FixedGapGenes {
   private static final long serialVersionUID = 1L;
-  
+
   private GeneParser mParser = new GTB2Parser();
   private final Path mFile;
   private final Map<String, Chromosome> mGeneMap = new HashMap<String, Chromosome>();
@@ -52,8 +52,7 @@ public class GTBZGenes extends FixedGapGenes {
             @Override
             public void parse(final List<String> tokens) {
               String name = GenesDB.sanitize(tokens.get(0));
-              Chromosome chr = ChromosomeService.getInstance().guessChr(mFile,
-                  tokens.get(1));
+              Chromosome chr = ChromosomeService.getInstance().guessChr(mFile, tokens.get(1));
 
               mGeneMap.put(name, chr);
             }
@@ -103,48 +102,36 @@ public class GTBZGenes extends FixedGapGenes {
   }
 
   /*
-  @Override
-  public void autoFindMainVariants() {
-    autoLoad();
-
-    super.autoFindMainVariants();
-  }
-  */
+   * @Override public void autoFindMainVariants() { autoLoad();
+   * 
+   * super.autoFindMainVariants(); }
+   */
 
   @Override
-  public List<GenomicElement> getElements(Genome genome,
-      String id,
-      GenomicType type) {
+  public List<GenomicElement> getElements(Genome genome, String id, GenomicType type) {
     autoLoad(id);
 
     return super.getElements(genome, id, type);
   }
 
   @Override
-  public List<GenomicElement> find(Genome genome,
-      GenomicRegion region,
-      GenomicType type,
-      int minBp) {
+  public List<GenomicElement> find(Genome genome, GenomicRegion region, GenomicType type, int minBp) {
     autoLoad(region.mChr);
 
     return super.find(genome, region, type, minBp);
   }
 
   @Override
-  public List<GenomicElement> closest(Genome genome,
-      GenomicRegion region,
-      GenomicType type,
-      int minBp) throws IOException {
+  public List<GenomicElement> closest(Genome genome, GenomicRegion region, GenomicType type, int minBp)
+      throws IOException {
     autoLoad(region.mChr);
 
     return super.closest(genome, region, type, minBp);
   }
 
   @Override
-  public List<GenomicElement> closestByTss(Genome genome,
-      GenomicRegion region,
-      GenomicType type,
-      int minBp) throws IOException {
+  public List<GenomicElement> closestByTss(Genome genome, GenomicRegion region, GenomicType type, int minBp)
+      throws IOException {
     autoLoad(region.mChr);
 
     return super.closestByTss(genome, region, type, minBp);

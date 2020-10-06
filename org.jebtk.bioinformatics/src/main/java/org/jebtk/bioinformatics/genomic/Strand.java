@@ -96,8 +96,8 @@ public enum Strand {
   }
 
   /**
-   * Convert a strand to its character equivalent: SENSE -> '+' ANTI_SENSE ->
-   * '-' NONE -> '.'
+   * Convert a strand to its character equivalent: SENSE -> '+' ANTI_SENSE -> '-'
+   * NONE -> '.'
    *
    * @param strand the strand
    * @return the string

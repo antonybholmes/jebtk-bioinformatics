@@ -79,17 +79,15 @@ public class SequenceService extends SequenceReader
   private boolean mAutoLoad = true;
 
   private IterMap<Character, Color> mColorMap = DefaultHashMap
-      .create(SettingsService.getInstance()
-          .getColor("bioinformatics.dna.bases.n.color"));
+      .create(SettingsService.getInstance().getColor("bioinformatics.dna.bases.n.color"));
 
-  private IterMap<Character, ChangeListeners> mListenerMap = DefaultHashMap
-      .create(new EntryCreator<ChangeListeners>() {
+  private IterMap<Character, ChangeListeners> mListenerMap = DefaultHashMap.create(new EntryCreator<ChangeListeners>() {
 
-        @Override
-        public ChangeListeners newEntry() {
-          return new ChangeListeners();
-        }
-      });
+    @Override
+    public ChangeListeners newEntry() {
+      return new ChangeListeners();
+    }
+  });
 
   private SequenceReader mCurrent;
 
@@ -141,8 +139,7 @@ public class SequenceService extends SequenceReader
    * @param color the new base A color
    */
   public void setBaseAColor(Color color) {
-    SettingsService.getInstance().update("bioinformatics.dna.bases.a.color",
-        color);
+    SettingsService.getInstance().update("bioinformatics.dna.bases.a.color", color);
 
     setBaseColor('A', color);
   }
@@ -162,8 +159,7 @@ public class SequenceService extends SequenceReader
    * @param color the new base C color
    */
   public void setBaseCColor(Color color) {
-    SettingsService.getInstance().update("bioinformatics.dna.bases.c.color",
-        color);
+    SettingsService.getInstance().update("bioinformatics.dna.bases.c.color", color);
     setBaseColor('C', color);
   }
 
@@ -182,8 +178,7 @@ public class SequenceService extends SequenceReader
    * @param color the new base G color
    */
   public void setBaseGColor(Color color) {
-    SettingsService.getInstance().update("bioinformatics.dna.bases.g.color",
-        color);
+    SettingsService.getInstance().update("bioinformatics.dna.bases.g.color", color);
     setBaseColor('G', color);
   }
 
@@ -202,8 +197,7 @@ public class SequenceService extends SequenceReader
    * @param color the new base T color
    */
   public void setBaseTColor(Color color) {
-    SettingsService.getInstance().update("bioinformatics.dna.bases.t.color",
-        color);
+    SettingsService.getInstance().update("bioinformatics.dna.bases.t.color", color);
     setBaseColor('T', color);
   }
 
@@ -222,8 +216,7 @@ public class SequenceService extends SequenceReader
    * @param color the new base N color
    */
   public void setBaseNColor(Color color) {
-    SettingsService.getInstance().update("bioinformatics.dna.bases.n.color",
-        color);
+    SettingsService.getInstance().update("bioinformatics.dna.bases.n.color", color);
     setBaseColor('N', color);
   }
 
@@ -231,16 +224,11 @@ public class SequenceService extends SequenceReader
    * Reset the colors back to their defaults.
    */
   public void reset() {
-    SettingsService.getInstance()
-        .resetToDefault("bioinformatics.dna.bases.a.color");
-    SettingsService.getInstance()
-        .resetToDefault("bioinformatics.dna.bases.c.color");
-    SettingsService.getInstance()
-        .resetToDefault("bioinformatics.dna.bases.g.color");
-    SettingsService.getInstance()
-        .resetToDefault("bioinformatics.dna.bases.t.color");
-    SettingsService.getInstance()
-        .resetToDefault("bioinformatics.dna.bases.n.color");
+    SettingsService.getInstance().resetToDefault("bioinformatics.dna.bases.a.color");
+    SettingsService.getInstance().resetToDefault("bioinformatics.dna.bases.c.color");
+    SettingsService.getInstance().resetToDefault("bioinformatics.dna.bases.g.color");
+    SettingsService.getInstance().resetToDefault("bioinformatics.dna.bases.t.color");
+    SettingsService.getInstance().resetToDefault("bioinformatics.dna.bases.n.color");
 
     updateColors();
   }
@@ -249,25 +237,15 @@ public class SequenceService extends SequenceReader
    * Update colors.
    */
   private void updateColors() {
-    mColorMap.put('A',
-        SettingsService.getInstance()
-            .getColor("bioinformatics.dna.bases.a.color"));
+    mColorMap.put('A', SettingsService.getInstance().getColor("bioinformatics.dna.bases.a.color"));
 
-    mColorMap.put('C',
-        SettingsService.getInstance()
-            .getColor("bioinformatics.dna.bases.c.color"));
+    mColorMap.put('C', SettingsService.getInstance().getColor("bioinformatics.dna.bases.c.color"));
 
-    mColorMap.put('G',
-        SettingsService.getInstance()
-            .getColor("bioinformatics.dna.bases.g.color"));
+    mColorMap.put('G', SettingsService.getInstance().getColor("bioinformatics.dna.bases.g.color"));
 
-    mColorMap.put('T',
-        SettingsService.getInstance()
-            .getColor("bioinformatics.dna.bases.t.color"));
+    mColorMap.put('T', SettingsService.getInstance().getColor("bioinformatics.dna.bases.t.color"));
 
-    mColorMap.put('N',
-        SettingsService.getInstance()
-            .getColor("bioinformatics.dna.bases.n.color"));
+    mColorMap.put('N', SettingsService.getInstance().getColor("bioinformatics.dna.bases.n.color"));
 
     fireAllChanged();
   }
@@ -367,9 +345,7 @@ public class SequenceService extends SequenceReader
    * org.jebtk.bioinformatics.genome.RepeatMaskType)
    */
   @Override
-  public SequenceRegion getSequence(Genome genome,
-      GenomicRegion region,
-      boolean displayUpper,
+  public SequenceRegion getSequence(Genome genome, GenomicRegion region, boolean displayUpper,
       RepeatMaskType repeatMaskType) {
 
     // Iterate over all assemblies until one works.

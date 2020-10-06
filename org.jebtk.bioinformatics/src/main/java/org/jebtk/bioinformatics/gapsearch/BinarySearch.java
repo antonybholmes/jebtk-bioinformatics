@@ -49,8 +49,7 @@ public class BinarySearch<T> extends BinaryGapSearch<T> {
   /*
    * (non-Javadoc)
    * 
-   * @see
-   * edu.columbia.rdf.lib.bioinformatics.gapsearch.GapSearch#addFeature(edu.
+   * @see edu.columbia.rdf.lib.bioinformatics.gapsearch.GapSearch#addFeature(edu.
    * columbia.rdf.lib.bioinformatics.genome.Chromosome, int, int,
    * java.lang.Object)
    */

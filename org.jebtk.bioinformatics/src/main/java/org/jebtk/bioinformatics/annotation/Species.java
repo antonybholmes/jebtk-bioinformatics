@@ -28,7 +28,7 @@ public class Species extends Type {
   /**
    * Instantiates a new species.
    *
-   * @param name the name
+   * @param name           the name
    * @param scientificName the scientific name
    */
   public Species(String name, String scientificName) {
@@ -47,7 +47,7 @@ public class Species extends Type {
   /**
    * Instantiates a new species.
    *
-   * @param id the id
+   * @param id   the id
    * @param name the name
    */
   public Species(int id, String name) {
@@ -57,8 +57,8 @@ public class Species extends Type {
   /**
    * Instantiates a new species.
    *
-   * @param id the id
-   * @param name the name
+   * @param id             the id
+   * @param name           the name
    * @param scientificName the scientific name
    */
   public Species(int id, String name, String scientificName) {

@@ -45,7 +45,7 @@ public class RangeDouble implements Iterable<Double> {
    * Instantiates a new range double.
    *
    * @param start the start
-   * @param end the end
+   * @param end   the end
    */
   public RangeDouble(double start, double end) {
     double increment = end - start;
@@ -58,8 +58,8 @@ public class RangeDouble implements Iterable<Double> {
   /**
    * Instantiates a new range double.
    *
-   * @param start the start
-   * @param end the end
+   * @param start     the start
+   * @param end       the end
    * @param increment the increment
    */
   public RangeDouble(double start, double end, double increment) {
@@ -69,8 +69,8 @@ public class RangeDouble implements Iterable<Double> {
   /**
    * Setup.
    *
-   * @param start the start
-   * @param end the end
+   * @param start     the start
+   * @param end       the end
    * @param increment the increment
    */
   private void setup(double start, double end, double increment) {

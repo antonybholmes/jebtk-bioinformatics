@@ -12,8 +12,7 @@ import org.slf4j.LoggerFactory;
 
 abstract class BinaryReader {
 
-  protected static final Logger LOG = LoggerFactory
-      .getLogger(BinaryReader.class);
+  protected static final Logger LOG = LoggerFactory.getLogger(BinaryReader.class);
 
   private final Path mDir;
   private MMapReader mReader;
@@ -27,8 +26,7 @@ abstract class BinaryReader {
     this(dir, prefix, genome, null, window);
   }
 
-  public BinaryReader(Path dir, String prefix, Genome genome, Chromosome chr,
-      int window) {
+  public BinaryReader(Path dir, String prefix, Genome genome, Chromosome chr, int window) {
     mDir = dir;
     mPrefix = prefix;
     mGenome = genome;
@@ -42,11 +40,11 @@ abstract class BinaryReader {
 
   public MMapReader getReader(Chromosome chr) throws IOException {
     /*
-     * if (chr != null) { if (mChr == null || !chr.equals(mChr)) { if (mReader
-     * != null) { mReader.close(); }
+     * if (chr != null) { if (mChr == null || !chr.equals(mChr)) { if (mReader !=
+     * null) { mReader.close(); }
      * 
-     * mReader = FileUtils.newMemMappedReader(mDir.resolve(getFileName(chr)));
-     * mChr = chr; } } else { if (mReader == null) { mReader =
+     * mReader = FileUtils.newMemMappedReader(mDir.resolve(getFileName(chr))); mChr
+     * = chr; } } else { if (mReader == null) { mReader =
      * FileUtils.newMemMappedReader(mDir.resolve(getFileName(chr))); } }
      */
 
@@ -101,8 +99,8 @@ abstract class BinaryReader {
    */
 
   /**
-   * Return the check number of 42 to indicate file is being read correctly. If
-   * 42 is not returned, the file is corrupt.
+   * Return the check number of 42 to indicate file is being read correctly. If 42
+   * is not returned, the file is corrupt.
    * 
    * @return
    * @throws IOException

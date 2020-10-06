@@ -40,8 +40,7 @@ import org.jebtk.core.text.TextUtils;
  * @author Antony Holmes
  * @param <T> the generic type
  */
-public class GeneConversion<T extends Comparable<? super T>>
-    implements Iterable<T>, Comparable<GeneConversion<T>> {
+public class GeneConversion<T extends Comparable<? super T>> implements Iterable<T>, Comparable<GeneConversion<T>> {
 
   /**
    * The member name.
@@ -87,9 +86,8 @@ public class GeneConversion<T extends Comparable<? super T>>
    */
   @Override
   public String toString() {
-    return new StringBuilder("[").append(mName).append(" -> ")
-        .append(TextUtils.scJoin(CollectionUtils.sort(mNewIds))).append("]")
-        .toString();
+    return new StringBuilder("[").append(mName).append(" -> ").append(TextUtils.scJoin(CollectionUtils.sort(mNewIds)))
+        .append("]").toString();
   }
 
   /*

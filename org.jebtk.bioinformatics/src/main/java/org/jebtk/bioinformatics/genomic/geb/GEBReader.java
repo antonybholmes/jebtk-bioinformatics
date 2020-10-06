@@ -42,9 +42,9 @@ import org.jebtk.core.text.Join;
  * @author Antony Holmes
  */
 public class GEBReader extends GenomicElementsDB implements NameGetter {
-  
+
   private static final long serialVersionUID = 1L;
-  
+
   public static final int CHECK = 42;
   public static final byte VERSION = 1;
 
@@ -94,17 +94,15 @@ public class GEBReader extends GenomicElementsDB implements NameGetter {
    *
    * @param genome the genome
    * @param window the window
-   * @param dir the dir
+   * @param dir    the dir
    * @throws IOException
    */
-  public GEBReader(Path dir, String prefix, Genome genome, int window)
-      throws IOException {
+  public GEBReader(Path dir, String prefix, Genome genome, int window) throws IOException {
 
     // mBinReader = new BinReader(dir, genome, window);
     mRadixReader = new RadixReader(dir, prefix, genome, window);
     mDataReader = new DataReader(dir, prefix, genome, window);
-    mElementReader = new ElementReader(mDataReader, dir, prefix, genome,
-        window);
+    mElementReader = new ElementReader(mDataReader, dir, prefix, genome, window);
 
     mDir = dir;
     mPrefix = prefix;
@@ -127,12 +125,9 @@ public class GEBReader extends GenomicElementsDB implements NameGetter {
   }
 
   @Override
-  public List<GenomicElement> find(Genome genome,
-      GenomicRegion region,
-      GenomicType type,
-      int minBp) {
+  public List<GenomicElement> find(Genome genome, GenomicRegion region, GenomicType type, int minBp) {
     List<GenomicElement> elements = new ArrayList<GenomicElement>();
-    
+
     try {
       _find(region, type, elements);
     } catch (IOException e) {
@@ -145,8 +140,7 @@ public class GEBReader extends GenomicElementsDB implements NameGetter {
   /**
    * Find genes in the blocks spanning the coordinates. These are the genes most
    * likely to be overlapping the region of interest. A further test is required
-   * to test for overlap. This method is designed to narrow down the list of
-   * genes
+   * to test for overlap. This method is designed to narrow down the list of genes
    * 
    * @param chr
    * @param start
@@ -155,9 +149,7 @@ public class GEBReader extends GenomicElementsDB implements NameGetter {
    * @return
    * @throws IOException
    */
-  private void _find(GenomicRegion region, 
-      GenomicType type, 
-      List<GenomicElement> ret) throws IOException {
+  private void _find(GenomicRegion region, GenomicType type, List<GenomicElement> ret) throws IOException {
 
     if (mChr == null || !region.mChr.equals(mChr)) {
       if (mBTreeReader != null) {
@@ -165,34 +157,28 @@ public class GEBReader extends GenomicElementsDB implements NameGetter {
       }
 
       // mBinReader = new BinReader(mDir, mPrefix, mGenome, chr, mWindow);
-      mBTreeReader = new BTreeReader(mDir, mPrefix, mGenome, region.mChr,
-          mWindow);
+      mBTreeReader = new BTreeReader(mDir, mPrefix, mGenome, region.mChr, mWindow);
       mChr = region.mChr;
     }
 
     // List<Integer> elementAddresses = mBinReader
     // .elementAddresses(chr, start, end);
 
-    List<Integer> elementAddresses = mBTreeReader
-        .elementAddresses(region.mChr, region.mStart, region.mEnd);
+    List<Integer> elementAddresses = mBTreeReader.elementAddresses(region.mChr, region.mStart, region.mEnd);
 
     mElementReader.readElements(elementAddresses, type, ret);
   }
 
   @Override
-  public List<GenomicElement> getElements(Genome genome,
-      String search,
-      GenomicType type) {
+  public List<GenomicElement> getElements(Genome genome, String search, GenomicType type) {
     return getElements(search, type, false);
   }
 
-  public List<GenomicElement> getElements(String id,
-      GenomicType type,
-      boolean exact) {
+  public List<GenomicElement> getElements(String id, GenomicType type, boolean exact) {
     List<Integer> elementAddresses = new ArrayList<Integer>();
-    
+
     List<GenomicElement> elements = new ArrayList<GenomicElement>();
-    
+
     try {
       mRadixReader.elementAddresses(id, exact, elementAddresses);
       mElementReader.readElements(elementAddresses, type, elements);
@@ -206,30 +192,27 @@ public class GEBReader extends GenomicElementsDB implements NameGetter {
   /**
    * Gets the overlapping genes.
    *
-   * @param chr the chr
+   * @param chr   the chr
    * @param start the start
-   * @param end the end
+   * @param end   the end
    * @param genes the genes
    * @return the overlapping genes
    */
-  private static List<GenomicElement> overlapping(GenomicRegion region,
-      List<GenomicElement> elements) {
+  private static List<GenomicElement> overlapping(GenomicRegion region, List<GenomicElement> elements) {
     return overlapping(region, elements, 1);
   }
 
   /**
    * Gets the overlapping genes.
    *
-   * @param chr the chr
+   * @param chr   the chr
    * @param start the start
-   * @param end the end
+   * @param end   the end
    * @param genes the genes
    * @param minBp the min bp
    * @return the overlapping genes
    */
-  private static List<GenomicElement> overlapping(GenomicRegion region,
-      List<GenomicElement> elements,
-      int minBp) {
+  private static List<GenomicElement> overlapping(GenomicRegion region, List<GenomicElement> elements, int minBp) {
     List<GenomicElement> ret = new ArrayList<GenomicElement>(elements.size());
 
     for (GenomicElement element : elements) {
@@ -249,15 +232,11 @@ public class GEBReader extends GenomicElementsDB implements NameGetter {
   }
 
   public static final Path getFileName(String type, String prefix) {
-    return PathUtils
-        .getPath(Join.on('.').values(prefix, type, "geb").toString());
+    return PathUtils.getPath(Join.on('.').values(prefix, type, "geb").toString());
   }
 
-  public static final Path getFileName(String type,
-      String prefix,
-      Chromosome chr) {
-    return PathUtils
-        .getPath(Join.on('.').values(prefix, type, chr, "geb").toString());
+  public static final Path getFileName(String type, String prefix, Chromosome chr) {
+    return PathUtils.getPath(Join.on('.').values(prefix, type, chr, "geb").toString());
   }
 
   public static final Path getIndexFileName(String prefix) {
@@ -289,7 +268,6 @@ public class GEBReader extends GenomicElementsDB implements NameGetter {
     Genome genome = GenomeService.getInstance().get(json.get("genome").getString("name"),
         json.get("genome").getString("build"));
 
-    return new GEBReader(dir, json.getString("name"), genome,
-        json.getInt("window"));
+    return new GEBReader(dir, json.getString("name"), genome, json.getInt("window"));
   }
 }

@@ -87,14 +87,13 @@ public class AlignmentAssemblyFile2Bit extends ConservationAssembly {
   /**
    * Gets the scores.
    *
-   * @param file the file
+   * @param file  the file
    * @param start the start
-   * @param end the end
+   * @param end   the end
    * @return the scores
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static List<Double> getScores(Path file, int start, int end)
-      throws IOException {
+  public static List<Double> getScores(Path file, int start, int end) throws IOException {
 
     int s = start - 1;
     int e = end - 1;
@@ -143,14 +142,13 @@ public class AlignmentAssemblyFile2Bit extends ConservationAssembly {
   /**
    * Gets the bytes2 bit.
    *
-   * @param file the file
+   * @param file  the file
    * @param start the start
-   * @param end the end
+   * @param end   the end
    * @return the bytes2 bit
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static byte[] getBytes2Bit(Path file, int start, int end)
-      throws IOException {
+  public static byte[] getBytes2Bit(Path file, int start, int end) throws IOException {
     int sb = start / 4;
     int eb = end / 4;
 

@@ -63,8 +63,7 @@ public class ChromosomeService extends GenomeDirs implements Iterable<Genome> {
     return GenomeLoader.INSTANCE;
   }
 
-  private static final Logger LOG = LoggerFactory
-      .getLogger(ChromosomeService.class);
+  private static final Logger LOG = LoggerFactory.getLogger(ChromosomeService.class);
 
   // private static final String EXT2 = "genome.txt.gz";
 
@@ -86,7 +85,7 @@ public class ChromosomeService extends GenomeDirs implements Iterable<Genome> {
   public ChromosomeService() {
     // Do nothing
 
-    this(Genome.GENOME_DIR); //Genome.GENOME_HOME, Genome.GENOME_DIR);
+    this(Genome.GENOME_DIR); // Genome.GENOME_HOME, Genome.GENOME_DIR);
   }
 
   public ChromosomeService(Path... dirs) {
@@ -94,9 +93,8 @@ public class ChromosomeService extends GenomeDirs implements Iterable<Genome> {
   }
 
   /**
-   * Get a genome. Service will attempt to auto discover genome data and
-   * populate the genome object. If no data exists, an empty genome will be
-   * created.
+   * Get a genome. Service will attempt to auto discover genome data and populate
+   * the genome object. If no data exists, an empty genome will be created.
    * 
    * @param genome
    * @return
@@ -132,7 +130,7 @@ public class ChromosomeService extends GenomeDirs implements Iterable<Genome> {
 
           for (Path genomeDir : FileUtils.lsdir(dir)) {
             System.err.println(genomeDir);
-            
+
             if (FileUtils.isDirectory(genomeDir)) {
               String g = PathUtils.getName(genomeDir); // TextUtils.sentenceCase(PathUtils.getName(genomeDir));
 
@@ -166,10 +164,10 @@ public class ChromosomeService extends GenomeDirs implements Iterable<Genome> {
   public void cache() {
     mAutoLoad = true;
   }
-  
+
   private ChromosomeReader autoLoad(Genome genome) {
     genome = Genome.assembly(genome);
-    
+
     try {
       autoLoad();
     } catch (IOException e) {
@@ -179,30 +177,30 @@ public class ChromosomeService extends GenomeDirs implements Iterable<Genome> {
     if (!mChrsMap.containsKey(genome)) {
       mChrsMap.put(genome, new ChromosomeDirs(genome));
     }
-    
+
     return mChrsMap.get(genome);
   }
 
   public Chromosome chr(String chr) {
     return chr(Genome.NO_GENOME, chr);
   }
-  
+
   /**
    * Returns the chr from a given genome reference.
    * 
    * @param genome The genome, e.g. 'Human'
-   * @param chr The chromosome, e.g. 'chr1'
+   * @param chr    The chromosome, e.g. 'chr1'
    * 
    * @return The chromosome object from the desired genome.
    */
   public Chromosome chr(Genome genome, String chr) {
     return autoLoad(genome).chr(chr);
   }
-  
+
   public int size(Genome genome, String chr) {
     return autoLoad(genome).size(chr(genome, chr));
   }
-  
+
   public int size(Genome genome, Chromosome chr) {
     return autoLoad(genome).size(chr);
   }

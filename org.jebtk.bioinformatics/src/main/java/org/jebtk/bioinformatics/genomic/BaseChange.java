@@ -48,22 +48,19 @@ public class BaseChange implements Comparable<BaseChange> {
   /**
    * The constant BASE_CHANGE_REGEX.
    */
-  public static final Pattern BASE_CHANGE_REGEX = Pattern
-      .compile(BASE_CHANGE_REGEX_TEXT);
+  public static final Pattern BASE_CHANGE_REGEX = Pattern.compile(BASE_CHANGE_REGEX_TEXT);
 
   /** The Constant MUTATION_REGEX_TEXT. */
   public static final String MUTATION_REGEX_TEXT = ".*([A-Z])(\\d+)([A-Z]).*";
 
   /** The Constant MUTATION_REGEX. */
-  public static final Pattern MUTATION_REGEX = Pattern
-      .compile(MUTATION_REGEX_TEXT);
+  public static final Pattern MUTATION_REGEX = Pattern.compile(MUTATION_REGEX_TEXT);
 
   /** The Constant DELETION_REGEX_TEXT. */
   public static final String DELETION_REGEX_TEXT = ".*([A-Z])(\\d+)_([A-Z])(\\d+)del.*";
 
   /** The Constant DELETION_REGEX. */
-  public static final Pattern DELETION_REGEX = Pattern
-      .compile(DELETION_REGEX_TEXT);
+  public static final Pattern DELETION_REGEX = Pattern.compile(DELETION_REGEX_TEXT);
 
   /**
    * The constant RANGE_CHANGE_REGEX_TEXT.
@@ -73,8 +70,7 @@ public class BaseChange implements Comparable<BaseChange> {
   /**
    * The constant RANGE_CHANGE_REGEX.
    */
-  public static final Pattern RANGE_CHANGE_REGEX = Pattern
-      .compile(RANGE_CHANGE_REGEX_TEXT);
+  public static final Pattern RANGE_CHANGE_REGEX = Pattern.compile(RANGE_CHANGE_REGEX_TEXT);
 
   /**
    * The from.
@@ -109,8 +105,7 @@ public class BaseChange implements Comparable<BaseChange> {
 
       matcher.find();
 
-      int l = (Integer.parseInt(matcher.group(2))
-          + Integer.parseInt(matcher.group(3))) / 2;
+      int l = (Integer.parseInt(matcher.group(2)) + Integer.parseInt(matcher.group(3))) / 2;
 
       setup(matcher.group(1), matcher.group(4), l);
 
@@ -119,17 +114,13 @@ public class BaseChange implements Comparable<BaseChange> {
 
       matcher.find();
 
-      setup(matcher.group(1),
-          matcher.group(3),
-          Integer.parseInt(matcher.group(2)));
+      setup(matcher.group(1), matcher.group(3), Integer.parseInt(matcher.group(2)));
     } else if (text.matches(MUTATION_REGEX_TEXT)) {
       Matcher matcher = MUTATION_REGEX.matcher(text);
 
       matcher.find();
 
-      setup(matcher.group(1),
-          matcher.group(3),
-          Integer.parseInt(matcher.group(2)));
+      setup(matcher.group(1), matcher.group(3), Integer.parseInt(matcher.group(2)));
     } else if (text.matches(DELETION_REGEX_TEXT)) {
       Matcher matcher = DELETION_REGEX.matcher(text);
 
@@ -144,8 +135,8 @@ public class BaseChange implements Comparable<BaseChange> {
   /**
    * Create a base change.
    *
-   * @param from the from
-   * @param to the to
+   * @param from     the from
+   * @param to       the to
    * @param location the location
    */
   public BaseChange(String from, String to, int location) {
@@ -159,8 +150,8 @@ public class BaseChange implements Comparable<BaseChange> {
   /**
    * Setup.
    *
-   * @param from the from
-   * @param to the to
+   * @param from     the from
+   * @param to       the to
    * @param location the location
    */
   private void setup(String from, String to, int location) {

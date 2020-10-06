@@ -45,7 +45,7 @@ public class BaseHeight {
   /**
    * Instantiates a new base height.
    *
-   * @param base the base
+   * @param base   the base
    * @param height the height
    */
   public BaseHeight(char base, double height) {

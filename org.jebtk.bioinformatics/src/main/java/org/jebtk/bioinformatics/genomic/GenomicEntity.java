@@ -70,7 +70,7 @@ public class GenomicEntity extends GenomicElement implements NameGetter {
    * Instantiates a new genomic entity.
    *
    * @param type the type
-   * @param l the l
+   * @param l    the l
    */
   public GenomicEntity(GenomicType type, GenomicRegion l) {
     super(type, l);
@@ -80,8 +80,8 @@ public class GenomicEntity extends GenomicElement implements NameGetter {
    * Instantiates a new genomic entity.
    *
    * @param type the type
-   * @param l the l
-   * @param s the s
+   * @param l    the l
+   * @param s    the s
    */
   public GenomicEntity(GenomicType type, GenomicRegion l, Strand s) {
     super(type, l, s);
@@ -91,15 +91,14 @@ public class GenomicEntity extends GenomicElement implements NameGetter {
     this(type, genome, chr, start, end, Strand.SENSE);
   }
 
-  public GenomicEntity(GenomicType type, Genome genome, Chromosome chr, int start, int end,
-      Strand strand) {
+  public GenomicEntity(GenomicType type, Genome genome, Chromosome chr, int start, int end, Strand strand) {
     super(type, chr, start, end, strand);
   }
 
   /**
    * Set a named property of the gene, such as a gene symbol or entrez id.
    *
-   * @param name the type
+   * @param name  the type
    * @param value the name
    * @return the genomic entity
    */
@@ -110,11 +109,11 @@ public class GenomicEntity extends GenomicElement implements NameGetter {
     if (lc.contains("symbol")) {
       super.setProperty(GENE_NAME, value);
     }
-    
+
     if (lc.contains("transcript")) {
       return super.setProperty(TRANSCRIPT_ID, value);
-    } 
-    
+    }
+
     return super.setProperty(lc, value);
   }
 

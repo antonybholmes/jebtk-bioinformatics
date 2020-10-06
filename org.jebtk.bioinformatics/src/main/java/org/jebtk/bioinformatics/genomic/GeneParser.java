@@ -185,8 +185,7 @@ public abstract class GeneParser {
     return genes;
   }
 
-  protected GenesDB parse(Path file, Genome genome, BufferedReader reader)
-      throws IOException {
+  protected GenesDB parse(Path file, Genome genome, BufferedReader reader) throws IOException {
     GenesDB genes = new FixedGapGenes(genome);
 
     parse(file, reader, genome, genes);
@@ -194,8 +193,7 @@ public abstract class GeneParser {
     return genes;
   }
 
-  public void parse(Path file, final Genome genome, GenesDB genes)
-      throws IOException {
+  public void parse(Path file, final Genome genome, GenesDB genes) throws IOException {
     BufferedReader reader = FileUtils.newBufferedReader(file);
 
     try {
@@ -205,22 +203,15 @@ public abstract class GeneParser {
     }
   }
 
-  protected void parse(Path file,
-      BufferedReader reader,
-      final Genome genome,
-      GenesDB genes) throws IOException {
+  protected void parse(Path file, BufferedReader reader, final Genome genome, GenesDB genes) throws IOException {
     // Do nothing
   }
 
-  public void parse(Path file,
-      final Genome genome,
-      Chromosome chr,
-      GenesDB genes) throws IOException {
+  public void parse(Path file, final Genome genome, Chromosome chr, GenesDB genes) throws IOException {
     parse(file, genome, genes);
   }
 
-  public GenesDB parse(Path file, final Genome genome, int window)
-      throws IOException {
+  public GenesDB parse(Path file, final Genome genome, int window) throws IOException {
     GenesDB genes = new FixedGapGenes(genome);
 
     parse(file, genes, genome, window);
@@ -228,10 +219,7 @@ public abstract class GeneParser {
     return genes;
   }
 
-  protected GenesDB parse(Path file,
-      BufferedReader reader,
-      final Genome genome,
-      int window) throws IOException {
+  protected GenesDB parse(Path file, BufferedReader reader, final Genome genome, int window) throws IOException {
     GenesDB genes = new FixedGapGenes(genome);
 
     parse(file, reader, genes, genome, window);
@@ -239,8 +227,7 @@ public abstract class GeneParser {
     return genes;
   }
 
-  public void parse(Path file, GenesDB genes, final Genome genome, int window)
-      throws IOException {
+  public void parse(Path file, GenesDB genes, final Genome genome, int window) throws IOException {
     BufferedReader reader = FileUtils.newBufferedReader(file);
 
     try {
@@ -250,16 +237,12 @@ public abstract class GeneParser {
     }
   }
 
-  protected void parse(Path file,
-      BufferedReader reader,
-      GenesDB genes,
-      final Genome genome,
-      int window) throws IOException {
+  protected void parse(Path file, BufferedReader reader, GenesDB genes, final Genome genome, int window)
+      throws IOException {
     parse(file, reader, genome, genes);
   }
 
-  public Map<String, Set<String>> idMap(Path file, String id1, String id2)
-      throws IOException {
+  public Map<String, Set<String>> idMap(Path file, String id1, String id2) throws IOException {
     BufferedReader reader = FileUtils.newBufferedReader(file);
 
     Map<String, Set<String>> ret;
@@ -280,10 +263,8 @@ public abstract class GeneParser {
    * @return the genes
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public abstract Map<String, Set<String>> idMap(Path file,
-      BufferedReader reader,
-      String id1,
-      String id2) throws IOException;
+  public abstract Map<String, Set<String>> idMap(Path file, BufferedReader reader, String id1, String id2)
+      throws IOException;
 
   public boolean containsLevel(GenomicType level) {
     if (mLevels.size() == 0) {
@@ -293,8 +274,7 @@ public abstract class GeneParser {
     return mLevels.contains(level);
   }
 
-  public static GenomicEntity addAttributes(GenomicType type,
-      final GenomicRegion region,
+  public static GenomicEntity addAttributes(GenomicType type, final GenomicRegion region,
       final IterMap<String, String> attributeMap) {
 
     GenomicEntity gene = new GenomicEntity(type, region);

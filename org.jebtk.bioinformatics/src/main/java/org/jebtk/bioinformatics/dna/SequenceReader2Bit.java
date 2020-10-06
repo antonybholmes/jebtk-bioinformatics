@@ -64,8 +64,7 @@ public class SequenceReader2Bit extends ChrSequenceReader {
                                                                                        // BinarySearch<GenomicRegion>();
 
   /** The m offset map. */
-  private Map<Chromosome, Integer> mOffsetMap = new HashMap<Chromosome, Integer>(
-      100);
+  private Map<Chromosome, Integer> mOffsetMap = new HashMap<Chromosome, Integer>(100);
 
   /**
    * Directory containing genome Paths which must be of the form chr.n.txt. Each
@@ -91,9 +90,7 @@ public class SequenceReader2Bit extends ChrSequenceReader {
    * edu.columbia.rdf.lib.bioinformatics.genome.RepeatMaskType)
    */
   @Override
-  public final SequenceRegion getSequence(Genome genome,
-      GenomicRegion region,
-      boolean displayUpper,
+  public final SequenceRegion getSequence(Genome genome, GenomicRegion region, boolean displayUpper,
       RepeatMaskType repeatMaskType) throws IOException {
     Chromosome chr = region.getChr();
 
@@ -105,21 +102,14 @@ public class SequenceReader2Bit extends ChrSequenceReader {
       loadMaskData(genome, chr, file);
     }
 
-    return new SequenceRegion(region,
-        getSequence2Bit(mFileMap.get(chr),
-            genome, 
-            chr,
-            region.mStart,
-            region.mEnd,
-            mOffsetMap.get(chr),
-            displayUpper,
-            repeatMaskType));
+    return new SequenceRegion(region, getSequence2Bit(mFileMap.get(chr), genome, chr, region.mStart, region.mEnd,
+        mOffsetMap.get(chr), displayUpper, repeatMaskType));
   }
 
   /**
    * Load mask data.
    *
-   * @param chr the chr
+   * @param chr  the chr
    * @param file the file
    * @throws IOException Signals that an I/O exception has occurred.
    */
@@ -138,8 +128,7 @@ public class SequenceReader2Bit extends ChrSequenceReader {
       int nc = in.readInt();
 
       for (int i = 0; i < nc; ++i) {
-        GenomicRegion region = new GenomicRegion(chr, in.readInt(),
-            in.readInt());
+        GenomicRegion region = new GenomicRegion(chr, in.readInt(), in.readInt());
 
         mNMap.add(region, region);
       }
@@ -147,8 +136,7 @@ public class SequenceReader2Bit extends ChrSequenceReader {
       int mc = in.readInt();
 
       for (int i = 0; i < mc; ++i) {
-        GenomicRegion region = new GenomicRegion(chr, in.readInt(),
-            in.readInt());
+        GenomicRegion region = new GenomicRegion(chr, in.readInt(), in.readInt());
 
         mMaskMap.add(region, region);
       }
@@ -159,27 +147,21 @@ public class SequenceReader2Bit extends ChrSequenceReader {
   }
 
   /**
-   * Read a sequence from a file assuming each base is encoded in 2 bits (4
-   * bases per byte).
+   * Read a sequence from a file assuming each base is encoded in 2 bits (4 bases
+   * per byte).
    *
-   * @param Path the Path
-   * @param chr the chr
-   * @param start the start
-   * @param end the end
-   * @param offset the offset
-   * @param displayUpper the display upper
+   * @param Path           the Path
+   * @param chr            the chr
+   * @param start          the start
+   * @param end            the end
+   * @param offset         the offset
+   * @param displayUpper   the display upper
    * @param repeatMaskType the repeat mask type
    * @return the sequence4 bit
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public Sequence getSequence2Bit(Path Path,
-      Genome genome,
-      Chromosome chr,
-      int start,
-      int end,
-      int offset,
-      boolean displayUpper,
-      RepeatMaskType repeatMaskType) throws IOException {
+  public Sequence getSequence2Bit(Path Path, Genome genome, Chromosome chr, int start, int end, int offset,
+      boolean displayUpper, RepeatMaskType repeatMaskType) throws IOException {
 
     int s = start - 1;
     int e = end - 1;
@@ -268,14 +250,12 @@ public class SequenceReader2Bit extends ChrSequenceReader {
   /**
    * Determine if region overlaps an N or mask region.
    *
-   * @param binSearch the bin search
+   * @param binSearch  the bin search
    * @param testRegion the test region
    * @return true, if successful
    */
-  private static boolean overlaps(BinaryGapSearch<GenomicRegion> binSearch,
-      GenomicRegion testRegion) {
-    List<GappedSearchFeatures<GenomicRegion>> allFeatures = binSearch
-        .getFeatures(testRegion);
+  private static boolean overlaps(BinaryGapSearch<GenomicRegion> binSearch, GenomicRegion testRegion) {
+    List<GappedSearchFeatures<GenomicRegion>> allFeatures = binSearch.getFeatures(testRegion);
 
     for (GappedSearchFeatures<GenomicRegion> feature : allFeatures) {
       for (Entry<GenomicRegion, List<GenomicRegion>> r : feature) {
@@ -291,15 +271,14 @@ public class SequenceReader2Bit extends ChrSequenceReader {
   /**
    * Gets the bytes4 bit.
    *
-   * @param file the file
-   * @param start the start
-   * @param end the end
+   * @param file   the file
+   * @param start  the start
+   * @param end    the end
    * @param offset the offset
    * @return the bytes4 bit
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static byte[] getBytes2Bit(Path file, int start, int end, int offset)
-      throws IOException {
+  public static byte[] getBytes2Bit(Path file, int start, int end, int offset) throws IOException {
     int sb = start / 4 + offset;
     int eb = end / 4 + offset;
 

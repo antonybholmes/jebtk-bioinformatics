@@ -48,8 +48,7 @@ public abstract class GTBParser extends GeneParser {
     super(parser);
   }
 
-  protected static IterMap<String, String> getAttributes(Splitter splitter,
-      String text) {
+  protected static IterMap<String, String> getAttributes(Splitter splitter, String text) {
     List<String> attributes = splitter.text(TextUtils.removeQuotes(text));
 
     IterMap<String, String> attributeMap = Splitter.toMap(attributes, '=');

@@ -32,7 +32,7 @@ public class Type extends Entity implements NameGetter {
   /**
    * Instantiates a new type.
    *
-   * @param id the id
+   * @param id   the id
    * @param name the name
    */
   public Type(int id, String name) {

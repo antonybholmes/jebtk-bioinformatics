@@ -65,8 +65,7 @@ public class BaseCounts {
     this(a, c, g, t, 0, norm);
   }
 
-  public BaseCounts(double a, double c, double g, double t, double n,
-      boolean norm) {
+  public BaseCounts(double a, double c, double g, double t, double n, boolean norm) {
 
     mCounts[0] = a;
     mCounts[1] = c;
@@ -84,8 +83,7 @@ public class BaseCounts {
       mCounts[4] /= total;
     }
 
-    mMax = Mathematics
-        .max(mCounts[0], mCounts[1], mCounts[2], mCounts[3], mCounts[4]);
+    mMax = Mathematics.max(mCounts[0], mCounts[1], mCounts[2], mCounts[3], mCounts[4]);
 
   }
 

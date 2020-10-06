@@ -102,7 +102,7 @@ public class SortedRegions<T extends GenomicRegion> implements Iterable<T> {
    * end).
    *
    * @param start the start
-   * @param end the end
+   * @param end   the end
    * @return the list
    */
   public List<T> findRegionsInRange(int start, int end) {

@@ -52,7 +52,7 @@ public class Motifs implements NameGetter, Iterable<Motif> {
   /**
    * Instantiates a new motifs.
    *
-   * @param name the name
+   * @param name   the name
    * @param motifs the motifs
    */
   public Motifs(String name, Collection<Motif> motifs) {

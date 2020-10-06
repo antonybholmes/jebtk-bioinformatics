@@ -112,7 +112,7 @@ public class Fasta {
   /**
    * Write.
    *
-   * @param file the file
+   * @param file     the file
    * @param sequence the sequence
    * @throws IOException Signals that an I/O exception has occurred.
    */
@@ -123,12 +123,11 @@ public class Fasta {
   /**
    * Write a series of fasta sequences to a file.
    *
-   * @param file the file
+   * @param file      the file
    * @param sequences the sequences
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static void write(Path file, Collection<Sequence> sequences)
-      throws IOException {
+  public static void write(Path file, Collection<Sequence> sequences) throws IOException {
     BufferedWriter writer = FileUtils.newBufferedWriter(file);
 
     try {
@@ -146,26 +145,24 @@ public class Fasta {
   /**
    * Write.
    *
-   * @param file the file
+   * @param file     the file
    * @param sequence the sequence
-   * @param width the width
+   * @param width    the width
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static void write(Path file, Sequence sequence, int width)
-      throws IOException {
+  public static void write(Path file, Sequence sequence, int width) throws IOException {
     write(file, CollectionUtils.asList(sequence), width);
   }
 
   /**
    * Write.
    *
-   * @param file the file
+   * @param file      the file
    * @param sequences the sequences
-   * @param width the width
+   * @param width     the width
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static void write(Path file, Collection<Sequence> sequences, int width)
-      throws IOException {
+  public static void write(Path file, Collection<Sequence> sequences, int width) throws IOException {
     BufferedWriter writer = FileUtils.newBufferedWriter(file);
 
     try {

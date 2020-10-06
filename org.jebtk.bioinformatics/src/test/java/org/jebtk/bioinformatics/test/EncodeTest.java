@@ -25,8 +25,7 @@ public class EncodeTest {
    * RepeatMaskType.LOWERCASE).getSequence()); }
    * 
    * @Test public void encode2BitExtTest() throws IOException, ParseException {
-   * GenomeAssemblyExt2Bit decoder = new
-   * GenomeAssemblyExt2Bit(PathUtils.getPath(
+   * GenomeAssemblyExt2Bit decoder = new GenomeAssemblyExt2Bit(PathUtils.getPath(
    * "/ifs/scratch/cancer/Lab_RDF/abh2138/references/ucsc/assembly/hg19/"));
    * 
    * System.err.println("2bit ext " + decoder.getSequence("hg19",

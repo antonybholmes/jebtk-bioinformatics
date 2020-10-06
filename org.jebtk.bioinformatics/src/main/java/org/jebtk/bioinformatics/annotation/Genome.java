@@ -17,7 +17,7 @@ public class Genome extends Type {
   /**
    * Instantiates a new species.
    *
-   * @param id the id
+   * @param id   the id
    * @param name the name
    */
   public Genome(int id, String name) {

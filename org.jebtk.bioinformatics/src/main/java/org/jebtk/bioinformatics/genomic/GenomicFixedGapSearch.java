@@ -23,7 +23,6 @@ import org.jebtk.bioinformatics.gapsearch.FixedGapSearch;
  * @author Antony Holmes
  * @param <T> the generic type
  */
-public class GenomicFixedGapSearch<T extends GenomicRegion>
-    extends FixedGapSearch<T> {
+public class GenomicFixedGapSearch<T extends GenomicRegion> extends FixedGapSearch<T> {
   // Do nothing
 }

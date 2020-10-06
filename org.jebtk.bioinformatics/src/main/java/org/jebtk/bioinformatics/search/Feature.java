@@ -28,7 +28,6 @@
 package org.jebtk.bioinformatics.search;
 
 import org.jebtk.bioinformatics.genomic.Chromosome;
-import org.jebtk.bioinformatics.genomic.Genome;
 import org.jebtk.bioinformatics.genomic.GenomicRegion;
 import org.jebtk.bioinformatics.genomic.Region;
 
@@ -44,7 +43,7 @@ public class Feature extends GenomicRegion {
    * 
    */
   private static final long serialVersionUID = 1L;
-  
+
   /**
    * The member name.
    */
@@ -53,10 +52,10 @@ public class Feature extends GenomicRegion {
   /**
    * Instantiates a new feature.
    *
-   * @param name the name
+   * @param name       the name
    * @param chromosome the chromosome
-   * @param start the start
-   * @param end the end
+   * @param start      the start
+   * @param end        the end
    */
   public Feature(String name, Chromosome chromosome, int start, int end) {
     super(chromosome, start, end);

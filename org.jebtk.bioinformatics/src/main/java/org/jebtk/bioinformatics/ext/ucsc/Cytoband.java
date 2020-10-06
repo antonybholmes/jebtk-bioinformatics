@@ -59,10 +59,10 @@ public class Cytoband extends GenomicElement {
    * Instantiates a new cytoband.
    *
    * @param chromosome the chromosome
-   * @param start the start
-   * @param end the end
-   * @param name the name
-   * @param stain the stain
+   * @param start      the start
+   * @param end        the end
+   * @param name       the name
+   * @param stain      the stain
    */
   public Cytoband(GenomicRegion r, String name, String stain) {
     super(GenomicType.CYTOBAND, r);
@@ -104,8 +104,7 @@ public class Cytoband extends GenomicElement {
     List<String> tokens = TextUtils.fastSplit(line, TextUtils.TAB_DELIMITER);
 
     // convert first part to chromosome (replacing x,y and m) {
-    Chromosome chromosome = ChromosomeService.getInstance().chr(genome,
-        tokens.get(0));
+    Chromosome chromosome = ChromosomeService.getInstance().chr(genome, tokens.get(0));
 
     // ucsc convention
     int start = Integer.parseInt(tokens.get(1)) + 1;

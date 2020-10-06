@@ -35,9 +35,9 @@ import org.jebtk.core.collections.CollectionUtils;
  * @author Antony Holmes
  */
 public abstract class SingleGenesDB extends GenesDB {
-  
+
   private static final long serialVersionUID = 1L;
-  
+
   protected final Genome mGenome;
 
   public SingleGenesDB(Genome genome) {

@@ -42,8 +42,7 @@ import org.jebtk.core.text.TextUtils;
 /**
  * The class FeaturesCommonRegionBinarySearchWriter.
  */
-public class FeaturesCommonRegionBinarySearchWriter
-    extends FeaturesBasicSearch {
+public class FeaturesCommonRegionBinarySearchWriter extends FeaturesBasicSearch {
 
   /**
    * Instantiates a new features common region binary search writer.
@@ -91,11 +90,9 @@ public class FeaturesCommonRegionBinarySearchWriter
     header += TextUtils.TAB_DELIMITER + "bins";
 
     try {
-      BufferedWriter locationsWriter = FileUtils
-          .newBufferedWriter(dir.resolve(locationsPath));
+      BufferedWriter locationsWriter = FileUtils.newBufferedWriter(dir.resolve(locationsPath));
 
-      BufferedWriter featuresWriter = FileUtils
-          .newBufferedWriter(dir.resolve(binsPath));
+      BufferedWriter featuresWriter = FileUtils.newBufferedWriter(dir.resolve(binsPath));
 
       try {
         featuresWriter.write(header);
@@ -106,8 +103,7 @@ public class FeaturesCommonRegionBinarySearchWriter
         locationsWriter.write("location");
         locationsWriter.newLine();
 
-        for (short chromosome = 1; chromosome < allLocations
-            .size(); ++chromosome) {
+        for (short chromosome = 1; chromosome < allLocations.size(); ++chromosome) {
           if (allLocations.get(chromosome) == null) {
             continue;
           }
@@ -148,9 +144,7 @@ public class FeaturesCommonRegionBinarySearchWriter
             for (int i = 0; i < locations.size(); ++i) {
               int location = locations.get(i);
 
-              if (feature.getStart() == location
-                  || (feature.getStart() < location
-                      && feature.getEnd() > location)) {
+              if (feature.getStart() == location || (feature.getStart() < location && feature.getEnd() > location)) {
                 // every feature will be added to the bin where it starts
                 // also add features that overlap into the bin
 
@@ -172,8 +166,7 @@ public class FeaturesCommonRegionBinarySearchWriter
             featuresWriter.write(TextUtils.TAB_DELIMITER);
             featuresWriter.write(Integer.toString(feature.getEnd()));
             featuresWriter.write(TextUtils.TAB_DELIMITER);
-            featuresWriter
-                .write(TextUtils.join(overlap, TextUtils.COMMA_DELIMITER));
+            featuresWriter.write(TextUtils.join(overlap, TextUtils.COMMA_DELIMITER));
             featuresWriter.newLine();
           }
         }

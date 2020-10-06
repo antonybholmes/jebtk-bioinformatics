@@ -45,8 +45,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  *
  * @author Antony Holmes
  */
-public class Region extends ChangeListeners
-    implements Comparable<Region>, FormattedTxt {
+public class Region extends ChangeListeners implements Comparable<Region>, FormattedTxt {
 
   /**
    * 
@@ -98,7 +97,7 @@ public class Region extends ChangeListeners
    * Instantiates a new region.
    *
    * @param start the start
-   * @param end the end
+   * @param end   the end
    */
   public Region(int start, int end) {
     // The start must be at least 1
@@ -294,7 +293,7 @@ public class Region extends ChangeListeners
    * Shift.
    *
    * @param region the region
-   * @param shift the shift
+   * @param shift  the shift
    * @return the region
    */
   public static Region shift(Region region, int shift) {

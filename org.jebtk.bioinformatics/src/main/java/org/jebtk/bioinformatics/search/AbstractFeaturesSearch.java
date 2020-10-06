@@ -63,7 +63,7 @@ public abstract class AbstractFeaturesSearch {
   /**
    * Instantiates a new abstract features search.
    *
-   * @param name the name
+   * @param name        the name
    * @param description the description
    */
   public AbstractFeaturesSearch(String name, String description) {
@@ -126,8 +126,8 @@ public abstract class AbstractFeaturesSearch {
    * 
    * endLocation = dis.readInt();
    * 
-   * if (!allLocations.containsKey(chromosome)) { allLocations.put(chromosome,
-   * new ArrayList<Feature>());
+   * if (!allLocations.containsKey(chromosome)) { allLocations.put(chromosome, new
+   * ArrayList<Feature>());
    * 
    * ++chromosomeCount; }
    * 
@@ -153,18 +153,14 @@ public abstract class AbstractFeaturesSearch {
   /**
    * Gets the names.
    *
-   * @param chromosome the chromosome
+   * @param chromosome    the chromosome
    * @param startLocation the start location
-   * @param endLocation the end location
+   * @param endLocation   the end location
    * @return the names
    * @throws ParseException the parse exception
    */
-  public final Set<String> getNames(Chromosome chromosome,
-      int startLocation,
-      int endLocation) throws ParseException {
-    List<Feature> features = getFeatures(chromosome,
-        startLocation,
-        endLocation);
+  public final Set<String> getNames(Chromosome chromosome, int startLocation, int endLocation) throws ParseException {
+    List<Feature> features = getFeatures(chromosome, startLocation, endLocation);
 
     Set<String> names = new HashSet<String>();
 
@@ -178,20 +174,16 @@ public abstract class AbstractFeaturesSearch {
   /**
    * Gets the sorted name list.
    *
-   * @param chromosome the chromosome
+   * @param chromosome    the chromosome
    * @param startLocation the start location
-   * @param endLocation the end location
+   * @param endLocation   the end location
    * @return the sorted name list
    * @throws ParseException the parse exception
    */
-  public final List<String> getSortedNameList(Chromosome chromosome,
-      int startLocation,
-      int endLocation) {
+  public final List<String> getSortedNameList(Chromosome chromosome, int startLocation, int endLocation) {
     // go through the table
 
-    List<String> names = getNameListInOrder(chromosome,
-        startLocation,
-        endLocation);
+    List<String> names = getNameListInOrder(chromosome, startLocation, endLocation);
 
     Collections.sort(names);
 
@@ -203,14 +195,12 @@ public abstract class AbstractFeaturesSearch {
    * found (duplicates are removed).
    *
    * @param chromosome the chromosome
-   * @param start the start
-   * @param end the end
+   * @param start      the start
+   * @param end        the end
    * @return the name list in order
    * @throws ParseException the parse exception
    */
-  public final List<String> getNameListInOrder(Chromosome chromosome,
-      int start,
-      int end) {
+  public final List<String> getNameListInOrder(Chromosome chromosome, int start, int end) {
     // go through the table
 
     List<Feature> features = getFeatures(chromosome, start, end);
@@ -297,31 +287,28 @@ public abstract class AbstractFeaturesSearch {
   /**
    * Gets the features.
    *
-   * @param chromosome the chromosome
+   * @param chromosome    the chromosome
    * @param startLocation the start location
-   * @param endLocation the end location
+   * @param endLocation   the end location
    * @return the features
    * @throws ParseException the parse exception
    */
-  public abstract List<Feature> getFeatures(Chromosome chromosome,
-      int start,
-      int end);
+  public abstract List<Feature> getFeatures(Chromosome chromosome, int start, int end);
 
   /**
    * Returns the set of features overlapping a location.
    *
    * @param chromosome the chromosome
-   * @param location the location
+   * @param location   the location
    * @return the features
    * @throws ParseException the parse exception
    */
-  public abstract List<Feature> getFeatures(Chromosome chromosome,
-      int location);
+  public abstract List<Feature> getFeatures(Chromosome chromosome, int location);
 
   /**
    * Returns the min and max bound from a list of features. This is useful for
-   * ordered feature lists where the starts may be ordered but the ends are not
-   * so the last element of the list does not necessarily contain the max end
+   * ordered feature lists where the starts may be ordered but the ends are not so
+   * the last element of the list does not necessarily contain the max end
    * location.
    *
    * @param features the features
@@ -347,20 +334,18 @@ public abstract class AbstractFeaturesSearch {
    * Produces a condensed string representation of cytoband information.
    *
    * @param features the features
-   * @return a condensed string representation of cytoband information or an
-   *         empty string if the list is empty/invalid.
+   * @return a condensed string representation of cytoband information or an empty
+   *         string if the list is empty/invalid.
    */
   public static final String condenseFeatures(List<Feature> features) {
     if (features == null || features.size() == 0) {
       return "";
     }
 
-    if (features.size() == 1
-        || features.get(0).equals(features.get(features.size() - 1))) {
+    if (features.size() == 1 || features.get(0).equals(features.get(features.size() - 1))) {
       return features.get(0).getName();
     } else {
-      return features.get(0).getName() + "--"
-          + features.get(features.size() - 1).getName();
+      return features.get(0).getName() + "--" + features.get(features.size() - 1).getName();
     }
   }
 
@@ -368,16 +353,15 @@ public abstract class AbstractFeaturesSearch {
    * Produces a condensed string representation of cytoband information.
    *
    * @param features the features
-   * @return a condensed string representation of cytoband information or an
-   *         empty string if the list is empty/invalid.
+   * @return a condensed string representation of cytoband information or an empty
+   *         string if the list is empty/invalid.
    */
   public static final String condense(List<String> features) {
     if (features == null || features.size() == 0) {
       return "";
     }
 
-    if (features.size() == 1
-        || features.get(0).equals(features.get(features.size() - 1))) {
+    if (features.size() == 1 || features.get(0).equals(features.get(features.size() - 1))) {
       return features.get(0);
     } else {
       return features.get(0) + "--" + features.get(features.size() - 1);

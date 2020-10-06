@@ -45,7 +45,7 @@ public class Range implements Iterable<Integer> {
    * Instantiates a new range.
    *
    * @param start the start
-   * @param end the end
+   * @param end   the end
    */
   public Range(int start, int end) {
     int increment = end - start;
@@ -58,8 +58,8 @@ public class Range implements Iterable<Integer> {
   /**
    * Instantiates a new range.
    *
-   * @param start the start
-   * @param end the end
+   * @param start     the start
+   * @param end       the end
    * @param increment the increment
    */
   public Range(int start, int end, int increment) {
@@ -69,8 +69,8 @@ public class Range implements Iterable<Integer> {
   /**
    * Setup.
    *
-   * @param start the start
-   * @param end the end
+   * @param start     the start
+   * @param end       the end
    * @param increment the increment
    */
   private void setup(int start, int end, int increment) {

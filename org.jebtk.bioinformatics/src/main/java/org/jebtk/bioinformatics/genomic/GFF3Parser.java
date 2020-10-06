@@ -53,10 +53,7 @@ public class GFF3Parser extends GeneParser {
   }
 
   @Override
-  protected void parse(Path file,
-      BufferedReader reader,
-      final Genome genome,
-      GenesDB genes) throws IOException {
+  protected void parse(Path file, BufferedReader reader, final Genome genome, GenesDB genes) throws IOException {
     String line;
     List<String> tokens;
     GenomicType type;
@@ -103,9 +100,7 @@ public class GFF3Parser extends GeneParser {
           // Gene
           // gene = new Gene(region).setSymbol(name);
 
-          transcript = addAttributes(GenomicType.TRANSCRIPT,
-              region,
-              attributeMap);
+          transcript = addAttributes(GenomicType.TRANSCRIPT, region, attributeMap);
 
           if (gene != null) {
             if (mKeepTranscripts) {
@@ -119,9 +114,7 @@ public class GFF3Parser extends GeneParser {
 
           break;
         case EXON:
-          GenomicEntity exon = addAttributes(GenomicType.EXON,
-              region,
-              attributeMap);
+          GenomicEntity exon = addAttributes(GenomicType.EXON, region, attributeMap);
 
           if (transcript != null) {
             // Add to the current gene
@@ -146,12 +139,8 @@ public class GFF3Parser extends GeneParser {
   }
 
   @Override
-  public Map<String, Set<String>> idMap(Path file,
-      BufferedReader reader,
-      String id1,
-      String id2) throws IOException {
-    Map<String, Set<String>> ret = DefaultTreeMap
-        .create(new TreeSetCreator<String>());
+  public Map<String, Set<String>> idMap(Path file, BufferedReader reader, String id1, String id2) throws IOException {
+    Map<String, Set<String>> ret = DefaultTreeMap.create(new TreeSetCreator<String>());
 
     String line;
     List<String> tokens;
@@ -202,8 +191,7 @@ public class GFF3Parser extends GeneParser {
 
     IterMap<String, String> ret = new IterTreeMap<String, String>();
 
-    List<String> tokens = Splitter.on(TextUtils.SEMI_COLON_DELIMITER_CHAR)
-        .text(formatAttributes(attributes));
+    List<String> tokens = Splitter.on(TextUtils.SEMI_COLON_DELIMITER_CHAR).text(formatAttributes(attributes));
 
     for (String token : tokens) {
       // System.err.println("gff3 " + token);
@@ -217,10 +205,8 @@ public class GFF3Parser extends GeneParser {
 
   public static String formatAttributes(String attributes) {
     String ret = attributes.trim().replace("  ", TextUtils.SPACE_DELIMITER)
-        .replace(" ;", TextUtils.SEMI_COLON_DELIMITER)
-        .replace("; ", TextUtils.SEMI_COLON_DELIMITER)
-        .replace("\";", TextUtils.SEMI_COLON_DELIMITER).replace(" \"", "=")
-        .replace("\"", TextUtils.EMPTY_STRING);
+        .replace(" ;", TextUtils.SEMI_COLON_DELIMITER).replace("; ", TextUtils.SEMI_COLON_DELIMITER)
+        .replace("\";", TextUtils.SEMI_COLON_DELIMITER).replace(" \"", "=").replace("\"", TextUtils.EMPTY_STRING);
 
     // Remove last semi-colon if there is one
     if (ret.charAt(ret.length() - 1) == TextUtils.SEMI_COLON_DELIMITER_CHAR) {
@@ -271,9 +257,9 @@ public class GFF3Parser extends GeneParser {
   }
 
   /**
-   * Returns an attribute name where underscores are replaced with spaces and
-   * the name is converted to sentence case to make it more presentable in a
-   * table header etc.
+   * Returns an attribute name where underscores are replaced with spaces and the
+   * name is converted to sentence case to make it more presentable in a table
+   * header etc.
    *
    * @param attribute the attribute
    * @return the string
@@ -297,8 +283,7 @@ public class GFF3Parser extends GeneParser {
     return new GFF3Parser(parser);
   }
 
-  public static List<String> gff3IdTypes(Path gff3, GenomicType type)
-      throws IOException {
+  public static List<String> gff3IdTypes(Path gff3, GenomicType type) throws IOException {
 
     BufferedReader reader = FileUtils.newBufferedReader(gff3);
 
@@ -319,8 +304,7 @@ public class GFF3Parser extends GeneParser {
         t = GenomicType.parse(tokens.get(2));
 
         if (t == type) {
-          Map<String, String> attributes = parseGFF3Attributes(
-              TextUtils.tabSplit(line));
+          Map<String, String> attributes = parseGFF3Attributes(TextUtils.tabSplit(line));
 
           for (String attribute : CollectionUtils.sortKeys(attributes)) {
 

@@ -69,15 +69,15 @@ public class FixedGapGenes extends SingleGenesDB {
   /**
    * The constant LOG.
    */
-  private static final Logger LOG = LoggerFactory
-      .getLogger(FixedGapGenes.class);
+  private static final Logger LOG = LoggerFactory.getLogger(FixedGapGenes.class);
 
   private FixedGapSearch<GenomicElement> mSearch = new FixedGapSearch<GenomicElement>();
 
   /**
    * The member symbol main variant.
    */
-  //private Map<String, GenomicElement> mSymbolMainVariant = new HashMap<String, GenomicElement>();
+  // private Map<String, GenomicElement> mSymbolMainVariant = new HashMap<String,
+  // GenomicElement>();
 
   /**
    * The member entrez map.
@@ -89,18 +89,17 @@ public class FixedGapGenes extends SingleGenesDB {
    * The member symbol map.
    */
 
-  //private IterMap<String, Set<String>> mTypeMap = DefaultHashMap
-  //    .create(new TreeSetCreator<String>());
+  // private IterMap<String, Set<String>> mTypeMap = DefaultHashMap
+  // .create(new TreeSetCreator<String>());
 
-  //private IterMap<String, List<GenomicElement>> mIdMap = DefaultHashMap
-  //    .create(new UniqueArrayListCreator<GenomicElement>());
+  // private IterMap<String, List<GenomicElement>> mIdMap = DefaultHashMap
+  // .create(new UniqueArrayListCreator<GenomicElement>());
 
   /**
    * The member ref seq map.
    */
   // private Map<String, Gene> mRefSeqMap =
   // new HashMap<String, Gene>();
-
 
   public FixedGapGenes(Genome genome) {
     super(genome);
@@ -117,11 +116,11 @@ public class FixedGapGenes extends SingleGenesDB {
      * super.add(exon, gene); } } else { super.add(region, gene); }
      */
 
-    //for (String name : gene.getPropertyNames()) {
-    //  String value = gene.getProperty(name);
-    //  mTypeMap.get(name).add(value);
-    //  mIdMap.get(sanitize(value)).add(gene);
-    //}
+    // for (String name : gene.getPropertyNames()) {
+    // String value = gene.getProperty(name);
+    // mTypeMap.get(name).add(value);
+    // mIdMap.get(sanitize(value)).add(gene);
+    // }
   }
 
 //  /**
@@ -165,7 +164,7 @@ public class FixedGapGenes extends SingleGenesDB {
    * if (gene != null) { return gene; }
    * 
    * gene = findMainVariant(id);
-   *  
+   * 
    * return gene; }
    */
 
@@ -189,12 +188,9 @@ public class FixedGapGenes extends SingleGenesDB {
    * @throws IOException
    */
   @Override
-  public List<GenomicElement> find(Genome genome,
-      GenomicRegion region,
-      GenomicType type,
-      int minBp) {
+  public List<GenomicElement> find(Genome genome, GenomicRegion region, GenomicType type, int minBp) {
     List<GenomicElement> features = mSearch.find(region, minBp);
-    
+
     return filterByType(features, type);
   }
 
@@ -206,36 +202,25 @@ public class FixedGapGenes extends SingleGenesDB {
    * @throws IOException
    */
   @Override
-  public List<GenomicElement> closest(Genome genome,
-      GenomicRegion region,
-      GenomicType type,
-      int minBp) throws IOException {
+  public List<GenomicElement> closest(Genome genome, GenomicRegion region, GenomicType type, int minBp)
+      throws IOException {
     List<GenomicElement> features = mSearch.getClosestFeatures(region);
-    
+
     return filterByType(features, type);
   }
 
   @Override
-  public List<List<GenomicElement>> nthClosest(Genome genome,
-      GenomicRegion region,
-      int n,
-      GenomicType type) {
+  public List<List<GenomicElement>> nthClosest(Genome genome, GenomicRegion region, int n, GenomicType type) {
     // return mSearch.getClosestFeatures(region, n);
 
-    return nthClosest(region
-        .getChr(), region.getStart(), region.getEnd(), n, type);
+    return nthClosest(region.getChr(), region.getStart(), region.getEnd(), n, type);
   }
 
-  private List<List<GenomicElement>> nthClosest(Chromosome chr,
-      int start,
-      int end,
-      int n,
-      GenomicType type) {
+  private List<List<GenomicElement>> nthClosest(Chromosome chr, int start, int end, int n, GenomicType type) {
     int bs = mSearch.getBin(start);
     int be = mSearch.getBin(end);
 
-    Map<Integer, GappedSearchFeatures<GenomicElement>> features = mSearch
-        .get(chr);
+    Map<Integer, GappedSearchFeatures<GenomicElement>> features = mSearch.get(chr);
 
     if (features.size() == 0) {
       return Collections.emptyList();
@@ -271,8 +256,7 @@ public class FixedGapGenes extends SingleGenesDB {
       // Count
       //
 
-      IterMap<Integer, List<GenomicElement>> closestMap = DefaultTreeMap
-          .create(new ArrayListCreator<GenomicElement>());
+      IterMap<Integer, List<GenomicElement>> closestMap = DefaultTreeMap.create(new ArrayListCreator<GenomicElement>());
 
       for (GappedSearchFeatures<GenomicElement> gsf : bf) {
         for (Entry<GenomicRegion, List<GenomicElement>> r : gsf) {
@@ -299,7 +283,7 @@ public class FixedGapGenes extends SingleGenesDB {
       }
 
       if (closestMap.size() >= n) {
-        //System.err.println("closest" + closestMap);
+        // System.err.println("closest" + closestMap);
         // Once we have enough closest genes, assemble and return
         List<List<GenomicElement>> ret = new ArrayList<List<GenomicElement>>(n);
 

@@ -55,8 +55,7 @@ public class SearchResults<T> implements Iterable<Entry<GenomicRegion, List<T>>>
   /**
    * The member features.
    */
-  private IterMap<GenomicRegion, List<T>> mFeatures = DefaultTreeMap
-      .create(new ArrayListCreator<T>());
+  private IterMap<GenomicRegion, List<T>> mFeatures = DefaultTreeMap.create(new ArrayListCreator<T>());
 
   /**
    * Adds the.

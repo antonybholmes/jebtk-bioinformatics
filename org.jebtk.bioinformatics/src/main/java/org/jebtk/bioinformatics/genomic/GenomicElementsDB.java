@@ -43,7 +43,7 @@ import org.jebtk.core.event.ChangeListeners;
 public abstract class GenomicElementsDB extends ChangeListeners {
 
   private static final long serialVersionUID = 1L;
-  
+
   /** Empty gene set that can be used as a placeholder */
   public static final GenomicElementsDB EMPTY = new GenomicElementsDB() {
 
@@ -55,17 +55,12 @@ public abstract class GenomicElementsDB extends ChangeListeners {
     }
 
     @Override
-    public List<GenomicElement> getElements(Genome g,
-        String search,
-        GenomicType type) {
+    public List<GenomicElement> getElements(Genome g, String search, GenomicType type) {
       return Collections.emptyList();
     }
 
     @Override
-    public List<GenomicElement> find(Genome genome,
-        GenomicRegion region,
-        GenomicType type,
-        int minBp) {
+    public List<GenomicElement> find(Genome genome, GenomicRegion region, GenomicType type, int minBp) {
       return Collections.emptyList();
     }
 
@@ -87,9 +82,7 @@ public abstract class GenomicElementsDB extends ChangeListeners {
   // public abstract GenomicElement lookup(String genome, String id) throws
   // IOException;
 
-  public GenomicElement getElement(Genome genome,
-      String search,
-      GenomicType type) throws IOException {
+  public GenomicElement getElement(Genome genome, String search, GenomicType type) throws IOException {
     System.err.println("Searching for genes in " + genome + " " + this.getClass());
 
     List<GenomicElement> genes = getElements(genome, search, type);
@@ -101,20 +94,18 @@ public abstract class GenomicElementsDB extends ChangeListeners {
     }
   }
 
-  public List<GenomicElement> getElements(Genome g,
-      String search,
-      GenomicType type) {
+  public List<GenomicElement> getElements(Genome g, String search, GenomicType type) {
     return Collections.emptyList();
   }
 
   public List<GenomicElement> getElements() {
     return Collections.emptyList();
   }
-  
+
   public List<GenomicElement> getElements(Chromosome chr) {
     return Collections.emptyList();
   }
-  
+
   public List<GenomicElement> find(GenomicRegion region) {
     return find(Genome.NO_GENOME, region);
   }
@@ -134,10 +125,7 @@ public abstract class GenomicElementsDB extends ChangeListeners {
    * @return the list
    * @throws IOException
    */
-  public abstract List<GenomicElement> find(Genome genome,
-      GenomicRegion region,
-      GenomicType type,
-      int minBp);
+  public abstract List<GenomicElement> find(Genome genome, GenomicRegion region, GenomicType type, int minBp);
 
   /**
    * Find closest genes.
@@ -146,20 +134,15 @@ public abstract class GenomicElementsDB extends ChangeListeners {
    * @return the list
    * @throws IOException
    */
-  public List<GenomicElement> closest(Genome genome,
-      GenomicRegion region,
-      GenomicType type,
-      int minBp) throws IOException {
+  public List<GenomicElement> closest(Genome genome, GenomicRegion region, GenomicType type, int minBp)
+      throws IOException {
 
     List<GenomicElement> elements = find(genome, region, type, minBp);
 
     return closest(region, elements);
   }
 
-  public List<List<GenomicElement>> nthClosest(Genome genome,
-      GenomicRegion region,
-      int n,
-      GenomicType type) {
+  public List<List<GenomicElement>> nthClosest(Genome genome, GenomicRegion region, int n, GenomicType type) {
     return Collections.emptyList();
   }
 
@@ -170,10 +153,8 @@ public abstract class GenomicElementsDB extends ChangeListeners {
    * @return the list
    * @throws IOException
    */
-  public List<GenomicElement> closestByTss(Genome genome,
-      GenomicRegion region,
-      GenomicType type,
-      int minBp) throws IOException {
+  public List<GenomicElement> closestByTss(Genome genome, GenomicRegion region, GenomicType type, int minBp)
+      throws IOException {
     Collection<GenomicElement> genes = closest(genome, region, type, minBp); // findGenes(region);
 
     List<GenomicElement> ret = new ArrayList<GenomicElement>();
@@ -198,16 +179,14 @@ public abstract class GenomicElementsDB extends ChangeListeners {
 
     return ret;
   }
-  
+
   /*
-  public List<GenomicElement> search(GenomicRegion region) {
-    List<GenomicElement> elements = GenomicRegions
-          .getFixedGapSearch(getElements(region.mChr))
-          .getValues(region);
-      
-     return elements;
-  }
-  */
+   * public List<GenomicElement> search(GenomicRegion region) {
+   * List<GenomicElement> elements = GenomicRegions
+   * .getFixedGapSearch(getElements(region.mChr)) .getValues(region);
+   * 
+   * return elements; }
+   */
 
   /**
    * Return the set of ids (e.g. RefSeq ids) associated with a given id type.
@@ -252,16 +231,12 @@ public abstract class GenomicElementsDB extends ChangeListeners {
     return new GTB2Parser();
   }
 
-  public List<GenomicElement> overlapping(Genome genome,
-      GenomicRegion region,
-      GenomicType type) throws IOException {
+  public List<GenomicElement> overlapping(Genome genome, GenomicRegion region, GenomicType type) throws IOException {
     return overlapping(genome, region, type, 1);
   }
 
-  public List<GenomicElement> overlapping(Genome genome,
-      GenomicRegion region,
-      GenomicType type,
-      int minBp) throws IOException {
+  public List<GenomicElement> overlapping(Genome genome, GenomicRegion region, GenomicType type, int minBp)
+      throws IOException {
     List<GenomicElement> ret = new ArrayList<GenomicElement>();
 
     overlapping(genome, region, type, minBp, ret);
@@ -269,11 +244,8 @@ public abstract class GenomicElementsDB extends ChangeListeners {
     return ret;
   }
 
-  public void overlapping(Genome genome,
-      GenomicRegion region,
-      GenomicType type,
-      int minBp,
-      List<GenomicElement> ret) throws IOException {
+  public void overlapping(Genome genome, GenomicRegion region, GenomicType type, int minBp, List<GenomicElement> ret)
+      throws IOException {
     List<GenomicElement> elements = find(genome, region, type, minBp);
 
     if (elements.size() == 0) {
@@ -282,17 +254,16 @@ public abstract class GenomicElementsDB extends ChangeListeners {
 
     for (GenomicElement g : elements) {
       GenomicRegion overlap = GenomicRegion.overlap(region, g);
-      
-      //SysUtils.err().println("overlap", overlap.getLength(), region, g);
-      
+
+      // SysUtils.err().println("overlap", overlap.getLength(), region, g);
+
       if (overlap != null && overlap.getLength() >= minBp) {
         ret.add(g);
       }
     }
   }
 
-  private static List<GenomicElement> closest(GenomicRegion region,
-      List<GenomicElement> elements) {
+  private static List<GenomicElement> closest(GenomicRegion region, List<GenomicElement> elements) {
 
     List<GenomicElement> ret = new ArrayList<GenomicElement>(elements.size());
 

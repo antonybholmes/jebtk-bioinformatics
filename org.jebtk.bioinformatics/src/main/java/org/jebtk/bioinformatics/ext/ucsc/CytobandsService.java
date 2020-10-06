@@ -54,8 +54,7 @@ public class CytobandsService {
   /**
    * The constant LOG.
    */
-  private static final Logger LOG = LoggerFactory
-      .getLogger(CytobandsService.class);
+  private static final Logger LOG = LoggerFactory.getLogger(CytobandsService.class);
 
   /**
    * The constant DEFAULT_RES.
@@ -156,7 +155,7 @@ public class CytobandsService {
   /**
    * Load.
    *
-   * @param genome the genome
+   * @param genome    the genome
    * @param cytobands the cytobands
    */
   public void load(Genome genome, Cytobands cytobands) {

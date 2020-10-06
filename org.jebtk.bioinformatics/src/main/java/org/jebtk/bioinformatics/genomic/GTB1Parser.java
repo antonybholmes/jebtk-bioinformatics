@@ -64,10 +64,7 @@ public class GTB1Parser extends GTBParser {
    * @throws IOException Signals that an I/O exception has occurred.
    */
   @Override
-  protected void parse(Path file,
-      BufferedReader reader,
-      final Genome genome,
-      GenesDB genes) throws IOException {
+  protected void parse(Path file, BufferedReader reader, final Genome genome, GenesDB genes) throws IOException {
     LOG.info("Parsing GTB file {}, levels: {}...", file, mLevels);
 
     String line;
@@ -108,11 +105,9 @@ public class GTB1Parser extends GTBParser {
       // Because of the UCSC using zero based start and one
       // based end, we need to increment the start by 1
 
-      List<Integer> starts = TextUtils.splitInts(tokens.get(5),
-          TextUtils.SEMI_COLON_DELIMITER);
+      List<Integer> starts = TextUtils.splitInts(tokens.get(5), TextUtils.SEMI_COLON_DELIMITER);
 
-      List<Integer> ends = TextUtils.splitInts(tokens.get(6),
-          TextUtils.SEMI_COLON_DELIMITER);
+      List<Integer> ends = TextUtils.splitInts(tokens.get(6), TextUtils.SEMI_COLON_DELIMITER);
 
       List<String> tags = null;
 
@@ -144,14 +139,11 @@ public class GTB1Parser extends GTBParser {
         continue;
       }
 
-      IterMap<String, String> attributeMap = getAttributes(splitter,
-          tokens.get(7));
+      IterMap<String, String> attributeMap = getAttributes(splitter, tokens.get(7));
 
       // Create the gene
 
-      gene = addAttributes(GenomicType.TRANSCRIPT,
-          GenomicRegion.create(chr, start, end, strand),
-          attributeMap);
+      gene = addAttributes(GenomicType.TRANSCRIPT, GenomicRegion.create(chr, start, end, strand), attributeMap);
 
       if (containsLevel(GenomicType.TRANSCRIPT)) {
         genes.add(gene);
@@ -160,12 +152,9 @@ public class GTB1Parser extends GTBParser {
       if (hasExonLevel || mKeepExons) {
         for (int i = 0; i < starts.size(); ++i) {
           // Again correct for the ucsc
-          GenomicRegion region = GenomicRegion
-              .create(chr, starts.get(i) + 1, ends.get(i), strand);
+          GenomicRegion region = GenomicRegion.create(chr, starts.get(i) + 1, ends.get(i), strand);
 
-          GenomicEntity exon = addAttributes(GenomicType.EXON,
-              region,
-              attributeMap);
+          GenomicEntity exon = addAttributes(GenomicType.EXON, region, attributeMap);
 
           if (mKeepExons) {
             if (gene != null) {
@@ -185,14 +174,10 @@ public class GTB1Parser extends GTBParser {
   }
 
   @Override
-  public Map<String, Set<String>> idMap(Path file,
-      BufferedReader reader,
-      String id1,
-      String id2) throws IOException {
+  public Map<String, Set<String>> idMap(Path file, BufferedReader reader, String id1, String id2) throws IOException {
     LOG.info("Creating id map from GTB file {}, levels: {}...", file, mLevels);
 
-    Map<String, Set<String>> ret = DefaultTreeMap
-        .create(new TreeSetCreator<String>());
+    Map<String, Set<String>> ret = DefaultTreeMap.create(new TreeSetCreator<String>());
 
     String line;
     List<String> tokens;
@@ -211,8 +196,7 @@ public class GTB1Parser extends GTBParser {
 
       tokens = Splitter.onTab().text(line);
 
-      Chromosome chr = ChromosomeService.getInstance().guessChr(file,
-          tokens.get(0));
+      Chromosome chr = ChromosomeService.getInstance().guessChr(file, tokens.get(0));
 
       // Skip random and unofficial chromosomes
       if (chr.toString().contains("_")) {
@@ -247,8 +231,7 @@ public class GTB1Parser extends GTBParser {
         continue;
       }
 
-      IterMap<String, String> attributeMap = getAttributes(splitter,
-          tokens.get(7));
+      IterMap<String, String> attributeMap = getAttributes(splitter, tokens.get(7));
 
       String name1 = attributeMap.get(id1);
       String name2 = attributeMap.get(id2);

@@ -8,14 +8,12 @@ import org.jebtk.bioinformatics.genomic.Chromosome;
 import org.jebtk.bioinformatics.genomic.Genome;
 
 public class DataReader extends BinaryReader {
-  public static final int HEADER_BYTES_OFFSET = GEBReader.WINDOW_BYTE_OFFSET
-      + GEBReader.INT_BYTES;
+  public static final int HEADER_BYTES_OFFSET = GEBReader.WINDOW_BYTE_OFFSET + GEBReader.INT_BYTES;
 
   /** The buffer. */
   private final byte[] mBuffer = new byte[256];
 
-  public DataReader(Path dir, String prefix, Genome genome, int window)
-      throws IOException {
+  public DataReader(Path dir, String prefix, Genome genome, int window) throws IOException {
     super(dir, prefix, genome, window);
   }
 

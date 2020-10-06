@@ -33,7 +33,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.jebtk.bioinformatics.genomic.Chromosome;
-import org.jebtk.bioinformatics.genomic.Genome;
 import org.jebtk.bioinformatics.search.Feature;
 import org.jebtk.core.TableData;
 
@@ -53,7 +52,7 @@ public class Search {
    * Performs a binary search on an ordered Feature list allowing for precise or
    * range matching.
    *
-   * @param value the value
+   * @param value    the value
    * @param features the features
    * @return the int
    */
@@ -72,8 +71,7 @@ public class Search {
       // features.get(mid).getStart() + " " + features.get(mid).getEnd() + " " +
       // features.get(mid).getName());
 
-      if (features.get(mid).getStart() <= value
-          && features.get(mid).getEnd() >= value) {
+      if (features.get(mid).getStart() <= value && features.get(mid).getEnd() >= value) {
         return mid;
       } else if (value > features.get(mid).getEnd()) {
         min = mid + 1;
@@ -88,12 +86,11 @@ public class Search {
   /**
    * Binary range search inner.
    *
-   * @param value the value
+   * @param value    the value
    * @param features the features
    * @return the int
    */
-  public static final int binaryRangeSearchInner(int value,
-      List<Feature> features) {
+  public static final int binaryRangeSearchInner(int value, List<Feature> features) {
     int min = 0;
     int max = features.size() - 1;
 
@@ -108,11 +105,9 @@ public class Search {
       // features.get(mid).getStart() + " " + features.get(mid).getEnd() + " " +
       // features.get(mid).getName());
 
-      if (features.get(mid).getStart() <= value
-          && features.get(mid).getEnd() >= value) {
+      if (features.get(mid).getStart() <= value && features.get(mid).getEnd() >= value) {
         return mid;
-      } else if (mid < midMax && features.get(mid).getEnd() < value
-          && features.get(mid + 1).getStart() > value) {
+      } else if (mid < midMax && features.get(mid).getEnd() < value && features.get(mid + 1).getStart() > value) {
         // nearest position lies between two features
         // so pick the inner one (inclusive) {
         return mid + 1;
@@ -129,12 +124,11 @@ public class Search {
   /**
    * Binary range search outer.
    *
-   * @param value the value
+   * @param value    the value
    * @param features the features
    * @return the int
    */
-  public static final int binaryRangeSearchOuter(int value,
-      List<Feature> features) {
+  public static final int binaryRangeSearchOuter(int value, List<Feature> features) {
     int min = 0;
     int max = features.size() - 1;
 
@@ -149,11 +143,9 @@ public class Search {
       // features.get(mid).getStart() + " " + features.get(mid).getEnd() + " " +
       // features.get(mid).getName());
 
-      if (features.get(mid).getStart() <= value
-          && features.get(mid).getEnd() >= value) {
+      if (features.get(mid).getStart() <= value && features.get(mid).getEnd() >= value) {
         return mid;
-      } else if (mid < midMax && features.get(mid).getEnd() < value
-          && features.get(mid + 1).getStart() > value) {
+      } else if (mid < midMax && features.get(mid).getEnd() < value && features.get(mid + 1).getStart() > value) {
         return mid;
       } else if (value > features.get(mid).getEnd()) {
         min = mid + 1;
@@ -170,14 +162,12 @@ public class Search {
    * block and a more thorough search is performed. Required for genes etc where
    * they are ordered but overlapping so a binary search will not work
    *
-   * @param value the value
+   * @param value    the value
    * @param features the features
-   * @param skip the skip
+   * @param skip     the skip
    * @return the int
    */
-  public static final int jumpSearchInner(int value,
-      List<Feature> features,
-      int skip) {
+  public static final int jumpSearchInner(int value, List<Feature> features, int skip) {
     int index = -1;
 
     boolean stop = false;
@@ -205,8 +195,7 @@ public class Search {
           // System.out.println("real" + features.get(j).getName() + " " +
           // features.get(j).getStart() + " " + max);
           // find the greatest start of a segment spanning this point
-          if (features.get(j).getStart() <= value
-              && features.get(j).getEnd() >= value
+          if (features.get(j).getStart() <= value && features.get(j).getEnd() >= value
               && features.get(j).getStart() >= max) {
             index = j;
 
@@ -249,14 +238,12 @@ public class Search {
   /**
    * Jump search outer.
    *
-   * @param value the value
+   * @param value    the value
    * @param features the features
-   * @param skip the skip
+   * @param skip     the skip
    * @return the int
    */
-  public static final int jumpSearchOuter(int value,
-      List<Feature> features,
-      int skip) {
+  public static final int jumpSearchOuter(int value, List<Feature> features, int skip) {
     int index = -1;
 
     int max = -1;
@@ -277,8 +264,7 @@ public class Search {
         int start = Math.max(0, i - skip);
 
         for (int j = start; j <= i; ++j) {
-          if (features.get(j).getStart() <= value
-              && features.get(j).getEnd() >= max) {
+          if (features.get(j).getStart() <= value && features.get(j).getEnd() >= max) {
             index = j;
 
             max = features.get(j).getEnd();
@@ -305,17 +291,16 @@ public class Search {
   }
 
   /**
-   * Performs a basic linear search of the features and return the first
-   * position to make the cut.
+   * Performs a basic linear search of the features and return the first position
+   * to make the cut.
    *
-   * @param value the value
+   * @param value    the value
    * @param features the features
    * @return the int
    */
   public static int find(int value, List<Feature> features) {
     for (int i = 0; i < features.size(); ++i) {
-      if (features.get(i).getStart() <= value
-          && features.get(i).getEnd() >= value) {
+      if (features.get(i).getStart() <= value && features.get(i).getEnd() >= value) {
         return i;
       }
     }
@@ -326,7 +311,7 @@ public class Search {
   /**
    * Find inner.
    *
-   * @param value the value
+   * @param value    the value
    * @param features the features
    * @return the int
    */
@@ -335,8 +320,7 @@ public class Search {
     int mini = -1;
 
     for (int i = 0; i < features.size(); ++i) {
-      if (features.get(i).getStart() <= value
-          && features.get(i).getEnd() >= value) {
+      if (features.get(i).getStart() <= value && features.get(i).getEnd() >= value) {
         return i;
       }
 
@@ -354,7 +338,7 @@ public class Search {
   /**
    * Find outer.
    *
-   * @param value the value
+   * @param value    the value
    * @param features the features
    * @return the int
    */
@@ -363,8 +347,7 @@ public class Search {
     int mini = -1;
 
     for (int i = 0; i < features.size(); ++i) {
-      if (features.get(i).getStart() <= value
-          && features.get(i).getEnd() >= value) {
+      if (features.get(i).getStart() <= value && features.get(i).getEnd() >= value) {
         return i;
       }
 
@@ -380,43 +363,32 @@ public class Search {
   }
 
   /**
-   * Creates a Feature list with single position features (i.e. the start and
-   * end points are the same on a given Feature.
+   * Creates a Feature list with single position features (i.e. the start and end
+   * points are the same on a given Feature.
    *
-   * @param table the table
-   * @param startColumn the start column
-   * @param groupColumn the group column
+   * @param table         the table
+   * @param startColumn   the start column
+   * @param groupColumn   the group column
    * @param featureColumn the feature column
    * @return the map
    */
-  public static final Map<Integer, List<Feature>> createFeatureList(
-      TableData<String> table,
-      int startColumn,
-      int groupColumn,
-      int featureColumn) {
-    return createFeatureList(table,
-        startColumn,
-        startColumn,
-        groupColumn,
-        featureColumn);
+  public static final Map<Integer, List<Feature>> createFeatureList(TableData<String> table, int startColumn,
+      int groupColumn, int featureColumn) {
+    return createFeatureList(table, startColumn, startColumn, groupColumn, featureColumn);
   }
 
   /**
    * Creates a Feature map from a table.
    *
-   * @param table a table to create Feature data from
-   * @param startColumn the start positions
-   * @param endColumn the end positions
-   * @param groupColumn features can be grouped, such as by chromosome
+   * @param table         a table to create Feature data from
+   * @param startColumn   the start positions
+   * @param endColumn     the end positions
+   * @param groupColumn   features can be grouped, such as by chromosome
    * @param featureColumn identifier such as a gene name
    * @return the map
    */
-  public static final Map<Integer, List<Feature>> createFeatureList(
-      TableData<String> table,
-      int startColumn,
-      int endColumn,
-      int groupColumn,
-      int featureColumn) {
+  public static final Map<Integer, List<Feature>> createFeatureList(TableData<String> table, int startColumn,
+      int endColumn, int groupColumn, int featureColumn) {
     int group;
 
     Map<Integer, List<Feature>> features = new HashMap<Integer, List<Feature>>();
@@ -429,11 +401,8 @@ public class Search {
           features.put(group, new ArrayList<Feature>());
         }
 
-        Feature feature = new Feature(
-            featureColumn != -1 ? row.get(featureColumn) : null, 
-                Chromosome.NO_CHR,
-                Integer.parseInt(row.get(startColumn)),
-                Integer.parseInt(row.get(endColumn)));
+        Feature feature = new Feature(featureColumn != -1 ? row.get(featureColumn) : null, Chromosome.NO_CHR,
+            Integer.parseInt(row.get(startColumn)), Integer.parseInt(row.get(endColumn)));
 
         // if (group == 13) {
         // System.out.println("Feature: " + Feature.start + " " + Feature.end +

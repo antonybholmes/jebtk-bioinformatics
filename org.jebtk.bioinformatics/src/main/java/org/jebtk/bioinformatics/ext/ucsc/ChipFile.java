@@ -59,8 +59,7 @@ public class ChipFile {
    * @return the map
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static Map<String, ProbeGene> parseChipFile(Path file)
-      throws IOException {
+  public static Map<String, ProbeGene> parseChipFile(Path file) throws IOException {
     System.err.println("Parsing chip file " + file);
 
     Map<String, ProbeGene> probeGeneMap = new HashMap<String, ProbeGene>();
@@ -91,8 +90,7 @@ public class ChipFile {
         ProbeGene gene;
 
         if (titleCol != -1) {
-          gene = new ProbeGene(tokens.get(idCol), tokens.get(symbolCol),
-              tokens.get(titleCol));
+          gene = new ProbeGene(tokens.get(idCol), tokens.get(symbolCol), tokens.get(titleCol));
         } else {
           gene = new ProbeGene(tokens.get(idCol), tokens.get(symbolCol));
         }

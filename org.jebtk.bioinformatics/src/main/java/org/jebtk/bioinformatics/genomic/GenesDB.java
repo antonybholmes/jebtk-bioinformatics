@@ -52,7 +52,7 @@ public abstract class GenesDB extends GenomicElementsDB {
   public Iterable<String> getNames() throws IOException {
     return getIds(Gene.GENE_NAME);
   }
-  
+
   /**
    * Filter a list of gene elements to match a given type.
    * 
@@ -61,8 +61,7 @@ public abstract class GenesDB extends GenomicElementsDB {
    * @return
    * @throws IOException
    */
-  public List<GenomicElement> filterByType(List<GenomicElement> features,
-      GenomicType type) {
+  public List<GenomicElement> filterByType(List<GenomicElement> features, GenomicType type) {
     List<GenomicElement> ret = new ArrayList<GenomicElement>(features.size());
 
     for (GenomicElement feature : features) {

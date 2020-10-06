@@ -11,16 +11,13 @@ import org.jebtk.bioinformatics.genomic.Genome;
 import org.jebtk.core.collections.UniqueArrayList;
 
 public class BTreeReader extends BinaryReader {
-  public static final int BINS_BYTES_OFFSET = GEBReader.WINDOW_BYTE_OFFSET
-      + GEBReader.INT_BYTES;
+  public static final int BINS_BYTES_OFFSET = GEBReader.WINDOW_BYTE_OFFSET + GEBReader.INT_BYTES;
 
-  public static final int HEADER_BYTES_OFFSET = BINS_BYTES_OFFSET
-      + GEBReader.INT_BYTES;
+  public static final int HEADER_BYTES_OFFSET = BINS_BYTES_OFFSET + GEBReader.INT_BYTES;
 
   public static final int BTREE_CHILD_ADDRESSES_BYTES = 2 * GEBReader.INT_BYTES;
 
-  public BTreeReader(Path dir, String prefix, Genome genome, Chromosome chr,
-      int window) throws IOException {
+  public BTreeReader(Path dir, String prefix, Genome genome, Chromosome chr, int window) throws IOException {
     super(dir, prefix, genome, chr, window);
   }
 
@@ -28,7 +25,7 @@ public class BTreeReader extends BinaryReader {
    * Gets the bin address.
    *
    * @param reader the reader
-   * @param bin the bin
+   * @param bin    the bin
    * @return the bin address
    * @throws IOException Signals that an I/O exception has occurred.
    */
@@ -76,8 +73,7 @@ public class BTreeReader extends BinaryReader {
     return -1;
   }
 
-  private List<Integer> binAddressesFromTree(long address1, long address2)
-      throws IOException {
+  private List<Integer> binAddressesFromTree(long address1, long address2) throws IOException {
     List<Integer> ret = new ArrayList<Integer>();
 
     seek(address1);
@@ -96,11 +92,10 @@ public class BTreeReader extends BinaryReader {
      * 
      * int[] ret = new int[n];
      * 
-     * for (int i = 0; i < n; ++i) { seek(treeBinAddresses[i]); ret[i] =
-     * readInt();
+     * for (int i = 0; i < n; ++i) { seek(treeBinAddresses[i]); ret[i] = readInt();
      * 
-     * if (i==0 || ret[i] == 1) { System.err.println("alert " + i + " " +ret[i]
-     * + " " + treeBinAddresses[i]); } }
+     * if (i==0 || ret[i] == 1) { System.err.println("alert " + i + " " +ret[i] +
+     * " " + treeBinAddresses[i]); } }
      * 
      * return ret;
      */
@@ -110,16 +105,15 @@ public class BTreeReader extends BinaryReader {
    * Get the gene addresses from a selection of bin addresses, removing
    * duplicates. A Gene address corresponds to a gene transcript.
    *
-   * @param reader a GFB binary file.
-   * @param binAddresses an array of bin addresses
-   * @param n how many bin addresses are in use.
+   * @param reader        a GFB binary file.
+   * @param binAddresses  an array of bin addresses
+   * @param n             how many bin addresses are in use.
    * @param geneAddresses an array of gene addresses that will be populated with
-   *          results.
+   *                      results.
    * @return the gene addresses
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  private List<Integer> elementAddressesFromBins(List<Integer> binAddresses)
-      throws IOException {
+  private List<Integer> elementAddressesFromBins(List<Integer> binAddresses) throws IOException {
 
     // Gene address
     int ga;
@@ -146,8 +140,7 @@ public class BTreeReader extends BinaryReader {
     return ret;
   }
 
-  public List<Integer> elementAddresses(Chromosome chr, int start, int end)
-      throws IOException {
+  public List<Integer> elementAddresses(Chromosome chr, int start, int end) throws IOException {
     int sb = start / mWindow;
     int eb = end / mWindow;
 

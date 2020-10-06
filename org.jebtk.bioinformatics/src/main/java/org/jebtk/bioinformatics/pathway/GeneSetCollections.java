@@ -78,12 +78,11 @@ public class GeneSetCollections extends SetModel<GeneSetCollection> {
   /**
    * Parses the.
    *
-   * @param files the files
+   * @param files       the files
    * @param collections the collections
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static void parse(List<Path> files, Set<GeneSet> collections)
-      throws IOException {
+  public static void parse(List<Path> files, Set<GeneSet> collections) throws IOException {
     for (Path file : files) {
       GeneSetCollection collection = GeneSetCollection.parse(file);
 

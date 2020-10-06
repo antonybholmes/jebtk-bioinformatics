@@ -12,19 +12,15 @@ import org.jebtk.core.collections.ArrayUtils;
 import org.jebtk.core.collections.UniqueArrayList;
 
 public class BinReader extends BinaryReader {
-  private static final int MIN_BYTES_OFFSET = GEBReader.WINDOW_BYTE_OFFSET
-      + GEBReader.INT_BYTES;
+  private static final int MIN_BYTES_OFFSET = GEBReader.WINDOW_BYTE_OFFSET + GEBReader.INT_BYTES;
 
-  private static final int N_BYTES_OFFSET = MIN_BYTES_OFFSET
-      + GEBReader.INT_BYTES;
+  private static final int N_BYTES_OFFSET = MIN_BYTES_OFFSET + GEBReader.INT_BYTES;
 
-  public static final int HEADER_BYTES_OFFSET = N_BYTES_OFFSET
-      + GEBReader.INT_BYTES;
+  public static final int HEADER_BYTES_OFFSET = N_BYTES_OFFSET + GEBReader.INT_BYTES;
 
   private int mMinBin = -1;
 
-  public BinReader(Path dir, String prefix, Genome genome, Chromosome chr,
-      int window) throws IOException {
+  public BinReader(Path dir, String prefix, Genome genome, Chromosome chr, int window) throws IOException {
     super(dir, prefix, genome, chr, window);
   }
 
@@ -39,10 +35,10 @@ public class BinReader extends BinaryReader {
   /**
    * Gets the bin addresses in the files for a list of bins.
    *
-   * @param reader the reader
-   * @param bins a list of bins.
+   * @param reader    the reader
+   * @param bins      a list of bins.
    * @param addresses array that will be populated with the bin addresses in the
-   *          same order as bins.
+   *                  same order as bins.
    * @return the number of bins.
    * @throws IOException Signals that an I/O exception has occurred.
    */
@@ -73,7 +69,7 @@ public class BinReader extends BinaryReader {
    * Gets the bin address.
    *
    * @param reader the reader
-   * @param bin the bin
+   * @param bin    the bin
    * @return the bin address
    * @throws IOException Signals that an I/O exception has occurred.
    */
@@ -94,16 +90,15 @@ public class BinReader extends BinaryReader {
    * Get the gene addresses from a selection of bin addresses, removing
    * duplicates. A Gene address corresponds to a gene transcript.
    *
-   * @param reader a GFB binary file.
-   * @param binAddresses an array of bin addresses
-   * @param n how many bin addresses are in use.
+   * @param reader        a GFB binary file.
+   * @param binAddresses  an array of bin addresses
+   * @param n             how many bin addresses are in use.
    * @param geneAddresses an array of gene addresses that will be populated with
-   *          results.
+   *                      results.
    * @return the gene addresses
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  private List<Integer> elementAddressesFromBins(int[] binAddresses)
-      throws IOException {
+  private List<Integer> elementAddressesFromBins(int[] binAddresses) throws IOException {
 
     // Gene address
     int ga;
@@ -135,8 +130,7 @@ public class BinReader extends BinaryReader {
     return ret;
   }
 
-  public List<Integer> elementAddresses(GenomicRegion region)
-      throws IOException {
+  public List<Integer> elementAddresses(GenomicRegion region) throws IOException {
     int sb = region.mStart / mWindow;
     int eb = region.mEnd / mWindow;
 
@@ -144,8 +138,7 @@ public class BinReader extends BinaryReader {
 
     int[] binAddresses = binAddressesFromBins(bins);
 
-    System.err
-        .println(Arrays.toString(bins) + " " + Arrays.toString(binAddresses));
+    System.err.println(Arrays.toString(bins) + " " + Arrays.toString(binAddresses));
 
     List<Integer> elementAddresses = elementAddressesFromBins(binAddresses);
 

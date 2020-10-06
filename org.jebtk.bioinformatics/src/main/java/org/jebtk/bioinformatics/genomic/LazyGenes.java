@@ -11,9 +11,9 @@ import java.util.List;
  *
  */
 public class LazyGenes extends FixedGapGenes {
-  
+
   private static final long serialVersionUID = 1L;
-  
+
   private GeneParser mParser;
   private boolean mAutoLoad = true;
   private Path mFile;
@@ -47,39 +47,30 @@ public class LazyGenes extends FixedGapGenes {
    */
 
   @Override
-  public List<GenomicElement> getElements(Genome genome,
-      String id,
-      GenomicType type) {
+  public List<GenomicElement> getElements(Genome genome, String id, GenomicType type) {
     autoLoad();
 
     return super.getElements(genome, id, type);
   }
 
   @Override
-  public List<GenomicElement> find(Genome genome,
-      GenomicRegion region,
-      GenomicType type,
-      int minBp) {
+  public List<GenomicElement> find(Genome genome, GenomicRegion region, GenomicType type, int minBp) {
     autoLoad();
 
     return super.find(genome, region, type, minBp);
   }
 
   @Override
-  public List<GenomicElement> closest(Genome genome,
-      GenomicRegion region,
-      GenomicType type,
-      int minBp) throws IOException {
+  public List<GenomicElement> closest(Genome genome, GenomicRegion region, GenomicType type, int minBp)
+      throws IOException {
     autoLoad();
 
     return super.closest(genome, region, type, minBp);
   }
 
   @Override
-  public List<GenomicElement> closestByTss(Genome genome,
-      GenomicRegion region,
-      GenomicType type,
-      int minBp) throws IOException {
+  public List<GenomicElement> closestByTss(Genome genome, GenomicRegion region, GenomicType type, int minBp)
+      throws IOException {
     autoLoad();
 
     return super.closestByTss(genome, region, type, minBp);

@@ -4,7 +4,7 @@ public enum GenomicType {
   GENE, TRANSCRIPT, EXON, UTR_5P, UTR_3P, CYTOBAND, SUPER_ENHANCER, ENHANCER, PEAK, REGION;
 
   public static GenomicType parse(String s) {
-    switch(s.toLowerCase()) {
+    switch (s.toLowerCase()) {
     case "gene":
       return GENE;
     case "transcript":

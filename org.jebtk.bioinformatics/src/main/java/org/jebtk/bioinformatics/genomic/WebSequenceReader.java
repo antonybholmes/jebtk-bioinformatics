@@ -90,17 +90,13 @@ public class WebSequenceReader extends SequenceReader {
    * edu.columbia.rdf.lib.bioinformatics.genome.RepeatMaskType)
    */
   @Override
-  public SequenceRegion getSequence(Genome genome,
-      GenomicRegion region,
-      boolean displayUpper,
+  public SequenceRegion getSequence(Genome genome, GenomicRegion region, boolean displayUpper,
       RepeatMaskType repeatMaskType) throws IOException {
     URL url;
 
     try {
-      URLPath tmpUrl = mDnaUrl.join(genome)
-          .join(region.getChr().toString()).join(region.getStart())
-          .join(region.getEnd()).param("strand", "s")
-          .param("display", displayUpper ? "u" : "l");
+      URLPath tmpUrl = mDnaUrl.join(genome).join(region.getChr().toString()).join(region.getStart())
+          .join(region.getEnd()).param("strand", "s").param("display", displayUpper ? "u" : "l");
 
       switch (repeatMaskType) {
       case UPPERCASE:
@@ -152,8 +148,7 @@ public class WebSequenceReader extends SequenceReader {
       Json json = mParser.parse(url);
 
       for (int i = 0; i < json.size(); ++i) {
-        ret.add(
-            GenomeService.getInstance().guessGenome(json.get(i).getString()));
+        ret.add(GenomeService.getInstance().guessGenome(json.get(i).getString()));
       }
     } catch (MalformedURLException e) {
       e.printStackTrace();

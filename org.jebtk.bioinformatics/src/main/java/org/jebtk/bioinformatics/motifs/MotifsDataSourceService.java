@@ -93,10 +93,7 @@ public class MotifsDataSourceService extends MotifDataSource {
    * tree.TreeRootNode, java.lang.String)
    */
   @Override
-  public void createTree(TreeNode<Motif> root,
-      List<String> terms,
-      boolean inList,
-      boolean exactMatch,
+  public void createTree(TreeNode<Motif> root, List<String> terms, boolean inList, boolean exactMatch,
       boolean caseSensitive) throws Exception {
 
     for (MotifDataSource db : mDbs) {

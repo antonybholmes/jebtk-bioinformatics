@@ -97,19 +97,14 @@ public class WebSequenceReader extends SequenceReader {
    * edu.columbia.rdf.lib.bioinformatics.genome.RepeatMaskType)
    */
   @Override
-  public SequenceRegion getSequence(Genome genome,
-      GenomicRegion region,
-      boolean displayUpper,
+  public SequenceRegion getSequence(Genome genome, GenomicRegion region, boolean displayUpper,
       RepeatMaskType repeatMaskType) throws IOException {
     URL url;
 
     try {
-      URLPath tmpUrl = mDnaUrl
-          .param("n", genome.getName().toLowerCase())
-          .param("a", genome.getAssembly())
-          //.param("t", region.getGenome().getTrack())
-          .param("chr", region.getChr().toString())
-          .param("s", region.getStart()).param("e", region.getEnd())
+      URLPath tmpUrl = mDnaUrl.param("n", genome.getName().toLowerCase()).param("a", genome.getAssembly())
+          // .param("t", region.getGenome().getTrack())
+          .param("chr", region.getChr().toString()).param("s", region.getStart()).param("e", region.getEnd())
           .param("strand", "s").param("lc", displayUpper ? "0" : "1");
 
       switch (repeatMaskType) {
@@ -161,15 +156,15 @@ public class WebSequenceReader extends SequenceReader {
 
       Json json = mParser.parse(url);
       Json e;
-      
+
       for (int i = 0; i < json.size(); ++i) {
         e = json.get(i);
-        
+
         System.err.println("web " + e.getString());
-        
+
         ret.add(GenomeService.getInstance().get(e.getString("name"), e.getString("assembly")));
-        
-        //GenomeService.getInstance().guessGenome(json.get(i).getString()));
+
+        // GenomeService.getInstance().guessGenome(json.get(i).getString()));
       }
     } catch (MalformedURLException e) {
       e.printStackTrace();

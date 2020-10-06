@@ -69,10 +69,10 @@ public class BedElement extends GenomicElement implements NameGetter {
    * Create a BED region with no orientation ('.') so that when visualized, will
    * appear as a solid block.
    *
-   * @param chr the chr
+   * @param chr   the chr
    * @param start the start
-   * @param end the end
-   * @param name the name
+   * @param end   the end
+   * @param name  the name
    */
   public BedElement(GenomicType type, GenomicRegion r, Color color) {
     this(type, TextUtils.EMPTY_STRING, r, color);
@@ -82,8 +82,7 @@ public class BedElement extends GenomicElement implements NameGetter {
     this(type, name, r, Color.BLACK);
   }
 
-  public BedElement(GenomicType type, String name, GenomicRegion r,
-      Color color) {
+  public BedElement(GenomicType type, String name, GenomicRegion r, Color color) {
     super(type, r);
 
     setColor(color);
@@ -120,17 +119,15 @@ public class BedElement extends GenomicElement implements NameGetter {
    * @param line the line
    * @return the bed region
    */
-  public static GenomicElement parse(GenomicType type,
-      Genome genome,
-      String line) {
+  public static GenomicElement parse(GenomicType type, Genome genome, String line) {
     // System.err.println("bed: " + line);
 
     List<String> tokens = TextUtils.tabSplit(line);
 
     // convert first part to chromosome (replacing x,y and m) {
     Chromosome chr = ChromosomeService.getInstance().chr(genome, tokens.get(0));
-    
-    //System.err.println(chr + " " + chr.mId);
+
+    // System.err.println(chr + " " + chr.mId);
 
     if (chr == null) {
       return null;
@@ -152,23 +149,19 @@ public class BedElement extends GenomicElement implements NameGetter {
         color = UCSCTrack.parseColor(matcher);
       }
 
-      GenomicElement bed = new BedElement(type,
-          new GenomicRegion(chr, start, end, strand)).setProperty("name", name)
-              .setColor(color);
+      GenomicElement bed = new BedElement(type, new GenomicRegion(chr, start, end, strand)).setProperty("name", name)
+          .setColor(color);
 
       if (tokens.size() > 11) {
         // blocks mode
 
         int count = Integer.parseInt(tokens.get(9));
 
-        List<Integer> sizes = TextUtils
-            .toInt(TextUtils.commaSplit(tokens.get(10)));
-        List<Integer> starts = TextUtils
-            .toInt(TextUtils.commaSplit(tokens.get(11)));
+        List<Integer> sizes = TextUtils.toInt(TextUtils.commaSplit(tokens.get(10)));
+        List<Integer> starts = TextUtils.toInt(TextUtils.commaSplit(tokens.get(11)));
 
         for (int i = 0; i < count; ++i) {
-          bed.addChild(new Exon(genome, chr, start + starts.get(i),
-              start + starts.get(i) + sizes.get(i)));
+          bed.addChild(new Exon(genome, chr, start + starts.get(i), start + starts.get(i) + sizes.get(i)));
         }
       }
 
@@ -176,8 +169,7 @@ public class BedElement extends GenomicElement implements NameGetter {
     } else if (tokens.size() > 3) {
       String name = tokens.get(3);
 
-      return new BedElement(type, new GenomicRegion(chr, start, end))
-          .setProperty("name", name);
+      return new BedElement(type, new GenomicRegion(chr, start, end)).setProperty("name", name);
     } else {
       return new BedElement(type, new GenomicRegion(chr, start, end));
     }

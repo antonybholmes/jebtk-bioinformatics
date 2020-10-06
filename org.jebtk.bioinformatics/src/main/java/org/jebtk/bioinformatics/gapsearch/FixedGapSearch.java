@@ -106,8 +106,7 @@ public class FixedGapSearch<T> extends GapSearch<T> {
   /*
    * (non-Javadoc)
    * 
-   * @see
-   * edu.columbia.rdf.lib.bioinformatics.gapsearch.GapSearch#addFeature(edu.
+   * @see edu.columbia.rdf.lib.bioinformatics.gapsearch.GapSearch#addFeature(edu.
    * columbia.rdf.lib.bioinformatics.genome.Chromosome, int, int,
    * java.lang.Object)
    */
@@ -128,7 +127,7 @@ public class FixedGapSearch<T> extends GapSearch<T> {
 
     ++mSize;
   }
-  
+
   public void addAll(GenomicRegion region, Collection<T> features) {
     int startBin = getBin(region.getStart());
     int endBin = getBin(region.getEnd());
@@ -139,7 +138,7 @@ public class FixedGapSearch<T> extends GapSearch<T> {
       if (!mFeatures.get(chr).containsKey(bin)) {
         mFeatures.get(chr).put(bin, new GappedSearchFeatures<T>(bin));
       }
-      
+
       for (T feature : features) {
         mFeatures.get(chr).get(bin).add(region, feature);
       }
@@ -155,8 +154,8 @@ public class FixedGapSearch<T> extends GapSearch<T> {
   /**
    * Adds the feature.
    *
-   * @param chr the chr
-   * @param bin the bin
+   * @param chr     the chr
+   * @param bin     the bin
    * @param feature the feature
    */
   // public void addFeature(Chromosome chr, int bin, T feature) {
@@ -191,8 +190,7 @@ public class FixedGapSearch<T> extends GapSearch<T> {
   /*
    * (non-Javadoc)
    * 
-   * @see
-   * edu.columbia.rdf.lib.bioinformatics.gapsearch.GapSearch#getFeatureList()
+   * @see edu.columbia.rdf.lib.bioinformatics.gapsearch.GapSearch#getFeatureList()
    */
   @Override
   public List<T> getFeatures() {
@@ -242,14 +240,11 @@ public class FixedGapSearch<T> extends GapSearch<T> {
   /*
    * (non-Javadoc)
    * 
-   * @see
-   * edu.columbia.rdf.lib.bioinformatics.gapsearch.GapSearch#getFeatures(edu.
+   * @see edu.columbia.rdf.lib.bioinformatics.gapsearch.GapSearch#getFeatures(edu.
    * columbia.rdf.lib.bioinformatics.genome.Chromosome, int, int)
    */
   @Override
-  public List<GappedSearchFeatures<T>> getFeatures(Chromosome chr,
-      int start,
-      int end) {
+  public List<GappedSearchFeatures<T>> getFeatures(Chromosome chr, int start, int end) {
     int is = getBin(start);
     int ie = getBin(end);
 
@@ -259,14 +254,12 @@ public class FixedGapSearch<T> extends GapSearch<T> {
   /**
    * Gets the features by bin.
    *
-   * @param chr the chr
+   * @param chr  the chr
    * @param sbin the sbin
    * @param ebin the ebin
    * @return the features by bin
    */
-  public List<GappedSearchFeatures<T>> getFeaturesByBin(Chromosome chr,
-      int sbin,
-      int ebin) {
+  public List<GappedSearchFeatures<T>> getFeaturesByBin(Chromosome chr, int sbin, int ebin) {
     Map<Integer, GappedSearchFeatures<T>> features = mFeatures.get(chr);
 
     if (features.size() == 0) {
@@ -294,16 +287,10 @@ public class FixedGapSearch<T> extends GapSearch<T> {
    * @return
    */
   public List<List<T>> getClosestFeatures(GenomicRegion region, int n) {
-    return getClosestFeatures(region.getChr(),
-        region.getStart(),
-        region.getEnd(),
-        n);
+    return getClosestFeatures(region.getChr(), region.getStart(), region.getEnd(), n);
   }
 
-  public List<List<T>> getClosestFeatures(Chromosome chr,
-      int start,
-      int end,
-      int n) {
+  public List<List<T>> getClosestFeatures(Chromosome chr, int start, int end, int n) {
     int bs = getBin(start);
     int be = getBin(end);
 
@@ -335,15 +322,14 @@ public class FixedGapSearch<T> extends GapSearch<T> {
       // Count
       //
 
-      IterMap<Integer, List<T>> closestMap = DefaultTreeMap
-          .create(new ArrayListCreator<T>());
+      IterMap<Integer, List<T>> closestMap = DefaultTreeMap.create(new ArrayListCreator<T>());
 
       for (GappedSearchFeatures<T> gsf : bf) {
         for (Entry<GenomicRegion, List<T>> r : gsf) {
           // distance from item to
           int d;
           GenomicRegion region = r.getKey();
-          
+
           if (Strand.isSense(region.getStrand())) {
             d = Math.abs(region.getStart() - mid);
           } else {
@@ -351,7 +337,6 @@ public class FixedGapSearch<T> extends GapSearch<T> {
           }
 
           closestMap.get(d).addAll(r.getValue());
-
 
           if (closestMap.size() == n) {
             // Once we have enough closest genes, assemble and return
@@ -407,9 +392,9 @@ public class FixedGapSearch<T> extends GapSearch<T> {
        * for (int bin : gappedSearch.mFeatures.get(chr)) {
        * 
        * 
-       * for (GenomicRegion region : gappedSearch.mFeatures.get(chr).get(bin)) {
-       * for (T item : mFeatures.get(chr).get(bin).getValues(region)) {
-       * add(region, item); } } }
+       * for (GenomicRegion region : gappedSearch.mFeatures.get(chr).get(bin)) { for
+       * (T item : mFeatures.get(chr).get(bin).getValues(region)) { add(region, item);
+       * } } }
        */
     }
   }

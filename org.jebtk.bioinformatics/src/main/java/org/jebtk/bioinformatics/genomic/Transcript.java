@@ -105,11 +105,11 @@ public class Transcript extends GenomicEntity {
   }
 
   /*
-   * @Override public int compareTo(Region r) { if (r instanceof Gene) { Gene g
-   * = (Gene)r;
+   * @Override public int compareTo(Region r) { if (r instanceof Gene) { Gene g =
+   * (Gene)r;
    * 
-   * for (String id : mIdMap.keySet()) { // Find the first point where they
-   * differ and return that
+   * for (String id : mIdMap.keySet()) { // Find the first point where they differ
+   * and return that
    * 
    * if (g.mIdMap.containsKey(id)) { String id2 = g.mIdMap.get(id);
    * 
@@ -134,7 +134,7 @@ public class Transcript extends GenomicEntity {
    *
    * @param features the features
    * @return the sets the
-   * @throws IOException Signals that an I/O exception has occurred.
+   * @throws IOException    Signals that an I/O exception has occurred.
    * @throws ParseException the parse exception
    */
   public static Set<String> toSymbols(List<Transcript> genes) {

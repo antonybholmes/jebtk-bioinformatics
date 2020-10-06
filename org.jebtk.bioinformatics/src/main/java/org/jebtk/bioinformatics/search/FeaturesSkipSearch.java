@@ -47,9 +47,9 @@ public class FeaturesSkipSearch extends FeaturesBinarySearch {
   /**
    * Instantiates a new features skip search.
    *
-   * @param name the name
+   * @param name        the name
    * @param description the description
-   * @param file the file
+   * @param file        the file
    */
   public FeaturesSkipSearch(String name, String description, Path file) {
     super(name, description, file);
@@ -62,9 +62,7 @@ public class FeaturesSkipSearch extends FeaturesBinarySearch {
    * getFeatures( int, int, short)
    */
   @Override
-  public final List<Feature> getFeatures(int startLocation,
-      int endLocation,
-      Chromosome chromosome) {
+  public final List<Feature> getFeatures(int startLocation, int endLocation, Chromosome chromosome) {
     // System.out.println(chromosome + ":loc:" + startLocation + " " +
     // endLocation);
 
@@ -89,13 +87,11 @@ public class FeaturesSkipSearch extends FeaturesBinarySearch {
 
     int last = locations.size() - 1;
 
-    if (startLocation > locations.get(last).getEnd()
-        || endLocation < locations.get(0).getStart()) {
+    if (startLocation > locations.get(last).getEnd() || endLocation < locations.get(0).getStart()) {
       // the range is clearly not within the feature set so don't even bother to
       // look
       return features;
-    } else if (startLocation <= locations.get(0).getStart()
-        && endLocation >= locations.get(last).getStart()) {
+    } else if (startLocation <= locations.get(0).getStart() && endLocation >= locations.get(last).getStart()) {
       // the range spans the entire set of features
 
       startIndex = 0;

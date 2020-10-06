@@ -50,7 +50,7 @@ public class ProbeGene implements Comparable<ProbeGene> {
   /**
    * Instantiates a new probe gene.
    *
-   * @param name the name
+   * @param name        the name
    * @param description the description
    */
   public ProbeGene(String name, String symbol) {
@@ -60,9 +60,9 @@ public class ProbeGene implements Comparable<ProbeGene> {
   /**
    * Instantiates a new probe gene.
    *
-   * @param name the name
+   * @param name        the name
    * @param description the description
-   * @param chr the chr
+   * @param chr         the chr
    */
   public ProbeGene(String name, String symbol, String description) {
     mName = name;

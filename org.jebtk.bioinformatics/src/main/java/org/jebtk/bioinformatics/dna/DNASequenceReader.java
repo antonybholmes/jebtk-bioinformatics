@@ -51,7 +51,7 @@ public abstract class DNASequenceReader extends FileSequenceReader {
   /**
    * To char.
    *
-   * @param v the v
+   * @param v              the v
    * @param repeatMaskType the repeat mask type
    * @return the char
    */

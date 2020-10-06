@@ -51,8 +51,7 @@ public class GZipSequenceReader extends ChrSequenceReader {
   /**
    * The constant LOG.
    */
-  private static final Logger LOG = LoggerFactory
-      .getLogger(GZipSequenceReader.class);
+  private static final Logger LOG = LoggerFactory.getLogger(GZipSequenceReader.class);
 
   /**
    * Directory containing genome Paths which must be of the form chr.n.txt. Each
@@ -78,9 +77,7 @@ public class GZipSequenceReader extends ChrSequenceReader {
    * edu.columbia.rdf.lib.bioinformatics.genome.RepeatMaskType)
    */
   @Override
-  public final SequenceRegion getSequence(Genome genome,
-      GenomicRegion region,
-      boolean displayUpper,
+  public final SequenceRegion getSequence(Genome genome, GenomicRegion region, boolean displayUpper,
       RepeatMaskType repeatMaskType) throws IOException {
     Chromosome chr = region.getChr();
 
@@ -94,13 +91,12 @@ public class GZipSequenceReader extends ChrSequenceReader {
   /**
    * Returns the sequence from a region of a chromosome.
    *
-   * @param file the file
+   * @param file   the file
    * @param region the region
    * @return the sequence
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  private final SequenceRegion getSequence(Path file, GenomicRegion region)
-      throws IOException {
+  private final SequenceRegion getSequence(Path file, GenomicRegion region) throws IOException {
     LOG.debug("Extract sequence for {} from {}...", region.toString(), file);
 
     int s = region.getStart() - 1;
@@ -124,11 +120,9 @@ public class GZipSequenceReader extends ChrSequenceReader {
       int bytesRead = in.read(cbuf);
 
       if (bytesRead == l) {
-        sequence = new SequenceRegion(region,
-            Sequence.create(new String(cbuf)));
+        sequence = new SequenceRegion(region, Sequence.create(new String(cbuf)));
       } else {
-        System.err.println(file + " " + region + " " + bytesRead + " " + l + " "
-            + new String(cbuf));
+        System.err.println(file + " " + region + " " + bytesRead + " " + l + " " + new String(cbuf));
         System.exit(0);
       }
     } finally {

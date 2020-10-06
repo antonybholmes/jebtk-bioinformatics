@@ -54,8 +54,7 @@ import org.slf4j.LoggerFactory;
  * @author Antony Holmes
  *
  */
-public class Sequence
-    implements Comparable<Sequence>, NameGetter, Iterable<Character> {
+public class Sequence implements Comparable<Sequence>, NameGetter, Iterable<Character> {
 
   /**
    * The header pattern.
@@ -75,8 +74,7 @@ public class Sequence
 
   public static final Pattern DNA_REGEX = Pattern.compile("[ACGTUacgtuNn]+");
 
-  public static final Pattern ILLEGAL_REGEX = Pattern
-      .compile("[^ACGTUacgtuNn]");
+  public static final Pattern ILLEGAL_REGEX = Pattern.compile("[^ACGTUacgtuNn]");
 
   /**
    * The constant LOG.
@@ -86,7 +84,7 @@ public class Sequence
   /**
    * Instantiates a new sequence.
    *
-   * @param name the name
+   * @param name     the name
    * @param sequence the sequence
    */
   private Sequence(String sequence) {
@@ -98,9 +96,7 @@ public class Sequence
 
     // Replace all illegal characters with N
     mSequence = ILLEGAL_REGEX.matcher(sequence).replaceAll(DNA.N); // .toUpperCase();
-    mType = sequence.contains(DNA.U) || sequence.contains(DNA.LU)
-        ? SequenceType.RNA
-        : SequenceType.DNA;
+    mType = sequence.contains(DNA.U) || sequence.contains(DNA.LU) ? SequenceType.RNA : SequenceType.DNA;
   }
 
   @Override
@@ -170,8 +166,7 @@ public class Sequence
    * @return the sequence
    */
   public static Sequence reverseComplement(Sequence sequence) {
-    return new Sequence(sequence.mName + " rev comp",
-        reverseComplement(sequence.mSequence, sequence.mType));
+    return new Sequence(sequence.mName + " rev comp", reverseComplement(sequence.mSequence, sequence.mType));
   }
 
   /**
@@ -195,8 +190,7 @@ public class Sequence
    * @return the string
    */
   public static Sequence complement(Sequence sequence) {
-    return new Sequence(sequence.mName + " comp",
-        complement(sequence.mSequence, sequence.mType));
+    return new Sequence(sequence.mName + " comp", complement(sequence.mSequence, sequence.mType));
   }
 
   public static String complement(String sequence) {
@@ -290,8 +284,8 @@ public class Sequence
   }
 
   /**
-   * Return a numerical representation of the sequence where a = 0, c = 1, g =
-   * 2, t = 3.
+   * Return a numerical representation of the sequence where a = 0, c = 1, g = 2,
+   * t = 3.
    *
    * @return the byte[]
    */
@@ -353,8 +347,8 @@ public class Sequence
   }
 
   /**
-   * Returns the consensus sequence from a list of sequences i.e the most
-   * abundant base at each position.
+   * Returns the consensus sequence from a list of sequences i.e the most abundant
+   * base at each position.
    *
    * @param sequences the sequences
    * @return the consensus
@@ -392,13 +386,12 @@ public class Sequence
   /**
    * Write fasta.
    *
-   * @param <X> the generic type
+   * @param <X>       the generic type
    * @param sequences the sequences
-   * @param file the file
+   * @param file      the file
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static <X extends Sequence> void writeFasta(List<X> sequences,
-      Path file) throws IOException {
+  public static <X extends Sequence> void writeFasta(List<X> sequences, Path file) throws IOException {
 
     LOG.debug("Writing {}...", file);
 
@@ -417,8 +410,7 @@ public class Sequence
     }
   }
 
-  public static <X extends Sequence> void writeFormattedFasta(List<X> sequences,
-      Path file) throws IOException {
+  public static <X extends Sequence> void writeFormattedFasta(List<X> sequences, Path file) throws IOException {
 
     LOG.debug("Writing {}...", file);
 
@@ -515,7 +507,7 @@ public class Sequence
   /**
    * To upper.
    *
-   * @param seq the seq
+   * @param seq    the seq
    * @param offset the offset
    * @param length the length
    * @return the sequence
@@ -574,27 +566,19 @@ public class Sequence
   /**
    * Extract a random sequence of a given length from the genome.
    *
-   * @param genome the genome
+   * @param genome    the genome
    * @param mAssembly the m assembly
    * @param mChrSizes the m chr sizes
-   * @param length the length
+   * @param length    the length
    * @return the random sequence
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static SequenceRegion getRandomSequence(Genome genome,
-      SequenceReader assembly,
-      int length) throws IOException {
-    return getRandomSequence(genome,
-        assembly,
-        length,
-        true,
-        RepeatMaskType.LOWERCASE);
+  public static SequenceRegion getRandomSequence(Genome genome, SequenceReader assembly, int length)
+      throws IOException {
+    return getRandomSequence(genome, assembly, length, true, RepeatMaskType.LOWERCASE);
   }
 
-  public static SequenceRegion getRandomSequence(Genome genome,
-      SequenceReader assembly,
-      int length,
-      boolean uppercase,
+  public static SequenceRegion getRandomSequence(Genome genome, SequenceReader assembly, int length, boolean uppercase,
       RepeatMaskType repeatMaskType) throws IOException {
     GenomicRegion region = GenomicRegion.randomRegion(genome, length);
 
@@ -604,7 +588,7 @@ public class Sequence
   /**
    * To index.
    *
-   * @param <X> the generic type
+   * @param <X>  the generic type
    * @param seqs the seqs
    * @return the byte[][]
    */
@@ -619,8 +603,7 @@ public class Sequence
   }
 
   public static String toFasta(String name, Sequence sequence) {
-    return new StringBuilder(">").append(name).append(TextUtils.NEW_LINE)
-        .append(sequence).toString();
+    return new StringBuilder(">").append(name).append(TextUtils.NEW_LINE).append(sequence).toString();
   }
 
   public static Sequence create(String dna) {

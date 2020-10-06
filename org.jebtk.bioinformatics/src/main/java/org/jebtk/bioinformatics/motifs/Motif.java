@@ -52,16 +52,14 @@ import org.jebtk.core.text.TextUtils;
  * @author Antony Holmes
  *
  */
-public class Motif
-    implements Comparable<Motif>, Iterable<BaseCounts>, FormattedTxt {
+public class Motif implements Comparable<Motif>, Iterable<BaseCounts>, FormattedTxt {
   // private static final Pattern MOTIF_HEADER_PATTERN =
   // Pattern.compile(">([^\\t]+)\\t([^\\t]+)\\t([^\\t]+)");
 
   /**
    * The constant JASPAR_HEADER_PATTERN.
    */
-  private static final Pattern JASPAR_HEADER_PATTERN = Pattern
-      .compile(">([^\\s]+)\\s(.+)");
+  private static final Pattern JASPAR_HEADER_PATTERN = Pattern.compile(">([^\\s]+)\\s(.+)");
 
   /**
    * The constant USER_DB.
@@ -69,8 +67,7 @@ public class Motif
   private static final String USER_DB = "User";
 
   /**
-   * Determine how significant a base must be to be considered part of a
-   * triplet.
+   * Determine how significant a base must be to be considered part of a triplet.
    */
   private static final double TRIPLET_MIN = 0;
 
@@ -116,7 +113,7 @@ public class Motif
   /**
    * Construct a new motif with the given name.
    *
-   * @param name the name
+   * @param name  the name
    * @param bases the bases
    */
   public Motif(String name, Collection<BaseCounts> bases) {
@@ -126,8 +123,8 @@ public class Motif
   /**
    * Instantiates a new motif.
    *
-   * @param id the id
-   * @param name the name
+   * @param id    the id
+   * @param name  the name
    * @param bases the bases
    */
   public Motif(String id, String name, Collection<BaseCounts> bases) {
@@ -137,27 +134,25 @@ public class Motif
   /**
    * Instantiates a new motif.
    *
-   * @param id the id
-   * @param name the name
-   * @param gene the gene
+   * @param id    the id
+   * @param name  the name
+   * @param gene  the gene
    * @param bases the bases
    */
-  public Motif(String id, String name, String gene,
-      Collection<BaseCounts> bases) {
+  public Motif(String id, String name, String gene, Collection<BaseCounts> bases) {
     this(id, name, gene, null, bases);
   }
 
   /**
    * Instantiates a new motif.
    *
-   * @param id the id
-   * @param name the name
-   * @param gene the gene
+   * @param id       the id
+   * @param name     the name
+   * @param gene     the gene
    * @param database the database
-   * @param bases the bases
+   * @param bases    the bases
    */
-  public Motif(String id, String name, String gene, String database,
-      Collection<BaseCounts> bases) {
+  public Motif(String id, String name, String gene, String database, Collection<BaseCounts> bases) {
     mId = id;
     mName = name;
     mGene = gene;
@@ -181,10 +176,10 @@ public class Motif
   /**
    * Instantiates a new motif.
    *
-   * @param id the id
+   * @param id   the id
    * @param name the name
    * @param gene the gene
-   * @param pwm the pwm
+   * @param pwm  the pwm
    */
   public Motif(String id, String name, String gene, double[][] pwm) {
     mId = id;
@@ -219,7 +214,7 @@ public class Motif
    * Gets the count.
    *
    * @param base the base
-   * @param p the p
+   * @param p    the p
    * @return the count
    */
   public double getCount(char base, int p) {
@@ -323,8 +318,7 @@ public class Motif
       values.add(Double.toString(c.getA()));
     }
 
-    buffer.append(TextUtils.join(values, TextUtils.TAB_DELIMITER))
-        .append(TextUtils.NEW_LINE);
+    buffer.append(TextUtils.join(values, TextUtils.TAB_DELIMITER)).append(TextUtils.NEW_LINE);
 
     values = new ArrayList<String>();
 
@@ -332,8 +326,7 @@ public class Motif
       values.add(Double.toString(c.getC()));
     }
 
-    buffer.append(TextUtils.join(values, TextUtils.TAB_DELIMITER))
-        .append(TextUtils.NEW_LINE);
+    buffer.append(TextUtils.join(values, TextUtils.TAB_DELIMITER)).append(TextUtils.NEW_LINE);
 
     values = new ArrayList<String>();
 
@@ -341,8 +334,7 @@ public class Motif
       values.add(Double.toString(c.getG()));
     }
 
-    buffer.append(TextUtils.join(values, TextUtils.TAB_DELIMITER))
-        .append(TextUtils.NEW_LINE);
+    buffer.append(TextUtils.join(values, TextUtils.TAB_DELIMITER)).append(TextUtils.NEW_LINE);
 
     values = new ArrayList<String>();
 
@@ -350,8 +342,7 @@ public class Motif
       values.add(Double.toString(c.getT()));
     }
 
-    buffer.append(TextUtils.join(values, TextUtils.TAB_DELIMITER))
-        .append(TextUtils.NEW_LINE);
+    buffer.append(TextUtils.join(values, TextUtils.TAB_DELIMITER)).append(TextUtils.NEW_LINE);
   }
 
   /**
@@ -428,26 +419,24 @@ public class Motif
   /**
    * Return the first motif from a file.
    *
-   * @param file the file
+   * @param file     the file
    * @param database the database
    * @return the motif
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static Motif parseMotif(Path file, String database)
-      throws IOException {
+  public static Motif parseMotif(Path file, String database) throws IOException {
     return parseMotifs(file, database).get(0);
   }
 
   /**
    * Parse a matrix file from JASPAR.
    *
-   * @param file the file
+   * @param file     the file
    * @param database the database
    * @return the list
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static List<Motif> parseMotifs(Path file, String database)
-      throws IOException {
+  public static List<Motif> parseMotifs(Path file, String database) throws IOException {
     BufferedReader reader = FileUtils.newBufferedReader(file);
 
     return parseMotifs(reader, database);
@@ -456,13 +445,12 @@ public class Motif
   /**
    * Parses the motifs.
    *
-   * @param reader the reader
+   * @param reader   the reader
    * @param database the database
    * @return the list
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static List<Motif> parseMotifs(BufferedReader reader, String database)
-      throws IOException {
+  public static List<Motif> parseMotifs(BufferedReader reader, String database) throws IOException {
     Motif motif = null;
 
     String line;
@@ -493,14 +481,10 @@ public class Motif
           gene = tokens.get(2);
         }
 
-        List<String> a = Splitter.onTab().ignoreEmptyStrings()
-            .text(reader.readLine());
-        List<String> c = Splitter.onTab().ignoreEmptyStrings()
-            .text(reader.readLine());
-        List<String> g = Splitter.onTab().ignoreEmptyStrings()
-            .text(reader.readLine());
-        List<String> t = Splitter.onTab().ignoreEmptyStrings()
-            .text(reader.readLine());
+        List<String> a = Splitter.onTab().ignoreEmptyStrings().text(reader.readLine());
+        List<String> c = Splitter.onTab().ignoreEmptyStrings().text(reader.readLine());
+        List<String> g = Splitter.onTab().ignoreEmptyStrings().text(reader.readLine());
+        List<String> t = Splitter.onTab().ignoreEmptyStrings().text(reader.readLine());
 
         int l = a.size();
 
@@ -561,8 +545,7 @@ public class Motif
    * @return the list
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static List<Motif> parsePwmMotifs(BufferedReader reader)
-      throws IOException {
+  public static List<Motif> parsePwmMotifs(BufferedReader reader) throws IOException {
     Motif motif = null;
 
     String line;
@@ -579,14 +562,10 @@ public class Motif
 
         String id = line.substring(1);
 
-        List<String> a = Splitter.onTab().ignoreEmptyStrings()
-            .text(reader.readLine());
-        List<String> c = Splitter.onTab().ignoreEmptyStrings()
-            .text(reader.readLine());
-        List<String> g = Splitter.onTab().ignoreEmptyStrings()
-            .text(reader.readLine());
-        List<String> t = Splitter.onTab().ignoreEmptyStrings()
-            .text(reader.readLine());
+        List<String> a = Splitter.onTab().ignoreEmptyStrings().text(reader.readLine());
+        List<String> c = Splitter.onTab().ignoreEmptyStrings().text(reader.readLine());
+        List<String> g = Splitter.onTab().ignoreEmptyStrings().text(reader.readLine());
+        List<String> t = Splitter.onTab().ignoreEmptyStrings().text(reader.readLine());
 
         int l = a.size();
 
@@ -653,8 +632,7 @@ public class Motif
    * @return the list
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static List<Motif> parsePwm2Motifs(BufferedReader reader)
-      throws IOException {
+  public static List<Motif> parsePwm2Motifs(BufferedReader reader) throws IOException {
     Motif motif = null;
 
     String line;
@@ -671,16 +649,11 @@ public class Motif
 
         String id = line.substring(1);
 
-        List<String> a = Splitter.onTab().ignoreEmptyStrings()
-            .text(reader.readLine());
-        List<String> c = Splitter.onTab().ignoreEmptyStrings()
-            .text(reader.readLine());
-        List<String> g = Splitter.onTab().ignoreEmptyStrings()
-            .text(reader.readLine());
-        List<String> t = Splitter.onTab().ignoreEmptyStrings()
-            .text(reader.readLine());
-        List<String> n = Splitter.onTab().ignoreEmptyStrings()
-            .text(reader.readLine());
+        List<String> a = Splitter.onTab().ignoreEmptyStrings().text(reader.readLine());
+        List<String> c = Splitter.onTab().ignoreEmptyStrings().text(reader.readLine());
+        List<String> g = Splitter.onTab().ignoreEmptyStrings().text(reader.readLine());
+        List<String> t = Splitter.onTab().ignoreEmptyStrings().text(reader.readLine());
+        List<String> n = Splitter.onTab().ignoreEmptyStrings().text(reader.readLine());
 
         int l = a.size();
 
@@ -772,12 +745,10 @@ public class Motif
     for (int i = l - 1; i >= 0; --i) {
       BaseCounts c = motif.getCounts(i);
 
-      counts.add(
-          new BaseCounts(c.getT(), c.getG(), c.getC(), c.getA(), c.getN()));
+      counts.add(new BaseCounts(c.getT(), c.getG(), c.getC(), c.getA(), c.getN()));
     }
 
-    Motif ret = new Motif(motif.mId, motif.mName, motif.mGene, motif.mDatabase,
-        counts);
+    Motif ret = new Motif(motif.mId, motif.mName, motif.mGene, motif.mDatabase, counts);
 
     return ret;
   }
@@ -789,8 +760,7 @@ public class Motif
    * @return the string
    */
   public static String sanitize(String text) {
-    return text.replaceAll("\\\\", "_").replaceAll("\\/", "_")
-        .replaceAll("\\s+", "_").replaceAll("_+", "_");
+    return text.replaceAll("\\\\", "_").replaceAll("\\/", "_").replaceAll("\\s+", "_").replaceAll("_+", "_");
   }
 
   /**

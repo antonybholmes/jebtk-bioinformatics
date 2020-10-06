@@ -39,7 +39,6 @@ import org.jebtk.core.collections.DefaultTreeMap;
 import org.jebtk.core.collections.DefaultTreeMapCreator;
 import org.jebtk.core.collections.IterMap;
 import org.jebtk.core.collections.TreeMapCreator;
-import org.jebtk.core.text.Join;
 import org.jebtk.core.text.Splitter;
 import org.jebtk.core.text.TextUtils;
 
@@ -57,10 +56,9 @@ public class Genome implements NameGetter, Comparable<Genome> {
   private static final String GENCODE = "gencode";
 
   private static final String REFSEQ = "refseq";
-  
+
   public static final String HUMAN = "Human";
   public static final String MOUSE = "Mouse";
-
 
   public static final Genome HUMAN_HG18_UCSC = new Genome(HUMAN, "hg18", REFSEQ);
   public static final Genome HUMAN_HG19_UCSC = new Genome(HUMAN, "hg19", REFSEQ);
@@ -71,8 +69,8 @@ public class Genome implements NameGetter, Comparable<Genome> {
   public static final Genome HUMAN_GRCH37_GENCODE = new Genome(HUMAN, "GRCh37", GENCODE);
   public static final Genome HUMAN_GRCH38_GENCODE = new Genome(HUMAN, "GRCh38", GENCODE);
 
-  public static final Genome HG18 = new Genome(HUMAN, "hg18"); //HUMAN_HG18_REFSEQ;
-  public static final Genome HG19 = new Genome(HUMAN, "hg19"); //HUMAN_HG19_REFSEQ;
+  public static final Genome HG18 = new Genome(HUMAN, "hg18"); // HUMAN_HG18_REFSEQ;
+  public static final Genome HG19 = new Genome(HUMAN, "hg19"); // HUMAN_HG19_REFSEQ;
 
   public static final Genome GRCH37 = new Genome(HUMAN, "GRCh37");;
 
@@ -88,8 +86,6 @@ public class Genome implements NameGetter, Comparable<Genome> {
   /** Local genome dir of app */
   public static final Path GENOME_DIR = AppService.RES_DIR.resolve("genomes");
 
-
-
   // private List<Path> mDirs = new ArrayList<Path>();
 
   // private ChromosomeDirs mChrs = null;
@@ -102,21 +98,21 @@ public class Genome implements NameGetter, Comparable<Genome> {
 
   private String mS;
 
-  Genome(String name) {
+  public Genome(String name) {
     this(name, TextUtils.NA);
   }
 
-  Genome(String name, String assembly) {
+  public Genome(String name, String assembly) {
     this(name, assembly, TextUtils.NA);
   }
 
   /**
    * 
-   * @param name e.g. 'human'
+   * @param name     e.g. 'human'
    * @param assembly e.g. 'grch38'
-   * @param track e.g. 'gencode'
+   * @param track    e.g. 'gencode'
    */
-  Genome(String name, String assembly, String track) {
+  public Genome(String name, String assembly, String track) {
     mName = TextUtils.sentenceCase(name);
     mAssembly = assembly;
     mTrack = track;
@@ -270,34 +266,32 @@ public class Genome implements NameGetter, Comparable<Genome> {
    */
   public static String genomeId(String name, String assembly, String track) {
     List<String> ret = new ArrayList<String>(3);
-    
+
     ret.add(name.toLowerCase());
-    
+
     if (!assembly.equals(TextUtils.NA)) {
       ret.add(assembly.toLowerCase());
-      
+
       if (!track.equals(TextUtils.NA)) {
         ret.add(track.toLowerCase());
       }
     }
-    
-    //return Join.onColon().values(ret).toString();
-    
-    return ret.stream() 
-        .map(String::valueOf) 
-        .collect(Collectors.joining(":")); 
+
+    // return Join.onColon().values(ret).toString();
+
+    return ret.stream().map(String::valueOf).collect(Collectors.joining(":"));
   }
 
   /**
    * Sort genomes by name, assembly, track to put in alphabetical order
+   * 
    * @param genomes
    * @return
    * @throws IOException
    */
   public static IterMap<String, IterMap<String, IterMap<String, Genome>>> sort(Iterable<Genome> genomes) {
     IterMap<String, IterMap<String, IterMap<String, Genome>>> genomeMap = DefaultTreeMap
-        .create(
-            new DefaultTreeMapCreator<String, IterMap<String, Genome>>(new TreeMapCreator<String, Genome>()));
+        .create(new DefaultTreeMapCreator<String, IterMap<String, Genome>>(new TreeMapCreator<String, Genome>()));
 
     for (Genome genome : genomes) {
       genomeMap.get(genome.getName()).get(genome.getAssembly()).put(genome.getTrack(), genome);
@@ -305,10 +299,9 @@ public class Genome implements NameGetter, Comparable<Genome> {
 
     return genomeMap;
   }
-  
+
   public static IterMap<String, IterMap<String, Genome>> sortByAssembly(Iterable<Genome> genomes) {
-    IterMap<String, IterMap<String, Genome>> genomeMap = DefaultTreeMap
-        .create(new TreeMapCreator<String, Genome>());
+    IterMap<String, IterMap<String, Genome>> genomeMap = DefaultTreeMap.create(new TreeMapCreator<String, Genome>());
 
     for (Genome genome : genomes) {
       genomeMap.get(genome.getName()).put(genome.getAssembly(), genome);
@@ -318,8 +311,8 @@ public class Genome implements NameGetter, Comparable<Genome> {
   }
 
   /**
-   * Return a genome containing only the assembly information. This is useful
-   * for chr lookups where the information will not be tied to a track.
+   * Return a genome containing only the assembly information. This is useful for
+   * chr lookups where the information will not be tied to a track.
    * 
    * @param genome
    * @return

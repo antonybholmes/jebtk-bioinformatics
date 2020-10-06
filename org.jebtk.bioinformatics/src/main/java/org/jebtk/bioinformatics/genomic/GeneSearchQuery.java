@@ -1,6 +1,5 @@
 package org.jebtk.bioinformatics.genomic;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -23,9 +22,7 @@ public class GeneSearchQuery extends SearchQuery<GenomicElement> {
   }
 
   @Override
-  public Collection<GenomicElement> match(String s,
-      boolean exact,
-      boolean include) {
+  public Collection<GenomicElement> match(String s, boolean exact, boolean include) {
 
     String ls = s.toLowerCase();
 
@@ -45,7 +42,6 @@ public class GeneSearchQuery extends SearchQuery<GenomicElement> {
     }
 
     ret.addAll(genes);
-    
 
     return ret;
   }
@@ -57,8 +53,7 @@ public class GeneSearchQuery extends SearchQuery<GenomicElement> {
    * @param genes
    * @return
    */
-  private static List<GenomicElement> exact(String s,
-      Collection<GenomicElement> genes) {
+  private static List<GenomicElement> exact(String s, Collection<GenomicElement> genes) {
     List<GenomicElement> ret = new ArrayList<GenomicElement>(genes.size());
 
     for (GenomicElement gene : genes) {

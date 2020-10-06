@@ -36,7 +36,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.jebtk.bioinformatics.Search;
 import org.jebtk.bioinformatics.genomic.Chromosome;
 import org.jebtk.bioinformatics.genomic.ChromosomeService;
-import org.jebtk.bioinformatics.genomic.GenomeService;
 import org.jebtk.core.io.FileUtils;
 import org.jebtk.core.io.Io;
 import org.jebtk.core.text.TextUtils;
@@ -66,9 +65,9 @@ public class FeaturesBasicSearch extends AbstractFeaturesSearch {
   /**
    * Instantiates a new features basic search.
    *
-   * @param name the name
+   * @param name        the name
    * @param description the description
-   * @param file the file
+   * @param file        the file
    */
   public FeaturesBasicSearch(String name, String description, Path file) {
     super(name, description);
@@ -105,8 +104,7 @@ public class FeaturesBasicSearch extends AbstractFeaturesSearch {
 
           List<String> row = TextUtils.fastSplit(line, TextUtils.TAB_DELIMITER);
 
-          Feature feature = new Feature(row.get(0),
-              ChromosomeService.getInstance().guessChr(mFile, row.get(1)),
+          Feature feature = new Feature(row.get(0), ChromosomeService.getInstance().guessChr(mFile, row.get(1)),
               Integer.parseInt(row.get(2)), Integer.parseInt(row.get(3)));
           // feature.type = type;
 
@@ -155,13 +153,10 @@ public class FeaturesBasicSearch extends AbstractFeaturesSearch {
    * (non-Javadoc)
    * 
    * @see edu.columbia.rdf.lib.bioinformatics.search.AbstractFeaturesSearch#
-   * getFeatures (edu.columbia.rdf.lib.bioinformatics.genome.Chromosome, int,
-   * int)
+   * getFeatures (edu.columbia.rdf.lib.bioinformatics.genome.Chromosome, int, int)
    */
   @Override
-  public List<Feature> getFeatures(Chromosome chromosome,
-      int start,
-      int endLocation) {
+  public List<Feature> getFeatures(Chromosome chromosome, int start, int endLocation) {
     if (allLocations.size() == 0) {
       cacheFeatures();
     }
@@ -186,10 +181,9 @@ public class FeaturesBasicSearch extends AbstractFeaturesSearch {
 
     int last = locations.size() - 1;
 
-    if (start > locations.get(last).getEnd()
-        || endLocation < locations.get(0).getStart()) {
-      System.out.println(start + ":" + locations.get(0).getStart() + ":"
-          + endLocation + ":" + locations.get(locations.size() - 1).getEnd());
+    if (start > locations.get(last).getEnd() || endLocation < locations.get(0).getStart()) {
+      System.out.println(start + ":" + locations.get(0).getStart() + ":" + endLocation + ":"
+          + locations.get(locations.size() - 1).getEnd());
 
       // the range is clearly not within the feature set so don't even bother to
       // look
@@ -250,8 +244,7 @@ public class FeaturesBasicSearch extends AbstractFeaturesSearch {
     }
 
     for (int i = 0; i < locations.size(); ++i) {
-      if (features.get(i).getStart() <= location
-          && features.get(i).getEnd() >= location) {
+      if (features.get(i).getStart() <= location && features.get(i).getEnd() >= location) {
         features.add(features.get(i));
       }
     }
@@ -262,8 +255,7 @@ public class FeaturesBasicSearch extends AbstractFeaturesSearch {
   /*
    * (non-Javadoc)
    * 
-   * @see
-   * edu.columbia.rdf.lib.bioinformatics.search.AbstractFeaturesSearch#size()
+   * @see edu.columbia.rdf.lib.bioinformatics.search.AbstractFeaturesSearch#size()
    */
   @Override
   public int size() {

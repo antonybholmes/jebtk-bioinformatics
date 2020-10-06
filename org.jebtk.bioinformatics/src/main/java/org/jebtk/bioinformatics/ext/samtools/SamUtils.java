@@ -103,19 +103,16 @@ public class SamUtils {
   }
 
   /**
-   * Given a starting location and a CIGAR string, creates all possible
-   * locations from it.
+   * Given a starting location and a CIGAR string, creates all possible locations
+   * from it.
    *
-   * @param chr the chr
+   * @param chr   the chr
    * @param start the start
    * @param cigar the cigar
    * @return the list
    * @throws ParseException the parse exception
    */
-  public static List<GenomicRegion> parseCigar(Genome genome,
-      Chromosome chr,
-      int start,
-      final String cigar) {
+  public static List<GenomicRegion> parseCigar(Genome genome, Chromosome chr, int start, final String cigar) {
 
     StringBuilder buffer = new StringBuilder();
 
@@ -158,8 +155,7 @@ public class SamUtils {
   }
 
   /**
-   * Counts the number of reads in an indexed BAM file using the index
-   * statistics.
+   * Counts the number of reads in an indexed BAM file using the index statistics.
    *
    * @param file the file
    * @return the total reads from indexed bam
@@ -171,8 +167,7 @@ public class SamUtils {
     int count = 0;
 
     try {
-      AbstractBAMFileIndex index = (AbstractBAMFileIndex) inputSam.indexing()
-          .getIndex();
+      AbstractBAMFileIndex index = (AbstractBAMFileIndex) inputSam.indexing().getIndex();
 
       for (int i = 0; i < index.getNumberOfReferences(); ++i) {
         BAMIndexMetaData meta = index.getMetaData(i);
@@ -207,8 +202,7 @@ public class SamUtils {
    * @return
    * @throws IOException
    */
-  public static List<Integer> countReads(Path file,
-      Collection<GenomicRegion> regions) throws IOException {
+  public static List<Integer> countReads(Path file, Collection<GenomicRegion> regions) throws IOException {
     List<Integer> ret = new ArrayList<Integer>();
 
     SamReader sam = SamReaderFactory.makeDefault().open(file.toFile());
@@ -225,21 +219,19 @@ public class SamUtils {
   }
 
   /**
-   * Returns the length of the reads by examing the first record in the BAM
-   * file. The assumption is that reads are of equal length.
+   * Returns the length of the reads by examing the first record in the BAM file.
+   * The assumption is that reads are of equal length.
    *
    * @param file the file
    * @return the read length from bam
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static int countReads(SamReader sam, GenomicRegion r)
-      throws IOException {
+  public static int countReads(SamReader sam, GenomicRegion r) throws IOException {
     int ret = 0;
 
     // System.err.println("Counting from " + r);
 
-    SAMRecordIterator iter = sam
-        .queryOverlapping(r.mChr.toString(), r.mStart, r.mEnd);
+    SAMRecordIterator iter = sam.queryOverlapping(r.mChr.toString(), r.mStart, r.mEnd);
 
     while (iter.hasNext()) {
       ++ret;
@@ -276,8 +268,7 @@ public class SamUtils {
   }
 
   public static GenomicRegion getRegion(String genome, SAMRecord r) {
-    return GenomicRegion
-        .create(r.getReferenceName(), r.getStart(), r.getEnd());
+    return GenomicRegion.create(r.getReferenceName(), r.getStart(), r.getEnd());
   }
 
   /**
@@ -287,8 +278,7 @@ public class SamUtils {
    * @return
    */
   public static String getSam(SAMRecord record) {
-    return record.getSAMString().substring(0,
-        record.getSAMString().length() - 1);
+    return record.getSAMString().substring(0, record.getSAMString().length() - 1);
   }
 
   public static SAMFileWriter newBamWriter(SamReader reader, Path file) {
@@ -296,8 +286,7 @@ public class SamUtils {
   }
 
   public static SAMFileWriter newBamWriter(SAMFileHeader header, Path file) {
-    return new SAMFileWriterFactory().setCreateIndex(true)
-        .makeBAMWriter(header, true, file.toFile());
+    return new SAMFileWriterFactory().setCreateIndex(true).makeBAMWriter(header, true, file.toFile());
   }
 
   public static SamReader newBamReader(Path bamFile) {

@@ -83,20 +83,20 @@ public class FeaturesCommonRegionBinarySearch extends AbstractFeaturesSearch {
   /**
    * Instantiates a new features common region binary search.
    *
-   * @param name the name
+   * @param name        the name
    * @param description the description
-   * @param filePrefix the file prefix
+   * @param filePrefix  the file prefix
    * @throws FileNotFoundException the file not found exception
    */
-  public FeaturesCommonRegionBinarySearch(String name, String description,
-      String filePrefix) throws FileNotFoundException {
+  public FeaturesCommonRegionBinarySearch(String name, String description, String filePrefix)
+      throws FileNotFoundException {
     super(name, description);
 
     mBinsFile = PathUtils.getPath(filePrefix + BIN_LOCATION_FILE_ENDING);
     mFeatureFile = PathUtils.getPath(filePrefix + BIN_FEATURE_FILE_ENDING);
 
-    System.err.println("Feature prefix " + filePrefix + " "
-        + FileUtils.exists(mBinsFile) + " " + FileUtils.exists(mFeatureFile));
+    System.err.println(
+        "Feature prefix " + filePrefix + " " + FileUtils.exists(mBinsFile) + " " + FileUtils.exists(mFeatureFile));
 
   }
 
@@ -148,8 +148,7 @@ public class FeaturesCommonRegionBinarySearch extends AbstractFeaturesSearch {
 
           List<String> row = TextUtils.fastSplit(line, TextUtils.TAB_DELIMITER);
 
-          chromosome = ChromosomeService.getInstance().guessChr(mFeatureFile,
-              row.get(0));
+          chromosome = ChromosomeService.getInstance().guessChr(mFeatureFile, row.get(0));
 
           startLocation = Integer.parseInt(row.get(1));
 
@@ -159,8 +158,7 @@ public class FeaturesCommonRegionBinarySearch extends AbstractFeaturesSearch {
 
           // start
 
-          mFeaturesAtLocationByIndex.get(chromosome.getId())
-              .add(new FeatureBin(startLocation));
+          mFeaturesAtLocationByIndex.get(chromosome.getId()).add(new FeatureBin(startLocation));
 
         }
       } finally {
@@ -188,12 +186,10 @@ public class FeaturesCommonRegionBinarySearch extends AbstractFeaturesSearch {
 
           List<String> row = TextUtils.tabSplit(line);
 
-          Feature feature = new Feature(row.get(0),
-              ChromosomeService.getInstance().guessChr(mFeatureFile, row.get(1)),
+          Feature feature = new Feature(row.get(0), ChromosomeService.getInstance().guessChr(mFeatureFile, row.get(1)),
               Integer.parseInt(row.get(2)), Integer.parseInt(row.get(3)));
 
-          List<String> bins = TextUtils.fastSplit(row.get(4),
-              TextUtils.COMMA_DELIMITER);
+          List<String> bins = TextUtils.fastSplit(row.get(4), TextUtils.COMMA_DELIMITER);
 
           for (String bin : bins) {
             int b = Integer.parseInt(bin);
@@ -205,8 +201,7 @@ public class FeaturesCommonRegionBinarySearch extends AbstractFeaturesSearch {
             // - 1).getStart());
 
             // add the feature to each of the bins it belongs to
-            mFeaturesAtLocationByIndex.get(feature.getChr().getId()).get(b)
-                .add(feature);
+            mFeaturesAtLocationByIndex.get(feature.getChr().getId()).get(b).add(feature);
 
             ++size;
           }
@@ -227,13 +222,10 @@ public class FeaturesCommonRegionBinarySearch extends AbstractFeaturesSearch {
    * (non-Javadoc)
    * 
    * @see edu.columbia.rdf.lib.bioinformatics.search.AbstractFeaturesSearch#
-   * getFeatures (edu.columbia.rdf.lib.bioinformatics.genome.Chromosome, int,
-   * int)
+   * getFeatures (edu.columbia.rdf.lib.bioinformatics.genome.Chromosome, int, int)
    */
   @Override
-  public List<Feature> getFeatures(Chromosome chromosome,
-      int startLocation,
-      int endLocation) {
+  public List<Feature> getFeatures(Chromosome chromosome, int startLocation, int endLocation) {
     if (mFeaturesAtLocationByIndex.size() == 0) {
       cacheFeatures();
     }
@@ -243,8 +235,7 @@ public class FeaturesCommonRegionBinarySearch extends AbstractFeaturesSearch {
 
     List<Feature> returnFeatures = new ArrayList<Feature>();
 
-    List<FeatureBin> features = mFeaturesAtLocationByIndex
-        .get(chromosome.getId());
+    List<FeatureBin> features = mFeaturesAtLocationByIndex.get(chromosome.getId());
 
     if (features.size() == 0) {
       return returnFeatures;
@@ -256,8 +247,7 @@ public class FeaturesCommonRegionBinarySearch extends AbstractFeaturesSearch {
 
     int last = features.size() - 1;
 
-    if (startLocation > features.get(last).getStart()
-        || endLocation < features.get(0).getStart()) {
+    if (startLocation > features.get(last).getStart() || endLocation < features.get(0).getStart()) {
       // the range is clearly not within the feature set so don't even bother to
       // look
       return returnFeatures;
@@ -308,8 +298,7 @@ public class FeaturesCommonRegionBinarySearch extends AbstractFeaturesSearch {
 
     List<Feature> returnFeatures = new ArrayList<Feature>();
 
-    List<FeatureBin> features = mFeaturesAtLocationByIndex
-        .get(chromosome.getId());
+    List<FeatureBin> features = mFeaturesAtLocationByIndex.get(chromosome.getId());
 
     if (features.size() == 0) {
       return returnFeatures;
@@ -335,14 +324,12 @@ public class FeaturesCommonRegionBinarySearch extends AbstractFeaturesSearch {
   /**
    * Binary search inner.
    *
-   * @param value the value
+   * @param value      the value
    * @param chromosome the chromosome
-   * @param features the features
+   * @param features   the features
    * @return the int
    */
-  private static final int binarySearchInner(int value,
-      Chromosome chromosome,
-      List<FeatureBin> features) {
+  private static final int binarySearchInner(int value, Chromosome chromosome, List<FeatureBin> features) {
     int location = binarySearch(value, chromosome, features);
 
     // System.out.println("loc" + location);
@@ -358,14 +345,12 @@ public class FeaturesCommonRegionBinarySearch extends AbstractFeaturesSearch {
   /**
    * Binary search outer.
    *
-   * @param value the value
+   * @param value      the value
    * @param chromosome the chromosome
-   * @param features the features
+   * @param features   the features
    * @return the int
    */
-  private static final int binarySearchOuter(int value,
-      Chromosome chromosome,
-      List<FeatureBin> features) {
+  private static final int binarySearchOuter(int value, Chromosome chromosome, List<FeatureBin> features) {
     int location = binarySearch(value, chromosome, features);
 
     if (features.size() > 0) {
@@ -379,14 +364,12 @@ public class FeaturesCommonRegionBinarySearch extends AbstractFeaturesSearch {
   /**
    * Binary search.
    *
-   * @param value the value
+   * @param value      the value
    * @param chromosome the chromosome
-   * @param features the features
+   * @param features   the features
    * @return the int
    */
-  private static final int binarySearch(int value,
-      Chromosome chromosome,
-      List<FeatureBin> features) {
+  private static final int binarySearch(int value, Chromosome chromosome, List<FeatureBin> features) {
     int min = 0;
     int max = features.size() - 1;
 
@@ -417,8 +400,7 @@ public class FeaturesCommonRegionBinarySearch extends AbstractFeaturesSearch {
         break;
       }
 
-      if (features.get(mid).getStart() <= value
-          && features.get(mid + 1).getStart() > value) {
+      if (features.get(mid).getStart() <= value && features.get(mid + 1).getStart() > value) {
         return mid;
       } else if (value >= features.get(mid + 1).getStart()) {
         min = mid + 1;
@@ -461,8 +443,7 @@ public class FeaturesCommonRegionBinarySearch extends AbstractFeaturesSearch {
 
     Set<String> used = new HashSet<String>();
 
-    for (FeatureBin featureBin : mFeaturesAtLocationByIndex
-        .get(chromosome.getId())) {
+    for (FeatureBin featureBin : mFeaturesAtLocationByIndex.get(chromosome.getId())) {
       for (Feature feature : featureBin) {
         if (used.contains(feature.toString())) {
           continue;
@@ -480,24 +461,22 @@ public class FeaturesCommonRegionBinarySearch extends AbstractFeaturesSearch {
    * Returns the feature file associated with the database genomic feature name.
    *
    * @param group the group
-   * @param name the name
+   * @param name  the name
    * @return the features file
    */
   public static final File getFeaturesFile(String group, String name) {
-    return new File(SettingsService.getInstance().getString(group + "." + name)
-        + BIN_FEATURE_FILE_ENDING);
+    return new File(SettingsService.getInstance().getString(group + "." + name) + BIN_FEATURE_FILE_ENDING);
   }
 
   /**
    * Returns the location file associated with the genomic feature name.
    *
    * @param group the group
-   * @param name the name
+   * @param name  the name
    * @return the locations file
    */
   public static final File getLocationsFile(String group, String name) {
-    return new File(SettingsService.getInstance().getString(group + "." + name)
-        + BIN_LOCATION_FILE_ENDING);
+    return new File(SettingsService.getInstance().getString(group + "." + name) + BIN_LOCATION_FILE_ENDING);
   }
 
   /**
@@ -512,8 +491,7 @@ public class FeaturesCommonRegionBinarySearch extends AbstractFeaturesSearch {
   /*
    * (non-Javadoc)
    * 
-   * @see
-   * edu.columbia.rdf.lib.bioinformatics.search.AbstractFeaturesSearch#size()
+   * @see edu.columbia.rdf.lib.bioinformatics.search.AbstractFeaturesSearch#size()
    */
   @Override
   public int size() {

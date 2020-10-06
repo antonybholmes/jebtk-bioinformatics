@@ -102,20 +102,16 @@ public class FeaturesServer {
   /**
    * Adds the common region binary search.
    *
-   * @param genome the genome
-   * @param group the group
-   * @param name the name
+   * @param genome      the genome
+   * @param group       the group
+   * @param name        the name
    * @param description the description
-   * @param filePrefix the file prefix
+   * @param filePrefix  the file prefix
    * @throws FileNotFoundException the file not found exception
    */
-  public final void addCommonRegionBinarySearch(Genome genome,
-      String group,
-      String name,
-      String description,
+  public final void addCommonRegionBinarySearch(Genome genome, String group, String name, String description,
       String filePrefix) throws FileNotFoundException {
-    AbstractFeaturesSearch features = new FeaturesCommonRegionBinarySearch(name,
-        description, filePrefix);
+    AbstractFeaturesSearch features = new FeaturesCommonRegionBinarySearch(name, description, filePrefix);
 
     add(genome, group, features);
   }
@@ -123,20 +119,16 @@ public class FeaturesServer {
   /**
    * Adds the binary search.
    *
-   * @param genome the genome
-   * @param group the group
-   * @param name the name
+   * @param genome      the genome
+   * @param group       the group
+   * @param name        the name
    * @param description the description
-   * @param file the file
+   * @param file        the file
    * @throws FileNotFoundException the file not found exception
    */
-  public final void addBinarySearch(Genome genome,
-      String group,
-      String name,
-      String description,
-      Path file) throws FileNotFoundException {
-    AbstractFeaturesSearch features = new FeaturesBinarySearch(name,
-        description, file);
+  public final void addBinarySearch(Genome genome, String group, String name, String description, Path file)
+      throws FileNotFoundException {
+    AbstractFeaturesSearch features = new FeaturesBinarySearch(name, description, file);
 
     add(genome, group, features);
   }
@@ -144,19 +136,14 @@ public class FeaturesServer {
   /**
    * Adds the basic search.
    *
-   * @param genome the genome
-   * @param group the group
-   * @param name the name
+   * @param genome      the genome
+   * @param group       the group
+   * @param name        the name
    * @param description the description
-   * @param file the file
+   * @param file        the file
    */
-  public final void addBasicSearch(Genome genome,
-      String group,
-      String name,
-      String description,
-      Path file) {
-    AbstractFeaturesSearch features = new FeaturesBasicSearch(name, description,
-        file);
+  public final void addBasicSearch(Genome genome, String group, String name, String description, Path file) {
+    AbstractFeaturesSearch features = new FeaturesBasicSearch(name, description, file);
 
     add(genome, group, features);
   }
@@ -164,25 +151,20 @@ public class FeaturesServer {
   /**
    * Adds the.
    *
-   * @param genome the genome
-   * @param group the group
+   * @param genome   the genome
+   * @param group    the group
    * @param features the features
    */
-  public final void add(Genome genome,
-      String group,
-      AbstractFeaturesSearch features) {
+  public final void add(Genome genome, String group, AbstractFeaturesSearch features) {
     if (!mFeatureMap.containsKey(genome)) {
-      mFeatureMap.put(genome,
-          new HashMap<String, Map<String, AbstractFeaturesSearch>>());
+      mFeatureMap.put(genome, new HashMap<String, Map<String, AbstractFeaturesSearch>>());
     }
 
     if (!mFeatureMap.get(genome).containsKey(group)) {
-      mFeatureMap.get(genome).put(group,
-          new HashMap<String, AbstractFeaturesSearch>());
+      mFeatureMap.get(genome).put(group, new HashMap<String, AbstractFeaturesSearch>());
     }
 
-    System.err.println(
-        "adding feature " + genome + " " + group + " " + features.getName());
+    System.err.println("adding feature " + genome + " " + group + " " + features.getName());
 
     mFeatureMap.get(genome).get(group).put(features.getName(), features);
   }
@@ -191,13 +173,11 @@ public class FeaturesServer {
    * Gets the.
    *
    * @param genome the genome
-   * @param group the group
-   * @param name the name
+   * @param group  the group
+   * @param name   the name
    * @return the abstract features search
    */
-  public final AbstractFeaturesSearch get(Genome genome,
-      String group,
-      String name) {
+  public final AbstractFeaturesSearch get(Genome genome, String group, String name) {
     System.err.println("feature " + genome + " " + group + " " + name);
 
     if (!mFeatureMap.containsKey(genome)) {
@@ -215,11 +195,10 @@ public class FeaturesServer {
    * Returns the collection of features associated with a genome.
    *
    * @param genome the genome
-   * @param group the group
+   * @param group  the group
    * @return the collection
    */
-  public final Collection<AbstractFeaturesSearch> get(Genome genome,
-      String group) {
+  public final Collection<AbstractFeaturesSearch> get(Genome genome, String group) {
     if (!mFeatureMap.containsKey(genome)) {
       return null;
     }

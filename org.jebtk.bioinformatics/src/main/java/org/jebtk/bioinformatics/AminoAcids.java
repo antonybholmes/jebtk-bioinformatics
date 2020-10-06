@@ -120,8 +120,8 @@ public class AminoAcids implements Iterable<AminoAcid> {
   }
 
   /**
-   * Loads a tab delimited list of amino acids. Line 1 is a header Column 1
-   * Amino Acid name Column 2 Short Code Column 3 codons, semi-colon separated.
+   * Loads a tab delimited list of amino acids. Line 1 is a header Column 1 Amino
+   * Acid name Column 2 Short Code Column 3 codons, semi-colon separated.
    *
    * @param file the file
    * @throws IOException Signals that an I/O exception has occurred.

@@ -56,23 +56,20 @@ public class GEBWriter {
     this(dir, prefix, genome, window, true);
   }
 
-  public GEBWriter(Path dir, String prefix, Genome genome, int window,
-      boolean radixMode) {
+  public GEBWriter(Path dir, String prefix, Genome genome, int window, boolean radixMode) {
     mDir = dir;
     mPrefix = prefix;
     mWindow = window;
     mRadixMode = radixMode;
   }
 
-  public <T extends GenomicElement> void write(Collection<T> elements)
-      throws IOException {
+  public <T extends GenomicElement> void write(Collection<T> elements) throws IOException {
     // Path mDir = file.toAbsolutePath().getParent();
 
     write(GenomicElement.toMap(elements));
   }
 
-  public <T extends GenomicElement> void write(
-      IterMap<Chromosome, Set<T>> elements) throws IOException {
+  public <T extends GenomicElement> void write(IterMap<Chromosome, Set<T>> elements) throws IOException {
     // Path mDir = file.toAbsolutePath().getParent();
 
     IterTreeMap<String, Integer> sizeBytesMap = new IterTreeMap<String, Integer>();
@@ -107,12 +104,7 @@ public class GEBWriter {
       }
 
       // Assemble all the tags
-      tagSizesBytes(features,
-          sizeBytesMap,
-          intSizeBytesMap,
-          doubleSizeBytesMap,
-          offsetBytesMap,
-          intOffsetBytesMap,
+      tagSizesBytes(features, sizeBytesMap, intSizeBytesMap, doubleSizeBytesMap, offsetBytesMap, intOffsetBytesMap,
           doubleOffsetBytesMap);
     }
 
@@ -178,12 +170,7 @@ public class GEBWriter {
     // Write out the elements
     //
 
-    writeElements(elements,
-        sizeBytesMap,
-        intSizeBytesMap,
-        doubleSizeBytesMap,
-        offsetBytesMap,
-        intOffsetBytesMap,
+    writeElements(elements, sizeBytesMap, intSizeBytesMap, doubleSizeBytesMap, offsetBytesMap, intOffsetBytesMap,
         doubleOffsetBytesMap);
 
     // Write the tags file
@@ -197,8 +184,7 @@ public class GEBWriter {
     writeIndex();
   }
 
-  private void writeVarchar(String s, DataOutputStream writer)
-      throws IOException {
+  private void writeVarchar(String s, DataOutputStream writer) throws IOException {
     int l = Math.min(s.length(), GEBReader.MAX_VARCHAR_LENGTH);
     writer.writeByte(l);
     SysUtils.arraycopy(s.getBytes(StandardCharsets.UTF_8), BUFFER, l);
@@ -215,14 +201,11 @@ public class GEBWriter {
     return 1 + Math.min(s.length(), GEBReader.MAX_VARCHAR_LENGTH);
   }
 
-  private <T extends GenomicElement> void writeElements(
-      IterMap<Chromosome, Set<T>> elements,
-      IterTreeMap<String, Integer> sizeBytesMap,
-      IterTreeMap<Integer, Integer> intSizeBytesMap,
-      IterTreeMap<Double, Integer> doubleSizeBytesMap,
-      IterTreeMap<String, Integer> offsetBytesMap,
-      IterTreeMap<Integer, Integer> intOffsetBytesMap,
-      IterTreeMap<Double, Integer> doubleOffsetBytesMap) throws IOException {
+  private <T extends GenomicElement> void writeElements(IterMap<Chromosome, Set<T>> elements,
+      IterTreeMap<String, Integer> sizeBytesMap, IterTreeMap<Integer, Integer> intSizeBytesMap,
+      IterTreeMap<Double, Integer> doubleSizeBytesMap, IterTreeMap<String, Integer> offsetBytesMap,
+      IterTreeMap<Integer, Integer> intOffsetBytesMap, IterTreeMap<Double, Integer> doubleOffsetBytesMap)
+      throws IOException {
     int tagsStartBytes = DataReader.HEADER_BYTES_OFFSET + GEBReader.INT_BYTES;
 
     int intTagsStartBytes = tagsStartBytes + GEBReader.INT_BYTES;
@@ -261,28 +244,17 @@ public class GEBWriter {
         // Each gene is given an id to make it easier to check which genes
         // we have found when decoding
 
-        writeElement(writer,
-            e,
-            tagsStartBytes,
-            offsetBytesMap,
-            intTagsStartBytes,
-            intOffsetBytesMap,
-            doubleTagsStartBytes,
-            doubleOffsetBytesMap);
+        writeElement(writer, e, tagsStartBytes, offsetBytesMap, intTagsStartBytes, intOffsetBytesMap,
+            doubleTagsStartBytes, doubleOffsetBytesMap);
       }
     }
 
     writer.close();
   }
 
-  private static void writeElement(DataOutputStream writer,
-      GenomicElement e,
-      int tagsStartBytes,
-      Map<String, Integer> tagOffsetBytes,
-      int intTagsStartBytes,
-      Map<Integer, Integer> intTagOffsetBytes,
-      int doubleTagsStartBytes,
-      Map<Double, Integer> doubleTagOffsetBytes) throws IOException {
+  private static void writeElement(DataOutputStream writer, GenomicElement e, int tagsStartBytes,
+      Map<String, Integer> tagOffsetBytes, int intTagsStartBytes, Map<Integer, Integer> intTagOffsetBytes,
+      int doubleTagsStartBytes, Map<Double, Integer> doubleTagOffsetBytes) throws IOException {
     // Set all bits to 1
     // writer.write(GEBReader.BLOCK_SEPARATOR);
 
@@ -303,16 +275,9 @@ public class GEBWriter {
 
     for (String name : e.getPropertyNames()) {
       String value = e.getProperty(name);
-      
-      writeProperty(writer,
-          name,
-          value,
-          tagsStartBytes,
-          tagOffsetBytes,
-          intTagsStartBytes,
-          intTagOffsetBytes,
-          doubleTagsStartBytes,
-          doubleTagOffsetBytes);
+
+      writeProperty(writer, name, value, tagsStartBytes, tagOffsetBytes, intTagsStartBytes, intTagOffsetBytes,
+          doubleTagsStartBytes, doubleTagOffsetBytes);
 
       if (++size == GEBReader.MAX_CHILDREN) {
         break;
@@ -324,13 +289,7 @@ public class GEBWriter {
     size = 0;
 
     for (String tag : e.getTags()) {
-      writeTag(writer,
-          tag,
-          tagsStartBytes,
-          tagOffsetBytes,
-          intTagsStartBytes,
-          intTagOffsetBytes,
-          doubleTagsStartBytes,
+      writeTag(writer, tag, tagsStartBytes, tagOffsetBytes, intTagsStartBytes, intTagOffsetBytes, doubleTagsStartBytes,
           doubleTagOffsetBytes);
 
       if (++size == GEBReader.MAX_CHILDREN) {
@@ -351,14 +310,8 @@ public class GEBWriter {
 
     for (GenomicType type : e.getChildTypes()) {
       for (GenomicElement child : e.getChildren(type)) {
-        writeElement(writer,
-            child,
-            tagsStartBytes,
-            tagOffsetBytes,
-            intTagsStartBytes,
-            intTagOffsetBytes,
-            doubleTagsStartBytes,
-            doubleTagOffsetBytes);
+        writeElement(writer, child, tagsStartBytes, tagOffsetBytes, intTagsStartBytes, intTagOffsetBytes,
+            doubleTagsStartBytes, doubleTagOffsetBytes);
 
         if (++size == GEBReader.MAX_CHILDREN) {
           break;
@@ -367,25 +320,13 @@ public class GEBWriter {
     }
   }
 
-  private static void writeProperty(DataOutputStream writer,
-      String name,
-      Object tag,
-      int tagsStartBytes,
-      Map<String, Integer> tagOffsetBytes,
-      int intTagsStartBytes,
-      Map<Integer, Integer> intTagOffsetBytes,
-      int doubleTagsStartBytes,
-      Map<Double, Integer> doubleTagOffsetBytes) throws IOException {
+  private static void writeProperty(DataOutputStream writer, String name, Object tag, int tagsStartBytes,
+      Map<String, Integer> tagOffsetBytes, int intTagsStartBytes, Map<Integer, Integer> intTagOffsetBytes,
+      int doubleTagsStartBytes, Map<Double, Integer> doubleTagOffsetBytes) throws IOException {
 
     writer.writeInt(tagsStartBytes + tagOffsetBytes.get(name));
 
-    writeTag(writer,
-        tag,
-        tagsStartBytes,
-        tagOffsetBytes,
-        intTagsStartBytes,
-        intTagOffsetBytes,
-        doubleTagsStartBytes,
+    writeTag(writer, tag, tagsStartBytes, tagOffsetBytes, intTagsStartBytes, intTagOffsetBytes, doubleTagsStartBytes,
         doubleTagOffsetBytes);
   }
 
@@ -413,14 +354,9 @@ public class GEBWriter {
     return t;
   }
 
-  private static void writeTag(DataOutputStream writer,
-      Object tag,
-      int tagsStartBytes,
-      Map<String, Integer> tagOffsetBytes,
-      int intTagsStartBytes,
-      Map<Integer, Integer> intTagOffsetBytes,
-      int doubleTagsStartBytes,
-      Map<Double, Integer> doubleTagOffsetBytes) throws IOException {
+  private static void writeTag(DataOutputStream writer, Object tag, int tagsStartBytes,
+      Map<String, Integer> tagOffsetBytes, int intTagsStartBytes, Map<Integer, Integer> intTagOffsetBytes,
+      int doubleTagsStartBytes, Map<Double, Integer> doubleTagOffsetBytes) throws IOException {
     TagType t = getTagType(tag);
 
     writer.write(TagType.byteRep(t));
@@ -428,17 +364,16 @@ public class GEBWriter {
     switch (t) {
     case INT:
       if (tag instanceof Integer) {
-        writer.writeInt(intTagsStartBytes + intTagOffsetBytes.get((int)tag));
+        writer.writeInt(intTagsStartBytes + intTagOffsetBytes.get((int) tag));
       } else {
         writer.writeInt(intTagsStartBytes + intTagOffsetBytes.get(Integer.parseInt(tag.toString())));
       }
       break;
     case DOUBLE:
       if (tag instanceof Double) {
-        writer.writeInt(intTagsStartBytes + doubleTagOffsetBytes.get((double)tag));
+        writer.writeInt(intTagsStartBytes + doubleTagOffsetBytes.get((double) tag));
       } else {
-        writer.writeInt(
-            doubleTagsStartBytes + doubleTagOffsetBytes.get(Double.parseDouble(tag.toString())));
+        writer.writeInt(doubleTagsStartBytes + doubleTagOffsetBytes.get(Double.parseDouble(tag.toString())));
       }
       break;
     default:
@@ -469,25 +404,23 @@ public class GEBWriter {
 
     // 1 byte for number of ids and each id needs 1 byte for type and 2 ints
     // (key, value) location
-    s += 1 + Math.min(g.getPropertyCount(), GEBReader.MAX_TAGS)
-    * (1 + 2 * GEBReader.INT_BYTES);
+    s += 1 + Math.min(g.getPropertyCount(), GEBReader.MAX_TAGS) * (1 + 2 * GEBReader.INT_BYTES);
 
     /*
-     * for (Entry<String, String> id : g.getIds()) { // 1 byte for length of
-     * type then that number of bytes space + // 1 byte for length of value +
-     * that number of bytes
+     * for (Entry<String, String> id : g.getIds()) { // 1 byte for length of type
+     * then that number of bytes space + // 1 byte for length of value + that number
+     * of bytes
      * 
      * // Address of string s += Geb.INT_BYTES; //varcharSize(id.getKey()) +
      * varcharSize(id.getValue()); }
      */
 
     // number of tags (must be fewer than 256)
-    s += 1 + Math.min(g.getTagCount(), GEBReader.MAX_TAGS)
-    * (1 + GEBReader.INT_BYTES);
+    s += 1 + Math.min(g.getTagCount(), GEBReader.MAX_TAGS) * (1 + GEBReader.INT_BYTES);
 
     /*
-     * for (String tag : g.getTags()) { // 1 byte for length of tag plus that
-     * number of bytes to store // tag value
+     * for (String tag : g.getTags()) { // 1 byte for length of tag plus that number
+     * of bytes to store // tag value
      * 
      * // Address of string s += Geb.INT_BYTES; //varcharSize(tag); }
      */
@@ -510,13 +443,9 @@ public class GEBWriter {
     return s;
   }
 
-  private static <T extends GenomicElement> void tagSizesBytes(
-      final Iterable<T> features,
-      IterMap<String, Integer> sizeMap,
-      IterMap<Integer, Integer> intSizeMap,
-      IterMap<Double, Integer> doubleSizeMap,
-      IterMap<String, Integer> offsetMap,
-      IterMap<Integer, Integer> intOffsetMap,
+  private static <T extends GenomicElement> void tagSizesBytes(final Iterable<T> features,
+      IterMap<String, Integer> sizeMap, IterMap<Integer, Integer> intSizeMap, IterMap<Double, Integer> doubleSizeMap,
+      IterMap<String, Integer> offsetMap, IterMap<Integer, Integer> intOffsetMap,
       IterMap<Double, Integer> doubleOffsetMap) {
 
     for (GenomicElement feature : features) {
@@ -549,10 +478,8 @@ public class GEBWriter {
     }
   }
 
-  private static void tagSizesBytes(GenomicElement feature,
-      Map<String, Integer> sizeMap,
-      Map<Integer, Integer> intSizeMap,
-      Map<Double, Integer> doubleSizeMap) {
+  private static void tagSizesBytes(GenomicElement feature, Map<String, Integer> sizeMap,
+      Map<Integer, Integer> intSizeMap, Map<Double, Integer> doubleSizeMap) {
 
     Deque<GenomicElement> stack = new ArrayDeque<GenomicElement>();
 
@@ -586,15 +513,13 @@ public class GEBWriter {
     }
   }
 
-  private static void tagSizeBytes(Object tag,
-      Map<String, Integer> sizeMap,
-      Map<Integer, Integer> intSizeMap,
+  private static void tagSizeBytes(Object tag, Map<String, Integer> sizeMap, Map<Integer, Integer> intSizeMap,
       Map<Double, Integer> doubleSizeMap) {
 
     if (tag instanceof Integer) {
-      intSizeMap.put((int)tag, GEBReader.INT_BYTES);
+      intSizeMap.put((int) tag, GEBReader.INT_BYTES);
     } else if (tag instanceof Double) {
-      doubleSizeMap.put((double)tag, GEBReader.DOUBLE_BYTES);
+      doubleSizeMap.put((double) tag, GEBReader.DOUBLE_BYTES);
     } else {
       String v = tag.toString();
 
@@ -609,8 +534,8 @@ public class GEBWriter {
   }
 
   private void writeData(IterTreeMap<String, Integer> tagOffsetBytesMap,
-      IterTreeMap<Integer, Integer> intTagOffsetBytesMap,
-      IterTreeMap<Double, Integer> doubleOffsetBytesMap) throws IOException {
+      IterTreeMap<Integer, Integer> intTagOffsetBytesMap, IterTreeMap<Double, Integer> doubleOffsetBytesMap)
+      throws IOException {
     Path file = mDir.resolve(DataReader.getFileName(mPrefix)); // PathUtils.getPath(mGenome
 
     DataOutputStream writer = FileUtils.newDataOutputStream(file);
@@ -675,10 +600,8 @@ public class GEBWriter {
     // writer.close();
   }
 
-  private void writeBins(Chromosome chr,
-      IterMap<Integer, List<GenomicElement>> binsMap,
-      IterMap<Integer, Integer> binSizeBytes,
-      IterMap<GenomicElement, Integer> elementOffsetBytes) throws IOException {
+  private void writeBins(Chromosome chr, IterMap<Integer, List<GenomicElement>> binsMap,
+      IterMap<Integer, Integer> binSizeBytes, IterMap<GenomicElement, Integer> elementOffsetBytes) throws IOException {
     Path file = mDir.resolve(BinReader.getFileName(mPrefix, chr)); // PathUtils.getPath(mGenome
 
     DataOutputStream writer = FileUtils.newDataOutputStream(file);
@@ -718,18 +641,15 @@ public class GEBWriter {
 
       // Write the addresses to each gene
       for (GenomicElement e : bins) {
-        writer.writeInt(
-            ElementReader.HEADER_BYTES_OFFSET + elementOffsetBytes.get(e));
+        writer.writeInt(ElementReader.HEADER_BYTES_OFFSET + elementOffsetBytes.get(e));
       }
     }
 
     writer.close();
   }
 
-  private void writeBTree(Chromosome chr,
-      IterMap<Integer, List<GenomicElement>> binsMap,
-      IterMap<Integer, Integer> binSizeBytes,
-      IterMap<GenomicElement, Integer> elementOffsetBytes) throws IOException {
+  private void writeBTree(Chromosome chr, IterMap<Integer, List<GenomicElement>> binsMap,
+      IterMap<Integer, Integer> binSizeBytes, IterMap<GenomicElement, Integer> elementOffsetBytes) throws IOException {
 
     // bins map contains just the in use bins
 
@@ -780,8 +700,7 @@ public class GEBWriter {
 
       if (node.getIndex() < e) {
         int ni = node.getIndex() + 1;
-        BTreeNode<GenomicElement> child = new BTreeNode<GenomicElement>(
-            (ni + e) / 2);
+        BTreeNode<GenomicElement> child = new BTreeNode<GenomicElement>((ni + e) / 2);
 
         node.setC2(child);
 
@@ -798,8 +717,7 @@ public class GEBWriter {
       if (node.getIndex() > s) {
         int ni = node.getIndex() - 1;
 
-        BTreeNode<GenomicElement> child = new BTreeNode<GenomicElement>(
-            (s + ni) / 2);
+        BTreeNode<GenomicElement> child = new BTreeNode<GenomicElement>((s + ni) / 2);
 
         node.setC1(child);
 
@@ -840,19 +758,16 @@ public class GEBWriter {
       writer.writeInt(bin);
 
       // Write address to bin
-      writer.writeInt(BTreeReader.HEADER_BYTES_OFFSET + treeSizeOffset
-          + binOffsetBytes.get(bin));
+      writer.writeInt(BTreeReader.HEADER_BYTES_OFFSET + treeSizeOffset + binOffsetBytes.get(bin));
 
       if (node.getC1() != null) {
-        writer.writeInt(BTreeReader.HEADER_BYTES_OFFSET
-            + nodeOffsetBytes.get(node.getC1()));
+        writer.writeInt(BTreeReader.HEADER_BYTES_OFFSET + nodeOffsetBytes.get(node.getC1()));
       } else {
         writer.writeInt(0);
       }
 
       if (node.getC2() != null) {
-        writer.writeInt(BTreeReader.HEADER_BYTES_OFFSET
-            + nodeOffsetBytes.get(node.getC2()));
+        writer.writeInt(BTreeReader.HEADER_BYTES_OFFSET + nodeOffsetBytes.get(node.getC2()));
       } else {
         writer.writeInt(0);
       }
@@ -869,8 +784,7 @@ public class GEBWriter {
 
     int binAddressesOffset = binsMap.size() * GEBReader.INT_BYTES;
 
-    offset = BTreeReader.HEADER_BYTES_OFFSET + treeSizeOffset
-        + binAddressesOffset;
+    offset = BTreeReader.HEADER_BYTES_OFFSET + treeSizeOffset + binAddressesOffset;
 
     for (Entry<Integer, List<GenomicElement>> item : binsMap) {
       writer.writeInt(offset);
@@ -884,8 +798,7 @@ public class GEBWriter {
 
       // Write the addresses to each gene
       for (GenomicElement e : item.getValue()) {
-        writer.writeInt(
-            ElementReader.HEADER_BYTES_OFFSET + elementOffsetBytes.get(e));
+        writer.writeInt(ElementReader.HEADER_BYTES_OFFSET + elementOffsetBytes.get(e));
       }
     }
 
@@ -909,8 +822,7 @@ public class GEBWriter {
     return s;
   }
 
-  private <T extends GenomicElement> void writeRadix(
-      IterMap<Chromosome, Set<T>> elements,
+  private <T extends GenomicElement> void writeRadix(IterMap<Chromosome, Set<T>> elements,
       IterMap<GenomicElement, Integer> elementOffsetBytes) throws IOException {
 
     // The header + the space occupied by the bin addresses + the space
@@ -947,8 +859,7 @@ public class GEBWriter {
 
     // Calculate space occupied by tree
 
-    IterMap<RadixNode<GenomicElement>, Integer> nodeOffsetBytes = 
-        new IterHashMap<RadixNode<GenomicElement>, Integer>();
+    IterMap<RadixNode<GenomicElement>, Integer> nodeOffsetBytes = new IterHashMap<RadixNode<GenomicElement>, Integer>();
 
     // Record offsets in the order we encounter nodes since mutliple nodes
     // may have same
@@ -972,8 +883,7 @@ public class GEBWriter {
       offset += w;
 
       // Push all the children on
-      for (Entry<Character, RadixNode<GenomicElement>> item : node
-          .getChildren()) {
+      for (Entry<Character, RadixNode<GenomicElement>> item : node.getChildren()) {
         q.push(item.getValue());
       }
     }
@@ -1006,15 +916,13 @@ public class GEBWriter {
       // System.err.println("write " + node.getChar() + " " +
       // node.getChildNames());
 
-      for (Entry<Character, RadixNode<GenomicElement>> item : node
-          .getChildren()) {
+      for (Entry<Character, RadixNode<GenomicElement>> item : node.getChildren()) {
         char c = item.getKey();
 
         // The char this represents
         writer.write(c);
 
-        writer.writeInt(RadixReader.HEADER_BYTES_OFFSET
-            + nodeOffsetBytes.get(item.getValue()));
+        writer.writeInt(RadixReader.HEADER_BYTES_OFFSET + nodeOffsetBytes.get(item.getValue()));
       }
 
       // Write addresses of elements
@@ -1022,20 +930,17 @@ public class GEBWriter {
       writer.writeInt(node.getExactObjects().size());
 
       for (GenomicElement e : node.getExactObjects()) {
-        writer.writeInt(
-            ElementReader.HEADER_BYTES_OFFSET + elementOffsetBytes.get(e));
+        writer.writeInt(ElementReader.HEADER_BYTES_OFFSET + elementOffsetBytes.get(e));
       }
 
       writer.writeInt(node.getObjects().size());
 
       for (GenomicElement e : node.getObjects()) {
-        writer.writeInt(
-            ElementReader.HEADER_BYTES_OFFSET + elementOffsetBytes.get(e));
+        writer.writeInt(ElementReader.HEADER_BYTES_OFFSET + elementOffsetBytes.get(e));
       }
 
       // Process the children
-      for (Entry<Character, RadixNode<GenomicElement>> item : node
-          .getChildren()) {
+      for (Entry<Character, RadixNode<GenomicElement>> item : node.getChildren()) {
         q.push(item.getValue());
       }
     }

@@ -15,16 +15,13 @@ import org.jebtk.bioinformatics.genomic.Strand;
 import org.jebtk.bioinformatics.genomic.TagType;
 
 public class ElementReader extends BinaryReader {
-  public static final int N_BYTES_OFFSET = GEBReader.WINDOW_BYTE_OFFSET
-      + GEBReader.INT_BYTES;
+  public static final int N_BYTES_OFFSET = GEBReader.WINDOW_BYTE_OFFSET + GEBReader.INT_BYTES;
 
-  public static final int HEADER_BYTES_OFFSET = N_BYTES_OFFSET
-      + GEBReader.INT_BYTES;
+  public static final int HEADER_BYTES_OFFSET = N_BYTES_OFFSET + GEBReader.INT_BYTES;
 
   private DataReader mDataReader;
 
-  public ElementReader(DataReader dataReader, Path dir, String prefix,
-      Genome genome, int window) throws IOException {
+  public ElementReader(DataReader dataReader, Path dir, String prefix, Genome genome, int window) throws IOException {
     super(dir, prefix, genome, window);
 
     mDataReader = dataReader;
@@ -64,18 +61,16 @@ public class ElementReader extends BinaryReader {
     return ret;
   }
 
-  public List<GenomicElement> readElements(Collection<Integer> addresses,
-      GenomicType type) throws IOException {
+  public List<GenomicElement> readElements(Collection<Integer> addresses, GenomicType type) throws IOException {
     List<GenomicElement> ret = new ArrayList<GenomicElement>(addresses.size());
 
     readElements(addresses, type, ret);
 
     return ret;
   }
-  
-  public void readElements(Collection<Integer> addresses,
-      GenomicType type,
-      List<GenomicElement> ret) throws IOException {
+
+  public void readElements(Collection<Integer> addresses, GenomicType type, List<GenomicElement> ret)
+      throws IOException {
 
     for (int address : addresses) {
       // System.err.println("seeking " + address + " in " +
@@ -85,15 +80,12 @@ public class ElementReader extends BinaryReader {
     }
   }
 
-  private void readElement(GenomicType type, List<GenomicElement> ret)
-      throws IOException {
+  private void readElement(GenomicType type, List<GenomicElement> ret) throws IOException {
     readElement(type, null, 0, ret);
   }
 
-  private void readElement(GenomicType type,
-      GenomicElement parent,
-      int depth,
-      List<GenomicElement> ret) throws IOException {
+  private void readElement(GenomicType type, GenomicElement parent, int depth, List<GenomicElement> ret)
+      throws IOException {
     GenomicElement element = readElement();
 
     boolean correctType = element.getType().equals(type);
@@ -245,7 +237,7 @@ public class ElementReader extends BinaryReader {
    * Gets the file name.
    *
    * @param genome the genome
-   * @param chr the chr
+   * @param chr    the chr
    * @param window the window
    * @return the file name
    */

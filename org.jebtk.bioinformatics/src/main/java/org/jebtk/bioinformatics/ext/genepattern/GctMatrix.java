@@ -68,7 +68,7 @@ public class GctMatrix extends DataFrame {
   /**
    * Instantiates a new gct matrix.
    *
-   * @param rows the rows
+   * @param rows    the rows
    * @param columns the columns
    */
   public GctMatrix(int rows, int columns) {
@@ -117,13 +117,12 @@ public class GctMatrix extends DataFrame {
   /**
    * Write a simple expression matrix in GCT format.
    *
-   * @param <T> the generic type
+   * @param <T>    the generic type
    * @param matrix the matrix
-   * @param file the file
+   * @param file   the file
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static <T> void writeGctMatrix(DataFrame matrix, Path file)
-      throws IOException {
+  public static <T> void writeGctMatrix(DataFrame matrix, Path file) throws IOException {
     BufferedWriter writer = FileUtils.newBufferedWriter(file);
 
     try {

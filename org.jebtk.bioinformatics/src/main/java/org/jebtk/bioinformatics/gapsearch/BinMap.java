@@ -78,8 +78,7 @@ public class BinMap<T> implements IterMap<Integer, T> {
 
     @Override
     public Entry<Integer, T> next() {
-      Entry<Integer, T> e = new org.jebtk.core.collections.Entry<Integer, T>(mC,
-          (T) mData[mC]);
+      Entry<Integer, T> e = new org.jebtk.core.collections.Entry<Integer, T>(mC, (T) mData[mC]);
       ++mC;
 
       return e;

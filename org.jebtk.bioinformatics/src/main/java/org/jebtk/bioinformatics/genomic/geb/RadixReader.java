@@ -3,20 +3,17 @@ package org.jebtk.bioinformatics.genomic.geb;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.jebtk.bioinformatics.genomic.Chromosome;
 import org.jebtk.bioinformatics.genomic.Genome;
 
 public class RadixReader extends BinaryReader {
-  public static final int HEADER_BYTES_OFFSET = GEBReader.WINDOW_BYTE_OFFSET
-      + GEBReader.INT_BYTES;
+  public static final int HEADER_BYTES_OFFSET = GEBReader.WINDOW_BYTE_OFFSET + GEBReader.INT_BYTES;
 
   public static final int RADIX_TREE_PREFIX_BYTES = 1 + GEBReader.INT_BYTES;
 
-  public RadixReader(Path dir, String prefix, Genome genome, int window)
-      throws IOException {
+  public RadixReader(Path dir, String prefix, Genome genome, int window) throws IOException {
     super(dir, prefix, genome, window);
   }
 
@@ -28,18 +25,16 @@ public class RadixReader extends BinaryReader {
   public List<Integer> elementAddresses(String id) throws IOException {
     return elementAddresses(id, false);
   }
-  
-  public List<Integer> elementAddresses(String id, boolean exact)
-      throws IOException {
+
+  public List<Integer> elementAddresses(String id, boolean exact) throws IOException {
     List<Integer> ret = new ArrayList<Integer>();
-    
+
     elementAddresses(id, exact, ret);
-    
+
     return ret;
   }
 
-  public void elementAddresses(String id, boolean exact, List<Integer> ret)
-      throws IOException {
+  public void elementAddresses(String id, boolean exact, List<Integer> ret) throws IOException {
 
     char[] ca = id.toLowerCase().toCharArray();
 

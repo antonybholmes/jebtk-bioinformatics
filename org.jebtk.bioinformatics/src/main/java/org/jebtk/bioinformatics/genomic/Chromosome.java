@@ -39,20 +39,15 @@ import org.jebtk.core.text.TextUtils;
  *
  * @author Antony Holmes
  */
-public class Chromosome
-    implements Comparable<Chromosome>, IdProperty, NameGetter {
+public class Chromosome implements Comparable<Chromosome>, IdProperty, NameGetter {
 
-  public static final Pattern CHR_REGEX = Pattern
-      .compile("chr(?:[1-9][0-9]?|[XYM])");
+  public static final Pattern CHR_REGEX = Pattern.compile("chr(?:[1-9][0-9]?|[XYM])");
 
-  public static final Pattern CHR_GROUP_REGEX = Pattern
-      .compile("(chr(?:[1-9][0-9]?|[XYM]))");
+  public static final Pattern CHR_GROUP_REGEX = Pattern.compile("(chr(?:[1-9][0-9]?|[XYM]))");
 
-  public static final Pattern CHR_NUM_GROUP_REGEX = Pattern
-      .compile("([1-9][0-9]*)");
+  public static final Pattern CHR_NUM_GROUP_REGEX = Pattern.compile("([1-9][0-9]*)");
 
-  private static final Pattern CHR_PARTS_REGEX = Pattern
-      .compile("(?:chr)?(\\d+|[A-Z])(?:_(.+))?");
+  private static final Pattern CHR_PARTS_REGEX = Pattern.compile("(?:chr)?(\\d+|[A-Z])(?:_(.+))?");
 
   /**
    * Max number of a numerical chr (2^24)
@@ -73,7 +68,7 @@ public class Chromosome
   /**
    * The member chr.
    */
-  //public final String mChr;
+  // public final String mChr;
 
   /** The m short name. */
   public final String mShortName;
@@ -88,21 +83,20 @@ public class Chromosome
 
   /**
    * 
-   * @param id Numerical id of chr (for fast sorting).
-   * @param chr Chromosome string, e.g. "chr10".
+   * @param id        Numerical id of chr (for fast sorting).
+   * @param chr       Chromosome string, e.g. "chr10".
    * @param shortName Chromosome name without chr prefix, e.g "10".
-   * @param genome Genome which this chromosome belongs.
-   * @param size Size of chromosome in bp.
+   * @param genome    Genome which this chromosome belongs.
+   * @param size      Size of chromosome in bp.
    */
-  private Chromosome(int id, 
-      String shortName) {
+  private Chromosome(int id, String shortName) {
     // mSpecies = parser.getSpecies();
 
     // The suffix of the chromosome without the chr prefix.
     mId = id;
     mShortName = shortName;
 
-    //mChr = "chr" + shortName;
+    // mChr = "chr" + shortName;
     mRandom = mShortName.contains("_");
 
     // mGenome = genome;
@@ -289,8 +283,7 @@ public class Chromosome
   public static String getShortName(String chr) {
     String ret = chr.toUpperCase()
         // .replace("CHROMOSOME", TextUtils.EMPTY_STRING)
-        .replace("CHR_", TextUtils.EMPTY_STRING)
-        .replace("CHR-", TextUtils.EMPTY_STRING)
+        .replace("CHR_", TextUtils.EMPTY_STRING).replace("CHR-", TextUtils.EMPTY_STRING)
         .replace("CHR", TextUtils.EMPTY_STRING);
     // .replaceFirst("P.*", TextUtils.EMPTY_STRING)
     // .replaceFirst("Q.*", TextUtils.EMPTY_STRING);

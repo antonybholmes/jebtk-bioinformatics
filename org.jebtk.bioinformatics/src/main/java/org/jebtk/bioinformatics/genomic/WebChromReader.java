@@ -40,10 +40,9 @@ public class WebChromReader implements ChromosomeReader {
   private Genome mGenome;
 
   private List<Chromosome> mChrs = new ArrayList<Chromosome>();
-  
-  private Map<Chromosome, Integer> mSizeMap = 
-      new HashMap<Chromosome, Integer>();
-  
+
+  private Map<Chromosome, Integer> mSizeMap = new HashMap<Chromosome, Integer>();
+
   private IterMap<String, Chromosome> mChrMap = new IterHashMap<String, Chromosome>();
 
   private boolean mAutoLoad = true;

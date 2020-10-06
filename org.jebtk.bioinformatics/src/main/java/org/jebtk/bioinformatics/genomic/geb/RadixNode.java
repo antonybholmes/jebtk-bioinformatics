@@ -71,7 +71,7 @@ public class RadixNode<T> implements Comparable<RadixNode<T>>, Serializable {
   /**
    * Instantiates a new radix object node.
    *
-   * @param c the c
+   * @param c      the c
    * @param prefix the prefix
    */
   public RadixNode(char c) {
@@ -120,8 +120,7 @@ public class RadixNode<T> implements Comparable<RadixNode<T>>, Serializable {
     return getChild(this, prefix);
   }
 
-  private static <TT> RadixNode<TT> getChild(RadixNode<TT> root,
-      String prefix) {
+  private static <TT> RadixNode<TT> getChild(RadixNode<TT> root, String prefix) {
     RadixNode<TT> ret = root;
 
     char[] chars = standardize(prefix).toCharArray();
@@ -153,7 +152,7 @@ public class RadixNode<T> implements Comparable<RadixNode<T>>, Serializable {
    * represent that string.
    *
    * @param word the word
-   * @param v the object
+   * @param v    the object
    */
   public void add(String word, T v) {
     // Add object to this node
@@ -220,8 +219,7 @@ public class RadixNode<T> implements Comparable<RadixNode<T>>, Serializable {
   }
 
   /**
-   * Ensure characters are consistent for searching purposes i.e case
-   * insensitive.
+   * Ensure characters are consistent for searching purposes i.e case insensitive.
    *
    * @param name the name
    * @return the char

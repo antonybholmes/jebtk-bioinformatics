@@ -62,8 +62,7 @@ public class BedGraph extends UCSCTrack {
   /**
    * The constant HEIGHT_PATTERN.
    */
-  public static final Pattern HEIGHT_PATTERN = Pattern
-      .compile("maxHeightPixels=(\\d+):(\\d+):(\\d+)");
+  public static final Pattern HEIGHT_PATTERN = Pattern.compile("maxHeightPixels=(\\d+):(\\d+):(\\d+)");
 
   /**
    * The constant LOG.
@@ -83,17 +82,17 @@ public class BedGraph extends UCSCTrack {
   public BedGraph(String name) {
     this(name, name);
   }
-  
+
   public BedGraph(String name, String description) {
     this(name, description, DEFAULT_BEDGRAPH_COLOR, DEFAULT_HEIGHT);
   }
-  
+
   /**
    * Instantiates a new bed graph.
    *
-   * @param name the name
+   * @param name        the name
    * @param description the description
-   * @param color the color
+   * @param color       the color
    */
   public BedGraph(String name, String description, Color color) {
     this(name, description, color, DEFAULT_HEIGHT);
@@ -102,10 +101,10 @@ public class BedGraph extends UCSCTrack {
   /**
    * Instantiates a new bed graph.
    *
-   * @param name the name
+   * @param name        the name
    * @param description the description
-   * @param color the color
-   * @param height the height
+   * @param color       the color
+   * @param height      the height
    */
   public BedGraph(String name, String description, Color color, int height) {
     super(name, description, color, TRACK_TYPE);
@@ -124,8 +123,7 @@ public class BedGraph extends UCSCTrack {
   public void bufferHeader(int priority, Appendable buffer) throws IOException {
     super.bufferHeader(priority, buffer);
 
-    buffer.append(" maxHeightPixels=").append("128:")
-        .append(Integer.toString(mHeight)).append(":1");
+    buffer.append(" maxHeightPixels=").append("128:").append(Integer.toString(mHeight)).append(":1");
     buffer.append(" visibility=full autoScale=on alwaysZero=on");
   }
 
@@ -189,9 +187,7 @@ public class BedGraph extends UCSCTrack {
 
           tracks.add(bedgraph);
         } else {
-          BedGraphElement region = BedGraphElement.parse(
-              GenomeService.getInstance().guessGenome(file),
-              line);
+          BedGraphElement region = BedGraphElement.parse(GenomeService.getInstance().guessGenome(file), line);
 
           bedgraph.add(region);
         }
@@ -199,7 +195,7 @@ public class BedGraph extends UCSCTrack {
     } finally {
       reader.close();
     }
-    
+
     if (tracks.size() == 0) {
       tracks.add(bedgraph);
     }
@@ -282,12 +278,12 @@ public class BedGraph extends UCSCTrack {
 
     return ret;
   }
-  
+
   public BedGraph getBedGraph(GenomicRegion region) {
     BedGraph ret = new BedGraph(mName, mDescription, mColor, mHeight);
-    
+
     ret.addAll(find(region));
-    
+
     return ret;
   }
 

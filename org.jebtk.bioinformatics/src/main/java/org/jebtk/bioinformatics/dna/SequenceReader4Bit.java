@@ -70,9 +70,7 @@ public class SequenceReader4Bit extends ChrSequenceReader {
    * edu.columbia.rdf.lib.bioinformatics.genome.RepeatMaskType)
    */
   @Override
-  public final SequenceRegion getSequence(Genome genome,
-      GenomicRegion region,
-      boolean displayUpper,
+  public final SequenceRegion getSequence(Genome genome, GenomicRegion region, boolean displayUpper,
       RepeatMaskType repeatMaskType) throws IOException {
     Chromosome chr = region.getChr();
 
@@ -81,28 +79,21 @@ public class SequenceReader4Bit extends ChrSequenceReader {
     }
 
     return new SequenceRegion(region,
-        getSequence4Bit(mFileMap.get(chr),
-            region.getStart(),
-            region.getEnd(),
-            displayUpper,
-            repeatMaskType));
+        getSequence4Bit(mFileMap.get(chr), region.getStart(), region.getEnd(), displayUpper, repeatMaskType));
   }
 
   /**
    * Gets the sequence4 bit.
    *
-   * @param Path the Path
-   * @param start the start
-   * @param end the end
-   * @param displayUpper the display upper
+   * @param Path           the Path
+   * @param start          the start
+   * @param end            the end
+   * @param displayUpper   the display upper
    * @param repeatMaskType the repeat mask type
    * @return the sequence4 bit
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static Sequence getSequence4Bit(Path Path,
-      int start,
-      int end,
-      boolean displayUpper,
+  public static Sequence getSequence4Bit(Path Path, int start, int end, boolean displayUpper,
       RepeatMaskType repeatMaskType) throws IOException {
 
     int s = start - 1;
@@ -152,14 +143,13 @@ public class SequenceReader4Bit extends ChrSequenceReader {
   /**
    * Gets the bytes4 bit.
    *
-   * @param Path the Path
+   * @param Path  the Path
    * @param start the start
-   * @param end the end
+   * @param end   the end
    * @return the bytes4 bit
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static byte[] getBytes4Bit(Path Path, int start, int end)
-      throws IOException {
+  public static byte[] getBytes4Bit(Path Path, int start, int end) throws IOException {
     int sb = start / 2;
     int eb = end / 2;
 

@@ -27,8 +27,7 @@ import java.util.TreeSet;
  * @author Antony Holmes
  * @param <T> the generic type
  */
-public class BTreeNode<T>
-    implements Comparable<BTreeNode<T>>, Serializable, Iterable<T> {
+public class BTreeNode<T> implements Comparable<BTreeNode<T>>, Serializable, Iterable<T> {
 
   /**
    * The constant serialVersionUID.
@@ -56,7 +55,7 @@ public class BTreeNode<T>
   /**
    * Instantiates a new radix object node.
    *
-   * @param c the c
+   * @param c      the c
    * @param prefix the prefix
    */
   public BTreeNode(int bin) {
@@ -132,7 +131,7 @@ public class BTreeNode<T>
    * represent that string.
    *
    * @param word the word
-   * @param v the object
+   * @param v    the object
    */
   public void add(int bin, T v) {
     if (bin == mBin) {

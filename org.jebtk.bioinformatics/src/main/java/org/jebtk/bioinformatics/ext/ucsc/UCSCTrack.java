@@ -57,8 +57,8 @@ import org.jebtk.core.text.TextUtils;
 /**
  * The class UCSCTrack.
  */
-public class UCSCTrack extends ChangeListeners implements NameGetter, SizeGetter,
-Iterable<Entry<Chromosome, List<GenomicElement>>> {
+public class UCSCTrack extends ChangeListeners
+    implements NameGetter, SizeGetter, Iterable<Entry<Chromosome, List<GenomicElement>>> {
 
   /**
    * The constant serialVersionUID.
@@ -68,26 +68,22 @@ Iterable<Entry<Chromosome, List<GenomicElement>>> {
   /**
    * The constant ATTRIBUTE_PATTERN.
    */
-  public static final Pattern ATTRIBUTE_PATTERN = Pattern
-      .compile("([^ ]+)=([\"'].+?[\"']|[^ ]+)");
+  public static final Pattern ATTRIBUTE_PATTERN = Pattern.compile("([^ ]+)=([\"'].+?[\"']|[^ ]+)");
 
   /**
    * The constant NAME_PATTERN.
    */
-  public static final Pattern NAME_PATTERN = Pattern
-      .compile("name=[\"'](.+?)[\"']");
+  public static final Pattern NAME_PATTERN = Pattern.compile("name=[\"'](.+?)[\"']");
 
   /**
    * The constant DESCRIPTION_PATTERN.
    */
-  public static final Pattern DESCRIPTION_PATTERN = Pattern
-      .compile("description=[\"'](.+?)[\"']");
+  public static final Pattern DESCRIPTION_PATTERN = Pattern.compile("description=[\"'](.+?)[\"']");
 
   /**
    * The constant COLOR_PATTERN.
    */
-  public static final Pattern COLOR_PATTERN = Pattern
-      .compile("(\\d+),(\\d+),(\\d+)");
+  public static final Pattern COLOR_PATTERN = Pattern.compile("(\\d+),(\\d+),(\\d+)");
 
   /**
    * The constant TRACK_PREFIX.
@@ -132,10 +128,10 @@ Iterable<Entry<Chromosome, List<GenomicElement>>> {
   /**
    * Instantiates a new UCSC track.
    *
-   * @param name the name
+   * @param name        the name
    * @param description the description
-   * @param color the color
-   * @param type the type
+   * @param color       the color
+   * @param type        the type
    */
   public UCSCTrack(String name, String description, Color color, String type) {
     mName = name;
@@ -238,11 +234,10 @@ Iterable<Entry<Chromosome, List<GenomicElement>>> {
 
     return this;
   }
-  
 
   public UCSCTrack addAll(Collection<GenomicElement> elements) {
     mRegions.addAll(elements);
-    
+
     return this;
   }
 
@@ -254,15 +249,15 @@ Iterable<Entry<Chromosome, List<GenomicElement>>> {
   public List<GenomicElement> getElements() {
     return mRegions.getElements();
   }
-  
+
   public List<GenomicElement> getElements(Chromosome chr) {
     return mRegions.getElements(chr);
   }
-  
+
   public List<GenomicElement> find(GenomicRegion region) {
     return mRegions.find(region);
   }
-  
+
   @Override
   public Iterator<Entry<Chromosome, List<GenomicElement>>> iterator() {
     return mRegions.iterator();
@@ -286,7 +281,7 @@ Iterable<Entry<Chromosome, List<GenomicElement>>> {
   /**
    * Convert track to another type.
    *
-   * @param track the track
+   * @param track    the track
    * @param priority the priority
    * @return the string
    */
@@ -306,13 +301,12 @@ Iterable<Entry<Chromosome, List<GenomicElement>>> {
   /**
    * To buffer.
    *
-   * @param track the track
+   * @param track    the track
    * @param priority the priority
-   * @param buffer the buffer
+   * @param buffer   the buffer
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public void toBuffer(UCSCTrack track, int priority, Appendable buffer)
-      throws IOException {
+  public void toBuffer(UCSCTrack track, int priority, Appendable buffer) throws IOException {
     bufferHeader(priority, buffer);
 
     buffer.append(TextUtils.NEW_LINE);
@@ -344,7 +338,7 @@ Iterable<Entry<Chromosome, List<GenomicElement>>> {
    * Buffer header.
    *
    * @param priority the priority
-   * @param buffer the buffer
+   * @param buffer   the buffer
    * @throws IOException Signals that an I/O exception has occurred.
    */
   public void bufferHeader(int priority, Appendable buffer) throws IOException {
@@ -354,19 +348,15 @@ Iterable<Entry<Chromosome, List<GenomicElement>>> {
   /**
    * Buffer header.
    *
-   * @param type the type
-   * @param name the name
+   * @param type        the type
+   * @param name        the name
    * @param description the description
-   * @param color the color
-   * @param priority the priority
-   * @param buffer the buffer
+   * @param color       the color
+   * @param priority    the priority
+   * @param buffer      the buffer
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static void bufferHeader(String type,
-      String name,
-      String description,
-      Color color,
-      int priority,
+  public static void bufferHeader(String type, String name, String description, Color color, int priority,
       Appendable buffer) throws IOException {
     buffer.append(TRACK_PREFIX);
     buffer.append(" type=").append(type);
@@ -379,12 +369,11 @@ Iterable<Entry<Chromosome, List<GenomicElement>>> {
   /**
    * Format color.
    *
-   * @param color the color
+   * @param color  the color
    * @param buffer the buffer
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static void formatColor(Color color, Appendable buffer)
-      throws IOException {
+  public static void formatColor(Color color, Appendable buffer) throws IOException {
     if (color == null) {
       return;
     }
@@ -400,34 +389,27 @@ Iterable<Entry<Chromosome, List<GenomicElement>>> {
   /**
    * Gets the header.
    *
-   * @param type the type
-   * @param name the name
+   * @param type        the type
+   * @param name        the name
    * @param description the description
-   * @param color the color
+   * @param color       the color
    * @return the header
    */
-  public static String getHeader(String type,
-      String name,
-      String description,
-      Color color) {
+  public static String getHeader(String type, String name, String description, Color color) {
     return getHeader(type, name, description, color, 1);
   }
 
   /**
    * Gets the header.
    *
-   * @param type the type
-   * @param name the name
+   * @param type        the type
+   * @param name        the name
    * @param description the description
-   * @param color the color
-   * @param priority the priority
+   * @param color       the color
+   * @param priority    the priority
    * @return the header
    */
-  public static String getHeader(String type,
-      String name,
-      String description,
-      Color color,
-      int priority) {
+  public static String getHeader(String type, String name, String description, Color color, int priority) {
     StringBuilder buffer = new StringBuilder();
 
     try {
@@ -491,8 +473,8 @@ Iterable<Entry<Chromosome, List<GenomicElement>>> {
    * @return the color
    */
   public static Color parseColor(Matcher matcher) {
-    Color color = new Color(Integer.parseInt(matcher.group(1)),
-        Integer.parseInt(matcher.group(2)), Integer.parseInt(matcher.group(3)));
+    Color color = new Color(Integer.parseInt(matcher.group(1)), Integer.parseInt(matcher.group(2)),
+        Integer.parseInt(matcher.group(3)));
 
     return color;
   }
@@ -501,7 +483,7 @@ Iterable<Entry<Chromosome, List<GenomicElement>>> {
    * Write.
    *
    * @param track the track
-   * @param file the file
+   * @param file  the file
    * @throws IOException Signals that an I/O exception has occurred.
    */
   public static void write(UCSCTrack track, Path file) throws IOException {
@@ -512,11 +494,10 @@ Iterable<Entry<Chromosome, List<GenomicElement>>> {
    * Write.
    *
    * @param tracks the tracks
-   * @param file the file
+   * @param file   the file
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static void write(List<UCSCTrack> tracks, Path file)
-      throws IOException {
+  public static void write(List<UCSCTrack> tracks, Path file) throws IOException {
     BufferedWriter writer = FileUtils.newBufferedWriter(file);
 
     int priority = 1;
@@ -578,8 +559,7 @@ Iterable<Entry<Chromosome, List<GenomicElement>>> {
    * @return the track attributes
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static Map<String, String> getTrackAttributes(Path file)
-      throws IOException {
+  public static Map<String, String> getTrackAttributes(Path file) throws IOException {
     return getTrackAttributes(getTrackLine(file));
 
   }
@@ -591,8 +571,7 @@ Iterable<Entry<Chromosome, List<GenomicElement>>> {
    * @return the track attributes
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static Map<String, String> getTrackAttributes(String line)
-      throws IOException {
+  public static Map<String, String> getTrackAttributes(String line) throws IOException {
     if (line == null) {
       return null;
     }
@@ -709,5 +688,4 @@ Iterable<Entry<Chromosome, List<GenomicElement>>> {
     return color;
   }
 
-  
 }

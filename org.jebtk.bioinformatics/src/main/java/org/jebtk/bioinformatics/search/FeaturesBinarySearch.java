@@ -47,9 +47,9 @@ public class FeaturesBinarySearch extends FeaturesBasicSearch {
   /**
    * Instantiates a new features binary search.
    *
-   * @param name the name
+   * @param name        the name
    * @param description the description
-   * @param file the file
+   * @param file        the file
    */
   public FeaturesBinarySearch(String name, String description, Path file) {
     super(name, description, file);
@@ -59,14 +59,12 @@ public class FeaturesBinarySearch extends FeaturesBasicSearch {
    * Gets the features.
    *
    * @param startLocation the start location
-   * @param endLocation the end location
-   * @param chromosome the chromosome
+   * @param endLocation   the end location
+   * @param chromosome    the chromosome
    * @return the features
    * @throws ParseException the parse exception
    */
-  public List<Feature> getFeatures(int startLocation,
-      int endLocation,
-      Chromosome chromosome) {
+  public List<Feature> getFeatures(int startLocation, int endLocation, Chromosome chromosome) {
     // System.out.println("loc:" + startLocation + " " + endLocation);
 
     // go through the table
@@ -90,8 +88,7 @@ public class FeaturesBinarySearch extends FeaturesBasicSearch {
 
     int last = locations.size() - 1;
 
-    if (startLocation > locations.get(last).getEnd()
-        || endLocation < locations.get(0).getStart()) {
+    if (startLocation > locations.get(last).getEnd() || endLocation < locations.get(0).getStart()) {
       // the range is clearly not within the feature set so don't even bother to
       // look
       return features;
@@ -191,8 +188,8 @@ public class FeaturesBinarySearch extends FeaturesBasicSearch {
      * 
      * List<Feature> f = features.getFeatures(1, 1000000, 1);
      * 
-     * for (Feature l : f) { System.out.println(l.feature + " " + l.group + " "
-     * + l.start); }
+     * for (Feature l : f) { System.out.println(l.feature + " " + l.group + " " +
+     * l.start); }
      */
   }
 
@@ -212,15 +209,14 @@ public class FeaturesBinarySearch extends FeaturesBasicSearch {
    * 
    * // skip header line = reader.readLine();
    * 
-   * try { while ((line = reader.readLine()) != null) { if
-   * (Io.isEmptyLine(line)) { continue; }
+   * try { while ((line = reader.readLine()) != null) { if (Io.isEmptyLine(line))
+   * { continue; }
    * 
    * List<String> row = Text.fastSplitRemoveQuotes(line);
    * 
    * chromosome = Chromosome.parse(row.get(1));
    * 
-   * if (!groupCounts.containsKey(chromosome)) { groupCounts.put(chromosome, 0);
-   * }
+   * if (!groupCounts.containsKey(chromosome)) { groupCounts.put(chromosome, 0); }
    * 
    * groupCounts.put(chromosome, groupCounts.get(chromosome) + 1);
    * 
@@ -235,8 +231,7 @@ public class FeaturesBinarySearch extends FeaturesBasicSearch {
    * 
    * try { //DataOutputStream dos2;
    * 
-   * // first write out the string size so we know how to skip
-   * dos.writeInt(size);
+   * // first write out the string size so we know how to skip dos.writeInt(size);
    * 
    * // first write out the string size so we know how to skip
    * dos.write(stringSize);
@@ -262,9 +257,9 @@ public class FeaturesBinarySearch extends FeaturesBasicSearch {
    * 
    * // write out feature in padded byte array
    * 
-   * dos.write(Arrays.copyOf(name.getBytes(), stringSize));
-   * dos.write(chromosome); dos.writeInt(startLocation);
-   * dos.writeInt(endLocation); } } finally { reader.close(); dos.close(); } }
-   * catch (Exception e) { e.printStackTrace(); } }
+   * dos.write(Arrays.copyOf(name.getBytes(), stringSize)); dos.write(chromosome);
+   * dos.writeInt(startLocation); dos.writeInt(endLocation); } } finally {
+   * reader.close(); dos.close(); } } catch (Exception e) { e.printStackTrace(); }
+   * }
    */
 }

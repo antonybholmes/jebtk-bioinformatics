@@ -37,8 +37,7 @@ import org.jebtk.core.model.ListModel;
  * @author Antony Holmes
  *
  */
-public class BedGraphGroupModel extends ListModel<UCSCTrack>
-    implements ChangeListener {
+public class BedGraphGroupModel extends ListModel<UCSCTrack> implements ChangeListener {
 
   /**
    * The constant serialVersionUID.
@@ -85,8 +84,7 @@ public class BedGraphGroupModel extends ListModel<UCSCTrack>
   /*
    * (non-Javadoc)
    * 
-   * @see
-   * org.abh.lib.event.ChangeListener#changed(org.abh.lib.event.ChangeEvent)
+   * @see org.abh.lib.event.ChangeListener#changed(org.abh.lib.event.ChangeEvent)
    */
   @Override
   public void changed(ChangeEvent e) {

@@ -42,8 +42,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ChromosomeDirs extends GenomeDirs implements ChromosomeReader, Iterable<Chromosome> {
 
-  private static final Logger LOG = LoggerFactory
-      .getLogger(ChromosomeDirs.class);
+  private static final Logger LOG = LoggerFactory.getLogger(ChromosomeDirs.class);
 
   public static final String EXT = "chrs.gz";
 
@@ -54,8 +53,8 @@ public class ChromosomeDirs extends GenomeDirs implements ChromosomeReader, Iter
   private IterMap<String, Chromosome> mChrMap = new IterHashMap<String, Chromosome>();
 
   private List<Chromosome> mChrs = new ArrayList<Chromosome>();
-  
-  private Map<Chromosome, Integer> mSizeMap = new HashMap<Chromosome, Integer>(); 
+
+  private Map<Chromosome, Integer> mSizeMap = new HashMap<Chromosome, Integer>();
 
   private boolean mAutoLoad = true;
 
@@ -176,7 +175,7 @@ public class ChromosomeDirs extends GenomeDirs implements ChromosomeReader, Iter
 
     return mChrIdMap.get(id);
   }
-  
+
   @Override
   public int size(Chromosome chr) {
     try {
@@ -184,7 +183,7 @@ public class ChromosomeDirs extends GenomeDirs implements ChromosomeReader, Iter
     } catch (IOException e) {
       e.printStackTrace();
     }
-    
+
     return mSizeMap.getOrDefault(chr, -1);
   }
 
@@ -233,11 +232,11 @@ public class ChromosomeDirs extends GenomeDirs implements ChromosomeReader, Iter
    */
 
   /*
-   * private static ChromosomeDirs parse(BufferedReader reader) throws
-   * IOException {
+   * private static ChromosomeDirs parse(BufferedReader reader) throws IOException
+   * {
    * 
-   * // The first token contains the names etc, ignore the rest of the line
-   * String species = TextUtils.tabSplit(reader.readLine()).get(0); String g =
+   * // The first token contains the names etc, ignore the rest of the line String
+   * species = TextUtils.tabSplit(reader.readLine()).get(0); String g =
    * TextUtils.tabSplit(reader.readLine()).get(0);
    * 
    * Genome genome = GenomeService.getInstance().genome(species, g);
@@ -251,8 +250,8 @@ public class ChromosomeDirs extends GenomeDirs implements ChromosomeReader, Iter
    * while ((line = reader.readLine()) != null) { tokens =
    * TextUtils.tabSplit(line);
    * 
-   * // int id = Integer.parseInt(tokens.get(0)); String name = tokens.get(1);
-   * int size = Integer.parseInt(tokens.get(2));
+   * // int id = Integer.parseInt(tokens.get(0)); String name = tokens.get(1); int
+   * size = Integer.parseInt(tokens.get(2));
    * 
    * Chromosome chr = Chromosome.newChr(name, genome, size);
    * 
@@ -272,9 +271,8 @@ public class ChromosomeDirs extends GenomeDirs implements ChromosomeReader, Iter
 
     Json json = new JsonParser().parse(file);
 
-    Genome genome = 
-        GenomeService.getInstance().guessGenome(json.getString("genome"));
-    
+    Genome genome = GenomeService.getInstance().guessGenome(json.getString("genome"));
+
     ChromosomeDirs ret = new ChromosomeDirs(genome);
 
     Json chrsJson = json.get("chromosomes");

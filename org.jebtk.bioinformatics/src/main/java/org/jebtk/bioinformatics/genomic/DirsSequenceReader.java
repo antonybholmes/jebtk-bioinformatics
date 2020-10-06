@@ -109,20 +109,15 @@ public abstract class DirsSequenceReader extends SequenceReader {
    * edu.columbia.rdf.lib.bioinformatics.genome.RepeatMaskType)
    */
   @Override
-  public final SequenceRegion getSequence(Genome genome,
-      GenomicRegion region,
-      boolean displayUpper,
+  public final SequenceRegion getSequence(Genome genome, GenomicRegion region, boolean displayUpper,
       RepeatMaskType repeatMaskType) throws IOException {
     return getReader(genome).getSequence(genome, region, displayUpper, repeatMaskType);
   }
 
   @Override
-  public List<SequenceRegion> getSequences(Genome genome,
-      Collection<GenomicRegion> regions,
-      boolean displayUpper,
+  public List<SequenceRegion> getSequences(Genome genome, Collection<GenomicRegion> regions, boolean displayUpper,
       RepeatMaskType repeatMaskType) throws IOException {
-    return getReader(genome)
-        .getSequences(genome, regions, displayUpper, repeatMaskType);
+    return getReader(genome).getSequences(genome, regions, displayUpper, repeatMaskType);
   }
 
   public abstract SequenceReader getReader(Genome genome);

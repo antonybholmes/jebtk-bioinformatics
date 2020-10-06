@@ -48,12 +48,11 @@ public class GenomicRegions<T extends GenomicElement> extends ListModel<T> {
   /**
    * Gets the fixed gap search.
    *
-   * @param <X> the generic type
+   * @param <X>     the generic type
    * @param regions the regions
    * @return the fixed gap search
    */
-  public static <X extends GenomicElement> GapSearch<X> getFixedGapSearch(
-      Iterable<X> regions) {
+  public static <X extends GenomicElement> GapSearch<X> getFixedGapSearch(Iterable<X> regions) {
     GapSearch<X> search = new FixedGapSearch<X>();
 
     for (X region : regions) {
@@ -66,12 +65,11 @@ public class GenomicRegions<T extends GenomicElement> extends ListModel<T> {
   /**
    * Gets the binary search.
    *
-   * @param <X> the generic type
+   * @param <X>     the generic type
    * @param regions the regions
    * @return the binary search
    */
-  public static <X extends GenomicElement> BinaryGapSearch<X> getBinarySearch(
-      Iterable<X> regions) {
+  public static <X extends GenomicElement> BinaryGapSearch<X> getBinarySearch(Iterable<X> regions) {
     BinaryGapSearch<X> search = new BinaryGapSearch<X>();
 
     for (X region : regions) {

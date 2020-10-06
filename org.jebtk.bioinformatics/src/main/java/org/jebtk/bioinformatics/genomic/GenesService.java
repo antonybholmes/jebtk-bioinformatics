@@ -78,8 +78,7 @@ public class GenesService implements Iterable<Entry<Genome, GenesDB>> {
   /**
    * Track dbs by genome
    */
-  private IterMap<String, List<Genome>> mGenomeMap = DefaultTreeMap
-      .create(new ArrayListCreator<Genome>());
+  private IterMap<String, List<Genome>> mGenomeMap = DefaultTreeMap.create(new ArrayListCreator<Genome>());
 
   private Genome mCurrentDb;
 
@@ -93,8 +92,7 @@ public class GenesService implements Iterable<Entry<Genome, GenesDB>> {
   }
 
   public GenomicElementsDB getGenes(Genome g) {
-    System.err.println(
-        "Found genome in gene service " + g + " " + mGenesMap.containsKey(g) + " " + mGenesMap.keySet());
+    System.err.println("Found genome in gene service " + g + " " + mGenesMap.containsKey(g) + " " + mGenesMap.keySet());
 
     if (mGenesMap.containsKey(g)) {
       return mGenesMap.get(g);

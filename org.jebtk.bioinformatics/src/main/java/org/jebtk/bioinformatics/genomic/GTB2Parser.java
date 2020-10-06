@@ -41,10 +41,8 @@ public class GTB2Parser extends GTBParser {
    * @throws IOException Signals that an I/O exception has occurred.
    */
   @Override
-  protected void parse(final Path file,
-      BufferedReader reader,
-      final Genome genome,
-      final GenesDB genes) throws IOException {
+  protected void parse(final Path file, BufferedReader reader, final Genome genome, final GenesDB genes)
+      throws IOException {
     LOG.info("Parsing GTB2 file {}, levels: {}...", file, mLevels);
 
     final Splitter splitter = Splitter.on(';');
@@ -108,8 +106,7 @@ public class GTB2Parser extends GTBParser {
 
         // Create the gene
 
-        GenomicEntity gene = addAttributes(GenomicType.TRANSCRIPT,
-            GenomicRegion.create(chr, start, end, strand),
+        GenomicEntity gene = addAttributes(GenomicType.TRANSCRIPT, GenomicRegion.create(chr, start, end, strand),
             attributeMap);
 
         if (containsLevel(GenomicType.TRANSCRIPT)) {
@@ -117,20 +114,15 @@ public class GTB2Parser extends GTBParser {
         }
 
         if (hasExonLevel || mKeepExons) {
-          List<Integer> starts = TextUtils.splitInts(tokens.get(5),
-              TextUtils.SEMI_COLON_DELIMITER);
+          List<Integer> starts = TextUtils.splitInts(tokens.get(5), TextUtils.SEMI_COLON_DELIMITER);
 
-          List<Integer> ends = TextUtils.splitInts(tokens.get(6),
-              TextUtils.SEMI_COLON_DELIMITER);
+          List<Integer> ends = TextUtils.splitInts(tokens.get(6), TextUtils.SEMI_COLON_DELIMITER);
 
           for (int i = 0; i < starts.size(); ++i) {
             // Again correct for the ucsc
-            GenomicRegion region = GenomicRegion
-                .create(chr, starts.get(i), ends.get(i), strand);
+            GenomicRegion region = GenomicRegion.create(chr, starts.get(i), ends.get(i), strand);
 
-            GenomicEntity exon = addAttributes(GenomicType.EXON,
-                region,
-                attributeMap);
+            GenomicEntity exon = addAttributes(GenomicType.EXON, region, attributeMap);
 
             if (mKeepExons) {
               if (gene != null) {
@@ -157,13 +149,8 @@ public class GTB2Parser extends GTBParser {
     });
   }
 
-  private static void processUTR(List<String> tokens,
-      Genome genome,
-      GenomicEntity gene,
-      IterMap<String, String> attributeMap,
-      int offset,
-      GenomicType type,
-      GenesDB genes) {
+  private static void processUTR(List<String> tokens, Genome genome, GenomicEntity gene,
+      IterMap<String, String> attributeMap, int offset, GenomicType type, GenesDB genes) {
 
     int count = Integer.parseInt(tokens.get(offset));
 
@@ -173,19 +160,16 @@ public class GTB2Parser extends GTBParser {
 
     Splitter splitter = Splitter.onSC();
 
-    List<Integer> starts = splitter.stream(tokens.get(offset + 1)).asInt()
-        .toList(); // TextUtils.splitInts(tokens.get(offset
+    List<Integer> starts = splitter.stream(tokens.get(offset + 1)).asInt().toList(); // TextUtils.splitInts(tokens.get(offset
     // + 1),
     // TextUtils.SEMI_COLON_DELIMITER);
 
-    List<Integer> ends = splitter.stream(tokens.get(offset + 2)).asInt()
-        .toList(); // TextUtils.splitInts(tokens.get(offset
+    List<Integer> ends = splitter.stream(tokens.get(offset + 2)).asInt().toList(); // TextUtils.splitInts(tokens.get(offset
     // + 2),
     // TextUtils.SEMI_COLON_DELIMITER);
 
     for (int i = 0; i < starts.size(); ++i) {
-      GenomicRegion region = GenomicRegion
-          .create(gene.mChr, starts.get(i), ends.get(i), gene.mStrand);
+      GenomicRegion region = GenomicRegion.create(gene.mChr, starts.get(i), ends.get(i), gene.mStrand);
 
       GenomicEntity g = addAttributes(type, region, attributeMap);
 
@@ -198,16 +182,12 @@ public class GTB2Parser extends GTBParser {
   }
 
   @Override
-  public Map<String, Set<String>> idMap(Path file,
-      BufferedReader reader,
-      String id1,
-      String id2) throws IOException {
+  public Map<String, Set<String>> idMap(Path file, BufferedReader reader, String id1, String id2) throws IOException {
     LOG.info("Creating id map from GTB2 file {}, levels: {}...", file, mLevels);
 
     Genome genome = GenomeService.getInstance().guessGenome(file);
 
-    Map<String, Set<String>> ret = DefaultTreeMap
-        .create(new TreeSetCreator<String>());
+    Map<String, Set<String>> ret = DefaultTreeMap.create(new TreeSetCreator<String>());
 
     String line;
     List<String> tokens;
@@ -280,13 +260,11 @@ public class GTB2Parser extends GTBParser {
     return new GTB2Parser(parser);
   }
 
-  private static IterMap<String, String> getAttributes(Splitter splitter,
-      final List<String> tokens) {
+  private static IterMap<String, String> getAttributes(Splitter splitter, final List<String> tokens) {
     return getAttributes(splitter, tokens.get(13));
   }
 
-  private static List<String> getTags(Splitter splitter,
-      final List<String> tokens) {
+  private static List<String> getTags(Splitter splitter, final List<String> tokens) {
     return TextUtils.removeNA(splitter.text(tokens.get(14)));
   }
 
@@ -295,15 +273,10 @@ public class GTB2Parser extends GTBParser {
   }
 
   public static GenomicEntity parse(Genome genome, final List<String> tokens) {
-    return parse(genome,
-        Collections.<String>emptySet(),
-        Collections.<String>emptySet(),
-        tokens);
+    return parse(genome, Collections.<String>emptySet(), Collections.<String>emptySet(), tokens);
   }
 
-  public static GenomicEntity parse(Genome genome,
-      final Set<String> matchTags,
-      final Set<String> excludeTags,
+  public static GenomicEntity parse(Genome genome, final Set<String> matchTags, final Set<String> excludeTags,
       final List<String> tokens) {
     final Splitter splitter = Splitter.on(';');
 
@@ -324,26 +297,20 @@ public class GTB2Parser extends GTBParser {
 
     // Create the gene
 
-    GenomicEntity transcript = addAttributes(GenomicType.TRANSCRIPT,
-        GenomicRegion.create(chr, start, end, strand),
+    GenomicEntity transcript = addAttributes(GenomicType.TRANSCRIPT, GenomicRegion.create(chr, start, end, strand),
         attributeMap);
 
     transcript.addTags(tags);
 
-    List<Integer> starts = TextUtils.splitInts(tokens.get(5),
-        TextUtils.SEMI_COLON_DELIMITER);
+    List<Integer> starts = TextUtils.splitInts(tokens.get(5), TextUtils.SEMI_COLON_DELIMITER);
 
-    List<Integer> ends = TextUtils.splitInts(tokens.get(6),
-        TextUtils.SEMI_COLON_DELIMITER);
+    List<Integer> ends = TextUtils.splitInts(tokens.get(6), TextUtils.SEMI_COLON_DELIMITER);
 
     for (int i = 0; i < starts.size(); ++i) {
       // Again correct for the ucsc
-      GenomicRegion region = GenomicRegion
-          .create(chr, starts.get(i), ends.get(i), strand);
+      GenomicRegion region = GenomicRegion.create(chr, starts.get(i), ends.get(i), strand);
 
-      GenomicEntity exon = addAttributes(GenomicType.EXON,
-          region,
-          attributeMap);
+      GenomicEntity exon = addAttributes(GenomicType.EXON, region, attributeMap);
 
       // GenomicEntity exon = new Exon(region);
 
@@ -351,7 +318,7 @@ public class GTB2Parser extends GTBParser {
       exon.setParent(transcript);
     }
 
-    processUTR(tokens, genome,  transcript, attributeMap, 7, GenomicType.UTR_5P, null);
+    processUTR(tokens, genome, transcript, attributeMap, 7, GenomicType.UTR_5P, null);
 
     processUTR(tokens, genome, transcript, attributeMap, 10, GenomicType.UTR_3P, null);
 
