@@ -76,6 +76,7 @@ public class GenomeService {
     mGenomeMap.put(Genome.GRCH37.toString(), Genome.GRCH37);
     mGenomeMap.put(Genome.GRCH38.toString(), Genome.GRCH38);
     mGenomeMap.put(Genome.MM10.toString(), Genome.MM10);
+    mGenomeMap.put(Genome.FVBJ.toString(), Genome.FVBJ);
   }
 
   public void add(Genome genome) {

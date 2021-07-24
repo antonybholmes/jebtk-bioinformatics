@@ -122,6 +122,8 @@ public class GenesService implements Iterable<Entry<Genome, GenesDB>> {
   }
 
   public void put(Genome g, GenesDB genes) {
+    System.err.println("gene service " + g);
+    
     mGenesMap.put(g, genes);
 
     mGenomeMap.get(g.getName()).add(g);

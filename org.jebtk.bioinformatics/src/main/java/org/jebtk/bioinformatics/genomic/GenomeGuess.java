@@ -28,7 +28,7 @@ public class GenomeGuess {
    */
   public Genome guess(String id) {
     String lid = id.toLowerCase();
-
+    
     if (lid.contains("grch38")) {
       return Genome.GRCH38;
     } else if (lid.contains("hg18")) {
@@ -41,8 +41,12 @@ public class GenomeGuess {
       return Genome.GRCM38;
     } else if (lid.contains("human")) {
       return Genome.GRCH38;
+    } else if (lid.contains("mm10")) {
+      return Genome.MM10;
     } else if (lid.contains("mouse")) {
       return Genome.MM10;
+    } else if (lid.contains("fvbj")) {
+      return Genome.FVBJ;
     } else {
       return Genome.NO_GENOME;
     }

@@ -78,6 +78,8 @@ public class Genome implements NameGetter, Comparable<Genome> {
 
   /** The Constant MM10. */
   public static final Genome MM10 = new Genome(MOUSE, "mm10", REFSEQ);
+  
+  public static final Genome FVBJ = new Genome(MOUSE, "fvbj", REFSEQ);
 
   public static final Genome GRCM38 = new Genome(MOUSE, "GRCm38", GENCODE);
 

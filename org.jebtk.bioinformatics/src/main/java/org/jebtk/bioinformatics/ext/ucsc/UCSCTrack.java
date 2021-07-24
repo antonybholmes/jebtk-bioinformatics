@@ -581,8 +581,6 @@ public class UCSCTrack extends ChangeListeners
     Matcher matcher = ATTRIBUTE_PATTERN.matcher(line);
 
     while (matcher.find()) {
-      System.err.println("token " + matcher.group(1) + " " + matcher.group(2));
-
       map.put(matcher.group(1), TextUtils.removeQuotes(matcher.group(2)));
     }
 

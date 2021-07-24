@@ -97,12 +97,16 @@ public class WebGenes extends GenesDB {
 
     JsonParser parser = new JsonParser();
 
+    System.err.println("web genes:" + url);
+    
     try {
       Json json = parser.parse(url);
 
       for (int i = 0; i < json.size(); ++i) {
         Json dbJson = json.get(i);
-
+        
+        System.err.println("assembly:"+dbJson.getString("assembly") + " " + GenomeService.getInstance().guessGenome(dbJson.getString("assembly")));
+        
         Genome genome = Genome.changeTrack(GenomeService.getInstance().guessGenome(dbJson.getString("assembly")),
             dbJson.getString("track"));
 
